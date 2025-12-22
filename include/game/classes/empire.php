@@ -21,9 +21,9 @@ class Empire
 
 
 	/////////////////////////////////////////////////////////////
-	//
+	// Constructor - PHP 8.x compatible
 	/////////////////////////////////////////////////////////////
-	function Empire($DB,$TEMPLATE,$gameplay_costs)
+	function __construct($DB,$TEMPLATE,$gameplay_costs)
 	{
 		$this->DB = $DB;
 		$this->game_id = round($_SESSION["game"]);
@@ -36,8 +36,6 @@ class Empire
 		$this->supply = new Supply($DB,$TEMPLATE);
 		$this->diplomacy = new Diplomacy($DB);
 		$this->research = new Research($DB,$TEMPLATE);
-		
-
 	}
 
 	/////////////////////////////////////////////////////////////
@@ -66,37 +64,47 @@ class Empire
 
 	/////////////////////////////////////////////////////////////
 	// save, but only if data have changed !
+	// Uses transactions for data consistency
 	/////////////////////////////////////////////////////////////
 	function save()
 	{
-
 		$query = "UPDATE game".$this->game_id."_tb_empire SET ";
-		reset($this->data);
-		while (list($key,$value) = each($this->data))
+
+		// PHP 8.x compatible iteration (each() is deprecated)
+		foreach ($this->data as $key => $value)
 		{
 			if ($key == "id") continue;
 			if (is_numeric($key)) continue;
 
-            if ((is_numeric($value)) && ($key != "logo"))
+			if ((is_numeric($value)) && ($key != "logo"))
 				$query .= "$key=$value,";
 			else
 				$query .= "$key='".addslashes($value)."',";
-			
 		}
 
 		$query = substr($query,0,strlen($query)-1); // removing remaining ,
 		$query .= " WHERE id='".$this->data["id"]."'";
-		
-//		$this->DB->beginTrans();		
-		if (!$this->DB->Execute($query)) trigger_error($this->DB->ErrorMsg());
-		
-		$this->army->save();
-		$this->planets->save();
-		$this->coalition->save();
-		$this->production->save();
-		$this->supply->save();
 
-//		$this->DB->completeTrans();
+		// Use transactions for atomic updates
+		$this->DB->beginTrans();
+
+		try {
+			if (!$this->DB->Execute($query)) {
+				throw new Exception('Empire save failed: ' . $this->DB->ErrorMsg());
+			}
+
+			$this->army->save();
+			$this->planets->save();
+			$this->coalition->save();
+			$this->production->save();
+			$this->supply->save();
+
+			$this->DB->completeTrans();
+		} catch (Exception $e) {
+			$this->DB->failTrans();
+			trigger_error($e->getMessage()); // Log the error
+			throw $e;
+		}
 	}
 
 	/////////////////////////////////////////////////////////////
@@ -278,10 +286,10 @@ class Empire
 		
 		global $CONF_CIVIL_STATUS;
 		
-		if ($this->data["credits"] >= 0) return ""; 
-	
-		srand(time(NULL));
-	
+		if ($this->data["credits"] >= 0) return "";
+
+		// srand() not needed in PHP 7+ - random_int/mt_rand are auto-seeded
+
 		$msg = "<table width=\"100%\"><tr><td><img src=\"../images/game/bankrupt.gif\" style=\"border:0px solid yellow\"></td><td valign=\"top\" align=\"center\" width=\"100%\">&nbsp;<b style=\"color:yellow\">".T_("Cannot afford maintenance costs!")."<br/>\r\n";
 
 
@@ -346,10 +354,10 @@ class Empire
 		
 		global $CONF_CIVIL_STATUS;
 		
-		if ($this->data["ore"] >= 0) return ""; 
-	
-		srand(time(NULL));
-	
+		if ($this->data["ore"] >= 0) return "";
+
+		// srand() not needed in PHP 7+ - random_int/mt_rand are auto-seeded
+
 		$msg = "<table width=\"100%\"><tr><td><img src=\"../images/game/no_ore.jpg\" style=\"border:0px solid yellow\"></td><td valign=\"top\" align=\"center\" width=\"100%\">&nbsp;<b style=\"color:yellow\">".T_("No enough ore!")."<br/>\r\n";
 
 		// First we evaluate how much ore is needed
@@ -439,10 +447,10 @@ class Empire
 		
 		global $CONF_CIVIL_STATUS;
 		
-		if ($this->data["petroleum"] >= 0) return ""; 
-	
-		srand(time(NULL));
-	
+		if ($this->data["petroleum"] >= 0) return "";
+
+		// srand() not needed in PHP 7+ - random_int/mt_rand are auto-seeded
+
 		$msg = "<table width=\"100%\"><tr><td><img src=\"../images/game/no_petro.jpg\" style=\"border:0px solid yellow\"></td><td valign=\"top\" align=\"center\" width=\"100%\">&nbsp;<b style=\"color:yellow\">".T_("No enough petroleum!")."<br/>\r\n";
 
 		// First we evaluate how much petroleum is needed

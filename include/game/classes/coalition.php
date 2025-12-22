@@ -13,9 +13,9 @@ class Coalition
 	var $game_id;
 
 	///////////////////////////////////////////////////////////////////////
-	// constructor
+	// Constructor - PHP 8.x compatible
 	///////////////////////////////////////////////////////////////////////
-	function Coalition($DB)
+	function __construct($DB)
 	{
 		$this->DB = $DB;
 		$this->member = null;
@@ -68,8 +68,9 @@ class Coalition
 		if (md5(serialize($this->data)) == $this->data_footprint) return;
 
 		$query = "UPDATE game".$this->game_id."_tb_coalition SET ";
-		reset($this->data);
-		while (list($key,$value) = each($this->data))
+
+		// PHP 8.x compatible iteration (each() is deprecated)
+		foreach ($this->data as $key => $value)
 		{
 			if ($key == "id") continue;
 			if (is_numeric($key)) continue;
@@ -77,14 +78,12 @@ class Coalition
 				$query .= "$key=$value,";
 			else
 				$query .= "$key='".addslashes($value)."',";
-			
 		}
 
 		$query = substr($query,0,strlen($query)-1); // removing remaining ,
 		$query .= " WHERE id='".$this->data["id"]."'";
 
 		if (!$this->DB->Execute($query)) trigger_error($this->DB->ErrorMsg());
-		
 	}
 	
 	///////////////////////////////////////////////////////////////////////

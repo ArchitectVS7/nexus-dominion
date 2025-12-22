@@ -34,20 +34,22 @@ return (int) $version[0];
 }
 function is_php5() { return phpnum() == 5; }
 function is_php4() { return phpnum() == 4; }
+function is_php7plus() { return phpnum() >= 7; }
+function is_php8plus() { return phpnum() >= 8; }
 
-if (is_php5()) {
-	 date_default_timezone_set("America/Montreal"); 
-}
+// Set default timezone (required for PHP 5.4+)
+// This will be overridden by config.php once installed
+date_default_timezone_set('UTC');
 
 
 ob_start();	// output buffering
 
-
-// if 'register_globals' directive is active, halt the process
-if (ini_get("register_globals")==1)
-{
-	die("Disable register_globals PHP Directive!");
+// PHP version check - requires PHP 7.4+
+if (phpnum() < 7) {
+    die("Solar Realms Elite requires PHP 7.4 or higher. You are running PHP " . phpversion());
 }
+
+// Note: register_globals was removed in PHP 5.4, no longer need to check
 
 $TPL = new Smarty;
 $TPL->template_dir = "templates/installer/";

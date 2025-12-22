@@ -1,0 +1,39 @@
+{
+    "name": "solarrealms/elite",
+    "description": "Solar Realms Elite - A classic text-based space empire management game",
+    "type": "project",
+    "license": "GPL-2.0-only",
+    "keywords": ["game", "space", "empire", "strategy", "browser-game"],
+    "homepage": "https://github.com/solarrealms/elite",
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-session": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "autoload": {
+        "classmap": [
+            "include/database/",
+            "include/security/",
+            "include/exceptions/",
+            "include/game/classes/"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "lint": "phpcs --standard=PSR12 include/database include/security include/exceptions",
+        "analyze": "phpstan analyse include/database include/security include/exceptions --level=5"
+    },
+    "minimum-stability": "stable"
+}

@@ -8,9 +8,9 @@ class System {
 	var $game_id;
 
 	//////////////////////////////////////////////////////////////////////
-	// Constructor
+	// Constructor - PHP 8.x compatible
 	//////////////////////////////////////////////////////////////////////
-	function System($DB) {
+	function __construct($DB) {
 
 		$this->DB = $DB;
 		$this->game_status = 0;
@@ -42,14 +42,14 @@ class System {
 		else {
 
 			$url = $path . "?";
-                        $url2 = "";
-			reset($args);
-			while (list ($key, $value) = each($args)) {
-                            if ($key == 'WARNING') $warning = base64_encode($value);
-                            if ($key == 'NOTICE') $warning = base64_encode($value);
+			$url2 = "";
+			// PHP 8.x compatible iteration (each() is deprecated)
+			foreach ($args as $key => $value) {
+				if ($key == 'WARNING') $warning = base64_encode($value);
+				if ($key == 'NOTICE') $warning = base64_encode($value);
 				$url .= $key . "=" . urlencode($value) . "&";
 			}
-                        //$url .= base64_encode($url2);
+			//$url .= base64_encode($url2);
 		}
 
 		//	die("Redirect to: $url");

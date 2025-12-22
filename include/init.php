@@ -48,12 +48,19 @@ function phpnum() {
 }
 function is_php5() { return phpnum() == 5; }
 function is_php4() { return phpnum() == 4; }
+function is_php7plus() { return phpnum() >= 7; }
+function is_php8plus() { return phpnum() >= 8; }
 
-if (is_php5()) {
+// Set timezone (required for all PHP versions 5.4+)
+if (defined('CONF_TIMEZONE') && CONF_TIMEZONE !== '') {
     date_default_timezone_set(CONF_TIMEZONE);
+} else {
+    // Fallback to UTC if not configured
+    date_default_timezone_set('UTC');
 }
 
 
+// make_seed() not needed in PHP 7+ - random functions are auto-seeded
 if(!function_exists('make_seed')) {
     function make_seed()
     {
@@ -62,24 +69,24 @@ if(!function_exists('make_seed')) {
     }
 }
 
-
-
 function dieError($content) {
     if (isset($_GET["XML"]))
     die("<xml><Error>$content</Error></xml>");
     die($content);
 }
 
-srand(make_seed());
+// srand() not needed in PHP 7+ - mt_rand/rand are auto-seeded
+// Kept for legacy compatibility but no-op in modern PHP
 
 
 ob_start();	// output buffering
 
-// if 'register_globals' directive is active, halt the process
-if (ini_get("register_globals")==1)
-{
-    die("Disable register_globals PHP Directive!");
+// PHP version check - requires PHP 7.4+
+if (phpnum() < 7) {
+    die("Solar Realms Elite requires PHP 7.4 or higher. You are running PHP " . phpversion());
 }
+
+// Note: register_globals was removed in PHP 5.4, no longer need to check
 
 // Initialize database
 $DB = NewADOConnection(CONF_DATABASE_DRIVER);

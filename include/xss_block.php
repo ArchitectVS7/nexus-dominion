@@ -1,8 +1,9 @@
 <?php
 
-
 // Security check against XSS exploits
-while(list($key,$value) = each($_POST)) {
+// PHP 8.x compatible iteration (each() is deprecated)
+
+foreach ($_POST as $key => $value) {
    if (strpos($key,"<") !== false) die("Invalid information!");
    if (strpos($key,">") !== false) die("Invalid information!");
    if (strpos($key,"%") !== false) die("Invalid information!");
@@ -36,7 +37,7 @@ while(list($key,$value) = each($_POST)) {
 
 // repeat for GET variables
 
-while(list($key,$value) = each($_GET)) {
+foreach ($_GET as $key => $value) {
    if (strpos($key,"<") !== false) die("Invalid information!");
    if (strpos($key,">") !== false) die("Invalid information!");
    if (strpos($key,"%") !== false) die("Invalid information!");

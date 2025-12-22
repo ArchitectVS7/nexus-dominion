@@ -1,0 +1,74 @@
+# Solar Realms Elite - Docker Compose Configuration
+# Usage: docker-compose up -d
+
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: solarrealms-web
+    ports:
+      - "8080:80"
+    environment:
+      - CONF_DATABASE_DRIVER=mysql
+      - CONF_DATABASE_HOSTNAME=db
+      - CONF_DATABASE_USERNAME=solarrealms
+      - CONF_DATABASE_PASSWORD=${DB_PASSWORD:-solarrealms_secret}
+      - CONF_DATABASE_NAME=solarrealms
+      - CONF_TIMEZONE=UTC
+    volumes:
+      - ./templates_c:/var/www/html/templates_c
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - solarrealms-network
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: solarrealms-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+      MYSQL_DATABASE: solarrealms
+      MYSQL_USER: solarrealms
+      MYSQL_PASSWORD: ${DB_PASSWORD:-solarrealms_secret}
+    volumes:
+      - solarrealms-db-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "solarrealms", "-p${DB_PASSWORD:-solarrealms_secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - solarrealms-network
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: solarrealms-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: solarrealms
+      PMA_PASSWORD: ${DB_PASSWORD:-solarrealms_secret}
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - solarrealms-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+volumes:
+  solarrealms-db-data:
+    driver: local
+
+networks:
+  solarrealms-network:
+    driver: bridge
