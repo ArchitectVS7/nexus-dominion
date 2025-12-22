@@ -1,0 +1,46 @@
+# Dependencies
+/vendor/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Configuration (generated during install)
+include/config.php
+
+# Compiled templates
+templates_c/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+cache/
+*.cache
+
+# Backup files
+*.bak
+*.backup
+*_backup.*
+
+# Composer
+composer.lock
+
+# PHPStan cache
+.phpstan.cache/
+
+# Docker volumes data
+docker-data/

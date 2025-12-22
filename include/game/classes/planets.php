@@ -13,9 +13,9 @@ class Planets
 	var $game_id;
 	
 	///////////////////////////////////////////////////////////////////////
-	//
+	// Constructor - PHP 8.x compatible
 	///////////////////////////////////////////////////////////////////////
-	function Planets($DB,$TEMPLATE)
+	function __construct($DB,$TEMPLATE)
 	{
 		$this->DB = $DB;
 		$this->TEMPLATE = $TEMPLATE;
@@ -46,8 +46,9 @@ class Planets
 		if (md5(serialize($this->data)) == $this->data_footprint) return;
 
 		$query = "UPDATE game".$this->game_id."_tb_planets SET ";
-		reset($this->data);
-		while (list($key,$value) = each($this->data))
+
+		// PHP 8.x compatible iteration (each() is deprecated)
+		foreach ($this->data as $key => $value)
 		{
 			if ($key == "id") continue;
 			if ($key == "empire") continue;
@@ -56,13 +57,11 @@ class Planets
 				$query .= "$key=$value,";
 			else
 				$query .= "$key='".addslashes($value)."',";
-			
 		}
 
 		$query = substr($query,0,strlen($query)-1); // removing remaining ,
 		$query .= " WHERE empire='".$this->data["empire"]."'";
 		if (!$this->DB->Execute($query)) trigger_error($this->DB->ErrorMsg());
-
 	}
 
 

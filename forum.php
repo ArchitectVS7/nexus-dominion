@@ -50,11 +50,8 @@ if (isset($_GET["BACK"])) {
 
 if (isset($_GET["forum"])) {
 
-	reset($FORUMS);
-	$found = false;
-	while(list($key,$value) = each($FORUMS)) {
-		if ($key == $_GET["forum"]) { $found = true; break; }
-	}
+	// PHP 8.x compatible - use array_key_exists instead of each()
+	$found = array_key_exists($_GET["forum"], $FORUMS);
 
 	if ($found) $_SESSION["current_forum"] = addslashes($_GET["forum"]);
 }
@@ -137,11 +134,11 @@ if ($_SESSION["player"]["admin"]==1) {
 // Show the main page (Select a forum)
 if (!isset($_SESSION["current_forum"])) {
 
-	reset($FORUMS);
 	$items = array();
-	
-	$count = 0;	
-	while(list($key,$value) = each($FORUMS))
+
+	$count = 0;
+	// PHP 8.x compatible iteration (each() is deprecated)
+	foreach ($FORUMS as $key => $value)
 	{
 		$item = array();
 		$item["bgcolor"] =  ($count++ % 2 == 0?"#cacada":"#dadaea");
@@ -261,13 +258,14 @@ $forum_items = array();
 $offset = ($_SESSION["forum_page"]*CONF_FORUM_POSTS_PER_PAGE);
 $count = 0;
 
-while (list($key,$value) = each($tmp))
+// PHP 8.x compatible iteration (each() is deprecated)
+foreach ($tmp as $key => $value)
 {
 	if (($count >= $offset) && ($count < ($offset+CONF_FORUM_POSTS_PER_PAGE)))
 	{
 		$forum_items[] = $value;
 	}
-	
+
 	$count++;
 }
 unset($tmp);
