@@ -224,7 +224,7 @@ if ($file != "blackmarket.php")
 ////////////////////////////////////////////////////////////////////////////////////
 if (defined("BOT_UPDATE")) {
     require_once($path_prefix."include/update/handle_ai.php");
-    HandleAITurns(addslashes($_SESSION["game"]));
+    HandleAITurns(intval($_SESSION["game"]));
 }
 
 

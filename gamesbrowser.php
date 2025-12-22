@@ -30,7 +30,7 @@ while(!$rs->EOF) {
 		$game["lifetime"] .= " ".T_("days");
 		if ($rs3->fields["game_status"] == 1) {
 			$game["need_restart"] = 1;
-			$rs4 = $DB->Execute("SELECT * FROM system_tb_hall_of_fame WHERE game_name='".addslashes($rs->fields["name"])."' ORDER BY id DESC");
+			$rs4 = $DB->Execute("SELECT * FROM system_tb_hall_of_fame WHERE game_name=? ORDER BY id DESC", array($rs->fields["name"]));
 			if (!$rs4) trigger_error($DB->ErrorMsg());
 			$game["winner"] = $rs4->fields["player_name"];
 		}

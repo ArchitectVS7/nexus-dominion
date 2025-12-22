@@ -33,7 +33,7 @@ function NewTurn_handleResearchGrowth($game_id, $empire)
 
 		// update stats
 		$_SESSION["player"]["score"] += (2*$maxpoints);
-		$DB->Execute("UPDATE system_tb_players SET score=".addslashes($_SESSION["player"]["score"])." WHERE id='".$_SESSION["player"]["id"]."'");
+		$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($_SESSION["player"]["score"]), intval($_SESSION["player"]["id"])));
 	
 		$maxpoints = $maxpoints * (($maxpoints * $maxpoints) * CONF_RESEARCH_BASECOST);
 		if ($empire->data["research_points"] >= $maxpoints)

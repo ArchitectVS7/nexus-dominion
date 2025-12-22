@@ -172,10 +172,15 @@ if ($current_page==3) {
 	$DB = NewADOConnection($db_driver);
 	if (!$DB->Connect($db_hostname,$db_username,$db_password,"")) die(trigger_error($DB->ErrorMsg()));
 
-	$query = "DROP DATABASE ".addslashes($db_name);
+	// Validate database name - only allow alphanumeric and underscore
+	if (!preg_match('/^[a-zA-Z0-9_]+$/', $db_name)) {
+		die("Invalid database name. Only alphanumeric characters and underscores are allowed.");
+	}
+
+	$query = "DROP DATABASE `" . $db_name . "`";
 	$DB->Execute($query);
 
-	$query = "CREATE DATABASE ".addslashes($db_name);
+	$query = "CREATE DATABASE `" . $db_name . "`";
 	$DB->Execute($query);
 
 	if (!$DB->Connect($db_hostname,$db_username,$db_password,$db_name)) die(trigger_error($DB->ErrorMsg()));

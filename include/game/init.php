@@ -49,8 +49,8 @@ require_once("classes/research.php");
 function trace_action($game_id, $empire_id, $description) {
 	global $DB;
 	$rs = $DB->Execute("SELECT turns_played,id FROM game".intval($game_id)."_tb_empire WHERE id='".intval($empire_id)."'");
-	$query = "INSERT INTO game".$game_id."_tb_trace (date,empire,turn,description) VALUES('".time(NULL)."','".$rs->fields["id"]."','".$rs->fields["turns_played"]."','".addslashes($description)."');";
-	if (!$DB->Execute($query)) trigger_error($DB->ErrorMsg());
+	$query = "INSERT INTO game".intval($game_id)."_tb_trace (date,empire,turn,description) VALUES(?,?,?,?)";
+	if (!$DB->Execute($query, array(time(NULL), $rs->fields["id"], $rs->fields["turns_played"], $description))) trigger_error($DB->ErrorMsg());
 }
 
 

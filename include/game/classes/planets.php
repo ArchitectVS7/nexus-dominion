@@ -45,7 +45,8 @@ class Planets
 	{
 		if (md5(serialize($this->data)) == $this->data_footprint) return;
 
-		$query = "UPDATE game".$this->game_id."_tb_planets SET ";
+		$columns = array();
+		$values = array();
 
 		// PHP 8.x compatible iteration (each() is deprecated)
 		foreach ($this->data as $key => $value)
@@ -53,15 +54,16 @@ class Planets
 			if ($key == "id") continue;
 			if ($key == "empire") continue;
 			if (is_numeric($key)) continue;
-			if ((is_numeric($value)) && ($key != "logo"))
-				$query .= "$key=$value,";
-			else
-				$query .= "$key='".addslashes($value)."',";
+
+			$columns[] = "$key=?";
+			$values[] = $value;
 		}
 
-		$query = substr($query,0,strlen($query)-1); // removing remaining ,
-		$query .= " WHERE empire='".$this->data["empire"]."'";
-		if (!$this->DB->Execute($query)) trigger_error($this->DB->ErrorMsg());
+		$values[] = $this->data["empire"]; // WHERE clause value
+
+		$query = "UPDATE game".intval($this->game_id)."_tb_planets SET " . implode(",", $columns) . " WHERE empire=?";
+
+		if (!$this->DB->Execute($query, $values)) trigger_error($this->DB->ErrorMsg());
 	}
 
 

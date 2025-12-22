@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  caddy:
+    image: caddy:alpine
+    container_name: solarrealms-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - solarrealms-network
+    depends_on:
+      - web
+
+  web:
+    build: .
+    container_name: solarrealms-web
+    restart: unless-stopped
+    expose:
+      - "80"
+    environment:
+      - CONF_DATABASE_DRIVER=mysql
+      - CONF_DATABASE_HOSTNAME=db
+      - CONF_DATABASE_USERNAME=solarrealms
+      - CONF_DATABASE_PASSWORD=${DB_PASSWORD:-solarrealms_secret}
+      - CONF_DATABASE_NAME=solarrealms
+      - CONF_TIMEZONE=${CONF_TIMEZONE:-UTC}
+    volumes:
+      - ./templates_c:/var/www/html/templates_c
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - solarrealms-network
+
+  db:
+    image: mysql:8.0
+    container_name: solarrealms-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+      MYSQL_DATABASE: solarrealms
+      MYSQL_USER: solarrealms
+      MYSQL_PASSWORD: ${DB_PASSWORD:-solarrealms_secret}
+    volumes:
+      - solarrealms-db-data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "solarrealms", "-p${DB_PASSWORD:-solarrealms_secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - solarrealms-network
+
+volumes:
+  solarrealms-db-data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  solarrealms-network:
+    driver: bridge

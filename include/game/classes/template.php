@@ -450,7 +450,7 @@ class Template
 
 		if ($your_networth!="") {
 		
-			$rs = $DB->Execute("SELECT networth FROM game".$this->game_id."_tb_empire WHERE emperor='".addslashes($emperor)."'");
+			$rs = $DB->Execute("SELECT networth FROM game".intval($this->game_id)."_tb_empire WHERE emperor=?", array($emperor));
 			$enemy_networth = $rs->fields["networth"];
 			if ($enemy_networth == 0) $enemy_networth = 1;
 			if ($your_networth == 0) $your_networth = 1;

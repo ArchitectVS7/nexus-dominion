@@ -51,8 +51,7 @@ class EventRenderer
 		global $CONF_DIPLOMACY_TREATIES,$CONF_CIVIL_STATUS;
 		
 		if (!isset($_SESSION["game"])) die();
-		$game_id = addslashes($_SESSION["game"]);
-		$game_id = str_replace(".","",$game_id);
+		$game_id = intval($_SESSION["game"]);
 		$this->TEMPLATE->assign("game_id",$game_id);
 
 		$tpl_filename = "";
@@ -278,7 +277,7 @@ class EventRenderer
 				$this->TEMPLATE->assign("fighters",$this->GAME_TPL->formatNumber($params["fighters"]));
 				$this->TEMPLATE->assign("lightcruisers",$this->GAME_TPL->formatNumber($params["lightcruisers"]));
 				$this->TEMPLATE->assign("heavycruisers",$this->GAME_TPL->formatNumber($params["heavycruisers"]));
-				$rs = $this->DB->Execute("SELECT * FROM game".$this->game_id."_tb_empire WHERE id='".addslashes($event_data["event_from"])."'");
+				$rs = $this->DB->Execute("SELECT * FROM game".intval($this->game_id)."_tb_empire WHERE id=?", array(intval($event_data["event_from"])));
 				if (!$rs) trigger_error($this->DB->ErrorMsg());
 				$empire = $this->GAME_TPL->displayEmpireHTML($rs->fields["id"],$rs->fields["emperor"],$rs->fields["name"],$empire_data["networth"]);
 				$this->TEMPLATE->assign("empire",$empire);
@@ -295,7 +294,7 @@ class EventRenderer
 				$this->TEMPLATE->assign("fighters",$this->GAME_TPL->formatNumber($params["fighters"]));
 				$this->TEMPLATE->assign("lightcruisers",$this->GAME_TPL->formatNumber($params["lightcruisers"]));
 				$this->TEMPLATE->assign("heavycruisers",$this->GAME_TPL->formatNumber($params["heavycruisers"]));
-				$rs = $this->DB->Execute("SELECT * FROM game".$this->game_id."_tb_empire WHERE id='".addslashes($event_data["event_from"])."'");
+				$rs = $this->DB->Execute("SELECT * FROM game".intval($this->game_id)."_tb_empire WHERE id=?", array(intval($event_data["event_from"])));
 				$empire = $this->GAME_TPL->displayEmpireHTML($rs->fields["id"],$rs->fields["emperor"],$rs->fields["name"],$empire_data["networth"]);
 				$this->TEMPLATE->assign("empire",$empire);
 
@@ -312,7 +311,7 @@ class EventRenderer
 				$this->TEMPLATE->assign("fighters",$this->GAME_TPL->formatNumber($params["fighters"]));
 				$this->TEMPLATE->assign("lightcruisers",$this->GAME_TPL->formatNumber($params["lightcruisers"]));
 				$this->TEMPLATE->assign("heavycruisers",$this->GAME_TPL->formatNumber($params["heavycruisers"]));
-				$rs = $this->DB->Execute("SELECT * FROM game".$this->game_id."_tb_empire WHERE id='".addslashes($event_data["event_from"])."'");
+				$rs = $this->DB->Execute("SELECT * FROM game".intval($this->game_id)."_tb_empire WHERE id=?", array(intval($event_data["event_from"])));
 				$empire = $this->GAME_TPL->displayEmpireHTML($rs->fields["id"],$rs->fields["emperor"],$rs->fields["name"],$empire_data["networth"]);
 				$this->TEMPLATE->assign("empire",$empire);
 

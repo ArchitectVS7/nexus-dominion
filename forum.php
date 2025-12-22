@@ -35,7 +35,7 @@ function bbcode2html($text)
   $newtext = str_replace("onmouseover=","",$newtext);
   $newtext = str_replace("onmouseleave=","",$newtext);
   $newtext = str_replace("onclick=","",$newtext);
-  $newtext = stripslashes($newtext);
+  // Note: No stripslashes needed - using prepared statements
 
   return $newtext;
 }
@@ -53,7 +53,7 @@ if (isset($_GET["forum"])) {
 	// PHP 8.x compatible - use array_key_exists instead of each()
 	$found = array_key_exists($_GET["forum"], $FORUMS);
 
-	if ($found) $_SESSION["current_forum"] = addslashes($_GET["forum"]);
+	if ($found) $_SESSION["current_forum"] = $_GET["forum"];
 }
 
 
@@ -79,8 +79,8 @@ if (isset($_POST["forum_newtopic"]))
 	}
 	
 	
-	if (!isset($_SESSION["player"])) 
-    die(header("Location: forum.php?WARNING=".T_("You need to be logged to post something, there is the content of your post (if you want to copypaste it back later) : <b>").stripslashes($content)."</b>"));
+	if (!isset($_SESSION["player"]))
+    die(header("Location: forum.php?WARNING=".T_("You need to be logged to post something, there is the content of your post (if you want to copypaste it back later) : <b>").htmlspecialchars($content)."</b>"));
 
 	if (!isset($_SESSION["current_forum"])) {
 		$DB->CompleteTrans();
@@ -228,15 +228,15 @@ while(!$rs->EOF)
 		
 		$item["views"] = $rs->fields["views"];
 		
-		$rs2 = $DB->Execute("SELECT COUNT(*) FROM system_tb_forum WHERE forum_name='".$_SESSION["current_forum"]."' AND parent=".$rs->fields["id"]);
+		$rs2 = $DB->Execute("SELECT COUNT(*) FROM system_tb_forum WHERE forum_name=? AND parent=?", array($_SESSION["current_forum"], $rs->fields["id"]));
 		$item["replies"] = $rs2->fields[0];
 
 
 		$page = 0;
 		$page = floor($item["replies"] / CONF_FORUM_REPLIES_PER_PAGE);
 		if ($page < 0) $page = 0;
-		
-		$rs2 = $DB->Execute("SELECT * FROM system_tb_forum WHERE forum_name='".$_SESSION["current_forum"]."' AND parent=".$rs->fields["id"]." AND forum_name='".addslashes($_SESSION["current_forum"])."' ORDER BY date_creation DESC LIMIT 1");
+
+		$rs2 = $DB->Execute("SELECT * FROM system_tb_forum WHERE forum_name=? AND parent=? ORDER BY date_creation DESC LIMIT 1", array($_SESSION["current_forum"], $rs->fields["id"]));
 	    if (!$rs2->EOF) {
            $rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player"]);
    	       $item["lastreply"] = $rs3->fields["nickname"];

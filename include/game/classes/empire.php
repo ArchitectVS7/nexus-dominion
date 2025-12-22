@@ -68,7 +68,8 @@ class Empire
 	/////////////////////////////////////////////////////////////
 	function save()
 	{
-		$query = "UPDATE game".$this->game_id."_tb_empire SET ";
+		$columns = array();
+		$values = array();
 
 		// PHP 8.x compatible iteration (each() is deprecated)
 		foreach ($this->data as $key => $value)
@@ -76,20 +77,19 @@ class Empire
 			if ($key == "id") continue;
 			if (is_numeric($key)) continue;
 
-			if ((is_numeric($value)) && ($key != "logo"))
-				$query .= "$key=$value,";
-			else
-				$query .= "$key='".addslashes($value)."',";
+			$columns[] = "$key=?";
+			$values[] = $value;
 		}
 
-		$query = substr($query,0,strlen($query)-1); // removing remaining ,
-		$query .= " WHERE id='".$this->data["id"]."'";
+		$values[] = $this->data["id"]; // WHERE clause value
+
+		$query = "UPDATE game".intval($this->game_id)."_tb_empire SET " . implode(",", $columns) . " WHERE id=?";
 
 		// Use transactions for atomic updates
 		$this->DB->beginTrans();
 
 		try {
-			if (!$this->DB->Execute($query)) {
+			if (!$this->DB->Execute($query, $values)) {
 				throw new Exception('Empire save failed: ' . $this->DB->ErrorMsg());
 			}
 
@@ -126,7 +126,7 @@ class Empire
 
 		// notice player
 		$message = T_("Sorry but your empire have collapsed in game")." <b>".CONF_GAME_NAME."</b> <br/>";
-		if (!$this->DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(".$this->data["player_id"].",".time(NULL).",'".addslashes($message)."')")) trigger_error($this->DB->ErrorMsg());
+		if (!$this->DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(?,?,?)", array($this->data["player_id"], time(NULL), $message))) trigger_error($this->DB->ErrorMsg());
 
 		$this->coalition->transferRandomOwnership(-1);
 

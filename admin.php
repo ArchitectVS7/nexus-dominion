@@ -36,7 +36,8 @@ if (isset($_GET["POSTMSG"])) {
 	if ($message != "") {
 		$players = $DB->Execute("SELECT * FROM system_tb_players");
 		while(!$players->EOF) {
-			$DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(".$players->fields["id"].",".time().",'".utf8_encode(addslashes($message))."')");
+			$DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(?, ?, ?)",
+				array($players->fields["id"], time(), utf8_encode($message)));
 			$players->MoveNext();
 		}
 	}
@@ -52,9 +53,9 @@ if (isset($_GET["UPDATE_DESCRIPTION"])) {
 	$game_id = intval($_GET["UPDATE_DESCRIPTION"]);
 	$description = "";
 	if (isset($_POST["description"]))
-		$description = (addslashes($_POST["description"]));
+		$description = $_POST["description"];
 
-	$DB->Execute("UPDATE system_tb_games SET description='$description' WHERE id='$game_id'");
+	$DB->Execute("UPDATE system_tb_games SET description=? WHERE id=?", array($description, $game_id));
 	$DB->CompleteTrans(); 
 	die(header("Location: admin.php"));
 }
@@ -156,7 +157,7 @@ if (isset ($_GET["ADDAI"])) {
         $emperor_name = $emperor_rand1[rand(0,count($emperor_rand1)-1)];
         $emperor_name .= " ".$emperor_rand2[rand(0,count($emperor_rand2)-1)];
 
-        $rs = $DB->Execute("SELECT * FROM game".$game_id."_tb_empire WHERE emperor='".addslashes($emperor_name)."' OR name='".addslashes($empire_name)."'");
+        $rs = $DB->Execute("SELECT * FROM game".$game_id."_tb_empire WHERE emperor=? OR name=?", array($emperor_name, $empire_name));
         if ($rs->EOF) break;
         if ($count++ == 1000) {
             die(T_("Fatal error while creating new empire!"));        
@@ -268,9 +269,8 @@ if (isset ($_GET["ADDAI"])) {
 	$recipients = $DB->Execute($query);
 	while(!$recipients->EOF)
 	{
-		$query = "INSERT INTO game".$game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) ".
-		"VALUES(".$evt_type.",".$evt_from.",".$recipients->fields["id"].",'".addslashes(serialize($evt_params))."',".$evt_seen.",".$evt_sticky.",".time(NULL).",".$evt_height.")";
-		if (!$DB->Execute($query)) trigger_error($DB->ErrorMsg());
+		$query = "INSERT INTO game".$game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) VALUES(?,?,?,?,?,?,?,?)";
+		if (!$DB->Execute($query, array($evt_type, $evt_from, $recipients->fields["id"], serialize($evt_params), $evt_seen, $evt_sticky, time(NULL), $evt_height))) trigger_error($DB->ErrorMsg());
 		$recipients->MoveNext();
 	}
 
@@ -457,28 +457,17 @@ if (isset ($_GET["RESETGAME"])) {
 
 		$pirate["networth"] = $networth;
 
-		$DB->Execute("UPDATE game".$game_id."_tb_pirate SET soldiers=" . $pirate["soldiers"] . ",
-														fighters=" . $pirate["fighters"] . ",
-														lightcruisers=" . $pirate["lightcruisers"] . ",
-														heavycruisers=" . $pirate["heavycruisers"] . ",
-														stations=" . $pirate["stations"] . ",
-														carriers=" . $pirate["carriers"] . ",
-														covertagents=" . $pirate["covertagents"] . ",
-														food=" . $pirate["food"] . ",
-														credits=" . $pirate["credits"] . ",
-														research=" . $pirate["research"] . ",
-														food_planets=" . $pirate["food_planets"] . ",
-														ore_planets=" . $pirate["ore_planets"] . ",
-														tourism_planets=" . $pirate["tourism_planets"] . ",
-														supply_planets=" . $pirate["supply_planets"] . ",
-														gov_planets=" . $pirate["gov_planets"] . ",
-														edu_planets=" . $pirate["edu_planets"] . ",
-														research_planets=" . $pirate["research_planets"] . ",
-														urban_planets=" . $pirate["urban_planets"] . ",
-														petro_planets=" . $pirate["petro_planets"] . ",
-														antipollu_planets=" . $pirate["antipollu_planets"] . ",
-														networth=" . addslashes($pirate["networth"]) . "
-													 	WHERE id=" . $pirate["id"]);
+		$DB->Execute("UPDATE game".$game_id."_tb_pirate SET soldiers=?, fighters=?, lightcruisers=?, heavycruisers=?, stations=?, carriers=?, covertagents=?, food=?, credits=?, research=?, food_planets=?, ore_planets=?, tourism_planets=?, supply_planets=?, gov_planets=?, edu_planets=?, research_planets=?, urban_planets=?, petro_planets=?, antipollu_planets=?, networth=? WHERE id=?",
+			array(
+				intval($pirate["soldiers"]), intval($pirate["fighters"]), intval($pirate["lightcruisers"]),
+				intval($pirate["heavycruisers"]), intval($pirate["stations"]), intval($pirate["carriers"]),
+				intval($pirate["covertagents"]), intval($pirate["food"]), intval($pirate["credits"]),
+				intval($pirate["research"]), intval($pirate["food_planets"]), intval($pirate["ore_planets"]),
+				intval($pirate["tourism_planets"]), intval($pirate["supply_planets"]), intval($pirate["gov_planets"]),
+				intval($pirate["edu_planets"]), intval($pirate["research_planets"]), intval($pirate["urban_planets"]),
+				intval($pirate["petro_planets"]), intval($pirate["antipollu_planets"]), intval($pirate["networth"]),
+				intval($pirate["id"])
+			));
 
 		if (!$DB) trigger_error($DB->ErrorMsg());
 	
@@ -507,8 +496,8 @@ if (isset ($_GET["ADDGAME"])) {
 	if (isset ($_POST["premium_only"]))
 		$premium_only = 1;
 
-	if (!$DB->Execute("INSERT INTO system_tb_games (name,victory_condition,premium_only,lifetime,turns_per_day,protection_turns,max_players,players_slot) " .
-	"VALUES('" . addslashes($_POST["game_name"]) . "','" . addslashes($_POST["victory_condition"]) . "',$premium_only," . addslashes($_POST["lifetime"]) . "," . addslashes($_POST["turns_per_day"]) . "," . addslashes($_POST["protection_turns"]) . "," . addslashes($_POST["maxplayers"]) . "," . addslashes($_POST["players_slot"]) . ")")) {
+	if (!$DB->Execute("INSERT INTO system_tb_games (name,victory_condition,premium_only,lifetime,turns_per_day,protection_turns,max_players,players_slot) VALUES(?,?,?,?,?,?,?,?)",
+		array($_POST["game_name"], $_POST["victory_condition"], $premium_only, intval($_POST["lifetime"]), intval($_POST["turns_per_day"]), intval($_POST["protection_turns"]), intval($_POST["maxplayers"]), intval($_POST["players_slot"])))) {
 		trigger_error($DB->ErrorMsg());
 	}
 
@@ -519,14 +508,14 @@ if (isset ($_GET["ADDGAME"])) {
 	$filedata = fread($fd, filesize("include/game/config_orig.php"));
 	fclose($fd);
 
-	$filedata = str_replace("{game_name}", addslashes($_POST["game_name"]), $filedata);
-	$filedata = str_replace("{game_lifetime}", addslashes(($_POST["lifetime"] * 60 * 60 * 24)), $filedata);
+	$filedata = str_replace("{game_name}", htmlspecialchars($_POST["game_name"], ENT_QUOTES), $filedata);
+	$filedata = str_replace("{game_lifetime}", intval($_POST["lifetime"]) * 60 * 60 * 24, $filedata);
 	$filedata = str_replace("{game_bool_research}", ($_POST["victory_condition"] == "research" ? "true" : "false"), $filedata);
 	$filedata = str_replace("{game_bool_premiumonly}", ($premium_only == 1 ? "true" : "false"), $filedata);
-	$filedata = str_replace("{game_maxplayers}", addslashes($_POST["maxplayers"]), $filedata);
-	$filedata = str_replace("{game_turnsperday}", addslashes($_POST["turns_per_day"]), $filedata);
-	$filedata = str_replace("{game_maxslots}", addslashes($_POST["players_slot"]), $filedata);
-	$filedata = str_replace("{game_protection_turns}", addslashes($_POST["protection_turns"]), $filedata);
+	$filedata = str_replace("{game_maxplayers}", intval($_POST["maxplayers"]), $filedata);
+	$filedata = str_replace("{game_turnsperday}", intval($_POST["turns_per_day"]), $filedata);
+	$filedata = str_replace("{game_maxslots}", intval($_POST["players_slot"]), $filedata);
+	$filedata = str_replace("{game_protection_turns}", intval($_POST["protection_turns"]), $filedata);
 	$filedata = str_replace("{game_id}", $game_id, $filedata);
 
 
@@ -595,7 +584,7 @@ while (!$rs->EOF) {
 		$game["time_elapsed"] = (floor($elapsed / (60 * 60 * 24)) + 1) . " ".T_("days");
 	}
 
-  	$game["description"] = stripslashes($game["description"]);
+  	// Note: No stripslashes needed - using prepared statements
 
 	$empires = array();
 	$rs4 = $DB->Execute("SELECT * FROM game".$game["id"]."_tb_empire ORDER BY networth DESC");

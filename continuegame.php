@@ -36,7 +36,7 @@ if ($rs->EOF) {
 
 }
 
-$_SESSION["empire_id"] = addslashes($rs->fields["id"]);
+$_SESSION["empire_id"] = intval($rs->fields["id"]);
 
 $TPL->assign("game_id",$_SESSION["game"]);
 $DB->CompleteTrans();

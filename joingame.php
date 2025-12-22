@@ -29,10 +29,10 @@ $game_data = $rs->fields;
 if ((isset($_GET["JOINNOW"])) && isset($_POST["empire_name"])) {
 	$game_id = intval($_GET["GAME"]);
 	
-	$empire_name = addslashes($_POST["empire_name"]);
-	$emperor_name = addslashes($_POST["emperor_name"]);
-	$gender = addslashes($_POST["gender"]);
-	$autobio = addslashes($_POST["autobiography"]);
+	$empire_name = $_POST["empire_name"];
+	$emperor_name = $_POST["emperor_name"];
+	$gender = $_POST["gender"];
+	$autobio = $_POST["autobiography"];
 	
 	if ($empire_name == "") { $DB->CompleteTrans(); die(header("Location: joingame.php?GAME=".intval($_GET["GAME"])."&WARNING=".T_("Invalid empire name!"))); }
 	if ($emperor_name == "") { $DB->CompleteTrans(); die(header("Location: joingame.php?GAME=".intval($_GET["GAME"])."&WARNING=".T_("Invalid emperor/emperess name!"))); }
@@ -168,9 +168,8 @@ if ((isset($_GET["JOINNOW"])) && isset($_POST["empire_name"])) {
 	$recipients = $DB->Execute($query);		
 	while(!$recipients->EOF)
 	{
-		$query = "INSERT INTO game".$game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) ".
-		"VALUES(".$evt_type.",".$evt_from.",".$recipients->fields["id"].",'".addslashes(serialize($evt_params))."',".$evt_seen.",".$evt_sticky.",".time(NULL).",".$evt_height.")";	
-		if (!$DB->Execute($query)) trigger_error($DB->ErrorMsg());
+		$query = "INSERT INTO game".$game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) VALUES(?,?,?,?,?,?,?,?)";
+		if (!$DB->Execute($query, array($evt_type, $evt_from, $recipients->fields["id"], serialize($evt_params), $evt_seen, $evt_sticky, time(NULL), $evt_height))) trigger_error($DB->ErrorMsg());
 		$recipients->MoveNext();
 	}
 		

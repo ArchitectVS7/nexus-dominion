@@ -78,11 +78,11 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 				$gold_empire = $rs2->fields["emperor"] . "@" . $rs2->fields["name"] . " (".("Turns").":" . number_format($rs2->fields["turns_played"]) . ")";
 				$gold_networth = $rs2->fields["networth"];
 
-				$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player_id"]);
+				$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs2->fields["player_id"])));
 				if (!$rs3) trigger_error($DB->ErrorMsg());
 				if (!$rs3->EOF) {
 					$rs3->fields["score"] += 60;
-					$DB->Execute("UPDATE system_tb_players SET score=" . addslashes($rs3->fields["score"]) . " WHERE id=" . addslashes($rs2->fields["player_id"]));
+					$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($rs3->fields["score"]), intval($rs2->fields["player_id"])));
 				}
 				
 
@@ -95,9 +95,9 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 
 					$silver_empire = $rs2->fields["emperor"] . "@" . $rs2->fields["name"] . " (".T_("Turns").":" . $rs2->fields["turns_played"] . ")";
 					$silver_networth = $rs2->fields["networth"];
-					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player_id"]);
+					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs2->fields["player_id"])));
 					$rs3->fields["score"] += 30;
-					$DB->Execute("UPDATE system_tb_players SET score=" . addslashes($rs3->fields["score"]) . " WHERE id=" . addslashes($rs2->fields["player_id"]));
+					$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($rs3->fields["score"]), intval($rs2->fields["player_id"])));
 
 				}
 				$rs2->MoveNext();
@@ -109,9 +109,9 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 
 					$bronze_empire = $rs2->fields["emperor"] . "@" . $rs2->fields["name"] . " (".T_("Turns").":" . $rs2->fields["turns_played"] . ")";
 					$bronze_networth = $rs2->fields["networth"];
-					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player_id"]);
+					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs2->fields["player_id"])));
 					$rs3->fields["score"] += 15;
-					$DB->Execute("UPDATE system_tb_players SET score=" . addslashes($rs3->fields["score"]) . " WHERE id=" . addslashes($rs2->fields["player_id"]));
+					$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($rs3->fields["score"]), intval($rs2->fields["player_id"])));
 
 
 				}
@@ -136,23 +136,21 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 				}
 
 
-				$query = "INSERT INTO game".$game_id."_tb_hall_of_fame (game_name,date,elapsed,victory_condition,winner_coalition,gold_empire,gold_networth,silver_empire,silver_networth,bronze_empire,bronze_networth,winner_empire) " .
-				"VALUES(" .
-				"'" . $game_name . "'," .
-				time(NULL) . "," .
-				 (time(NULL) - $coord["date"]) . "," .
-				"'" . T_("research race") . "'," .
-				"'" . addslashes($best_coalition_name) . "'," .
-				"'" . addslashes($gold_empire) . "'," .
-				addslashes(number_format($gold_networth)) . "," .
-				"'" . addslashes($silver_empire) . "'," .
-				addslashes(number_format($silver_networth)) . "," .
-				"'" . addslashes($bronze_empire) . "'," .
-				addslashes(number_format($bronze_networth)) . "," .
-				"'" . addslashes($winner_empire) . "'" .
-				")";
-
-				$DB->Execute($query);
+				$query = "INSERT INTO game".$game_id."_tb_hall_of_fame (game_name,date,elapsed,victory_condition,winner_coalition,gold_empire,gold_networth,silver_empire,silver_networth,bronze_empire,bronze_networth,winner_empire) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+				$DB->Execute($query, array(
+					$game_name,
+					time(NULL),
+					(time(NULL) - $coord["date"]),
+					T_("research race"),
+					$best_coalition_name,
+					$gold_empire,
+					number_format($gold_networth),
+					$silver_empire,
+					number_format($silver_networth),
+					$bronze_empire,
+					number_format($bronze_networth),
+					$winner_empire
+				));
 
 				$DB->Execute("UPDATE game".$game_id."_tb_coordinator SET game_status=1,restart_date=" . (time(NULL) + CONF_GAME_RESTART_DELAY));
 
@@ -161,15 +159,12 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 				$rs2 = $DB->Execute("SELECT nickname FROM system_tb_players WHERE id=".$rs->fields["player_id"]);
 				$player_name = $rs2->fields["nickname"];
 
-				$query = "INSERT INTO system_tb_hall_of_fame (player_name,game_name,date) VALUES('".addslashes($player_name)."','".addslashes($game_name)."',".time(NULL).")";
-				$DB->Execute($query);
-				
+				$DB->Execute("INSERT INTO system_tb_hall_of_fame (player_name,game_name,date) VALUES(?,?,?)", array($player_name, $game_name, time(NULL)));
+
 				// increment games count
-				$query1 = "SELECT * FROM system_tb_games WHERE id=".addslashes($game_id);
-				$rs = $DB->Execute($query1);
+				$rs = $DB->Execute("SELECT * FROM system_tb_games WHERE id=?", array(intval($game_id)));
 				$rs->fields["count"]++;
-				$query2 = "UPDATE system_tb_games SET count=".$rs->fields["count"]." WHERE id=".addslashes($game_id);
-				$DB->Execute($query2);
+				$DB->Execute("UPDATE system_tb_games SET count=? WHERE id=?", array(intval($rs->fields["count"]), intval($game_id)));
 				
 				// notice players of the game ending
 				$query1 = "SELECT * FROM game".$game_id."_tb_empire WHERE active=1";
@@ -188,7 +183,7 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 					$planets = $DB->Execute("SELECT * FROM game".$game_id."_tb_planets WHERE empire=".$rs->fields["id"]);
 					$planets = $planets->fields;
 
-					$DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(".$rs->fields["player_id"].",".time(NULL).",'".addslashes($message)."')");
+					$DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(?,?,?)", array(intval($rs->fields["player_id"]), time(NULL), $message));
 
 					// insert data and ranking
 					$planets_count = $planets["food_planets"]+$planets["ore_planets"]+$planets["tourism_planets"]+$planets["supply_planets"]+$planets["gov_planets"]+$planets["edu_planets"]+$planets["research_planets"]+$planets["urban_planets"]+$planets["petro_planets"]+$planets["antipollu_planets"];
@@ -260,9 +255,9 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 				$gold_empire = $rs2->fields["emperor"] . "@" . $rs2->fields["name"] . " (".T_("Turns").":" . $rs2->fields["turns_played"] . ")";
 				$gold_networth = $rs2->fields["networth"];
 
-				$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player_id"]);
+				$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs2->fields["player_id"])));
 				$rs3->fields["score"] += 60;
-				$DB->Execute("UPDATE system_tb_players SET score=" . addslashes($rs3->fields["score"]) . " WHERE id=" . addslashes($rs2->fields["player_id"]));
+				$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($rs3->fields["score"]), intval($rs2->fields["player_id"])));
 
 				$rs2->MoveNext();
 				if ($rs2->EOF) {
@@ -274,9 +269,9 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 					$silver_empire = $rs2->fields["emperor"] . "@" . $rs2->fields["name"] . " (".T_("Turns").":" . $rs2->fields["turns_played"] . ")";
 					$silver_networth = $rs2->fields["networth"];
 
-					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player_id"]);
+					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs2->fields["player_id"])));
 					$rs3->fields["score"] += 30;
-					$DB->Execute("UPDATE system_tb_players SET score=" . addslashes($rs3->fields["score"]) . " WHERE id=" . addslashes($rs2->fields["player_id"]));
+					$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($rs3->fields["score"]), intval($rs2->fields["player_id"])));
 
 				}
 				$rs2->MoveNext();
@@ -289,9 +284,9 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 					$bronze_empire = $rs2->fields["emperor"] . "@" . $rs2->fields["name"] . " (".T_("Turns").":" . $rs2->fields["turns_played"] . ")";
 					$bronze_networth = $rs2->fields["networth"];
 
-					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player_id"]);
+					$rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs2->fields["player_id"])));
 					$rs3->fields["score"] += 15;
-					$DB->Execute("UPDATE system_tb_players SET score=" . addslashes($rs3->fields["score"]) . " WHERE id=" . addslashes($rs2->fields["player_id"]));
+					$DB->Execute("UPDATE system_tb_players SET score=? WHERE id=?", array(intval($rs3->fields["score"]), intval($rs2->fields["player_id"])));
 				}
 
 				// Update winners count
@@ -317,23 +312,21 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 
 				$winner_empire = $gold_empire;
 
-				$query = "INSERT INTO game".$game_id."_tb_hall_of_fame (game_name,date,elapsed,victory_condition,winner_coalition,gold_empire,gold_networth,silver_empire,silver_networth,bronze_empire,bronze_networth,winner_empire) " .
-				"VALUES(" .
-				"'" . $game_name . "'," .
-				time(NULL) . "," .
-				 (time(NULL) - $coord["date"]) . "," .
-				"'" . T_("classic game victory") . "'," .
-				"'" . addslashes($best_coalition_name) . "'," .
-				"'" . addslashes($gold_empire) . "'," .
-				addslashes(number_format($gold_networth)) . "," .
-				"'" . addslashes($silver_empire) . "'," .
-				addslashes(number_format($silver_networth)) . "," .
-				"'" . addslashes($bronze_empire) . "'," .
-				addslashes(number_format($bronze_networth)) . "," .
-				"'" . addslashes($winner_empire) . "'" .
-				")";
-
-				$DB->Execute($query);
+				$query = "INSERT INTO game".$game_id."_tb_hall_of_fame (game_name,date,elapsed,victory_condition,winner_coalition,gold_empire,gold_networth,silver_empire,silver_networth,bronze_empire,bronze_networth,winner_empire) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+				$DB->Execute($query, array(
+					$game_name,
+					time(NULL),
+					(time(NULL) - $coord["date"]),
+					T_("classic game victory"),
+					$best_coalition_name,
+					$gold_empire,
+					number_format($gold_networth),
+					$silver_empire,
+					number_format($silver_networth),
+					$bronze_empire,
+					number_format($bronze_networth),
+					$winner_empire
+				));
 
 				$DB->Execute("UPDATE game".$game_id."_tb_coordinator SET game_status=1,restart_date=" . (time(NULL) + CONF_GAME_RESTART_DELAY));
 
@@ -342,15 +335,12 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 				$rs2 = $DB->Execute("SELECT nickname FROM system_tb_players WHERE id=".$rs->fields["player_id"]);
 				$player_name = $rs2->fields["nickname"];
 				$game_name = $game_name;
-				$query = "INSERT INTO system_tb_hall_of_fame (player_name,game_name,date) VALUES('".addslashes($player_name)."','".addslashes($game_name)."',".time(NULL).")";
-				$DB->Execute($query);
-				
+				$DB->Execute("INSERT INTO system_tb_hall_of_fame (player_name,game_name,date) VALUES(?,?,?)", array($player_name, $game_name, time(NULL)));
+
 				// increment games count
-				$query1 = "SELECT * FROM system_tb_games WHERE id=".addslashes($game_id);
-				$rs = $DB->Execute($query1);
+				$rs = $DB->Execute("SELECT * FROM system_tb_games WHERE id=?", array(intval($game_id)));
 				$rs->fields["count"]++;
-				$query2 = "UPDATE system_tb_games SET count=".$rs->fields["count"]." WHERE id=".addslashes($game_id);
-				$DB->Execute($query2);
+				$DB->Execute("UPDATE system_tb_games SET count=? WHERE id=?", array(intval($rs->fields["count"]), intval($game_id)));
 				
 				// notice players of the game ending
 				$query1 = "SELECT * FROM game".$game_id."_tb_empire WHERE active=1 ORDER BY networth DESC";
@@ -369,7 +359,7 @@ function CheckVictoryCondition($game_id,$victory_condition,$game_name,$lifetime)
 					$planets = $DB->Execute("SELECT * FROM game".$game_id."_tb_planets WHERE empire=".$rs->fields["id"]);
 					$planets = $planets->fields;
 
-					$DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(".$rs->fields["player_id"].",".time(NULL).",'".addslashes($message)."')");
+					$DB->Execute("INSERT INTO system_tb_messages (player_id,date,message) VALUES(?,?,?)", array(intval($rs->fields["player_id"]), time(NULL), $message));
 
 					// insert data and ranking
 					$planets_count = $planets["food_planets"]+$planets["ore_planets"]+$planets["tourism_planets"]+$planets["supply_planets"]+$planets["gov_planets"]+$planets["edu_planets"]+$planets["research_planets"]+$planets["urban_planets"]+$planets["petro_planets"]+$planets["antipollu_planets"];

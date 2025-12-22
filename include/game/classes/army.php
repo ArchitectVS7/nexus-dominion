@@ -49,7 +49,8 @@ class Army
 	{
 		if (md5(serialize($this->data)) == $this->data_footprint) return;
 
-		$query = "UPDATE game".$this->game_id."_tb_army SET ";
+		$columns = array();
+		$values = array();
 
 		// PHP 8.x compatible iteration (each() is deprecated)
 		foreach ($this->data as $key => $value)
@@ -59,16 +60,15 @@ class Army
 			if (is_numeric($key)) continue;
 			if ((is_numeric($value)) && ($value < 0)) $value = 0;
 
-			if ((is_numeric($value)) && ($key != "logo"))
-				$query .= "$key=$value,";
-			else
-				$query .= "$key='".addslashes($value)."',";
+			$columns[] = "$key=?";
+			$values[] = $value;
 		}
 
-		$query = substr($query,0,strlen($query)-1); // removing remaining ,
-		$query .= " WHERE empire='".$this->data["empire"]."'";
+		$values[] = $this->data["empire"]; // WHERE clause value
 
-		if (!$this->DB->Execute($query)) trigger_error($this->DB->ErrorMsg());
+		$query = "UPDATE game".intval($this->game_id)."_tb_army SET " . implode(",", $columns) . " WHERE empire=?";
+
+		if (!$this->DB->Execute($query, $values)) trigger_error($this->DB->ErrorMsg());
 	}
 
 

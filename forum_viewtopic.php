@@ -36,7 +36,7 @@ function bbcode2html($text)
   $newtext = str_replace("onmouseleave=","",$newtext);
   $newtext = str_replace("onclick=","",$newtext);
   $newtext = str_replace("onload=","",$newtext);
-  $newtext = stripslashes($newtext);
+  // Note: No stripslashes needed - using prepared statements
   return $newtext;
 }
 
@@ -83,10 +83,10 @@ if (isset($_POST["forum_newreply"]))
 	} 
 	
 	$topic_title = $topicdata["title"];
-	$topic_title = addslashes($topic_title);
-	
-	$query = "INSERT INTO system_tb_forum (player,date_creation,title,content,parent,forum_name) VALUES(".$_SESSION["player"]["id"].",".time(NULL).",'".T_("Forum Reply: ") .$topic_title. "','".addslashes($content)."',".$topic_id.",'".$_SESSION["current_forum"]."');";
-	$DB->Execute($query);
+	$reply_title = T_("Forum Reply: ") . $topic_title;
+
+	$query = "INSERT INTO system_tb_forum (player,date_creation,title,content,parent,forum_name) VALUES(?,?,?,?,?,?)";
+	$DB->Execute($query, array($_SESSION["player"]["id"], time(NULL), $reply_title, $content, $topic_id, $_SESSION["current_forum"]));
 	if (!$DB) trigger_error($DB->ErrorMsg());
 		
 	$query = "UPDATE system_tb_forum SET date_update=".time(NULL)." WHERE id=".$topic_id;
@@ -119,7 +119,7 @@ if ($_SESSION["player"]["id"] != $topicdata["last_seen_by"]) {
 
 if ($page == 0) {
 
-	$rs2 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".addslashes($rs->fields["player"]));
+	$rs2 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs->fields["player"])));
 
 	$TPL->assign("topic_author_id",$rs->fields["id"]);
 	$image_avatar = "show_avatar.php?id=".$rs2->fields["id"];
@@ -169,7 +169,7 @@ $count = 0;
 while(!$rs->EOF)
 {
 		$item = array();
-		$item["title"] = stripslashes($rs->fields["title"]);
+		$item["title"] = $rs->fields["title"];
 		
 		$item["content"] = str_replace("\\'","'",bbcode2html($rs->fields["content"]));
 
@@ -178,7 +178,7 @@ while(!$rs->EOF)
 		$item["background"] = ($count++ % 2 == 0?"images/background2.jpg":"images/background3.jpg");
 		
 
-		$rs2 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".addslashes($rs->fields["player"]));
+		$rs2 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=?", array(intval($rs->fields["player"])));
 		$item["author_nickname"] = $rs2->fields["nickname"];
 		if ((isset($_SESSION["player"])) && ($_SESSION["player"]["admin"] == 1))
 			$item["author_nickname"].=" <a class=\"link\" href=forum.php?DELETE=".$rs->fields["id"]."&topic=$topic_id&page=$page onClick=\"return confirm('".T_("Are you sure?")."');\">".T_("Delete")."</a>";

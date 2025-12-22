@@ -68,23 +68,24 @@ class Coalition
 		if ($this->member == null) return;
 		if (md5(serialize($this->data)) == $this->data_footprint) return;
 
-		$query = "UPDATE game".$this->game_id."_tb_coalition SET ";
+		$columns = array();
+		$values = array();
 
 		// PHP 8.x compatible iteration (each() is deprecated)
 		foreach ($this->data as $key => $value)
 		{
 			if ($key == "id") continue;
 			if (is_numeric($key)) continue;
-			if ((is_numeric($value)) && ($key != "logo"))
-				$query .= "$key=$value,";
-			else
-				$query .= "$key='".addslashes($value)."',";
+
+			$columns[] = "$key=?";
+			$values[] = $value;
 		}
 
-		$query = substr($query,0,strlen($query)-1); // removing remaining ,
-		$query .= " WHERE id='".$this->data["id"]."'";
+		$values[] = $this->data["id"]; // WHERE clause value
 
-		if (!$this->DB->Execute($query)) trigger_error($this->DB->ErrorMsg());
+		$query = "UPDATE game".intval($this->game_id)."_tb_coalition SET " . implode(",", $columns) . " WHERE id=?";
+
+		if (!$this->DB->Execute($query, $values)) trigger_error($this->DB->ErrorMsg());
 	}
 	
 	///////////////////////////////////////////////////////////////////////
@@ -226,7 +227,7 @@ class Coalition
 		if (!$this->DB->Execute("UPDATE game".$this->game_id."_tb_member SET level='0' WHERE empire='".$this->member["empire"]."'")) trigger_error($this->DB->ErrorMsg());
 	
 		// set the ownership
-		if (!$this->DB->Execute("UPDATE game".$this->game_id."_tb_member SET level='1' WHERE empire='".addslashes($empire_id)."' AND coalition='".$this->member["coalition"]."'")) trigger_error($this->DB->ErrorMsg());
+		if (!$this->DB->Execute("UPDATE game".intval($this->game_id)."_tb_member SET level='1' WHERE empire=? AND coalition=?", array(intval($empire_id), $this->member["coalition"]))) trigger_error($this->DB->ErrorMsg());
 
 		
 		// send a event

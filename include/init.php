@@ -100,7 +100,7 @@ if (isset($_SESSION["game"])) {
     $rs = $DB->Execute("SELECT GET_LOCK('cron_update',30);");
     if ($rs->fields[0] == 1) {
 
-        $rs = $DB->Execute("SELECT * FROM system_tb_games WHERE id=".addslashes($_SESSION["game"]));
+        $rs = $DB->Execute("SELECT * FROM system_tb_games WHERE id=".intval($_SESSION["game"]));
         if (!$rs) {
             session_destroy();
             die(T_("Invalid game ID while doing update!"));
@@ -117,7 +117,7 @@ if (isset($_SESSION["game"])) {
         $cron_lifetime = $rs->fields["lifetime"];
         $cron_turns_per_day = $rs->fields["turns_per_day"];
 
-        $rs = $DB->Execute("SELECT * FROM game".addslashes($_SESSION["game"])."_tb_coordinator");
+        $rs = $DB->Execute("SELECT * FROM game".intval($_SESSION["game"])."_tb_coordinator");
         if (!$rs) die(T_("Invalid game ID while doing update!"));
         if ($rs->EOF) die(T_("Invalid game ID while doing update!"));
 
@@ -141,11 +141,11 @@ if (isset($_SESSION["game"])) {
         if ($cron_elapsed2 >= $cron_delay) {
 
 
-            require_once($path_prefix."include/game/games_config/".addslashes($_SESSION["game"]).".php");
-            require_once($path_prefix."include/game/games_rules/".addslashes($_SESSION["game"]).".php");
+            require_once($path_prefix."include/game/games_config/".intval($_SESSION["game"]).".php");
+            require_once($path_prefix."include/game/games_rules/".intval($_SESSION["game"]).".php");
 
         
-            if (CheckVictoryCondition(addslashes($_SESSION["game"]),$cron_victory_condition,$cron_game_name,$cron_lifetime)) {
+            if (CheckVictoryCondition(intval($_SESSION["game"]),$cron_victory_condition,$cron_game_name,$cron_lifetime)) {
 
                 require_once($path_prefix."include/game/classes/event_creator.php");
                 require_once($path_prefix."include/game/classes/empire.php");
@@ -167,14 +167,14 @@ if (isset($_SESSION["game"])) {
                 $GAME = array();
                 $GAME["template"] = new Template($DB,$_SESSION["game"]);
                 $GAME["gameplay_costs"] = new GameplayCosts($DB);
-                CheckGameSanity(addslashes($_SESSION["game"]));
+                CheckGameSanity(intval($_SESSION["game"]));
 
-                HandleTradeConvoys(addslashes($_SESSION["game"]));
+                HandleTradeConvoys(intval($_SESSION["game"]));
 
-                HandleArmyConvoys(addslashes($_SESSION["game"]));
+                HandleArmyConvoys(intval($_SESSION["game"]));
 
                 
-                $query = "UPDATE game".addslashes($_SESSION["game"])."_tb_coordinator SET last_time_update=" . $cron_now;
+                $query = "UPDATE game".intval($_SESSION["game"])."_tb_coordinator SET last_time_update=" . $cron_now;
                 if (!$DB->Execute($query)) die($DB->ErrorMsg());
 
                 unset($GAME);
@@ -187,17 +187,17 @@ if (isset($_SESSION["game"])) {
 
             $cron_turns = floor($cron_elapsed1 / $cron_timeslice);
 
-            $query = "UPDATE game".addslashes($_SESSION["game"])."_tb_coordinator SET last_turns_update=" . $cron_now;
+            $query = "UPDATE game".intval($_SESSION["game"])."_tb_coordinator SET last_turns_update=" . $cron_now;
             if (!$DB->Execute($query)) die($DB->ErrorMsg());
 
-            $rs = $DB->Execute("SELECT * FROM game".addslashes($_SESSION["game"])."_tb_empire WHERE active=1");
+            $rs = $DB->Execute("SELECT * FROM game".intval($_SESSION["game"])."_tb_empire WHERE active=1");
             while (!$rs->EOF) {
                 $cron_newturns = $rs->fields["turns_left"] + $cron_turns;
 
                 if ($cron_newturns > $cron_turns_per_day)
                 $cron_newturns = $cron_turns_per_day;
 
-                $query = "UPDATE game".addslashes($_SESSION["game"])."_tb_empire SET turns_left=$cron_newturns WHERE id=" . $rs->fields["id"];
+                $query = "UPDATE game".intval($_SESSION["game"])."_tb_empire SET turns_left=$cron_newturns WHERE id=" . $rs->fields["id"];
                 if (!$DB->Execute($query)) die($DB->ErrorMsg());
 
                 $rs->MoveNext();
@@ -209,10 +209,10 @@ if (isset($_SESSION["game"])) {
         if ($cron_now - $cron_daily >= (60*60*24)) {
 
             // broadcast a NOTICE about who is the galactic master and who was the last one.
-            $rs = $DB->Execute("SELECT emperor,name FROM game".addslashes($_SESSION["game"])."_tb_empire WHERE active=1 ORDER BY networth DESC LIMIT 0,1");
+            $rs = $DB->Execute("SELECT emperor,name FROM game".intval($_SESSION["game"])."_tb_empire WHERE active=1 ORDER BY networth DESC LIMIT 0,1");
             $cron_master_name = $rs->fields["emperor"]."@".$rs->fields["name"];
             if ($cron_master_name != $cron_last_master) {
-                $DB->Execute("UPDATE game".addslashes($_SESSION["game"])."_tb_coordinator SET last_master='".addslashes($cron_master_name)."'");
+                $DB->Execute("UPDATE game".intval($_SESSION["game"])."_tb_coordinator SET last_master=?", array($cron_master_name));
 
                 require_once($path_prefix."include/game/classes/event_creator.php");
 
@@ -232,14 +232,14 @@ if (isset($_SESSION["game"])) {
 
             // add 1 extra turn to all premium members
 
-            $rs = $DB->Execute("SELECT * FROM game".addslashes($_SESSION["game"])."_tb_empire WHERE active=1 AND premium=1");
+            $rs = $DB->Execute("SELECT * FROM game".intval($_SESSION["game"])."_tb_empire WHERE active=1 AND premium=1");
             while (!$rs->EOF) {
                 $cron_newturns = $rs->fields["turns_left"] + 1;
 
                 if ($cron_newturns > $cron_turns_per_day)
                 $cron_newturns = $cron_turns_per_day;
 
-                $query = "UPDATE game".addslashes($_SESSION["game"])."_tb_empire " .
+                $query = "UPDATE game".intval($_SESSION["game"])."_tb_empire " .
             "SET turns_left=$cron_newturns WHERE id=" . $rs->fields["id"];
 
                 $DB->Execute($query);
@@ -268,7 +268,7 @@ $expiration = time(NULL) - CONF_SESSION_CHAT_TIMEOUT;
 $rs = $DB->Execute("SELECT * FROM system_tb_chat_sessions WHERE timestamp < $expiration");
 while(!$rs->EOF)
 {
-    $rs2 = $DB->Execute("SELECT last_login_date FROM system_tb_players WHERE nickname='".addslashes($rs->fields["nickname"])."'");
+    $rs2 = $DB->Execute("SELECT last_login_date FROM system_tb_players WHERE nickname=?", array($rs->fields["nickname"]));
     $elapsed = 0;
     if(!$rs2->EOF) {
         $elapsed = time(NULL) - $rs2->fields["last_login_date"];
@@ -277,7 +277,7 @@ while(!$rs->EOF)
 
 //    $DB->Execute("INSERT INTO system_tb_chat_log (timestamp,message) VALUES(".time(NULL).",'<b style=\"color:yellow\">[".date("H:i:s")."] ".$rs->fields["nickname"]." ".T_("has left the chatroom. [timeout] (Stayed for")." ".$elapsed." ".T_("minutes").")</b>')");
 
-    $DB->Execute("DELETE FROM system_tb_chat_sessions WHERE id=".addslashes($rs->fields["id"]));
+    $DB->Execute("DELETE FROM system_tb_chat_sessions WHERE id=?", array(intval($rs->fields["id"])));
     $rs->MoveNext();
 }
 
@@ -285,7 +285,7 @@ while(!$rs->EOF)
 $rs = $DB->Execute("SELECT * FROM system_tb_sessions WHERE date < $expiration");
 while(!$rs->EOF)
 {
-    $DB->Execute("DELETE FROM system_tb_sessions WHERE id=".addslashes($rs->fields["id"]));
+    $DB->Execute("DELETE FROM system_tb_sessions WHERE id=?", array(intval($rs->fields["id"])));
     $rs->MoveNext();
 }
 
@@ -359,7 +359,7 @@ if ((isset($_SESSION["player"])) && (isset($_SESSION["player"]["id"]))) {
     if (isset($_GET["DESTROY_EMPIRE"])) {
         $_SESSION["game"] = intval($_GET["GAME"]);
         $game_id = $_SESSION["game"];
-        $rs = $DB->Execute("SELECT id FROM game".$game_id."_tb_empire  WHERE active < 3 AND player_id=".addslashes($_SESSION["player"]["id"]));
+        $rs = $DB->Execute("SELECT id FROM game".$game_id."_tb_empire  WHERE active < 3 AND player_id=?", array(intval($_SESSION["player"]["id"])));
         if ($rs->EOF) {
             die(T_("Invalid empire ID!"));
         }
@@ -380,7 +380,7 @@ if ((isset($_SESSION["player"])) && (isset($_SESSION["player"]["id"]))) {
     }
 
     $msgs = array();
-    $rs = $DB->Execute("SELECT * FROM system_tb_messages WHERE player_id='".addslashes($_SESSION["player"]["id"])."'");
+    $rs = $DB->Execute("SELECT * FROM system_tb_messages WHERE player_id=?", array(intval($_SESSION["player"]["id"])));
     while(!$rs->EOF) {
         $msgs[] = $rs->fields;
         $rs->MoveNext();
@@ -416,27 +416,27 @@ function formatTime($date)
 
 if (isset($_SESSION["player"])) {
     // verify kick/ban warrants
-    $rs = $DB->Execute("SELECT * FROM system_tb_warrant WHERE player='".addslashes($_SESSION["player"]["nickname"])."'");
+    $rs = $DB->Execute("SELECT * FROM system_tb_warrant WHERE player=?", array($_SESSION["player"]["nickname"]));
     while(!$rs->EOF) {
 
         // you have been naughty :)
         switch($rs->fields["kind"]) {
             case "kick":
-                $DB->Execute("DELETE FROM system_tb_chat_sessions WHERE nickname='".addslashes($_SESSION["player"]["nickname"])."'");
-                $DB->Execute("DELETE FROM system_tb_sessions WHERE player=".$_SESSION["player"]["id"]);
+                $DB->Execute("DELETE FROM system_tb_chat_sessions WHERE nickname=?", array($_SESSION["player"]["nickname"]));
+                $DB->Execute("DELETE FROM system_tb_sessions WHERE player=?", array(intval($_SESSION["player"]["id"])));
                 session_destroy();
-                $DB->Execute("DELETE FROM system_tb_warrant WHERE id=".$rs->fields["id"]);
+                $DB->Execute("DELETE FROM system_tb_warrant WHERE id=?", array(intval($rs->fields["id"])));
                 $DB->CompleteTrans();
-                die("<b>".T_("You have been kicked out of the game!")." (".stripslashes($rs->fields["description"]).")</b>");
+                die("<b>".T_("You have been kicked out of the game!")." (".htmlspecialchars($rs->fields["description"]).")</b>");
                 break;
                 case "ban":
-                    $DB->Execute("DELETE FROM system_tb_chat_sessions WHERE nickname='".addslashes($_SESSION["player"]["nickname"])."'");
-                    $DB->Execute("DELETE FROM system_tb_sessions WHERE player=".$_SESSION["player"]["id"]);
-                    $DB->Execute("UPDATE system_tb_players SET active=0 WHERE id=".$_SESSION["player"]["id"]);
+                    $DB->Execute("DELETE FROM system_tb_chat_sessions WHERE nickname=?", array($_SESSION["player"]["nickname"]));
+                    $DB->Execute("DELETE FROM system_tb_sessions WHERE player=?", array(intval($_SESSION["player"]["id"])));
+                    $DB->Execute("UPDATE system_tb_players SET active=0 WHERE id=?", array(intval($_SESSION["player"]["id"])));
                     session_destroy();
-                    $DB->Execute("DELETE FROM system_tb_warrant WHERE id=".$rs->fields["id"]);
+                    $DB->Execute("DELETE FROM system_tb_warrant WHERE id=?", array(intval($rs->fields["id"])));
                     $DB->CompleteTrans();
-                    die("<b>".T_("You have been banned from this game (forever)")." (".stripslashes($rs->fields["description"]).")</b>");
+                    die("<b>".T_("You have been banned from this game (forever)")." (".htmlspecialchars($rs->fields["description"]).")</b>");
                     break;
                 }
 
