@@ -81,12 +81,12 @@ if (isset($_GET["AJAX"])) {
 
         // SQL Injection fix: Use prepared statements
         $stmtInsertSess = $DB->Prepare("INSERT INTO system_tb_chat_sessions (timestamp,nickname,hostname) VALUES(?,?,?)");
-        $DB->Execute($stmtInsertSess, array(time(NULL), $_SESSION["player"]["nickname"], $hostname));
+        $DB->Execute($stmtInsertSess, array(time(), $_SESSION["player"]["nickname"], $hostname));
     }
 
     // SQL Injection fix: Use prepared statements
     $stmtUpdSess = $DB->Prepare("UPDATE system_tb_chat_sessions SET timestamp=? WHERE nickname=?");
-    $DB->Execute($stmtUpdSess, array(time(NULL), $_SESSION["player"]["nickname"]));
+    $DB->Execute($stmtUpdSess, array(time(), $_SESSION["player"]["nickname"]));
 
     if (isset($_GET["action"]) && ($_GET["action"]=="list_messages")) {
 
@@ -221,7 +221,7 @@ if (isset($_GET["AJAX"])) {
 
         // SQL Injection fix: Use prepared statements
         $stmtChatLog = $DB->Prepare("INSERT INTO system_tb_chat_log (timestamp,message) VALUES(?,?)");
-        $DB->Execute($stmtChatLog, array(time(NULL), $output));
+        $DB->Execute($stmtChatLog, array(time(), $output));
         $DB->CompleteTrans();
 
         die("message_sent");

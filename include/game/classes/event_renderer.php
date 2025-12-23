@@ -908,7 +908,7 @@ class EventRenderer
 			break;
 		}
 		
-		$this->TEMPLATE->assign("date",$this->GAME_TPL->formatTime(time(NULL)-$event_data["date"]));
+		$this->TEMPLATE->assign("date",$this->GAME_TPL->formatTime(time()-$event_data["date"]));
 		$output = $this->TEMPLATE->fetch($tpl_filename);
 		
 		if (($event_data["sticky"]==0) && ($event_data["seen"]==0)) {

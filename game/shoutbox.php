@@ -18,7 +18,7 @@ if (isset($_POST["chatbox"])) {
 
 		// SQL Injection fix: Use prepared statement
 		$stmtShout = $DB->Prepare("INSERT INTO game".$game_id."_tb_shoutbox (coalition,date,empire_name,empire_id,message) VALUES(?,?,?,?,?)");
-		$DB->Execute($stmtShout, array($GAME["empire"]->coalition->data["id"], time(NULL), $GAME["empire"]->data["emperor"], $GAME["empire"]->data["id"], $message));
+		$DB->Execute($stmtShout, array($GAME["empire"]->coalition->data["id"], time(), $GAME["empire"]->data["emperor"], $GAME["empire"]->data["id"], $message));
 
 	}
 	
@@ -35,7 +35,7 @@ while (!$rs->EOF)
 {
 	
 	if (strlen($rs->fields["message"]) > 100) $rs->fields["message"] = substr($rs->fields["message"],0,100)."\n".substr($rs->fields["message"],100);
-	$items[] = array("color"=>($i++%2==0?"white":"#AAAAAA"),"timedate"=>$GAME["template"]->formatTime(time(NULL)-$rs->fields["date"]),"empire_id"=>$rs->fields["empire_id"],"game_id"=>$_SESSION["game"],"player"=>$rs->fields["empire_name"],"message"=>$rs->fields["message"]);
+	$items[] = array("color"=>($i++%2==0?"white":"#AAAAAA"),"timedate"=>$GAME["template"]->formatTime(time()-$rs->fields["date"]),"empire_id"=>$rs->fields["empire_id"],"game_id"=>$_SESSION["game"],"player"=>$rs->fields["empire_name"],"message"=>$rs->fields["message"]);
 	$rs->MoveNext();
 }
 

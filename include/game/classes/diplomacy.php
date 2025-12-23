@@ -97,7 +97,7 @@ class Diplomacy {
 	function sendTreaty($treaty, $empire_data, $target_data) {
 		// SQL Injection fix: Use prepared statements
 		$stmt = $this->DB->Prepare("INSERT INTO game".$this->game_id."_tb_treaty (empire_from,empire_to,type,date,status) VALUES(?,?,?,?,?)");
-		if (!$this->DB->Execute($stmt, array($empire_data["id"], $target_data["id"], $treaty, time(NULL), CONF_TREATY_ACCEPT_PENDING))) trigger_error($this->DB->ErrorMsg());
+		if (!$this->DB->Execute($stmt, array($empire_data["id"], $target_data["id"], $treaty, time(), CONF_TREATY_ACCEPT_PENDING))) trigger_error($this->DB->ErrorMsg());
 
 		$evt = new EventCreator($this->DB);
 		$evt->from = $empire_data["id"];

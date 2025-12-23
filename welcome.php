@@ -17,10 +17,10 @@ if (isset($_GET["LOGOFF"])) {
 		$rs = $DB->Execute($stmt, array($_SESSION["player"]["nickname"]));
 		if (!$rs->EOF) {
 
-			$elapsed = time(NULL) - $_SESSION["player"]["last_login_date"];
+			$elapsed = time() - $_SESSION["player"]["last_login_date"];
 			$elapsed = round($elapsed / 60,2);
 
-//			$DB->Execute("INSERT INTO system_tb_chat_log (timestamp,message) VALUES(".time(NULL).",'<b style=\"color:yellow\">[".date("H:i:s")."] ".$rs->fields["nickname"]." ".T_("has left the chatroom. [logoff] (Stayed for")." ".$elapsed .T_("minutes").")</b>')");
+//			$DB->Execute("INSERT INTO system_tb_chat_log (timestamp,message) VALUES(".time().",'<b style=\"color:yellow\">[".date("H:i:s")."] ".$rs->fields["nickname"]." ".T_("has left the chatroom. [logoff] (Stayed for")." ".$elapsed .T_("minutes").")</b>')");
 			$stmtDel = $DB->Prepare("DELETE FROM system_tb_chat_sessions WHERE id=?");
 			$DB->Execute($stmtDel, array($rs->fields["id"]));
 		}
@@ -111,7 +111,7 @@ if (isset($_GET["LOGIN"])) {
 	
 	$hostname = $_SERVER["REMOTE_ADDR"];
 	if (isset($_SERVER["X_FORWARDED_FOR"])) $hostname = $_SERVER["X_FORWARDED_FOR"];
-	$last_login_date = time(NULL);
+	$last_login_date = time();
 
 	// SQL Injection fix: Use prepared statements
 	$stmtIpCheck = $DB->Prepare("SELECT COUNT(*) FROM system_tb_players WHERE (last_login_hostname=? AND NOT (nickname = ?))");
@@ -135,7 +135,7 @@ if (isset($_GET["LOGIN"])) {
 		if ($rs->fields["daily_bulletin"] < ($last_login_date - (60*60*24))) {
 			// SQL Injection fix: Use prepared statements
 			$stmtBulletin = $DB->Prepare("INSERT INTO system_tb_messages (player_id,date,message) VALUES(?,?,?)");
-			$DB->Execute($stmtBulletin, array($rs->fields["id"], time(NULL), CONF_DAILY_BULLETIN));
+			$DB->Execute($stmtBulletin, array($rs->fields["id"], time(), CONF_DAILY_BULLETIN));
 		}
 	}
 	// SQL Injection fix: Use prepared statements

@@ -92,7 +92,7 @@ if ((isset($_GET["JOINNOW"])) && isset($_POST["empire_name"])) {
 	x, y, premium, food_rate, ore_rate, petroleum_rate)
 	VALUES(?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-	$currentTime = time(NULL);
+	$currentTime = time();
 	$rs = $DB->Execute($stmtInsertEmpire, array(
 		$_SESSION["player"]["id"],
 		$_POST["emperor_name"],
@@ -169,13 +169,13 @@ if ((isset($_GET["JOINNOW"])) && isset($_POST["empire_name"])) {
 	while(!$recipients->EOF)
 	{
 		$query = "INSERT INTO game".$game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) VALUES(?,?,?,?,?,?,?,?)";
-		if (!$DB->Execute($query, array($evt_type, $evt_from, $recipients->fields["id"], serialize($evt_params), $evt_seen, $evt_sticky, time(NULL), $evt_height))) trigger_error($DB->ErrorMsg());
+		if (!$DB->Execute($query, array($evt_type, $evt_from, $recipients->fields["id"], serialize($evt_params), $evt_seen, $evt_sticky, time(), $evt_height))) trigger_error($DB->ErrorMsg());
 		$recipients->MoveNext();
 	}
 		
 	// garbage collection
-	$timeout_unseen = time(NULL) - CONF_UNSEEN_EVENT_TIMEOUT;
-	$timeout_seen = time(NULL) - CONF_SEEN_EVENT_TIMEOUT;
+	$timeout_unseen = time() - CONF_UNSEEN_EVENT_TIMEOUT;
+	$timeout_seen = time() - CONF_SEEN_EVENT_TIMEOUT;
 
 	if (!$DB->Execute("DELETE FROM game".$game_id."_tb_event WHERE date < $timeout_unseen AND seen=0")) trigger_error($this->DB->ErrorMsg());
 	if (!$DB->Execute("DELETE FROM game".$game_id."_tb_event WHERE date < $timeout_seen AND seen=1")) trigger_error($this->DB->ErrorMsg());

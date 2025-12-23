@@ -250,7 +250,7 @@ class Coalition
 	///////////////////////////////////////////////////////////////////////
 	function transferRandomOwnership()
 	{
-		srand(time(NULL));
+		srand(time());
 		
 		$this->transferOwnership(rand(0,count($this->members)-1));
 		
@@ -316,7 +316,7 @@ class Coalition
 		// SQL Injection fix: Use prepared statements
 		$defaultLogo = '5488888888888845554888881888845545549991199945548459222112229548889222211222298888922221122229888892222112222988888922211222988888892221122298888889233333329888888922244222988888459224422954888455492002945548455488922988455455488889988884555488888888888845';
 		$stmtInsert = $this->DB->Prepare("INSERT INTO game".$this->game_id."_tb_coalition (date,name,planets,networth,logo) VALUES(?,?,0,0,?)");
-		if (!$this->DB->Execute($stmtInsert, array(time(NULL), $coalition_name, $defaultLogo))) trigger_error($this->DB->ErrorMsg());
+		if (!$this->DB->Execute($stmtInsert, array(time(), $coalition_name, $defaultLogo))) trigger_error($this->DB->ErrorMsg());
 
 		$stmtSelect = $this->DB->Prepare("SELECT * FROM game".$this->game_id."_tb_coalition WHERE name=?");
 		$rs = $this->DB->Execute($stmtSelect, array($coalition_name));
@@ -325,7 +325,7 @@ class Coalition
 	
 		$query = "INSERT INTO game".$this->game_id."_tb_member (date,empire,coalition,level) ".
 		"VALUES(".
-		time(NULL).",".
+		time().",".
 		$empire_id.",".
 		$id.",".
 		"1)";

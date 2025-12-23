@@ -49,13 +49,13 @@ class EventCreator
 		$stmtInsert = $this->DB->Prepare("INSERT INTO game".$this->game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) VALUES(?,?,?,?,?,?,?,?)");
 		while(!$recipients->EOF)
 		{
-			if (!$this->DB->Execute($stmtInsert, array($this->type, $this->from, $recipients->fields["id"], $serializedParams, $this->seen, $this->sticky, time(NULL), $this->height))) trigger_error($this->DB->ErrorMsg());
+			if (!$this->DB->Execute($stmtInsert, array($this->type, $this->from, $recipients->fields["id"], $serializedParams, $this->seen, $this->sticky, time(), $this->height))) trigger_error($this->DB->ErrorMsg());
 			$recipients->MoveNext();
 		}
 
 		// garbage collection
-		$timeout_unseen = time(NULL) - CONF_UNSEEN_EVENT_TIMEOUT;
-		$timeout_seen = time(NULL) - CONF_SEEN_EVENT_TIMEOUT;
+		$timeout_unseen = time() - CONF_UNSEEN_EVENT_TIMEOUT;
+		$timeout_seen = time() - CONF_SEEN_EVENT_TIMEOUT;
 
 		if (!$this->DB->Execute("DELETE FROM game".$this->game_id."_tb_event WHERE date < $timeout_unseen AND seen='0'")) trigger_error($this->DB->ErrorMsg());
 		if (!$this->DB->Execute("DELETE FROM game".$this->game_id."_tb_event WHERE date < $timeout_seen AND seen='1'")) trigger_error($this->DB->ErrorMsg());
@@ -84,12 +84,12 @@ class EventCreator
 		if ((isset($GAME["ai_turn"])) && ($GAME["ai_turn"]==true)) return;
 		// SQL Injection fix: Use prepared statement for INSERT
 		$stmtInsert = $this->DB->Prepare("INSERT INTO game".$this->game_id."_tb_event (event_type,event_from,event_to,params,seen,sticky,date,height) VALUES(?,?,?,?,?,?,?,?)");
-		if (!$this->DB->Execute($stmtInsert, array($this->type, $this->from, $this->to, $serializedParams, $this->seen, $this->sticky, time(NULL), $this->height))) trigger_error($this->DB->ErrorMsg());
+		if (!$this->DB->Execute($stmtInsert, array($this->type, $this->from, $this->to, $serializedParams, $this->seen, $this->sticky, time(), $this->height))) trigger_error($this->DB->ErrorMsg());
 
 
 		// garbage collection
-		$timeout_unseen = time(NULL) - CONF_UNSEEN_EVENT_TIMEOUT;
-		$timeout_seen = time(NULL) - CONF_SEEN_EVENT_TIMEOUT;
+		$timeout_unseen = time() - CONF_UNSEEN_EVENT_TIMEOUT;
+		$timeout_seen = time() - CONF_SEEN_EVENT_TIMEOUT;
 
 		if (!$this->DB->Execute("DELETE FROM game".$this->game_id."_tb_event WHERE date < $timeout_unseen AND seen='0'")) trigger_error($this->DB->ErrorMsg());
 		if (!$this->DB->Execute("DELETE FROM game".$this->game_id."_tb_event WHERE date < $timeout_seen AND seen='1'")) trigger_error($this->DB->ErrorMsg());

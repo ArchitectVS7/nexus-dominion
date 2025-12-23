@@ -95,7 +95,7 @@ if (isset($_POST["forum_newtopic"]))
 		
 	// SQL Injection fix: Use prepared statements
 	$stmtInsert = $DB->Prepare("INSERT INTO system_tb_forum (player,date_creation,date_update,title,content,forum_name) VALUES(?,?,?,?,?,?)");
-	$currentTime = time(NULL);
+	$currentTime = time();
 	$rs = $DB->Execute($stmtInsert, array($_SESSION["player"]["id"], $currentTime, $currentTime, $subject, $content, $_SESSION["current_forum"]));
 	if (!$rs) trigger_error($DB->ErrorMsg());
 	
@@ -240,7 +240,7 @@ while(!$rs->EOF)
 	    if (!$rs2->EOF) {
            $rs3 = $DB->Execute("SELECT * FROM system_tb_players WHERE id=".$rs2->fields["player"]);
    	       $item["lastreply"] = $rs3->fields["nickname"];
-		   $item["date"] = (floor((time(NULL) - $rs2->fields["date_update"])/(60*60*24))+1).T_(" days");
+		   $item["date"] = (floor((time() - $rs2->fields["date_update"])/(60*60*24))+1).T_(" days");
 	    
 	    } else {
 	    	$item["lastreply"] = "---";
@@ -251,12 +251,12 @@ while(!$rs->EOF)
 		$item["author"] = $rs2->fields["nickname"];
 					
 		
-		$item["date"] = (floor((time(NULL) - $rs->fields["date_creation"])/(60*60*24))+1).T_(" days");
+		$item["date"] = (floor((time() - $rs->fields["date_creation"])/(60*60*24))+1).T_(" days");
 		$item["url"] = "forum_viewtopic.php?topic=".$rs->fields["id"]."&page=0";	
-		$item["lastseen"] =  (floor((time(NULL) - $rs->fields["date_seen"])/(60*60*24))+1).T_(" days");
+		$item["lastseen"] =  (floor((time() - $rs->fields["date_seen"])/(60*60*24))+1).T_(" days");
 		$item["new"] = "";
 		
-		if ((time(NULL) - $rs->fields["date_update"]) < (60*60*24*2)) $item["new"] = "<img border=\"0\" src=\"images/common/new.png\">";
+		if ((time() - $rs->fields["date_update"]) < (60*60*24*2)) $item["new"] = "<img border=\"0\" src=\"images/common/new.png\">";
 	    $forum_items[] = $item;
 		
 		$rs->MoveNext();
