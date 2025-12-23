@@ -1,4 +1,4 @@
-# Solar Realms Elite - Player's Guide
+# X Imperium - Player's Guide
 
 **The Ultimate Space Empire Strategy Game**
 
@@ -25,9 +25,9 @@
 
 ## 1. Introduction
 
-### What is Solar Realms Elite?
+### What is X Imperium?
 
-Solar Realms Elite (also known as Solar Imperium) is a browser-based multiplayer strategy game where you build and manage a galactic empire. Compete against other players to become the most powerful empire in the galaxy through economic development, military conquest, and diplomatic maneuvering.
+X Imperium (formerly Solar Realms Elite / Solar Imperium) is a browser-based multiplayer strategy game where you build and manage a galactic empire. Compete against other players to become the most powerful empire in the galaxy through economic development, military conquest, and diplomatic maneuvering.
 
 ### Game Overview
 

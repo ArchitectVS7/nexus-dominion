@@ -1,6 +1,6 @@
-# Solar Realms Elite - Deployment Guide
+# X Imperium - Deployment Guide
 
-**A practical, step-by-step guide for deploying Solar Realms Elite to the web.**
+**A practical, step-by-step guide for deploying X Imperium to the web.**
 
 This guide is written for developers who have used Docker locally but haven't deployed to a production server before.
 
@@ -46,7 +46,7 @@ Your Computer                         Cloud Server (VPS)
 
 ## What You'll Need
 
-1. **A domain name** (e.g., `solarrealms.yourdomain.com`)
+1. **A domain name** (e.g., `ximperium.yourdomain.com`)
    - You can buy one from Namecheap, Cloudflare, or Google Domains (~$10-15/year)
 
 2. **A VPS (Virtual Private Server)** - This is your cloud server
@@ -268,7 +268,7 @@ docker compose ps
 
 **Test in your browser:** Visit `http://YOUR_SERVER_IP:8080`
 
-You should see the Solar Realms Elite welcome page!
+You should see the X Imperium welcome page!
 
 ---
 
@@ -300,7 +300,7 @@ Create a `docker-compose.prod.yml` file:
 nano docker-compose.prod.yml
 ```
 
-Paste this content (replace `solarrealms.yourdomain.com` with your actual domain):
+Paste this content (replace `ximperium.yourdomain.com` with your actual domain):
 
 ```yaml
 version: '3.8'
@@ -381,7 +381,7 @@ nano Caddyfile
 ```
 
 ```
-solarrealms.yourdomain.com {
+ximperium.yourdomain.com {
     reverse_proxy web:80
 
     # Security headers
@@ -430,11 +430,11 @@ DNS changes can take 5-30 minutes to propagate.
 
 ### Test Your Deployment
 
-After DNS propagates, visit: `https://solarrealms.yourdomain.com`
+After DNS propagates, visit: `https://ximperium.yourdomain.com`
 
 You should see:
 - ✅ HTTPS working (padlock icon in browser)
-- ✅ Solar Realms Elite welcome page
+- ✅ X Imperium welcome page
 - ✅ Ability to register and log in
 
 ---
@@ -536,7 +536,7 @@ docker compose up -d
 docker compose -f docker-compose.prod.yml logs caddy
 
 # Make sure your domain points to the correct IP
-dig solarrealms.yourdomain.com
+dig ximperium.yourdomain.com
 ```
 
 ### Can't connect via SSH
@@ -613,4 +613,4 @@ docker compose -f docker-compose.prod.yml exec web bash
 - Review the [MODERNIZATION_PLAN.md](./MODERNIZATION_PLAN.md) for security details
 - Open an issue on GitHub for specific problems
 
-**You did it!** Your Solar Realms Elite server is now live on the internet.
+**You did it!** Your X Imperium server is now live on the internet.
