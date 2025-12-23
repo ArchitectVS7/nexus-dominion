@@ -61,16 +61,12 @@ RUN echo '<Directory /var/www/html>\n\
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Railway uses PORT env var - configure Apache to use it
-RUN sed -i 's/Listen 80/Listen ${PORT:-80}/g' /etc/apache2/ports.conf \
-    && sed -i 's/:80/:${PORT:-80}/g' /etc/apache2/sites-available/000-default.conf
-
-# Expose port (Railway will override with PORT env var)
+# Expose port
 EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-80}/ || exit 1
+    CMD curl -f http://localhost/ || exit 1
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
