@@ -817,9 +817,15 @@ class ADORecordSet_mysqli extends ADORecordSet{
 	function _initrs()
 	{
 	global $ADODB_COUNTRECS;
-	
-		$this->_numOfRows = $ADODB_COUNTRECS ? @mysqli_num_rows($this->_queryID) : -1;
-		$this->_numOfFields = @mysqli_num_fields($this->_queryID);
+
+		// PHP 8 fix: mysqli_num_rows requires mysqli_result, not int
+		if ($this->_queryID instanceof mysqli_result) {
+			$this->_numOfRows = $ADODB_COUNTRECS ? @mysqli_num_rows($this->_queryID) : -1;
+			$this->_numOfFields = @mysqli_num_fields($this->_queryID);
+		} else {
+			$this->_numOfRows = -1;
+			$this->_numOfFields = 0;
+		}
 	}
 	
 /*
@@ -842,8 +848,11 @@ class ADORecordSet_mysqli extends ADORecordSet{
 131072 = MYSQLI_BINCMP_FLAG
 */
 
-	function FetchField($fieldOffset = -1) 
-	{	
+	function FetchField($fieldOffset = -1)
+	{
+		// PHP 8 fix: check for valid mysqli_result
+		if (!($this->_queryID instanceof mysqli_result)) return false;
+
 		$fieldnr = $fieldOffset;
 		if ($fieldOffset != -1) {
 		  $fieldOffset = @mysqli_field_seek($this->_queryID, $fieldnr);
@@ -928,27 +937,40 @@ class ADORecordSet_mysqli extends ADORecordSet{
 	// 10% speedup to move MoveNext to child class
 	// This is the only implementation that works now (23-10-2003).
 	// Other functions return no or the wrong results.
-	function MoveNext() 
+	function MoveNext()
 	{
 		if ($this->EOF) return false;
+		// PHP 8 fix: check for valid mysqli_result
+		if (!($this->_queryID instanceof mysqli_result)) {
+			$this->EOF = true;
+			return false;
+		}
 		$this->_currentRow++;
 		$this->fields = @mysqli_fetch_array($this->_queryID,$this->fetchMode);
-		
+
 		if (is_array($this->fields)) return true;
 		$this->EOF = true;
 		return false;
-	}	
-	
+	}
+
 	function _fetch()
 	{
-		$this->fields = mysqli_fetch_array($this->_queryID,$this->fetchMode);  
+		// PHP 8 fix: check for valid mysqli_result
+		if (!($this->_queryID instanceof mysqli_result)) {
+			$this->fields = false;
+			return false;
+		}
+		$this->fields = mysqli_fetch_array($this->_queryID,$this->fetchMode);
 	  	return is_array($this->fields);
 	}
-	
-	function _close() 
+
+	function _close()
 	{
-		mysqli_free_result($this->_queryID); 
-	  	$this->_queryID = false;	
+		// PHP 8 fix: check for valid mysqli_result before freeing
+		if ($this->_queryID instanceof mysqli_result) {
+			mysqli_free_result($this->_queryID);
+		}
+	  	$this->_queryID = false;
 	}
 	
 /*
