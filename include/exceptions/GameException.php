@@ -1,11 +1,11 @@
 <?php
 /**
- * Solar Realms Elite - Game Exception Hierarchy
+ * X Imperium - Game Exception Hierarchy
  *
  * Provides structured exception handling for the game.
  * Replaces ad-hoc trigger_error() and die() patterns.
  *
- * @package SolarRealms\Exceptions
+ * @package XImperium\Exceptions
  * @license GPL-2.0
  */
 

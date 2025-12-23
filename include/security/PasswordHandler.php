@@ -1,11 +1,11 @@
 <?php
 /**
- * Solar Realms Elite - Secure Password Handler
+ * X Imperium - Secure Password Handler
  *
  * Provides secure password hashing using Argon2ID (or bcrypt as fallback).
  * Supports migration from legacy MD5 hashes.
  *
- * @package SolarRealms\Security
+ * @package XImperium\Security
  * @license GPL-2.0
  */
 
