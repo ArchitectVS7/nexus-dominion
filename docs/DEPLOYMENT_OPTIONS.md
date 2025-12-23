@@ -1,4 +1,4 @@
-# Solar Realms Elite (x-imperium) Deployment Options Analysis
+# X Imperium Deployment Options Analysis
 
 **Version:** 1.0
 **Date:** December 2024
@@ -26,7 +26,7 @@
 
 ## Executive Summary
 
-Solar Realms Elite is a classic browser-based 4X space strategy game that has been modernized for PHP 8.x. The application stack consists of:
+X Imperium is a classic browser-based 4X space strategy game that has been modernized for PHP 8.x. The application stack consists of:
 
 | Component | Technology | Version |
 |-----------|------------|---------|
@@ -250,7 +250,7 @@ sudo certbot --apache -d yourdomain.com
 
 ```apache
 <VirtualHost *:80>
-    ServerName solarrealms.yourdomain.com
+    ServerName ximperium.yourdomain.com
     DocumentRoot /var/www/solarrealms
 
     <Directory /var/www/solarrealms>
@@ -480,10 +480,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - solarrealms.yourdomain.com
+        - ximperium.yourdomain.com
       secretName: solarrealms-tls
   rules:
-    - host: solarrealms.yourdomain.com
+    - host: ximperium.yourdomain.com
       http:
         paths:
           - path: /
@@ -631,7 +631,7 @@ ufw deny 3306/tcp   # Don't expose MySQL externally
 ufw enable
 
 # 3. SSL Certificate
-certbot certonly --standalone -d solarrealms.yourdomain.com
+certbot certonly --standalone -d ximperium.yourdomain.com
 
 # 4. Security headers (add to nginx/apache)
 add_header X-Content-Type-Options "nosniff" always;

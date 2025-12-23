@@ -1,8 +1,8 @@
-# Solar Imperium Bot Player Architecture
+# X Imperium Bot Player Architecture
 
 ## Overview
 
-This document outlines the architecture for converting Solar Imperium from a multiplayer-only BBS game into a single-player experience with AI-controlled opponents. The system supports 99 bot players with varying personalities, strategies, and intelligence levels.
+This document outlines the architecture for converting X Imperium from a multiplayer-only BBS game into a single-player experience with AI-controlled opponents. The system supports 99 bot players with varying personalities, strategies, and intelligence levels.
 
 ## Design Philosophy
 
@@ -258,7 +258,7 @@ Each archetype weights decisions differently:
 ### System Prompt Template (Tier 1 Bots)
 
 ```
-You are {empire_name}, a player in Solar Imperium, a space empire strategy game.
+You are {empire_name}, a player in X Imperium, a space empire strategy game.
 
 PERSONALITY: {archetype_description}
 
@@ -790,7 +790,7 @@ include/
 
 ## Conclusion
 
-This architecture transforms Solar Imperium from a nostalgic multiplayer relic into an engaging single-player experience. The tiered bot system ensures variety - from unpredictable chaos agents to sophisticated LLM-powered rivals who negotiate, scheme, and trash-talk.
+This architecture transforms X Imperium from a nostalgic multiplayer relic into an engaging single-player experience. The tiered bot system ensures variety - from unpredictable chaos agents to sophisticated LLM-powered rivals who negotiate, scheme, and trash-talk.
 
 The alliance system adds depth: will you trust the Diplomat's offer, or is the Schemer pulling strings behind the scenes? The accelerated game speed means you can experience the full arc of a galactic conquest in hours rather than weeks.
 

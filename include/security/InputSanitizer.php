@@ -1,4 +1,5 @@
 <?php
+
 /**
  * X Imperium - Input Sanitization Handler
  *

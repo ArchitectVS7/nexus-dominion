@@ -504,7 +504,7 @@ x-imperium/
 
 ```json
 {
-    "name": "x-imperium/solar-realms-elite",
+    "name": "ximperium/elite",
     "description": "Browser-based multiplayer 4X space strategy game",
     "type": "project",
     "require": {

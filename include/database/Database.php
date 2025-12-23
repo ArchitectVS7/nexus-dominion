@@ -1,4 +1,5 @@
 <?php
+
 /**
  * X Imperium - Modern Database Abstraction Layer
  *
