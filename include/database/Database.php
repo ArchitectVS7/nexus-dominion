@@ -1,11 +1,11 @@
 <?php
 /**
- * Solar Realms Elite - Modern Database Abstraction Layer
+ * X Imperium - Modern Database Abstraction Layer
  *
  * Provides PDO-based database access with prepared statements for SQL injection prevention.
  * Maintains backward compatibility with legacy ADODB-style Execute() calls during migration.
  *
- * @package SolarRealms\Database
+ * @package XImperium\Database
  * @license GPL-2.0
  */
 

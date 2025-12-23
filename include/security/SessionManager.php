@@ -1,11 +1,11 @@
 <?php
 /**
- * Solar Realms Elite - Session Security Manager
+ * X Imperium - Session Security Manager
  *
  * Provides secure session handling with CSRF protection, session fixation prevention,
  * and secure cookie configuration.
  *
- * @package SolarRealms\Security
+ * @package XImperium\Security
  * @license GPL-2.0
  */
 

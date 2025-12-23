@@ -1,11 +1,11 @@
 <?php
 /**
- * Solar Realms Elite - Input Sanitization Handler
+ * X Imperium - Input Sanitization Handler
  *
  * Provides comprehensive input sanitization to prevent XSS and other injection attacks.
  * Replaces ad-hoc string replacement patterns used throughout the legacy codebase.
  *
- * @package SolarRealms\Security
+ * @package XImperium\Security
  * @license GPL-2.0
  */
 
