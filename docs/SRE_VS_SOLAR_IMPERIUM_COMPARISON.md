@@ -202,17 +202,17 @@ X-Imperium (2024) - Current modernization (PHP 8.2+)
 
 ## Side-by-Side Feature Matrix
 
-| Feature | SRE (1990) | Solar Imperium (2009) | X-Imperium (2024) |
+| Feature | SRE (1990) | Solar Imperium (2009) | X-Imperium (2026) |
 |---------|------------|----------------------|-------------------|
 | **Platform** | BBS/DOS | PHP/Web | PHP 8.2/Docker |
 | **Interface** | ANSI Text | HTML/Flash/AJAX | Modern HTML5 |
-| **Starting Planets** | 6 | 24 | 24 |
+| **Starting Planets** | 6 | 24 | 6 |
 | **Protection Turns** | 20 | Configurable | Configurable |
 | **Planet Types** | 10 | 10 | 10 |
 | **Resources** | 2 (Food, Credits) | 4 (Food, Credits, Ore, Petroleum) | 4 + Research Points |
 | **Military Units** | ~8 types | 6 types | 6 types (+ Covert Agents) |
-| **Generals** | ✓ Yes | ✗ Removed (2.6) | ✗ No |
-| **Command Ships** | ✓ Yes | ✗ Removed (2.6) | ✗ No |
+| **Generals** | ✓ Yes | ✗ Removed (2.6) | ✓ Yes |
+| **Command Ships** | ✓ Yes | ✗ Removed (2.6) | ✓ Yes |
 | **Combat Types** | 5 (Conv., Guerilla, Nuclear, Chemical, Covert) | 4 (Invasion, Guerilla, Nuclear, Covert) | 4 + Pirate Raids |
 | **Market System** | Basic | Global (supply/demand) | Global (enhanced) |
 | **Research System** | Productivity boost | Tech tree + point trading | Hierarchical tech tree |
@@ -228,7 +228,7 @@ X-Imperium (2024) - Current modernization (PHP 8.2+)
 | **Black Market** | ? | ✓ Yes (cooldown) | ✓ Yes (cooldown) |
 | **Database** | File-based | MySQL (InnoDB) | MySQL 8.0 (PDO) |
 | **Security** | BBS-level | Basic (XSS/SQL patches) | Modern (Argon2ID, CSRF, prepared statements) |
-| **Mobile Support** | ✗ No | ✗ No | ✓ Responsive (planned) |
+| **Mobile Support** | ✗ No | ✗ No | ✗ No |
 | **Single Player** | ✗ No | Basic AI code | Advanced AI bots (planned) |
 
 ---
