@@ -4,16 +4,16 @@
 
 class Template
 {
-	var $DB;
-	var $TPL;
-	var $page_name;
-	var $events_data;
-	var $notices_data;
-	var $coord;	
-	var $events_count;
-	var $events_height;
-	var $ingame;
-	var $game_id;
+	public $DB;
+	public $TPL;
+	public $page_name;
+	public $events_data;
+	public $notices_data;
+	public $coord;	
+	public $events_count;
+	public $events_height;
+	public $ingame;
+	public $game_id;
 	
 	//////////////////////////////////////////////////////////////////////
 	// Constructor

@@ -5,11 +5,11 @@
 class Research
 {
 
-	var $DB;
-	var $TEMPLATE;
-	var $tech_data;
-	var $tech_done;
-	var $game_id;
+	public $DB;
+	public $TEMPLATE;
+	public $tech_data;
+	public $tech_done;
+	public $game_id;
 
 
 	///////////////////////////////////////////////////////////////////////

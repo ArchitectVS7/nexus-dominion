@@ -26,8 +26,6 @@ class Database
     /** @var string|null */
     private $lastError = null;
 
-    /** @var string Current driver type */
-    private $driverType;
 
     /** @var string Current database name */
     public $database;
@@ -58,7 +56,6 @@ class Database
     ) {
         // Normalize driver name
         $driver = $this->normalizeDriver($driver);
-        $this->driverType = $driver;
         $this->databaseType = $driver;
         $this->database = $database;
 
@@ -197,7 +194,7 @@ class Database
      * @return DatabaseResult
      * @throws DatabaseException If query fails
      */
-    public function execute(string $sql, array $params = []): DatabaseResult
+    public function query(string $sql, array $params = []): DatabaseResult
     {
         try {
             $stmt = $this->pdo->prepare($sql);
@@ -237,7 +234,7 @@ class Database
         // If params provided, use secure prepared statement
         if (!empty($params)) {
             try {
-                return $this->execute($sql, $params);
+                return $this->query($sql, $params);
             } catch (DatabaseException $e) {
                 return false;
             }
@@ -601,11 +598,8 @@ class DatabaseResult
     /** @var bool Whether this is a SELECT-type query */
     private $isSelect;
 
-    /** @var array All fetched rows for RecordCount */
+    /** @var array|null All fetched rows for RecordCount */
     private $allRows = null;
-
-    /** @var int Current position in allRows */
-    private $position = 0;
 
     /**
      * @param PDOStatement $stmt
@@ -683,8 +677,7 @@ class DatabaseResult
                 $this->allRows[] = $row;
             }
 
-            // Reset to first position
-            $this->position = 0;
+            // Reset to first row
             if (!empty($this->allRows)) {
                 $this->fields = $this->allRows[0];
                 $this->EOF = false;

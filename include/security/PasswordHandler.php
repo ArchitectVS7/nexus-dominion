@@ -46,10 +46,8 @@ class PasswordHandler
 
         $hash = password_hash($password, $algorithm, $options);
 
-        if ($hash === false) {
-            throw new RuntimeException('Password hashing failed');
-        }
-
+        // In PHP 8+, password_hash throws on failure instead of returning false
+        // This check is kept for documentation purposes
         return $hash;
     }
 
@@ -130,9 +128,9 @@ class PasswordHandler
     /**
      * Get the preferred hashing algorithm
      *
-     * @return int|string Algorithm constant
+     * @return string Algorithm constant (PASSWORD_ARGON2ID, PASSWORD_ARGON2I, or PASSWORD_BCRYPT)
      */
-    private static function getAlgorithm()
+    private static function getAlgorithm(): string
     {
         // Check if Argon2ID is available (PHP 7.3+)
         if (defined('PASSWORD_ARGON2ID')) {

@@ -3,15 +3,15 @@
 
 class EventCreator
 {
-	var $DB;
-	var $type;
-	var $from;
-	var $to;
-	var $params;
-	var $seen;
-	var $sticky;
-	var $height;
-	var $game_id;
+	public $DB;
+	public $type;
+	public $from;
+	public $to;
+	public $params;
+	public $seen;
+	public $sticky;
+	public $height;
+	public $game_id;
 	
 
 	//////////////////////////////////////////////////////////////////////////////

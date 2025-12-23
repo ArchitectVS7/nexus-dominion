@@ -1,0 +1,28 @@
+#!/bin/bash
+# Pre-push hook for Solar Realms Elite
+# Runs PHPUnit tests before allowing push
+
+echo "Running pre-push tests..."
+
+# Check if Docker is available
+if command -v docker &> /dev/null; then
+    # Check if containers are running
+    if docker compose ps 2>/dev/null | grep -q "solarrealms-web"; then
+        echo "Running PHPUnit tests in Docker..."
+        docker compose exec -T web composer test 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo ""
+            echo "PUSH BLOCKED: Tests failed. Fix them before pushing."
+            exit 1
+        fi
+        echo "All tests passed."
+    else
+        echo "WARNING: Docker containers not running. Skipping tests."
+        echo "Start containers with: docker compose up -d"
+    fi
+else
+    echo "WARNING: Docker not found. Skipping tests."
+    echo "Install Docker to enable pre-push test verification."
+fi
+
+exit 0

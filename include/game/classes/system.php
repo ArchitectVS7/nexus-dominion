@@ -3,9 +3,9 @@
 
 
 class System {
-	var $DB;
-	var $game_status;
-	var $game_id;
+	public $DB;
+	public $game_status;
+	public $game_id;
 
 	//////////////////////////////////////////////////////////////////////
 	// Constructor - PHP 8.x compatible

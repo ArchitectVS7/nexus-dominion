@@ -5,19 +5,19 @@
 class Empire
 {
 
-	var $DB;
-	var $TEMPLATE;
-	var $data;
-	var $data_footprint;
-	var $gameplay_costs;
-	var $army;
-	var $planets;
-	var $coalition;
-	var $production;
-	var $supply;
-	var $diplomacy;
-	var $research;
-	var $game_id;
+	public $DB;
+	public $TEMPLATE;
+	public $data;
+	public $data_footprint;
+	public $gameplay_costs;
+	public $army;
+	public $planets;
+	public $coalition;
+	public $production;
+	public $supply;
+	public $diplomacy;
+	public $research;
+	public $game_id;
 
 
 	/////////////////////////////////////////////////////////////

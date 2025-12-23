@@ -5,8 +5,8 @@
 require_once(__DIR__ . "/../../security/PasswordHandler.php");
 
 class Session {
-	var $DB;
-	var $game_id;
+	public $DB;
+	public $game_id;
 
 	//////////////////////////////////////////////////////////////////////
 	// Constructor

@@ -3,11 +3,11 @@
 
 class EventRenderer
 {
-	var $DB;
-	var $TEMPLATE;
-	var $GAME_TPL;
-	var $height;
-	var $game_id;
+	public $DB;
+	public $TEMPLATE;
+	public $GAME_TPL;
+	public $height;
+	public $game_id;
 
 	//////////////////////////////////////////////////////////////////////////////
 	//

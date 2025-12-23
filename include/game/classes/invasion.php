@@ -7,15 +7,15 @@ define("INVASION_DEBUG",false);
 
 class Invasion {
 
-	var $DB;
-	var $convoy;
-	var $target;
-	var $total_strength;
-	var $total_casualties;
-	var $time_start;
-	var $time_end;
+	public $DB;
+	public $convoy;
+	public $target;
+	public $total_strength;
+	public $total_casualties;
+	public $time_start;
+	public $time_end;
 
-	var $game_id;
+	public $game_id;
 
 	///////////////////////////////////////////////////////////////////////
 	//

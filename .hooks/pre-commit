@@ -1,0 +1,40 @@
+#!/bin/bash
+# Pre-commit hook for Solar Realms Elite
+# Runs PHP syntax check on staged files
+
+echo "Running PHP syntax check on staged files..."
+
+# Get list of staged PHP files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.php$')
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "No PHP files staged for commit."
+    exit 0
+fi
+
+# Check if PHP is available
+if command -v php &> /dev/null; then
+    SYNTAX_ERRORS=0
+    for FILE in $STAGED_FILES; do
+        if [ -f "$FILE" ]; then
+            php -l "$FILE" > /dev/null 2>&1
+            if [ $? -ne 0 ]; then
+                echo "Syntax error in: $FILE"
+                php -l "$FILE"
+                SYNTAX_ERRORS=1
+            fi
+        fi
+    done
+
+    if [ $SYNTAX_ERRORS -ne 0 ]; then
+        echo ""
+        echo "COMMIT BLOCKED: PHP syntax errors found. Fix them before committing."
+        exit 1
+    fi
+    echo "PHP syntax check passed."
+else
+    echo "WARNING: PHP not found locally. Skipping syntax check."
+    echo "Install PHP or use Docker for testing."
+fi
+
+exit 0

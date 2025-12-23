@@ -4,11 +4,11 @@
 
 class Supply
 {
-	var $DB;
-	var $TEMPLATE;	
-	var $data;
-	var $data_footprint;
-	var $game_id;
+	public $DB;
+	public $TEMPLATE;	
+	public $data;
+	public $data_footprint;
+	public $game_id;
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Constructor - PHP 8.x compatible

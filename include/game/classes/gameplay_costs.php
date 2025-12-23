@@ -4,8 +4,8 @@
 
 class GameplayCosts {
 
-	var $DB;
-	var $game_id;
+	public $DB;
+	public $game_id;
 
 	///////////////////////////////////////////////////////////////////////
 	// constructor

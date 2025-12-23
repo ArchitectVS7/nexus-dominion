@@ -5,10 +5,10 @@
 
 class Diplomacy {
 
-	var $DB;
-	var $data;
-	var $data_footprint;
-	var $game_id;
+	public $DB;
+	public $data;
+	public $data_footprint;
+	public $game_id;
 
 	///////////////////////////////////////////////////////////////////////////
 	// Constructor

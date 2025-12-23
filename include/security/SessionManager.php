@@ -89,11 +89,6 @@ class SessionManager
             );
         }
 
-        // Verify session actually started
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            throw new RuntimeException('Session failed to start');
-        }
-
         // Initialize session security tracking
         self::initSessionSecurity();
 

@@ -5,12 +5,12 @@
 class Coalition
 {
 
-	var $DB;
-	var $member;
-	var $data;
-	var $data_footprint;
-	var $members;
-	var $game_id;
+	public $DB;
+	public $member;
+	public $data;
+	public $data_footprint;
+	public $members;
+	public $game_id;
 
 	///////////////////////////////////////////////////////////////////////
 	// Constructor - PHP 8.x compatible
