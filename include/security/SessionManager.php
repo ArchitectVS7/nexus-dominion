@@ -1,4 +1,5 @@
 <?php
+
 /**
  * X Imperium - Session Security Manager
  *
@@ -120,7 +121,9 @@ class SessionManager
 
         // Validate domain if provided
         $domain = $options['domain'] ?? '';
-        if ($domain !== '' && !preg_match('/^\.?[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/', $domain)) {
+        $domainPattern = '/^\.?[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?'
+            . '(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/';
+        if ($domain !== '' && !preg_match($domainPattern, $domain)) {
             throw new InvalidArgumentException('Invalid cookie domain format');
         }
 

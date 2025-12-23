@@ -1,4 +1,5 @@
 <?php
+
 /**
  * X Imperium - Secure Password Handler
  *
