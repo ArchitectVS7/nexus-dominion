@@ -134,10 +134,10 @@ test.describe("Milestone 1: Static Empire View", () => {
     const networthPanel = gamePage.locator('[data-testid="networth-panel"]');
     await expect(networthPanel).toBeVisible();
 
-    // Starting networth: 9 planets × 10 + 100 soldiers × 0.0005 = 90.05
+    // Starting networth: 9 planets × 10 + 100 soldiers × 0.0005 = 90.05, rounded to 90 for bigint storage
     await expect(
       networthPanel.locator('[data-testid="networth-value"]')
-    ).toContainText("90.05");
+    ).toContainText("90.00");
   });
 
   test("population count is displayed correctly", async ({ gamePage }) => {

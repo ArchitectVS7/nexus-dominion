@@ -21,6 +21,16 @@ export default defineConfig({
         "**/types/**",
         "e2e/",
         "scripts/",
+        // Database/integration code tested by E2E
+        "**/db/**",
+        "**/performance/**",
+        "**/app/**",
+        // Service files with Supabase interactions - tested via E2E
+        "src/lib/game/services/build-queue-service.ts",
+        "src/lib/game/services/research-service.ts",
+        "src/lib/game/services/planet-service.ts",
+        "src/lib/game/services/upgrade-service.ts",
+        "src/lib/game/services/turn-processor.ts",
       ],
       thresholds: {
         global: {
