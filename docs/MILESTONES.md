@@ -234,22 +234,27 @@ Each milestone delivers a **playable vertical slice** that can be tested end-to-
 **Duration**: 3 days
 **Dependency**: M3
 **Testable**: Yes
+**Status**: 🔄 IN PROGRESS (Parallel Work 2024-12-24)
 
 ### Deliverables
-- Combat power calculation (PRD 6.2 formulas)
-- **Three-phase combat** (PRD 6.7):
-  - Phase 1: Space Combat (Cruisers vs Cruisers)
-  - Phase 2: Orbital Combat (Fighters vs Stations)
-  - Phase 3: Ground Combat (Soldiers capture planets)
-- **Unit Effectiveness Matrix** implementation
-- Casualty calculation (15-35% dynamic)
-- Attack action (invasion)
-- Guerilla attack (soldiers only)
-- **Retreat mechanics** (15% opportunity loss)
-- Combat resolution UI
-- Battle report display (phase by phase)
-- Fog of war (see power, not composition)
-- Army effectiveness system (0-100%)
+- ✅ Combat power calculation (PRD 6.2 formulas) — *`src/lib/formulas/combat-power.ts`*
+- ✅ **Three-phase combat** (PRD 6.7) — *`src/lib/combat/phases.ts`*:
+  - ✅ Phase 1: Space Combat (Cruisers vs Cruisers)
+  - ✅ Phase 2: Orbital Combat (Fighters vs Stations)
+  - ✅ Phase 3: Ground Combat (Soldiers capture planets)
+- ✅ **Unit Effectiveness Matrix** implementation — *`src/lib/combat/effectiveness.ts`*
+- ✅ Casualty calculation (15-35% dynamic) — *`src/lib/formulas/casualties.ts`*
+- ✅ Attack action (invasion) — *`resolveInvasion()` in phases.ts*
+- ✅ Guerilla attack (soldiers only) — *`resolveGuerillaAttack()` in phases.ts*
+- ✅ **Retreat mechanics** (15% opportunity loss) — *`resolveRetreat()` in phases.ts*
+- ✅ Combat resolution UI — *`src/components/game/combat/`*:
+  - ✅ `BattleReport.tsx` - 3-phase combat breakdown display
+  - ✅ `AttackInterface.tsx` - Force selection and attack launching
+  - ✅ `CombatPreview.tsx` - Power comparison before attacking
+  - ✅ `CasualtyReport.tsx` - Casualty display component
+- 🔲 Battle report display (phase by phase) — *UI shell complete, needs server integration*
+- 🔲 Fog of war (see power, not composition) — *Needs game state integration*
+- ✅ Army effectiveness system (0-100%) — *`src/lib/formulas/army-effectiveness.ts`*
 
 ### Test Criteria
 ```
@@ -280,6 +285,17 @@ Each milestone delivers a **playable vertical slice** that can be tested end-to-
 - `combat_logs` ✅ **Pre-created (2024-12-24)** (includes phase-by-phase data)
 
 **Note:** Combat system schemas defined ahead of schedule as parallel work during M1.
+
+### Parallel Work Completed (2024-12-24)
+- **Combat Resolution Logic**: Pure functions for 3-phase combat (55 tests passing)
+  - `src/lib/combat/phases.ts` - Full invasion, guerilla, and retreat resolution
+  - `src/lib/combat/effectiveness.ts` - PRD 6.7 Unit Effectiveness Matrix
+  - `src/lib/combat/index.ts` - Barrel exports
+- **Combat UI Components**: React component shells ready for server integration
+  - `src/components/game/combat/BattleReport.tsx` - Full battle report with phase breakdown
+  - `src/components/game/combat/AttackInterface.tsx` - Force selection with validation
+  - `src/components/game/combat/CombatPreview.tsx` - Pre-attack power comparison
+  - `src/components/game/combat/CasualtyReport.tsx` - Casualty display component
 
 ---
 
