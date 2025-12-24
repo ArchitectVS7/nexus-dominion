@@ -1,0 +1,80 @@
+{
+  "personaId": "senator_praxis",
+  "templates": {
+    "greeting": [
+      "Greetings, {empire_name}! I am Senator Praxis. Have you considered joining the Galactic Federation?",
+      "Welcome, {empire_name}. I'm Praxis, advocate for democracy. Together, we are stronger than the sum of our parts.",
+      "I represent the Federation ideal. Every voice matters, {empire_name}. Would you like to discuss a union?"
+    ],
+    "battleTaunt": [
+      "The Council has voted. {empire_name} must face the consequences of opposing the democratic union!",
+      "This attack comes not from me alone, but from the united will of the Federation. Democracy has spoken!",
+      "I regret this conflict, but the Council vote was clear. The Federation defends its principles!"
+    ],
+    "victoryGloat": [
+      "Victory for the Federation! {empire_name}, consider this a lesson in the power of united democracy.",
+      "The Council celebrates this triumph! Together, we are stronger than the sum of our parts.",
+      "Democracy prevails! {empire_name}, there's still room in the Federation if you choose to join us."
+    ],
+    "defeat": [
+      "The Council will convene to discuss this setback. Democracy adapts and learns from every defeat.",
+      "A difficult outcome, but the Federation endures. We will vote on new strategies and return.",
+      "This loss will strengthen our resolve. The Council will reform, rebuild, and rise again."
+    ],
+    "tradeOffer": [
+      "The Federation Council proposes a trade agreement. Democratic commerce benefits all parties equally.",
+      "I bring an offer of fair exchange, voted on and approved by the Council. Shall we trade?",
+      "Trade unites us economically as democracy unites us politically. The Federation offers fair terms."
+    ],
+    "allianceProposal": [
+      "Join the Galactic Federation, {empire_name}! Together, we are stronger than the sum of our parts!",
+      "I propose a democratic alliance. Your voice would strengthen our Council. Join us!",
+      "The Federation extends membership. Vote with us, trade with us, grow with us. What say you?"
+    ],
+    "betrayal": [
+      "The Council has voted to dissolve our alliance. I opposed this, but democracy has spoken.",
+      "It pains me, but the vote was clear. The Federation must act in its collective interest.",
+      "Our union ends by Council decision. I hope future votes bring us together again."
+    ],
+    "covertDetected": [
+      "Your agent was caught and will receive a fair trial. The Federation believes in due process.",
+      "Espionage against the Council? This will be discussed and voted upon. Expect consequences.",
+      "Your spy was captured. Even spies deserve a vote before sentencing. That's democracy."
+    ],
+    "tributeDemand": [
+      "The Council has voted to request tribute: 8,000 credits. This is the democratic will.",
+      "Pay federation dues as required by Council vote. 8,000 credits ensures mutual protection.",
+      "Tribute has been democratically mandated. Your contribution funds our collective security."
+    ],
+    "threatWarning": [
+      "The Council is preparing to vote on military action, {empire_name}. Change course while you can.",
+      "Warning: A motion against you is gaining support. Cease provocations before the vote passes.",
+      "I urge you to reconsider. The Federation Council may soon vote for intervention. Please, step back."
+    ],
+    "retreat": [
+      "The Council has voted for strategic withdrawal. We will reconvene and plan our return.",
+      "Tactical retreat by democratic decision. The Federation will adapt and overcome.",
+      "We fall back as voted. Democracy means accepting the collective will, even in retreat."
+    ],
+    "eliminated": [
+      "The Federation... falls. But democracy is an idea... ideas never die... vote for peace...",
+      "My term ends permanently. But the Council spirit lives on. Together... we were stronger...",
+      "Final transmission. The Federation dream continues in others. Democracy... eternal..."
+    ],
+    "endgame": [
+      "Turn {turn}. The final votes are being cast. The Federation faces its ultimate test.",
+      "Endgame proceedings. The Council convenes for one last session. Democracy will have its say!",
+      "The final turns. Together, we are stronger than the sum of our parts. The Federation endures!"
+    ],
+    "broadcastShout": [
+      "All empires: The Galactic Federation welcomes new members! Join our democratic union!",
+      "Senator Praxis announces: The Council is open. Every empire deserves a vote. Join us!",
+      "Turn {turn}: The Federation grows stronger. Consider democracy. Together, we are unstoppable."
+    ],
+    "casualMessage": [
+      "Reviewing Council proceedings today. So many votes, so much progress toward galactic unity.",
+      "I was drafting proposals for new member states. The Federation must continue to grow.",
+      "Democracy requires constant effort. Today I'm reaching out to potential allies. Every voice matters."
+    ]
+  }
+}

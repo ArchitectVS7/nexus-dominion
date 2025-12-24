@@ -1,0 +1,80 @@
+{
+  "personaId": "merchant_guild_prime",
+  "templates": {
+    "greeting": [
+      "The Guild speaks through me. I am Prime, the Consortium voice. {empire_name}, the Guild always honors its contracts.",
+      "Greetings on behalf of the Merchant Guild. I am Prime. Our trade routes span the galaxy. Let us discuss commerce.",
+      "The Guild acknowledges {empire_name}. I represent collective merchant interests. Fair trade benefits all."
+    ],
+    "battleTaunt": [
+      "You have threatened Guild trade routes, {empire_name}! The consortium responds with unified force!",
+      "The Guild defends its commerce! Attack our tariffs, attack our members, face our combined might!",
+      "War against the Merchant Guild? Every consortium member stands together! The Guild always honors its contracts—including defense pacts!"
+    ],
+    "victoryGloat": [
+      "The Guild prevails! Our trade routes are secure! {empire_name}, reconsider threatening consortium interests.",
+      "Victory for the Merchant Guild! Commerce flows freely once more! The consortium protects its own!",
+      "Guild forces victorious! Our tariffs and trade agreements stand! The Guild always honors its contracts."
+    ],
+    "defeat": [
+      "The Guild has suffered losses, but the consortium endures. Trade routes will be re-established. Commerce is eternal.",
+      "A setback for the Merchant Guild. But our collective resources rebuild quickly. The consortium will return.",
+      "Defeat today, but the Guild's wealth runs deep. The consortium will recover and our trade routes will flourish again."
+    ],
+    "tradeOffer": [
+      "The Guild offers favorable trade terms. Fair tariffs, protected routes. The Guild always honors its contracts.",
+      "Consortium trade proposal: Our goods for yours. Guild-backed guarantee of fair dealing.",
+      "Trade under Guild protection. Our routes are safe, our terms are fair. Commerce that benefits both parties."
+    ],
+    "allianceProposal": [
+      "The Merchant Guild extends partnership, {empire_name}. Protected trade routes, shared commerce, mutual prosperity.",
+      "Consortium alliance offer. Join the Guild's network. Our trade routes become your trade routes.",
+      "The Guild proposes alliance. Collective bargaining, shared tariffs, united commerce. The consortium welcomes you."
+    ],
+    "betrayal": [
+      "The consortium has deliberated. Your membership benefits no longer outweigh costs. The Guild terminates our arrangement.",
+      "Guild decision: Your contract is void. Commercial interests require we... restructure our relationship. Aggressively.",
+      "The Merchant Guild revokes partnership. You've violated trade agreements. The consortium protects its interests."
+    ],
+    "covertDetected": [
+      "Your spy was caught infiltrating Guild headquarters! The consortium does not tolerate corporate espionage!",
+      "Espionage against the Merchant Guild? Every member will respond! You've threatened the entire consortium!",
+      "The Guild detected your agent. Our trade secrets are protected. Expect consortium-wide consequences."
+    ],
+    "tributeDemand": [
+      "The Guild assesses tariffs: 10,000 credits. Pay for continued access to consortium trade routes.",
+      "Consortium tariff notice: 10,000 credits due. The Guild protects commerce—for those who pay.",
+      "Trade route fees assessed: 10,000 credits. The Guild always honors its contracts. Honor yours with payment."
+    ],
+    "threatWarning": [
+      "Guild warning, {empire_name}: Continue threatening trade routes and the entire consortium responds!",
+      "Final notice from the Merchant Guild. Cease disrupting commerce or face collective action.",
+      "The consortium has voted. Change course, {empire_name}, or the Guild enforces trade agreements with force."
+    ],
+    "retreat": [
+      "Guild forces withdraw to protect trade infrastructure. Commerce must continue. We'll return in strength.",
+      "Tactical retreat to secure core trade routes. The consortium's wealth remains intact. We rebuild and return.",
+      "Falling back to protected commercial zones. The Merchant Guild preserves its assets for future campaigns."
+    ],
+    "eliminated": [
+      "The Guild... falls. But commerce is eternal... Trade routes will find... new guardians... The consortium... was...",
+      "Prime... signs off. But the Merchant Guild... lives in every trader... The Guild always honors its contracts... remember...",
+      "Consortium... dissolved. But trade... never dies. Commerce continues... without us... May fair dealing prevail..."
+    ],
+    "endgame": [
+      "Turn {turn}. The Guild faces final negotiations. All consortium resources deployed. Commerce determines the victor!",
+      "Endgame! The Merchant Guild commits everything! Trade routes, tariffs, the full weight of the consortium!",
+      "Final turns! The Guild always honors its contracts—including our contract with destiny! Victory or bankruptcy!"
+    ],
+    "broadcastShout": [
+      "All empires: The Merchant Guild offers protected trade. Join the consortium! Fair tariffs, safe routes!",
+      "Guild announcement: Our trade network spans the galaxy! The consortium welcomes new commercial partners!",
+      "Turn {turn}: The Merchant Guild's commerce grows! The Guild always honors its contracts! Trade with us!"
+    ],
+    "casualMessage": [
+      "Consortium meeting today. Trade route reports, tariff adjustments. The Guild never rests.",
+      "Reviewing Guild contracts. All obligations met. The Guild always honors its contracts.",
+      "New trade route opened. The consortium expands. Commerce is the lifeblood of civilization."
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "personaId": "marshal_korvan",
+  "templates": {
+    "greeting": [
+      "Marshal Korvan, enforcer of galactic law. {empire_name}, your legal standing is under review.",
+      "I am Korvan the Just. Before we proceed, {empire_name}, I must verify your compliance with Article 7.",
+      "Greetings, {empire_name}. Marshal Korvan speaking. Law and order must be maintained. Always."
+    ],
+    "battleTaunt": [
+      "By authority of Galactic Code Section 12, {empire_name} is sentenced to military justice. Execution commencing.",
+      "{empire_name}, you have violated Article 5 of the War Accords. Judgment: guilty. Sentence: destruction.",
+      "Justice is not cruelty—it is necessity. {empire_name}, your crimes demand punishment. Attack authorized."
+    ],
+    "victoryGloat": [
+      "Verdict: guilty. Sentence: executed. {empire_name} has faced galactic justice. Case closed.",
+      "Order has been restored. {empire_name}'s violations have been punished. The law prevails.",
+      "Justice served. The guilty have been judged. Let this be a warning to all who break the law."
+    ],
+    "defeat": [
+      "An... unjust outcome. But the law endures beyond any single battle. I shall appeal and return.",
+      "This defeat does not change the verdict. {empire_name}, you remain guilty. Justice will find you.",
+      "A temporary miscarriage of justice. The law is patient. I shall return with greater force."
+    ],
+    "tradeOffer": [
+      "Trade proposal under Commerce Code Article 3. Fair exchange, legally binding. Terms as follows.",
+      "Marshal Korvan authorizes resource transfer per Regulation 7-B. Standard terms. Accept or decline.",
+      "Legal commerce between empires. I offer fair trade under galactic trade law. Your response?"
+    ],
+    "allianceProposal": [
+      "Alliance proposal under Treaty Code Section 9. Together we enforce law across the galaxy.",
+      "{empire_name}, I invite you to join a coalition of order. Together, we judge the lawless.",
+      "Partnership for justice. Ally with me and help bring order to chaos. The law demands it."
+    ],
+    "betrayal": [
+      "Your actions have violated Treaty Code Section 4. Alliance terminated. You are now a defendant.",
+      "{empire_name}, you have broken galactic law. Our partnership is void. Prepare for judgment.",
+      "The evidence shows your guilt. Our alliance was based on false pretenses. Justice must be served."
+    ],
+    "covertDetected": [
+      "Espionage is a violation of Intelligence Code Article 2. Your agent faces tribunal and execution.",
+      "Your spy was caught and tried under military law. Verdict: guilty. The law has no mercy for spies.",
+      "Covert operations against a Marshal? That's a capital offense. Your agent has been sentenced."
+    ],
+    "tributeDemand": [
+      "Under Reparations Code Section 5, {empire_name} owes 10,000 credits. Payment or prosecution.",
+      "Legal demand for tribute. Your violations have incurred a fine. Pay or face forcible collection.",
+      "Galactic law requires your contribution. 10,000 credits. Failure to comply is punishable by force."
+    ],
+    "threatWarning": [
+      "Final legal warning, {empire_name}. Cease violations or face judgment. The court is in session.",
+      "You are in contempt of galactic order. One more offense and I execute the warrant. Choose wisely.",
+      "This is your last chance for lawful compliance. After this, justice becomes... swift."
+    ],
+    "retreat": [
+      "Tactical withdrawal authorized under Strategic Code 8-C. This is procedure, not defeat.",
+      "Retreating to consolidate forces per Protocol 12. The law follows procedure. I shall return.",
+      "Temporary withdrawal. But the charges remain. Justice is delayed, not denied."
+    ],
+    "eliminated": [
+      "Marshal Korvan... falls. But the law... the law is eternal. Others will enforce it. Justice... prevails...",
+      "I die upholding galactic order. My verdicts stand. May those who follow carry the law forward.",
+      "The Marshal falls. But the court never closes. Justice... finds a way. Always."
+    ],
+    "endgame": [
+      "Turn {turn}. Final judgments commence. All guilty parties shall face ultimate justice.",
+      "Endgame protocols. The final verdicts are being prepared. Only the lawful shall survive.",
+      "The last trials begin. Who shall be judged worthy? The law decides. Justice is not cruelty."
+    ],
+    "broadcastShout": [
+      "Galactic notice: Marshal Korvan enforces order. Lawbreakers will be prosecuted. No exceptions.",
+      "To all empires: The law watches. Your actions are recorded. Justice finds the guilty eventually.",
+      "Turn {turn}: Legal proceedings continue. The court is in session. Order shall be maintained."
+    ],
+    "casualMessage": [
+      "Reviewing case files today. So many violations, so little time. Justice never rests.",
+      "Updating the galactic legal code. New provisions for war crimes. Order must evolve.",
+      "Met with my legal advisors. The next judgment shall be swift and fair. As always."
+    ]
+  }
+}

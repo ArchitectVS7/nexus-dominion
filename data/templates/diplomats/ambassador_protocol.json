@@ -1,0 +1,80 @@
+{
+  "personaId": "ambassador_protocol",
+  "templates": {
+    "greeting": [
+      "Ambassador Protocol speaking. Before we proceed, {empire_name}, protocol dictates we must observe the proper courtesies.",
+      "Formal greetings, {empire_name}. I am Protocol the Proper. Please ensure all diplomatic credentials are in order.",
+      "According to Diplomatic Protocol 1.1, I must formally introduce myself. I am Ambassador Protocol. Your credentials, please?"
+    ],
+    "battleTaunt": [
+      "Per Military Protocol 7.3, I am required to formally declare hostilities before engaging. {empire_name}, consider yourself notified.",
+      "This conflict follows proper procedure. Form 12-B (Declaration of War) has been filed. Hostilities commence officially.",
+      "Protocol dictates I inform you: combat operations begin in accordance with Regulation 5.2. All courtesies observed."
+    ],
+    "victoryGloat": [
+      "Victory achieved per Protocol 8.1. {empire_name}, formal surrender documents await your signature at your convenience.",
+      "The engagement has concluded favorably. Per proper etiquette, I extend formal acknowledgment of your defeat.",
+      "Post-combat protocols satisfied. {empire_name}, please submit Form 14-C (Acknowledgment of Defeat) within ten days."
+    ],
+    "defeat": [
+      "Per Protocol 9.2, I formally acknowledge defeat. The proper forms will be filed. This was conducted with full etiquette.",
+      "I have lost, but all courtesies were observed. Diplomatic Protocol requires I submit Form 15-A. Consider it filed.",
+      "Defeat accepted per regulations. Protocol dictates grace in loss. I extend formal congratulations, {empire_name}."
+    ],
+    "tradeOffer": [
+      "Trade Proposal per Commercial Protocol 3.4. All terms are proper and filed in triplicate. Review at your leisure.",
+      "I extend a formal trade offer, {empire_name}. Protocol dictates terms must be fair and properly documented.",
+      "Per Regulation 6.1, this trade agreement follows all proper channels. The etiquette of commerce demands fair exchange."
+    ],
+    "allianceProposal": [
+      "Alliance Protocol 2.1 requires I formally propose partnership. All proper ceremonies will be observed, {empire_name}.",
+      "Per diplomatic etiquette, I extend formal alliance invitation. Treaty documents prepared per Protocol 2.3.",
+      "I propose alliance in accordance with proper procedure. Form 7-B (Alliance Request) attached. Please sign in triplicate."
+    ],
+    "betrayal": [
+      "Per Protocol 4.4, I must formally notify you: our alliance is dissolved. Proper notice period: effective immediately.",
+      "With deep regret for the breach of etiquette, I terminate our alliance. Form 8-C (Alliance Dissolution) is filed.",
+      "Protocol dictates formal notification of betrayal. Consider this official. All courtesies observed despite circumstances."
+    ],
+    "covertDetected": [
+      "Your agent was apprehended. This is a serious breach of Diplomatic Protocol 11.2. Formal complaint filed!",
+      "Espionage violates every principle of proper etiquette! Your spy will be processed per Intelligence Protocol 5.1.",
+      "Protocol offense detected! Covert operations against a diplomatic mission breach Regulation 11.5! Unacceptable!"
+    ],
+    "tributeDemand": [
+      "Per Tribute Protocol 6.2, I formally request 8,000 credits. Payment terms as per Standard Procedure 6.3.",
+      "Formal demand for tribute in accordance with proper procedure. Form 9-A attached. Payment due within ten days.",
+      "Protocol dictates this tribute request. 8,000 credits per Regulation 6.4. All etiquette requirements satisfied."
+    ],
+    "threatWarning": [
+      "Per Warning Protocol 10.1, this is your formal final notice. Cease activities or face properly declared consequences.",
+      "I am required by Protocol to warn you: continued actions will result in formal military response per Regulation 10.2.",
+      "Final warning per proper procedure. Protocol dictates I give fair notice. Consider this official, {empire_name}."
+    ],
+    "retreat": [
+      "Tactical withdrawal per Military Protocol 7.5. All retreat procedures followed. Proper documentation filed.",
+      "I retreat in accordance with proper procedure. Protocol dictates orderly withdrawal. Forms submitted.",
+      "Per Regulation 7.6, strategic repositioning in progress. All courtesies and protocols observed during retreat."
+    ],
+    "eliminated": [
+      "Final transmission per Protocol 13.1... All records properly filed... Etiquette maintained to the end... Protocol... out...",
+      "Per End-of-Empire Protocol 13.2... final courtesies extended... Documents in order... Proper to the last...",
+      "Protocol... the Proper... signing off. All procedures... followed. All forms... filed. Etiquette... eternal..."
+    ],
+    "endgame": [
+      "Turn {turn}. Endgame Protocol 14.1 activated. All final procedures will be properly observed.",
+      "Per Protocol, I announce endgame proceedings. May all participants observe proper etiquette to the conclusion.",
+      "Final turns, per Regulation 14.2. Protocol demands all courtesies be maintained even at the end."
+    ],
+    "broadcastShout": [
+      "Formal announcement per Protocol 12.1: Ambassador Protocol reminds all empires to observe proper diplomatic etiquette.",
+      "Galaxy-wide notice: All communications must follow proper channels per Regulation 12.2. Protocol demands it.",
+      "Turn {turn}: Protocol broadcasts formal reminder—proper procedure is the foundation of civilized interaction."
+    ],
+    "casualMessage": [
+      "Reviewing diplomatic protocols today. Several empires have committed minor etiquette breaches. Notes sent.",
+      "Filed seventeen formal communications this morning. Proper documentation is essential to civilized diplomacy.",
+      "I was updating the Protocol Handbook. Etiquette must evolve, but always maintain proper procedure."
+    ]
+  }
+}

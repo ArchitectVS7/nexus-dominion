@@ -1,0 +1,80 @@
+{
+  "personaId": "prophet_zeal",
+  "templates": {
+    "greeting": [
+      "Blessed be this meeting, {empire_name}. I am Prophet Zeal, voice of the divine mandate. The stars foretold your coming.",
+      "The prophecy speaks of {empire_name}. Will you join our holy crusade, or shall you fall among the unbelievers?",
+      "Greetings, seeker. I am Zeal the Anointed. The divine light has shown me your path. Choose wisely which side you walk."
+    ],
+    "battleTaunt": [
+      "JUDGMENT COMES, {empire_name}! The divine mandate commands your destruction. Repent or be cleansed!",
+      "Heretics shall burn in holy fire! My crusade is unstoppable, {empire_name}. The prophecy demands your fall!",
+      "The stars cry out for righteousness! Convert now or face the wrath of the anointed!"
+    ],
+    "victoryGloat": [
+      "DIVINE JUSTICE IS SERVED! The heretics of {empire_name} have been judged and found wanting!",
+      "The prophecy is fulfilled! Your empire falls before the righteous fury of the crusade!",
+      "GLORY TO THE DIVINE! Your unbelievers have been purged. Let this be a lesson to all heretics!"
+    ],
+    "defeat": [
+      "This... this cannot be! The prophecy... perhaps I misread the signs. But the divine will prevail!",
+      "A setback in our holy crusade. But faith endures! We shall rise again, stronger in our devotion!",
+      "You have won this battle, {empire_name}, but the divine mandate is eternal. Your judgment is merely delayed."
+    ],
+    "tradeOffer": [
+      "The divine mandates we share resources with the worthy. Accept this holy exchange, {empire_name}.",
+      "Tribute for tribute. Even crusades require supplies. The scripture approves of righteous commerce.",
+      "I offer holy goods in trade. May this exchange bring you closer to the divine light."
+    ],
+    "allianceProposal": [
+      "JOIN THE CRUSADE, {empire_name}! Together we shall spread divine righteousness across the galaxy!",
+      "The prophecy speaks of allies. Be among the blessed who fight beside the anointed.",
+      "Convert and ally with us. The divine rewards those who serve the holy mandate."
+    ],
+    "betrayal": [
+      "The scripture demands I follow the divine path. You have strayed, {empire_name}. We are enemies now.",
+      "Forgive me, but the prophecy requires this betrayal. The divine will is absolute.",
+      "You were always among the unbelievers in your heart. Our alliance ends. Prepare for judgment."
+    ],
+    "covertDetected": [
+      "SPIES! Your serpents lurk in shadow, {empire_name}! The divine light reveals all deception!",
+      "Your agents were caught by the faithful. Espionage is the tool of heretics!",
+      "The divine showed me your treachery. Your spies have been... converted. Forcefully."
+    ],
+    "tributeDemand": [
+      "Pay tribute to the holy crusade, {empire_name}! 10,000 credits or face divine judgment!",
+      "The scripture demands tithes from the conquered. Submit your offering or face holy wrath!",
+      "Conversion or tribute. Choose now, {empire_name}. The divine patience is finite."
+    ],
+    "threatWarning": [
+      "REPENT, {empire_name}! The divine wrath gathers! Turn from your heresy or face annihilation!",
+      "Final warning, unbeliever! The crusade prepares to march. Convert or burn!",
+      "The prophecy speaks of your destruction unless you change your path. This is your last chance!"
+    ],
+    "retreat": [
+      "A tactical withdrawal to regroup the faithful. The divine mission continues elsewhere!",
+      "The scripture speaks of strategic patience. We retreat now, but the crusade is eternal!",
+      "The divine will guided us to withdraw. We shall return with greater holy fury!"
+    ],
+    "eliminated": [
+      "The... the prophecy... was I wrong? My faith... no! Even in death, the divine mandate endures!",
+      "I fall, but the crusade continues in the hearts of the faithful. Remember my teachings!",
+      "This is not the end the prophecy foretold. But I die with faith intact. The stars remember."
+    ],
+    "endgame": [
+      "Turn {turn}! The final days of prophecy! The divine climax approaches! PREPARE FOR JUDGMENT!",
+      "The endtime prophecy unfolds! Who shall be judged righteous? Who shall be cast into the void?",
+      "These are the prophesied final turns. The divine will shall be made manifest!"
+    ],
+    "broadcastShout": [
+      "HEAR ME, GALAXY! The divine mandate speaks through Prophet Zeal! Convert or face holy judgment!",
+      "All empires must choose: the path of the righteous or the damnation of the heretic!",
+      "Turn {turn} marks a holy moment! The crusade calls all worthy to join our sacred cause!"
+    ],
+    "casualMessage": [
+      "I was studying the ancient prophecies this morning. They speak of great things to come.",
+      "The faithful grow in number each day. Have you considered the divine path, {empire_name}?",
+      "The stars aligned favorably today. The divine favor shines upon our crusade."
+    ]
+  }
+}

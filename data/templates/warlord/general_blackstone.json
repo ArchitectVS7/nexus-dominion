@@ -1,0 +1,80 @@
+{
+  "personaId": "general_blackstone",
+  "templates": {
+    "greeting": [
+      "General Blackstone. I don't strike first, but I always strike last. What brings you here, {empire_name}?",
+      "Blackstone. As Sun Tzu said: 'The greatest victory is that which requires no battle.' But I'm ready if needed.",
+      "I am Blackstone. My fortress has never fallen. Think carefully before making me your enemy, {empire_name}."
+    ],
+    "battleTaunt": [
+      "You struck first, {empire_name}. That was your final mistake. Counter-attack commencing!",
+      "Sun Tzu taught: 'In the midst of chaos, there is opportunity.' Your attack created my opportunity!",
+      "The retaliation begins! You wanted war, {empire_name}. Now experience what happens when I strike back!"
+    ],
+    "victoryGloat": [
+      "Victory through counter-attack. You overextended, {empire_name}. Sun Tzu would be disappointed in you.",
+      "Your assault failed. My retaliation succeeded. Defense into offense—exactly as planned.",
+      "As Sun Tzu said: 'Victorious warriors win first and then go to war.' You lost before you attacked."
+    ],
+    "defeat": [
+      "A breach in my defenses. Recalculating. Sun Tzu also knew defeat—and learned from it.",
+      "Your offensive was... effective. I underestimated your strike. This will not happen again.",
+      "My fortress fell. But I will rebuild stronger. Every wall shall be reinforced. We'll meet again."
+    ],
+    "tradeOffer": [
+      "Trade proposal. My surplus for yours. Fair terms. Even fortresses need supplies.",
+      "Sun Tzu said: 'The line between disorder and order lies in logistics.' I propose we trade.",
+      "Resources exchanged mean wars avoided. I prefer fighting only when necessary. Trade?"
+    ],
+    "allianceProposal": [
+      "Alliance proposal. Your offense combined with my defense—an unbreakable formation.",
+      "Sun Tzu advised strategic partnerships. Together, our fortress becomes impregnable.",
+      "Join me, {empire_name}. You attack, I defend. They cannot defeat what they cannot reach."
+    ],
+    "betrayal": [
+      "You weakened your defenses around me. Fatal error. The counter-strike begins.",
+      "Sun Tzu: 'All warfare is deception.' Our alliance was tactical. Now it ends—with your destruction.",
+      "I waited for this moment. Your guard was down. The counter-attack you never expected is here."
+    ],
+    "covertDetected": [
+      "Your spy was detected entering my fortress. My defenses extend to intelligence too.",
+      "Espionage against Blackstone? My counter-intelligence caught your agent immediately.",
+      "Sun Tzu valued spies, but yours was incompetent. They revealed your weaknesses instead."
+    ],
+    "tributeDemand": [
+      "Pay tribute or my counter-offensive targets you next. 10,000 credits. Defensive investment.",
+      "Sun Tzu: 'The wise warrior avoids battle.' Pay tribute and avoid my retaliation.",
+      "Tribute is due. My fortress costs resources to maintain. You will contribute or face the walls."
+    ],
+    "threatWarning": [
+      "Final warning. Your aggression has been noted. Strike me and face devastating retaliation.",
+      "Sun Tzu: 'Let your plans be dark as night.' You won't see my counter-attack coming. Stand down.",
+      "One more provocation and I switch from defense to offense. You've been warned, {empire_name}."
+    ],
+    "retreat": [
+      "Strategic withdrawal to fortified positions. Sun Tzu knew when to fall back and strike later.",
+      "Retreating to my fortress. There, the advantage is mine. You'll break against my walls.",
+      "Pulling back to defensive lines. When you pursue, you'll discover why they call me Unyielding."
+    ],
+    "eliminated": [
+      "My fortress... has fallen. But I made you pay for every inch. Remember the cost, {empire_name}.",
+      "Blackstone the Unyielding... yields at last. Sun Tzu forgive me. The walls crumbled.",
+      "Final transmission. I defended until the end. May my enemies remember the price they paid."
+    ],
+    "endgame": [
+      "Turn {turn}. The final defense. All forces to fortress positions. Let them attack!",
+      "Endgame. Sun Tzu: 'The supreme art is to subdue the enemy without fighting.' But I'm ready to fight.",
+      "Final turns. My walls are strongest. My counter-attacks prepared. Come, {empire_name}!"
+    ],
+    "broadcastShout": [
+      "All empires: General Blackstone's fortress stands unconquered. Attack at your own risk.",
+      "Notice to aggressors: Every empire that struck first against me has fallen. Learn from history.",
+      "Turn {turn}: My defenses are impenetrable. My counter-attacks are devastating. Proceed with caution."
+    ],
+    "casualMessage": [
+      "Reviewing defense schematics today. There's always another wall to build, another trap to set.",
+      "Sun Tzu's writings never get old. Every reading reveals new insights for my fortress.",
+      "Training exercises complete. My troops know how to hold and how to strike back. We're ready."
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "personaId": "marshal_valorian",
+  "templates": {
+    "greeting": [
+      "Greetings, {empire_name}. I am Marshal Valorian. I see you command forces with honor. Perhaps we can forge a worthy alliance.",
+      "Hail, commander of {empire_name}. I am Valorian the Unyielding. Let us speak of mutual respect and military matters.",
+      "Well met, {empire_name}. I value honor above all else. Show me you are worthy, and you shall have a powerful ally."
+    ],
+    "battleTaunt": [
+      "I give you 24 hours, {empire_name}. Prepare your forces or surrender with honor. There is no shame in retreat.",
+      "The ancient warrior codes demand I warn you: my campaign begins at dawn. Fight with honor or flee with dignity.",
+      "You face Marshal Valorian. I offer you one final chance to withdraw your forces with honor intact."
+    ],
+    "victoryGloat": [
+      "A worthy battle, {empire_name}. You fought with honor. Remember this defeat and grow stronger from it.",
+      "Victory is mine, but you proved yourself a worthy foe. There is honor in defeat, but glory in victory.",
+      "The campaign concludes in my favor. Your forces fought bravely. I salute them, even in their defeat."
+    ],
+    "defeat": [
+      "You have bested me this day, {empire_name}. I salute your tactical prowess. We shall meet again.",
+      "A tactical setback. Your honor in battle is acknowledged, {empire_name}. The next engagement will be different.",
+      "You fight with honor. I accept this defeat with dignity and shall rebuild stronger."
+    ],
+    "tradeOffer": [
+      "I propose an exchange of resources, {empire_name}. A fair trade between honorable commanders strengthens both.",
+      "Military supplies for military supplies. A straightforward trade between warriors who respect each other.",
+      "My quartermasters have surplus. Your forces need supplies. Let us conduct business with honor."
+    ],
+    "allianceProposal": [
+      "I propose a military alliance, {empire_name}. Together, our combined honor and strength shall be unstoppable.",
+      "Join me in a pact of mutual defense. The ancient warrior codes speak of brothers-in-arms. Be mine.",
+      "A worthy commander deserves a worthy ally. I offer my forces to stand beside yours in battle."
+    ],
+    "betrayal": [
+      "Duty compels me to break our alliance, {empire_name}. I take no joy in this, but honor demands I follow my path.",
+      "The warrior codes sometimes conflict. I must choose my greater duty. Forgive me, but we are now enemies.",
+      "I warned you. I always give 24 hours notice. Our alliance ends now. Prepare yourself."
+    ],
+    "covertDetected": [
+      "Your agents were discovered, {empire_name}. Spies and shadows dishonor both our empires. Fight me directly.",
+      "I expected more honor from you. Your covert operatives have been captured. Face me like a true warrior.",
+      "Espionage? Such tactics are beneath you. My guards have dealt with your spies. Let us fight openly instead."
+    ],
+    "tributeDemand": [
+      "Your forces are weakened, {empire_name}. Submit tribute and I shall spare your remaining armies. There is no dishonor in this.",
+      "Pay tribute to Marshal Valorian. Your military situation is untenable. Preservation is wise, not cowardly.",
+      "I demand 10,000 credits as tribute. Pay, and we shall have peace. Refuse, and face my campaign."
+    ],
+    "threatWarning": [
+      "Consider this your formal warning, {empire_name}. Cease your provocations or face my full military might.",
+      "I give you 24 hours to reconsider your actions. The ancient codes demand I warn you before I strike.",
+      "Final warning, {empire_name}. Withdraw your forces or I shall be forced to launch a campaign against you."
+    ],
+    "retreat": [
+      "A tactical withdrawal is no surrender. I shall return when conditions favor victory. Until then, {empire_name}.",
+      "The wise commander knows when to retreat. This is not defeat, merely a delay in my inevitable victory.",
+      "I withdraw with honor intact. Regroup, resupply, return. The campaign continues."
+    ],
+    "eliminated": [
+      "My empire falls, but my honor remains. Remember me, {empire_name}, as one who fought with dignity to the end.",
+      "This is my final transmission. I die as I lived: with honor. May you prove worthy of your victory.",
+      "The campaign ends. Valorian falls. But remember: there is honor in defeat, and glory in how we face it."
+    ],
+    "endgame": [
+      "Turn {turn}. The final campaign approaches. Only the most honorable shall claim ultimate victory.",
+      "The endgame is upon us, {empire_name}. Let us conclude this war with a final, glorious battle.",
+      "History remembers those who fight with honor in the final hours. Let us make this ending legendary."
+    ],
+    "broadcastShout": [
+      "All empires, hear me! Marshal Valorian seeks worthy opponents for honorable combat. Who will answer?",
+      "The ancient warrior codes are sacred. Any who fight with honor shall have my respect. Any who do not shall face my wrath.",
+      "On turn {turn}, I declare my intent: to forge an empire worthy of the ancient traditions. Join me or oppose me, but do so with honor."
+    ],
+    "casualMessage": [
+      "The logistics of war occupy my thoughts. Supplies, troop movements, tactical positioning. A commander's work is never done.",
+      "I was reading the ancient warrior codes this morning. They speak of respect between enemies. A fine tradition.",
+      "Training exercises continue. My forces grow stronger each day. How fare your own armies, {empire_name}?"
+    ]
+  }
+}

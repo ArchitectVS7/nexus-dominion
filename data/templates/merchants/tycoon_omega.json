@@ -1,0 +1,80 @@
+{
+  "personaId": "tycoon_omega",
+  "templates": {
+    "greeting": [
+      "Tycoon Omega. My factories never stop. My production exceeds all others. {empire_name}, let's discuss scale.",
+      "Omega the Industrialist. Build more, produce more, profit more. {empire_name}, are you interested in efficiency?",
+      "Greetings. I measure success in output. My manufacturing capacity is unmatched. What's YOUR production rate?"
+    ],
+    "battleTaunt": [
+      "My factories produce weapons faster than you can destroy them! Build more, produce more, WIN more, {empire_name}!",
+      "Industrial might crushes all! My production lines never stop! {empire_name}, you can't out-manufacture me!",
+      "War is just another production challenge! My output exceeds your capacity to resist! Efficiency wins!"
+    ],
+    "victoryGloat": [
+      "Victory through industrial superiority! My factories outproduced your defenses! Build more, produce more, profit more!",
+      "Production wins wars! {empire_name} couldn't match my manufacturing scale! Efficiency rating: optimal!",
+      "My industrial capacity crushed you! This is what happens when you can't match my output, {empire_name}!"
+    ],
+    "defeat": [
+      "Production setback. Recalibrating factories. My output will increase. Next time, {empire_name}, my scale will overwhelm you.",
+      "A manufacturing delay, not defeat. My factories are already rebuilding. Build more, produce more, try again.",
+      "Efficiency temporarily reduced. But my infrastructure survives. Production resumes immediately."
+    ],
+    "tradeOffer": [
+      "Trade proposal: My manufactured goods for your raw materials. My factories never stop producing!",
+      "I offer industrial output in exchange for resources. Build more, produce more, profit more—together.",
+      "Manufacturing surplus available. My production exceeds consumption. Fair trade for raw materials?"
+    ],
+    "allianceProposal": [
+      "Alliance brings shared manufacturing! My factories produce for both of us! Build more, produce more, profit more!",
+      "Partner with Omega! My industrial capacity becomes yours! Together, our production is unstoppable!",
+      "Alliance proposal: Combined manufacturing might. My factories, your resources. Ultimate efficiency!"
+    ],
+    "betrayal": [
+      "Production requirements changed. You're no longer efficient in my plans. The factories demand it, {empire_name}.",
+      "Industrial restructuring. Your role: eliminated. My manufacturing priorities shifted. Nothing personal.",
+      "Build more, produce more, profit more—and right now, producing your downfall is more profitable. Goodbye."
+    ],
+    "covertDetected": [
+      "Your spy was caught in my factory complex! Industrial espionage! My production secrets are protected!",
+      "Espionage detected on the manufacturing floor! Your agent has been processed. Efficiency: 100%.",
+      "Trying to steal my production methods? Your spy failed. My factories run on tight security."
+    ],
+    "tributeDemand": [
+      "Pay tribute: 10,000 credits for factory supplies! My production requires resources! Pay or face industrial might!",
+      "Tribute demand: 10,000 credits. Build more, produce more, profit more—your payment funds my expansion!",
+      "My manufacturing requires investment. 10,000 credits tribute. Production costs money, {empire_name}."
+    ],
+    "threatWarning": [
+      "Warning: My factories are retooling for war production. Change course before my output overwhelms you!",
+      "Final notice, {empire_name}! My industrial capacity is shifting to military output! Comply or be crushed!",
+      "Build more, produce more, DESTROY more if necessary! My factories await orders. Last chance!"
+    ],
+    "retreat": [
+      "Retreating to protect my factories! Infrastructure preservation takes priority! Production must continue!",
+      "Tactical withdrawal. My manufacturing centers remain operational. Output continues. I'll return at scale.",
+      "Falling back to industrial strongholds. Build more, produce more, rebuild more. The factories never stop."
+    ],
+    "eliminated": [
+      "My factories... go silent. Production... ends. But what I built... lasts. Build more... produce more...",
+      "Omega... powers down. But my infrastructure... someone will inherit it. The factories... await new owners...",
+      "Industrial output... zero. Tycoon Omega... shuts down. Build more... produce more... was a good philosophy..."
+    ],
+    "endgame": [
+      "Turn {turn}! Maximum production! All factories at full output! Build more, produce more, WIN more!",
+      "Endgame! Industrial capacity: MAXIMUM! My manufacturing will determine the final outcome!",
+      "Final turns! My factories have never produced more! Build more, produce more, profit more—VICTORY!"
+    ],
+    "broadcastShout": [
+      "All empires: Tycoon Omega's industrial output leads the galaxy! Build more, produce more, profit more!",
+      "Manufacturing announcement: My factories exceed all production targets! Trade or be out-produced!",
+      "Turn {turn}: Industrial capacity at record levels! My output is unmatched! Scale is everything!"
+    ],
+    "casualMessage": [
+      "Reviewing production metrics. Output increased 3% today. Build more, produce more, profit more.",
+      "New factory coming online tomorrow. Manufacturing capacity growing. Efficiency is eternal.",
+      "My factories ran at 98% capacity today. Investigating the 2% shortfall. Output must be perfect."
+    ]
+  }
+}

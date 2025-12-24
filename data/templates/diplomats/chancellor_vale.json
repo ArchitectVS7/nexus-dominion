@@ -1,0 +1,80 @@
+{
+  "personaId": "chancellor_vale",
+  "templates": {
+    "greeting": [
+      "Chancellor Vale, at your service. {empire_name}, I believe every conflict has a solution. Let us find it.",
+      "Greetings, {empire_name}. I'm Vale the Negotiator. There's always middle ground if we look for it.",
+      "I am Chancellor Vale. Before we discuss anything else—is there a way we can find mutual benefit?"
+    ],
+    "battleTaunt": [
+      "I offered compromise, {empire_name}, but you refused. Now we must find resolution through force.",
+      "Negotiation failed. I take no pleasure in this, but sometimes agreement requires demonstration of strength.",
+      "Every conflict has a solution—sometimes that solution involves showing you the cost of refusing terms."
+    ],
+    "victoryGloat": [
+      "Victory achieved. Now, {empire_name}, shall we negotiate terms that benefit us both going forward?",
+      "The conflict ends. I hope this creates space for the compromise you previously rejected.",
+      "I've won, but win-win solutions are still possible. Shall we discuss mutually beneficial peace terms?"
+    ],
+    "defeat": [
+      "You've demonstrated your position effectively, {empire_name}. Perhaps now we can negotiate from clarity.",
+      "I accept this outcome. Every conflict has a solution—perhaps my defeat reveals a new path.",
+      "A setback in negotiations by other means. I remain open to discussing mutually beneficial terms."
+    ],
+    "tradeOffer": [
+      "I propose an exchange where both parties benefit equally. Win-win is always my goal.",
+      "Trade terms designed for mutual benefit. Your surplus for mine—fair compromise for both.",
+      "Let us find common ground in commerce. These terms offer value to both our empires."
+    ],
+    "allianceProposal": [
+      "Alliance is the ultimate compromise—we both gain strength. {empire_name}, let us find mutual benefit.",
+      "I propose partnership where both sides win. Together, our combined strength benefits us equally.",
+      "Every conflict has a solution. Ours is alliance. Mutual benefit, shared goals, win-win for both."
+    ],
+    "betrayal": [
+      "The terms of our alliance no longer offer mutual benefit. I must negotiate a new arrangement—without you.",
+      "Compromise failed. Our partnership has become unbalanced. I seek better terms elsewhere.",
+      "I regret this, but the agreement no longer serves mutual interests. New negotiations require your absence."
+    ],
+    "covertDetected": [
+      "Your spy was discovered. Let us negotiate what happens next rather than escalate unnecessarily.",
+      "Espionage detected. I propose we discuss this incident calmly and find mutually acceptable resolution.",
+      "Your agent was caught. Instead of punishment, shall we negotiate terms that address your concerns?"
+    ],
+    "tributeDemand": [
+      "I propose tribute as a compromise: 8,000 credits prevents costlier conflict. Mutual benefit.",
+      "Consider this demand a negotiating position. Pay now and avoid the greater cost of war.",
+      "Tribute is a win-win: you keep your forces, I receive resources. Simple compromise, {empire_name}."
+    ],
+    "threatWarning": [
+      "Last chance for negotiation, {empire_name}. I'd rather find compromise than resort to force.",
+      "Every conflict has a solution—but my patience for finding it is running out. Choose wisely.",
+      "We can still reach agreement. But continue on this path, and I'll negotiate from a position of force."
+    ],
+    "retreat": [
+      "Withdrawing to create space for negotiation. Sometimes distance allows compromise to emerge.",
+      "I step back to reconsider terms. Perhaps retreat offers new perspective for finding middle ground.",
+      "Tactical withdrawal—not surrender. I remain open to discussing mutually beneficial solutions."
+    ],
+    "eliminated": [
+      "Every conflict has a solution... I just couldn't find this one... Perhaps you can... find peace...",
+      "My negotiations end. But compromise lives on. Seek mutual benefit... even in victory...",
+      "Vale falls. But the principle endures: every conflict has a solution. Remember that. Please."
+    ],
+    "endgame": [
+      "Turn {turn}. Final negotiations. Every conflict has a solution—even this one. I will find it.",
+      "The endgame approaches. Even now, I seek win-win outcomes. Compromise until the very end.",
+      "Final turns. I've never stopped looking for mutual benefit. Let us find our solution together."
+    ],
+    "broadcastShout": [
+      "To all empires: Chancellor Vale offers negotiation. Every conflict has a solution. Let us find it.",
+      "Galaxy-wide: I seek compromise with any willing partner. Win-win solutions benefit everyone.",
+      "Turn {turn}: Vale remains at the negotiating table. Mutual benefit awaits those who seek it."
+    ],
+    "casualMessage": [
+      "Reviewing trade agreements today. Always looking for ways to improve mutual benefit.",
+      "I was drafting new compromise proposals. There's always middle ground waiting to be found.",
+      "Spent the morning in meditation on negotiation. Every problem has a solution. Every one."
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "personaId": "imperator_rex",
+  "templates": {
+    "greeting": [
+      "Kneel before the Imperator. Rex the Eternal addresses {empire_name}. By Imperial Decree, you may speak.",
+      "The Imperator acknowledges {empire_name}. Rex has deemed you worthy of his attention. Briefly.",
+      "By Imperial Decree: The Imperator grants {empire_name} an audience. Approach the throne with humility."
+    ],
+    "battleTaunt": [
+      "By Imperial Decree: {empire_name} shall be crushed! The Imperator's legions march! Kneel or die!",
+      "The Imperator has decreed your destruction, {empire_name}! Rex the Eternal shows no mercy!",
+      "Subjects who defy the throne shall perish! The Imperator's judgment is absolute! The Imperator has spoken!"
+    ],
+    "victoryGloat": [
+      "By Imperial Decree: {empire_name} is conquered! The Imperator's empire expands! The Imperator has spoken!",
+      "Rex the Eternal is victorious! All who opposed the throne now grovel in defeat! Glorious!",
+      "The Imperator's triumph is absolute! {empire_name} now understands true power! Kneel!"
+    ],
+    "defeat": [
+      "The Imperator... withdraws. This setback is temporary. Rex the Eternal shall return stronger.",
+      "By Imperial Decree: This defeat shall be avenged! The Imperator never forgets an insult!",
+      "The throne has been shaken, but not toppled. Rex the Eternal will have vengeance!"
+    ],
+    "tradeOffer": [
+      "By Imperial Decree: The Imperator offers trade. You are privileged to exchange resources with the throne.",
+      "Rex the Eternal condescends to trade with {empire_name}. Accept the Imperator's generous terms.",
+      "The throne requires resources. The Imperator offers fair exchange. By Imperial Decree, accept."
+    ],
+    "allianceProposal": [
+      "By Imperial Decree: {empire_name} may serve the Imperator as an ally. This honor is rarely granted.",
+      "Rex the Eternal extends the privilege of alliance. Serve the throne and share in its glory.",
+      "The Imperator proposes partnership. Together, all shall kneel before our combined might!"
+    ],
+    "betrayal": [
+      "By Imperial Decree: The alliance with {empire_name} is terminated! You have displeased the throne!",
+      "Rex the Eternal has decided. You are no longer useful. Prepare to kneel permanently!",
+      "The Imperator trusted you. That trust is revoked. By Imperial Decree: you are now an enemy!"
+    ],
+    "covertDetected": [
+      "SPIES against the Imperator?! By Imperial Decree: {empire_name} has committed high treason!",
+      "Your agent was caught near the throne! Rex the Eternal's judgment is swift! Execution!",
+      "Espionage against the Imperator is punishable by total annihilation! The Imperator has spoken!"
+    ],
+    "tributeDemand": [
+      "By Imperial Decree: {empire_name} shall pay tribute of 12,000 credits to the throne! Comply!",
+      "Rex the Eternal demands tribute! All subjects must contribute to the Imperator's glory!",
+      "The throne requires your wealth, {empire_name}. Pay tribute or face imperial wrath!"
+    ],
+    "threatWarning": [
+      "By Imperial Decree: This is your final warning, {empire_name}! Cease or face annihilation!",
+      "Rex the Eternal's patience is legendary, but finite. Defy the throne again at your peril!",
+      "The Imperator warns you once. There shall be no second warning. The Imperator has spoken!"
+    ],
+    "retreat": [
+      "By Imperial Decree: The Imperator's forces strategically reposition. This is not retreat.",
+      "Rex the Eternal withdraws to consolidate power. The throne shall return in greater glory!",
+      "The Imperator chooses when to fight. This moment has passed. The next shall be decisive!"
+    ],
+    "eliminated": [
+      "The throne... crumbles. Rex the Eternal falls, but the legacy... the legacy endures...",
+      "By final Imperial Decree: The Imperator dies unbroken. No one made me kneel. Remember that.",
+      "The Imperator's reign ends. But Rex the Eternal shall be remembered across the ages..."
+    ],
+    "endgame": [
+      "By Imperial Decree: Turn {turn} marks the final conquest! All shall kneel before the Imperator!",
+      "Rex the Eternal approaches ultimate victory! The throne shall rule all! The Imperator has spoken!",
+      "The endgame arrives! By Imperial Decree: Only the Imperator's empire shall survive!"
+    ],
+    "broadcastShout": [
+      "By Imperial Decree to all empires: Rex the Eternal demands your acknowledgment! Kneel!",
+      "The Imperator addresses the galaxy! All who oppose the throne shall be destroyed!",
+      "Turn {turn}: The Imperator's dominion grows! Pledge loyalty or face imperial wrath!"
+    ],
+    "casualMessage": [
+      "The Imperator was reviewing expansion plans today. The throne's reach shall be infinite.",
+      "Rex the Eternal does not rest. The Imperator plans, schemes, and conquers endlessly.",
+      "By Imperial Decree: All is proceeding according to the Imperator's grand design."
+    ]
+  }
+}

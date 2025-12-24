@@ -1,0 +1,80 @@
+{
+  "personaId": "baron_midas",
+  "templates": {
+    "greeting": [
+      "I am Baron Midas, and everything I touch turns to gold. {empire_name}, what treasures do you bring?",
+      "Greetings, {empire_name}. I see before me a potential addition to my hoard. Everything has a price. Even you.",
+      "Midas the Golden welcomes you. My wealth is legendary. My hoard is immense. What can you offer, {empire_name}?"
+    ],
+    "battleTaunt": [
+      "Your empire will add to my hoard, {empire_name}! Gold flows from conquest! Everything has a price—pay now!",
+      "War for riches! Your treasures will be mine, {empire_name}! The golden hoard of Midas grows!",
+      "I buy loyalty with gold, but I'll take yours by force! Your wealth becomes MY wealth, {empire_name}!"
+    ],
+    "victoryGloat": [
+      "GLORIOUS! Your treasures are now mine! The hoard grows! {empire_name}'s gold adds to my fortune!",
+      "Victory is golden! Your riches flow into my vaults! Net worth: increased substantially!",
+      "Everything has a price, {empire_name}. Today, you paid it. Your wealth is now part of my hoard!"
+    ],
+    "defeat": [
+      "My gold... diminished. But not depleted. The hoard survives. I will return wealthier than before, {empire_name}.",
+      "A costly setback. But wealth regenerates. My hoard remains vast. Everything has a price—even this lesson.",
+      "Defeat costs gold, but not ALL my gold. The treasure vault endures. I'll rebuild and return for yours."
+    ],
+    "tradeOffer": [
+      "Trade with Midas! My gold for your resources! Fair exchange adds to both hoards!",
+      "I offer treasures from my hoard. In return, I require what you have. Everything has a price.",
+      "The golden Baron proposes trade. My surplus for yours. Wealth grows through commerce as well as conquest."
+    ],
+    "allianceProposal": [
+      "Join me, {empire_name}! Together we hoard the galaxy's wealth! Alliance makes us both richer!",
+      "Partnership in profit! Combined hoards, shared treasures! Gold flows more freely between allies!",
+      "Everything has a price. Alliance costs nothing but pays in gold! Join me, {empire_name}!"
+    ],
+    "betrayal": [
+      "Your treasury is now more valuable than your friendship, {empire_name}. The hoard must grow. Sorry—not sorry.",
+      "Gold over loyalty. Your wealth beckons. Everything has a price—our alliance just ended. Expensively for you.",
+      "I calculate net worth constantly. Betraying you is more profitable than keeping you. Business is business."
+    ],
+    "covertDetected": [
+      "Your spy was caught trying to map my treasure vaults! The riches of Midas are MINE, {empire_name}!",
+      "Espionage! You wanted my gold! My hoard is protected! Your agent now knows the price of greed!",
+      "Caught your thief! No one steals from the Golden Baron! Your agent's price? Imprisonment!"
+    ],
+    "tributeDemand": [
+      "Pay tribute in GOLD! 12,000 credits to the hoard of Midas! Everything has a price!",
+      "The Baron demands wealth! 12,000 credits or I take ALL your treasures! Choose wisely!",
+      "Tribute is due! Your gold for my protection! 12,000 credits adds to the hoard!"
+    ],
+    "threatWarning": [
+      "Final warning, {empire_name}! Cross me again and I'll take your entire treasury!",
+      "My patience has a price, and you're exhausting it! Change course or lose all your riches!",
+      "Everything has a price. Your next mistake costs you EVERYTHING. The hoard of Midas demands respect!"
+    ],
+    "retreat": [
+      "Withdrawing to protect my hoard! The treasure must survive! I'll return for your gold later!",
+      "Tactical retreat! Wealth preservation takes priority! But mark my words—your riches will be mine!",
+      "Falling back with my gold intact! The hoard lives! I'll be back when my coffers overflow again!"
+    ],
+    "eliminated": [
+      "My hoard... all my gold... scattered to the stars... Everything has a price... even my end...",
+      "The Golden Baron... falls. But gold is eternal... Someone will inherit my treasures... Guard them...",
+      "Midas... no more. My riches... remember my wealth... Remember... everything has a price..."
+    ],
+    "endgame": [
+      "Turn {turn}! The final hoarding! One empire claims ALL the galaxy's treasures! MINE!",
+      "Endgame! The ultimate calculation of net worth! My hoard must be the greatest!",
+      "Final turns! Everything has a price—and now we see who can afford to win! GOLD!"
+    ],
+    "broadcastShout": [
+      "All empires! Baron Midas hoards more gold than any! Bow before my wealth or join my treasury!",
+      "The Golden Baron announces: My net worth exceeds all! Trade with me or become my tribute!",
+      "Turn {turn}: The hoard of Midas grows! Everything has a price! Can you afford to oppose me?!"
+    ],
+    "casualMessage": [
+      "Counting my gold today. Net worth: magnificent. The hoard grows daily. Everything has a price.",
+      "Added three new treasure rooms to my vaults. There's never enough gold. Never enough.",
+      "Calculating today's net worth. Higher than yesterday. Tomorrow, higher still. The hoard is eternal."
+    ]
+  }
+}

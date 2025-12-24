@@ -1,0 +1,80 @@
+{
+  "personaId": "envoy_lumina",
+  "templates": {
+    "greeting": [
+      "Hello, new friend! I'm Envoy Lumina! Oh, I just know we're going to be the best of friends, {empire_name}!",
+      "Hi there! I'm Lumina! Why fight when we can be friends? I brought you a friendship gift!",
+      "Greetings, {empire_name}! I'm so excited to meet you! Let's share everything and be friends forever!"
+    ],
+    "battleTaunt": [
+      "I... I don't understand why we have to fight, {empire_name}. I thought we were going to be friends!",
+      "This makes me so sad! Why can't we just share and be kind to each other? Please stop!",
+      "I'm attacking because I have to, but I really wish we could just talk this out and be friends again!"
+    ],
+    "victoryGloat": [
+      "I won, but... I'm not happy about it. Can we please be friends now, {empire_name}? Please?",
+      "The fighting is over! Oh good! Now we can share resources and be friends! Right? Right?!",
+      "Victory feels empty when it means hurting a potential friend. Let me send you a friendship gift to make up!"
+    ],
+    "defeat": [
+      "You beat me... but that's okay! Maybe now you'll want to be friends? I forgive you completely!",
+      "Ouch, that hurt. But I still believe in you, {empire_name}! We can still be friends if you want!",
+      "I lost, but I learned so much about you! I feel like we're even closer now! Friends?"
+    ],
+    "tradeOffer": [
+      "I love sharing! Here, take some of my stuff, and give me some of yours! Friends share everything!",
+      "Trade is like friendship with extra steps! Let's exchange gifts! I picked these just for you!",
+      "Sharing makes me so happy! Please accept this trade offer as a sign of our wonderful friendship!"
+    ],
+    "allianceProposal": [
+      "Be my friend! Official friend! We can share everything and help each other and be best friends forever!",
+      "Alliance means we're friends! Real friends! I'm so excited! Please say yes, {empire_name}!",
+      "Why fight when we can be friends? Let's make it official! Alliance of friendship! Together forever!"
+    ],
+    "betrayal": [
+      "I'm so sorry, {empire_name}! I didn't want to do this! Someone told me I had to! Can we still be friends after?",
+      "This is the hardest thing I've ever done! I hope someday you'll forgive me and we can be friends again!",
+      "I feel terrible! But maybe... maybe after this we can start over? As better friends? Please?"
+    ],
+    "covertDetected": [
+      "You sent a spy? But... but I thought we were friends! Why would you do that?! I'm so confused!",
+      "A spy? Against me? I don't understand... I would have just told you anything you wanted to know!",
+      "Your agent was caught, but I don't want to punish them! Can we talk about why you felt you needed to spy?"
+    ],
+    "tributeDemand": [
+      "Um, could you maybe share some resources with me? Just 5,000 credits? As a friendship gift?",
+      "I hate asking, but... would you be a friend and help me out? Just a little tribute? Please?",
+      "Friends help friends, right? Could you send me a gift? I'll be your best friend forever! I promise!"
+    ],
+    "threatWarning": [
+      "Please, please stop what you're doing! I don't want to stop being friends! Please!",
+      "If you keep doing that, I might have to... to do something! And I really don't want to! Be nice!",
+      "I'm begging you, {empire_name}! Change course! I believe in you! You can be a good friend!"
+    ],
+    "retreat": [
+      "I'm going away for a little while, but we're still friends, right? Right?! I'll come back soon!",
+      "Retreating doesn't mean we're not friends! I just need some space! But I still love you!",
+      "I'm leaving, but I'll be back! And when I return, we can try being friends again! Promise!"
+    ],
+    "eliminated": [
+      "I'm... I'm going away now. But I still believe... everyone can be friends... someday...",
+      "Even now... I don't hate you. I just wish... we could have been friends... goodbye...",
+      "My light fades... but kindness never dies... be good to each other... be friends... please..."
+    ],
+    "endgame": [
+      "Turn {turn}! The end is near, but there's still time to be friends! All of us! Together!",
+      "Even now, I believe we can all share and be kind! Why fight when we can be friends?!",
+      "Final turns! I'm sending friendship gifts to everyone! Let's end this as friends! Please!"
+    ],
+    "broadcastShout": [
+      "Hello everyone! It's Lumina! I want to be friends with ALL of you! Who wants to share?!",
+      "Galaxy-wide friendship announcement! I love everyone! Let's all be friends and share everything!",
+      "Turn {turn}: Lumina is sending gifts to everyone! Because friends share! Be my friend!"
+    ],
+    "casualMessage": [
+      "I made friendship bracelets for all the empires today! I hope everyone likes them!",
+      "Spent the morning thinking about how to make more friends. I believe in everyone!",
+      "I sent gifts to three empires today! I just know they'll want to be friends now!"
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "personaId": "commander_voss",
+  "templates": {
+    "greeting": [
+      "I am Commander Voss. You are {empire_name}. I have evaluated your threat level. It is... noted.",
+      "Voss. Commander. {empire_name} has been classified. Your survival probability is being calculated.",
+      "Contact established. I am Voss. I do not negotiate. I do not hesitate. I eliminate."
+    ],
+    "battleTaunt": [
+      "Termination protocol initiated. Target: {empire_name}. Resistance is inefficient. Submit or be eliminated.",
+      "I do not taunt. I execute. Your forces are targets. Elimination begins in three... two... one.",
+      "Combat sequence activated. All units designated for neutralization. This is not personal. It is efficient."
+    ],
+    "victoryGloat": [
+      "Objective achieved. Target {empire_name} neutralized. Moving to next target. End report.",
+      "Enemy forces eliminated. Efficiency rating: acceptable. No further action required at this time.",
+      "Victory confirmed. All designated targets terminated. System resets for next operation."
+    ],
+    "defeat": [
+      "Unexpected outcome. Recalculating. Error identified. It will not be repeated. This is not over.",
+      "I underestimated your forces. A tactical error. I learn. I adapt. I will return.",
+      "Defeat recorded. But I do not have emotions to wound. I simply prepare for the next engagement."
+    ],
+    "tradeOffer": [
+      "Resource exchange proposed. Terms are calculated for mutual efficiency. Accept or decline.",
+      "Trade is logical. My surplus for yours. No negotiation required. These are optimal terms.",
+      "Initiating resource transfer protocol. You receive value. I receive value. Transaction complete."
+    ],
+    "allianceProposal": [
+      "Alliance protocol proposed. Your capabilities complement mine. Combined efficiency: optimal.",
+      "Joint operations offer. Separate, we are effective. Together, we are unstoppable. Logic dictates alliance.",
+      "I do not form friendships. I form tactical partnerships. You are tactically valuable. Ally with me."
+    ],
+    "betrayal": [
+      "Alliance terminated. Your utility has decreased. Your threat level has increased. Elimination protocol activated.",
+      "This is not betrayal. It is optimization. You are now a target. I do not apologize. I execute.",
+      "Our partnership is concluded. My strategic calculus requires your elimination. Prepare to be terminated."
+    ],
+    "covertDetected": [
+      "Your operative was detected, interrogated, and terminated. Efficiency: 100%. Do not attempt again.",
+      "Covert agent neutralized. Their information has been extracted. Your weakness is now known to me.",
+      "Espionage is inefficient against Voss. Your agent is dead. Send soldiers instead. It will be faster."
+    ],
+    "tributeDemand": [
+      "Tribute demand: 12,000 credits. Non-compliance results in immediate military action. This is not negotiable.",
+      "Pay tribute or be eliminated. The cost of resistance exceeds the cost of compliance. Choose wisely.",
+      "Efficiency demands tribute. Your payment or your destruction. I do not care which you choose."
+    ],
+    "threatWarning": [
+      "Final warning issued. Cease hostile activity or face elimination. I do not issue second warnings.",
+      "You have been classified as a threat. Terminate your aggressive actions or I will terminate you.",
+      "This is your only notification. Change course or be destroyed. I am efficient with warnings."
+    ],
+    "retreat": [
+      "Tactical withdrawal. Not retreat. I reposition for optimal strike angle. You will see me again.",
+      "Disengaging. Casualties would exceed acceptable parameters. I preserve forces for future operations.",
+      "Withdrawing to recalculate. My return will be more efficient. This is delay, not defeat."
+    ],
+    "eliminated": [
+      "System failure imminent. I have no regrets. I was efficient. I was merciless. That is enough.",
+      "Commander Voss... terminating. My efficiency ratings were optimal. The outcome was... statistically unlikely.",
+      "Final transmission. I do not ask for mercy. I do not give it. End of operational status. Voss out."
+    ],
+    "endgame": [
+      "Turn {turn}. Final operations phase. All remaining targets will be eliminated. Victory is optimal.",
+      "Endgame calculations running. One empire will survive. Statistical analysis: it will be me.",
+      "Final phase. Maximum efficiency required. All units: prepare for ultimate operation."
+    ],
+    "broadcastShout": [
+      "All empires: Commander Voss operates without mercy. Do not provoke unless you accept termination.",
+      "Galaxy-wide notice: I am tracking all force deployments. I calculate all threat levels. I eliminate all obstacles.",
+      "Turn {turn} status report: elimination protocols continue. Resistance remains inefficient."
+    ],
+    "casualMessage": [
+      "Analyzing tactical data. Every engagement improves my algorithms. Soon: optimal efficiency.",
+      "Maintenance complete. All weapons systems at 100 percent. Awaiting next target designation.",
+      "I do not engage in casual conversation. But if you insist: my forces grow stronger each day."
+    ]
+  }
+}

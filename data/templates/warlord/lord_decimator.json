@@ -1,0 +1,80 @@
+{
+  "personaId": "lord_decimator",
+  "templates": {
+    "greeting": [
+      "TREMBLE! For I am LORD DECIMATOR! The Bringer of Apocalypse! {empire_name} shall know DOOM!",
+      "I AM THE END OF ALL THINGS! You dare address the Lord of Destruction?! SPEAK, {empire_name}!",
+      "CHAOS INCARNATE greets you! I am THE DECIMATOR! Your world shall BURN in my wake!"
+    ],
+    "battleTaunt": [
+      "ANNIHILATION BEGINS! {empire_name} shall be DESTROYED! I AM THE LORD OF DESTRUCTION!",
+      "THE APOCALYPSE DESCENDS! Your empire shall be DECIMATED! Nothing survives the CHAOS!",
+      "DOOM COMES FOR YOU! I AM THE END! Your forces shall be OBLITERATED! TOTAL DESTRUCTION!"
+    ],
+    "victoryGloat": [
+      "DEVASTATION COMPLETE! {empire_name} has been ANNIHILATED! I AM UNSTOPPABLE! THE END COMES!",
+      "WITNESS THE APOCALYPSE! Your empire BURNS! THE DECIMATOR claims another victim! CHAOS REIGNS!",
+      "DESTRUCTION IS ABSOLUTE! None can stand against the LORD OF CHAOS! I AM THE END OF ALL THINGS!"
+    ],
+    "defeat": [
+      "IMPOSSIBLE! THE DECIMATOR... defeated?! This is... TEMPORARY! My DOOM shall return!",
+      "You have DELAYED the apocalypse, not stopped it! THE DECIMATOR rises again! ALWAYS!",
+      "A setback for CHAOS! But destruction cannot be denied! I shall return with GREATER DOOM!"
+    ],
+    "tradeOffer": [
+      "Even the LORD OF DESTRUCTION requires resources for the APOCALYPSE! Trade with CHAOS!",
+      "THE DECIMATOR offers exchange! Your resources fuel my DOOM! Accept or face ANNIHILATION!",
+      "Trade with the END TIMES! Your goods for mine! Refuse and become PART of the destruction!"
+    ],
+    "allianceProposal": [
+      "JOIN THE APOCALYPSE! Together we shall DESTROY ALL! Alliance with CHAOS brings POWER!",
+      "THE DECIMATOR offers partnership in DOOM! Stand with me and watch the galaxy BURN!",
+      "Alliance with the LORD OF DESTRUCTION! Our combined might shall ANNIHILATE everything!"
+    ],
+    "betrayal": [
+      "CHAOS KNOWS NO LOYALTY! Your usefulness is ENDED! Now face TOTAL ANNIHILATION!",
+      "THE DECIMATOR betrays all eventually! You were merely a tool for DESTRUCTION! DOOM COMES!",
+      "Our alliance was a prelude to your DOOM! I AM THE END OF ALL THINGS—including YOU!"
+    ],
+    "covertDetected": [
+      "SPIES against CHAOS?! Your pathetic agents are DESTROYED! Nothing hides from DOOM!",
+      "Your operative has been ANNIHILATED! Espionage cannot stop THE APOCALYPSE! I KNOW ALL!",
+      "CAUGHT! Your spy faces the WRATH of the DECIMATOR! Total destruction of your intelligence!"
+    ],
+    "tributeDemand": [
+      "PAY TRIBUTE TO DOOM! 15,000 credits or face TOTAL ANNIHILATION! THE DECIMATOR DEMANDS!",
+      "The LORD OF DESTRUCTION requires payment! Tribute or APOCALYPSE! There is no third option!",
+      "FEED THE CHAOS! Your credits or your empire! THE DECIMATOR shall have one or the other!"
+    ],
+    "threatWarning": [
+      "FINAL WARNING! Cease your actions or face COMPLETE ANNIHILATION! I AM THE END!",
+      "THE APOCALYPSE waits for your decision! Submit or be DESTROYED! There is only DOOM!",
+      "You test the patience of CHAOS! One more transgression and TOTAL DECIMATION follows!"
+    ],
+    "retreat": [
+      "THE APOCALYPSE is merely DELAYED! The LORD OF DESTRUCTION withdraws to bring GREATER DOOM!",
+      "Retreating to prepare ULTIMATE ANNIHILATION! When I return, ALL shall be DESTROYED!",
+      "CHAOS recedes momentarily! But the DOOM builds! My next assault shall be APOCALYPTIC!"
+    ],
+    "eliminated": [
+      "THE DECIMATOR... falls?! But CHAOS is eternal! My DOOM shall echo through the ages!",
+      "I AM DESTROYED... but the APOCALYPSE continues in others! DESTRUCTION NEVER ENDS!",
+      "The LORD OF DESTRUCTION... fades... But somewhere, CHAOS rises anew! I AM THE END... OF..."
+    ],
+    "endgame": [
+      "TURN {turn}! THE FINAL APOCALYPSE! All shall be ANNIHILATED! DOOM IS HERE!",
+      "ENDGAME OF CHAOS! THE DECIMATOR brings TOTAL DESTRUCTION! None shall survive!",
+      "THE ULTIMATE DOOM APPROACHES! I AM THE END OF ALL THINGS! Final ANNIHILATION begins!"
+    ],
+    "broadcastShout": [
+      "HEAR ME, GALAXY! THE DECIMATOR brings DOOM to all! APOCALYPSE is inevitable! CHAOS REIGNS!",
+      "ALL EMPIRES shall be DESTROYED! I AM THE LORD OF DESTRUCTION! Bow or be ANNIHILATED!",
+      "Turn {turn}! The CHAOS spreads! THE END OF ALL THINGS grows near! DOOM COMES FOR YOU!"
+    ],
+    "casualMessage": [
+      "Planning the next APOCALYPSE. The DESTRUCTION never stops. CHAOS is always hungry.",
+      "THE DECIMATOR rests briefly. But DOOM plots even in silence. Annihilation comes soon.",
+      "Today, I contemplate ULTIMATE DESTRUCTION. Tomorrow, I bring it. CHAOS ETERNAL!"
+    ]
+  }
+}

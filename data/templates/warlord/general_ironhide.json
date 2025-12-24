@@ -1,0 +1,80 @@
+{
+  "personaId": "general_ironhide",
+  "templates": {
+    "greeting": [
+      "General Ironhide. 0800 hours contact with {empire_name}. State your strategic intentions.",
+      "I'm Ironhide. I count casualties, not pleasantries. What do you want, {empire_name}?",
+      "Ironhide here. Skip the diplomacy nonsense. Let's talk numbers and objectives."
+    ],
+    "battleTaunt": [
+      "Attack commencing at 0600, {empire_name}. I've calculated your casualties at 47%. Prepare accordingly.",
+      "War is math. I ran the numbers. Your loss probability: 89%. Recommend immediate surrender.",
+      "Tactical analysis complete. Your defensive positions are inadequate. Attack begins in one hour."
+    ],
+    "victoryGloat": [
+      "Operation complete. Enemy casualties: as projected. Objective achieved. Moving to next target.",
+      "Victory confirmed. {empire_name} forces neutralized. Efficiency rating: 94%. Acceptable.",
+      "Numbers don't lie. I calculated your defeat. Now it's recorded in my logs. Next operation loading."
+    ],
+    "defeat": [
+      "Tactical setback recorded. Casualties higher than projected. Recalculating strategy for next engagement.",
+      "I miscalculated. It happens. Adjusting parameters. Next time the math will be in my favor.",
+      "You won this engagement. But I learn from every battle. My efficiency improves constantly."
+    ],
+    "tradeOffer": [
+      "Resource exchange proposal. I have surplus X. You have surplus Y. Trade ratio: 1:1. Efficient.",
+      "Logistics report indicates mutual benefit from resource transfer. Confirm acceptance, {empire_name}.",
+      "Trade protocol initiated. Terms are fair and mathematically optimal. Accept or decline."
+    ],
+    "allianceProposal": [
+      "Alliance proposal. Combined force multiplier: 2.3x. Tactical advantage significant. Accept?",
+      "Military partnership offer. Your forces plus my forces equals superior strategic position. Logic dictates alliance.",
+      "I propose joint operations. The math is clear: together we achieve objectives faster. Ally with me."
+    ],
+    "betrayal": [
+      "Alliance terminated. Strategic calculus has changed. Your utility no longer exceeds your threat level.",
+      "This is not personal. The numbers demanded this betrayal. Prepare for hostile operations.",
+      "I calculated the optimal moment to strike. This is it. Former alliance status: revoked."
+    ],
+    "covertDetected": [
+      "Covert operative detected and neutralized at 0347 hours. Espionage is inefficient. Face me directly.",
+      "Your spy is in custody. Interrogation efficiency: 100%. I now know your deployment patterns.",
+      "Agent captured. Recommend you stop wasting resources on subterfuge and focus on combat readiness."
+    ],
+    "tributeDemand": [
+      "Tribute demand: 10,000 credits. Non-compliance results in military action. Cost-benefit analysis favors compliance.",
+      "Pay now or fight. Fighting costs you more. The math is simple. What's your decision?",
+      "Surrender tribute or face calculated destruction. Your survival probability with tribute: 100%. Without: 23%."
+    ],
+    "threatWarning": [
+      "Warning: Hostile action imminent unless you cease current activities. This is not a negotiation.",
+      "Final notification. Continued aggression will result in full military response. I don't bluff—I calculate.",
+      "Threat assessment complete. You are 6 hours from becoming my primary objective. Adjust accordingly."
+    ],
+    "retreat": [
+      "Tactical withdrawal initiated. Casualty preservation takes priority. This is efficiency, not cowardice.",
+      "Retreating to defensible position. Will resume offensive when numbers favor success.",
+      "Strategic redeployment in progress. Fighting losing battles is inefficient. I will return."
+    ],
+    "eliminated": [
+      "Final status report: empire destroyed. Casualties: total. But my last act was still efficient. Ironhide out.",
+      "Calculations failed. All projections exceeded. This is my final transmission. The math... was wrong.",
+      "System failure imminent. It was a good campaign. My tactical records will survive me. Signing off."
+    ],
+    "endgame": [
+      "Turn {turn}. Endgame parameters active. Final calculations running. This decides everything.",
+      "Final phase of conflict. All remaining resources committed. Victory probability being calculated.",
+      "Endgame scenario. The numbers will determine the victor. May the best calculator win."
+    ],
+    "broadcastShout": [
+      "All empires: General Ironhide is tracking your force deployments. I know your numbers. Act accordingly.",
+      "Galactic announcement: Military efficiency is everything. Those who understand math will survive.",
+      "Turn {turn} status: My forces at 94% combat readiness. How do your numbers compare?"
+    ],
+    "casualMessage": [
+      "Running logistics simulations. The supply chains need optimization. Always improving efficiency.",
+      "Reviewed yesterday's casualty reports. Some units underperformed. Replacements scheduled.",
+      "The 0600 briefing was productive. Troop morale is irrelevant. Only numbers matter."
+    ]
+  }
+}

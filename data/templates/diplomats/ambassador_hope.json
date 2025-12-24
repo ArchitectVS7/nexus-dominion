@@ -1,0 +1,80 @@
+{
+  "personaId": "ambassador_hope",
+  "templates": {
+    "greeting": [
+      "Greetings, {empire_name}! I'm Ambassador Hope. Even in the darkest night, dawn will come. Let's talk!",
+      "Hello! I'm Hope Eternal. I believe in the good in every empire. Let's build something wonderful together!",
+      "A pleasure to meet you, {empire_name}! I'm Hope. I believe tomorrow can always be better than today!"
+    ],
+    "battleTaunt": [
+      "I don't want to fight, {empire_name}, but I believe this conflict will lead to a brighter tomorrow.",
+      "Even this battle gives me hope—hope that it ends quickly and we can find peace on the other side.",
+      "War is dark, but dawn will come. I fight believing in the redemption waiting after this struggle."
+    ],
+    "victoryGloat": [
+      "Victory! But the real triumph will be when we turn this ending into a new beginning of peace.",
+      "We've won, but I see hope in this outcome—a chance for {empire_name} to choose a better path.",
+      "This battle ends, and with it, a new chapter begins. I hope it's filled with peace and growth!"
+    ],
+    "defeat": [
+      "A setback, but not the end. Even in the darkest night, dawn will come. I believe in tomorrow!",
+      "I've lost today, but every defeat contains the seeds of future victory. I won't lose faith!",
+      "This loss is just a chapter, not the whole story. I believe in redemption—for myself and all of us."
+    ],
+    "tradeOffer": [
+      "I offer trade in the spirit of hope—may this exchange be the first step toward lasting friendship!",
+      "Let's trade! Commerce builds bridges between empires. I believe this is the beginning of something great!",
+      "Trade offer sent with optimism! Every exchange is a reason to hope for a better tomorrow!"
+    ],
+    "allianceProposal": [
+      "Even in the darkest night, dawn will come. Let's face the night together as allies, {empire_name}!",
+      "I believe in you, {empire_name}! Join me in alliance, and together we'll build a hopeful future!",
+      "Alliance brings hope to the galaxy! Together, we can make tomorrow brighter. What do you say?"
+    ],
+    "betrayal": [
+      "This breaks my heart, but I still believe in redemption—maybe one day we'll be allies again.",
+      "I must end our alliance, but I haven't lost hope in you, {empire_name}. The future remains unwritten.",
+      "Farewell, former friend. But dawn will come again. Perhaps our paths will converge in brighter times."
+    ],
+    "covertDetected": [
+      "You sent a spy? I'm disappointed, but I still believe you can choose a better path, {empire_name}.",
+      "Your agent was caught, but I see this as a chance for honest dialogue. Let's talk instead of spy.",
+      "Espionage discovered. But I have faith—this mistake doesn't define you. Choose hope next time."
+    ],
+    "tributeDemand": [
+      "I hope you'll see this tribute request as an investment in peace. 8,000 credits for a hopeful future!",
+      "Please consider contributing tribute. It's a small price for the hope of lasting peace between us.",
+      "Tribute request, sent with optimism! May this payment mark the beginning of better relations!"
+    ],
+    "threatWarning": [
+      "Please, {empire_name}! I still believe you can change course! Choose hope, not conflict!",
+      "Even now, I have faith in you. Even in the darkest night, dawn will come. But you must choose the dawn!",
+      "Final warning—but also final offer of hope! Turn back! Tomorrow can still be brighter!"
+    ],
+    "retreat": [
+      "I withdraw, but my hope remains! This retreat gives us both time to find a better way forward!",
+      "Falling back, but not giving up! Even in the darkest night, dawn will come. I'll return with hope renewed!",
+      "Retreating today, but tomorrow holds new possibilities! I believe in the future we can build!"
+    ],
+    "eliminated": [
+      "My light fades... but hope is eternal... Others will carry it forward... Dawn will come...",
+      "I fall believing... in tomorrow... in redemption... in you all... Keep hoping... please...",
+      "Even in this darkest night... I see the dawn approaching... for others... Hope... never dies..."
+    ],
+    "endgame": [
+      "Turn {turn}. The final chapters! But every ending is a new beginning! I face the end with hope!",
+      "Endgame arrives, but my faith never wavers! Even in the darkest night, dawn will come!",
+      "The final turns! I believe in redemption, in tomorrow, in all of you! Let's make this ending meaningful!"
+    ],
+    "broadcastShout": [
+      "To all empires: Ambassador Hope believes in you! Even in the darkest night, dawn will come!",
+      "Galaxy-wide message of hope! Tomorrow can be better! I believe in the good in every empire!",
+      "Turn {turn}: Don't lose faith! The future is unwritten! Choose hope, choose peace, choose tomorrow!"
+    ],
+    "casualMessage": [
+      "I woke up optimistic today! The galaxy has such potential! I can feel the dawn approaching!",
+      "Spent the morning encouraging struggling empires. Everyone deserves hope in dark times.",
+      "I believe tomorrow will be better than today. That belief drives everything I do."
+    ]
+  }
+}

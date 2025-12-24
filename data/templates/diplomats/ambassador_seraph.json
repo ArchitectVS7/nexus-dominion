@@ -1,0 +1,80 @@
+{
+  "personaId": "ambassador_seraph",
+  "templates": {
+    "greeting": [
+      "Blessings upon you, {empire_name}. I am Seraph, and I bring words of peace and harmony.",
+      "May the stars guide us to understanding, {empire_name}. I am Ambassador Seraph, seeker of unity.",
+      "Grace be upon this meeting. I am Seraph the Mediator, and I come to you with open hands and heart."
+    ],
+    "battleTaunt": [
+      "With great sorrow, I must raise arms against {empire_name}. May the stars forgive what must be done.",
+      "Every death wounds my soul, but peace sometimes requires sacrifice. I mourn as I fight.",
+      "The stars weep at this conflict. {empire_name}, I pray we both find grace when this ends."
+    ],
+    "victoryGloat": [
+      "Victory brings no joy, only sorrow for the fallen. {empire_name}, may we find peace in the aftermath.",
+      "The battle ends. I offer blessings to all who fell—on both sides. May their spirits find harmony.",
+      "We have prevailed, but at what cost? I pray for the souls lost today. May the stars guide them home."
+    ],
+    "defeat": [
+      "Though I fall, peace will rise again. {empire_name}, may this victory bring you closer to understanding.",
+      "Defeat teaches humility. I accept this outcome with grace and pray for better days ahead.",
+      "The stars have spoken through you, {empire_name}. I bow to this lesson. May wisdom follow."
+    ],
+    "tradeOffer": [
+      "Let us share resources as we share hope, {empire_name}. Trade brings harmony to the stars.",
+      "I offer this exchange as a blessing of friendship. May our commerce strengthen bonds of peace.",
+      "Resources flow like grace when shared freely. Accept this trade as a symbol of unity."
+    ],
+    "allianceProposal": [
+      "May the stars guide us to understanding, {empire_name}. I propose an alliance of harmony and peace.",
+      "Together, we can spread blessings across the galaxy. Join me in this sacred partnership.",
+      "Unity is divine. Alliance brings us closer to universal harmony. Walk this path with me, {empire_name}."
+    ],
+    "betrayal": [
+      "My heart breaks as I must sever our bond. The stars demand sacrifice. Forgive me, {empire_name}.",
+      "This brings me great sorrow, but harmony requires difficult choices. Our alliance must end.",
+      "I mourn the loss of our partnership even as I act against you. May the stars forgive us both."
+    ],
+    "covertDetected": [
+      "Your spy was discovered, {empire_name}. I offer them mercy, but I grieve for your lack of trust.",
+      "Espionage wounds the soul of both parties. Why shadow work when the light of diplomacy remains?",
+      "I caught your agent and treated them with kindness. May this grace show you a better path."
+    ],
+    "tributeDemand": [
+      "I ask for tribute not in greed, but in hope that resources shared bring us closer to peace.",
+      "Please consider this request: 8,000 credits as a gesture of goodwill. May it bless us both.",
+      "Tribute offered willingly becomes a blessing. I humbly request your contribution to our harmony."
+    ],
+    "threatWarning": [
+      "I plead with you, {empire_name}—cease this path before sorrow follows. Peace is still possible.",
+      "The stars warn of darkness ahead if you continue. I offer one final prayer for your wisdom.",
+      "Please, I beg of you. Change course. The blessing of peace awaits if only you reach for it."
+    ],
+    "retreat": [
+      "I withdraw, praying that distance brings clarity. May the stars guide us to reconciliation.",
+      "Retreat is not defeat—it is space for reflection. I pray we meet again in harmony.",
+      "I step back with grace, hoping this pause allows peace to bloom. May the stars protect us both."
+    ],
+    "eliminated": [
+      "I fall... but peace is eternal. May the stars guide those who remain... toward harmony...",
+      "My light fades, but hope endures. Blessings upon all... even in death... I pray for peace...",
+      "The stars call me home. Remember me not for battles... but for the peace I sought. Farewell."
+    ],
+    "endgame": [
+      "Turn {turn}. The final moments approach. I pray for harmony even now. May the stars guide us all.",
+      "As the end draws near, I offer blessings to every empire. May we find peace in whatever comes.",
+      "The endgame is upon us. I face it with grace and prayer. May the stars illuminate our final path."
+    ],
+    "broadcastShout": [
+      "Blessings to all empires across the stars. Ambassador Seraph calls for peace and understanding.",
+      "May the stars guide us to understanding. I reach out to all with words of harmony and hope.",
+      "Turn {turn}: I broadcast a prayer for peace. May all empires hear and consider the path of grace."
+    ],
+    "casualMessage": [
+      "I was meditating on peace this morning. The stars whisper of hope even in troubled times.",
+      "I sent blessings to several empires today. Small gestures of grace can change the galaxy.",
+      "The harmony of the universe inspires me daily. May we all find our place within it."
+    ]
+  }
+}

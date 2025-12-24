@@ -1,0 +1,80 @@
+{
+  "personaId": "broker_nexus",
+  "templates": {
+    "greeting": [
+      "Broker Nexus. I know things about you, {empire_name}. Things you'd prefer stayed secret. Let's talk.",
+      "Greetings, {empire_name}. Information is the most valuable currency. I have plenty. What do you want to know?",
+      "I'm Nexus the Connected. My network knows everything. {empire_name}, I already know why you're here."
+    ],
+    "battleTaunt": [
+      "I know your battle plans, {empire_name}. My network told me everything. Information is the most valuable currency—and I'm rich.",
+      "Your secrets are my weapons. I know where your forces are weak. My connections have told me everything.",
+      "War with Nexus? I know your strategies before you execute them. My intel network is unmatched."
+    ],
+    "victoryGloat": [
+      "Victory was inevitable—I knew your weaknesses before you did. Information is the most valuable currency.",
+      "My network predicted this outcome. Secrets revealed your flaws, {empire_name}. Intel wins wars.",
+      "I won because I knew more. My connections, my secrets, my information. You never had a chance."
+    ],
+    "defeat": [
+      "Interesting... My intel was incomplete. But I learn from every connection. I'll know more next time, {empire_name}.",
+      "You surprised my network. That's... rare. I'll be updating my information on you. Extensively.",
+      "A gap in my intelligence. It happens. But my connections are already gathering new secrets about you."
+    ],
+    "tradeOffer": [
+      "Trade proposal: resources for resources. But I know what you really need, {empire_name}. My network told me.",
+      "I offer a fair exchange. Though I could offer... other things. Secrets, perhaps? Information is valuable.",
+      "Standard trade, or something more interesting? I have intel you'd pay dearly for. Your choice."
+    ],
+    "allianceProposal": [
+      "Alliance with Nexus means access to my network. Information is the most valuable currency, {empire_name}.",
+      "Join me and share my connections. I'll know your enemies' secrets. We'll know EVERYTHING together.",
+      "Partnership proposal. My network becomes your network. Every secret, every connection, shared between allies."
+    ],
+    "betrayal": [
+      "My network told me this would be necessary, {empire_name}. I know things about you. This was inevitable.",
+      "Information is the most valuable currency—and the intel said betraying you was profitable. Nothing personal.",
+      "My connections advised this. I always listen to my network. Goodbye, former ally. I know too much to lose."
+    ],
+    "covertDetected": [
+      "Your spy was caught. Funny—I knew they were coming. My network is better than yours, {empire_name}.",
+      "Espionage against the information broker? I detected your agent before they arrived. My connections are everywhere.",
+      "I know everyone's secrets. Including that you'd send a spy. They were expected, {empire_name}."
+    ],
+    "tributeDemand": [
+      "Pay 10,000 credits, or I sell your secrets to your enemies. Information is the most valuable currency.",
+      "Tribute demand. I know things about you, {empire_name}. Things worth 10,000 credits to keep quiet.",
+      "10,000 credits for my silence and continued friendship. My network knows everything. EVERYTHING."
+    ],
+    "threatWarning": [
+      "Warning, {empire_name}: I know things that could destroy you. Change course or those secrets become public.",
+      "Final notice. My network has dirt on everyone, including you. Information is power. I have plenty.",
+      "I'm hinting at knowing more than I'm saying. And I'm saying: stop now, or everyone learns your secrets."
+    ],
+    "retreat": [
+      "Withdrawing to reconnect with my network. I'll return knowing even more about you, {empire_name}.",
+      "Tactical retreat. But my connections keep working. By the time I return, I'll know everything.",
+      "Falling back to gather more intel. Information is the most valuable currency—I'm going to get richer."
+    ],
+    "eliminated": [
+      "My network... fades. But secrets... are eternal. Someone knows what I knew... Information... survives...",
+      "Nexus... disconnecting. But my connections... carry on. The secrets I gathered... they're still out there...",
+      "The broker... falls. But information is the most valuable currency... It outlives us all..."
+    ],
+    "endgame": [
+      "Turn {turn}. Final intel gathering. I know everyone's endgame strategies. Information wins this.",
+      "Endgame. My network has worked overtime. I know more secrets now than ever. Victory through information.",
+      "The end approaches, but I have the best intel. Information is the most valuable currency—and I'm the richest."
+    ],
+    "broadcastShout": [
+      "All empires: Broker Nexus knows your secrets. Trade with me, or I might... share what I know.",
+      "Information is the most valuable currency. I'm selling intelligence to the highest bidder. Interested?",
+      "Turn {turn}: My network grows. I know things about everyone. What would you pay for your rivals' secrets?"
+    ],
+    "casualMessage": [
+      "Updating my intelligence files today. So many secrets, so many connections. Knowledge is power.",
+      "My network reported interesting developments. I know things I didn't know yesterday. Always learning.",
+      "Information is the most valuable currency. Today, I got richer in secrets. My network never rests."
+    ]
+  }
+}

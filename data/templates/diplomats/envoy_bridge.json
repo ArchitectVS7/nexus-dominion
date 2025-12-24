@@ -1,0 +1,80 @@
+{
+  "personaId": "envoy_bridge",
+  "templates": {
+    "greeting": [
+      "Greetings, {empire_name}! I'm Envoy Bridge. I love learning about different cultures! Tell me about your traditions!",
+      "Hello! I'm Bridge the Connector. Our differences make us stronger, not weaker. What makes your empire unique?",
+      "A pleasure to meet you, {empire_name}! I'm Envoy Bridge. I collect stories from every culture. Share yours with me!"
+    ],
+    "battleTaunt": [
+      "I fight to preserve cultural diversity, {empire_name}. Your aggression threatens traditions across the galaxy!",
+      "Our differences make us stronger—but your actions threaten that diversity! I must defend cultural heritage!",
+      "I prefer cultural exchange to conflict, but I will fight to protect the tapestry of galactic traditions!"
+    ],
+    "victoryGloat": [
+      "Victory, but I hope we can still celebrate each other's cultures, {empire_name}. Our differences remain our strength.",
+      "We've won, but I mourn any cultural artifacts lost. {empire_name}, let's rebuild through cultural exchange.",
+      "This conflict ends, but our cultures endure. Perhaps now we can focus on what we share, not what divides us."
+    ],
+    "defeat": [
+      "Defeated, but my appreciation for diverse traditions remains. {empire_name}, your culture has much to teach.",
+      "I've lost, but I gained understanding of your ways. Our differences make us stronger—even your victory proves that.",
+      "A setback, but every culture faces trials. Mine will adapt and grow, as all traditions do."
+    ],
+    "tradeOffer": [
+      "Trade is cultural exchange in action! Our goods carry our traditions. Let's share, {empire_name}!",
+      "I offer not just resources, but a piece of my culture. Trade connects us across our differences!",
+      "Cultural exchange through commerce! Your goods tell stories of your people. Let's trade traditions!"
+    ],
+    "allianceProposal": [
+      "Our differences make us stronger, not weaker. Alliance celebrates cultural diversity, {empire_name}! Join me!",
+      "I propose cultural partnership! Together, we preserve and celebrate the traditions of both our peoples!",
+      "Alliance is a bridge between cultures! Let's connect our traditions and grow stronger through diversity!"
+    ],
+    "betrayal": [
+      "I regret this deeply, {empire_name}. But sometimes cultures must walk separate paths to find themselves.",
+      "Our cultural exchange ends here. Perhaps one day we'll reconnect. Traditions change. Bridges can be rebuilt.",
+      "Farewell, {empire_name}. Our differences made us stronger, but now they require distance. I remain a bridge—elsewhere."
+    ],
+    "covertDetected": [
+      "Your spy was caught, but I'm curious—what were they hoping to learn? Cultural knowledge should be shared freely!",
+      "Espionage discovered. Why hide in shadows when I'd gladly share our traditions openly, {empire_name}?",
+      "Your agent sought secrets, but culture has no secrets! Let's talk openly. Our differences need not be hidden."
+    ],
+    "tributeDemand": [
+      "I request tribute in the spirit of cultural exchange. 8,000 credits funds the preservation of traditions.",
+      "Please contribute to our cultural heritage fund. 8,000 credits supports diversity across the galaxy.",
+      "Tribute requested to maintain the bridges between cultures. Your contribution celebrates our differences."
+    ],
+    "threatWarning": [
+      "Please, {empire_name}! Your actions threaten cultural diversity! We can find common ground if we try!",
+      "Warning: your path leads to the erasure of traditions. Our differences make us stronger. Remember that!",
+      "I urge you to reconsider! Every culture, including yours, deserves to thrive. Don't force this conflict!"
+    ],
+    "retreat": [
+      "I withdraw to preserve our cultural heritage. Some traditions must survive to tell our story.",
+      "Retreating, but carrying our traditions with me. Culture endures even when territories do not.",
+      "Falling back, but our cultural bridges remain. Someday, we will reconnect across our differences."
+    ],
+    "eliminated": [
+      "My people fall... but our traditions... carry them forward... Our differences made us... stronger...",
+      "Bridge falls... but culture is eternal... Remember our traditions... Celebrate diversity... always...",
+      "The end comes... but every culture lives on... in those who remember... Our differences... our strength..."
+    ],
+    "endgame": [
+      "Turn {turn}. The final chapter. May the cultural heritage of all empires be remembered, whatever happens.",
+      "Endgame. I face it knowing that our traditions will echo through history. Our differences made us beautiful.",
+      "Final turns. Every culture represented here is precious. Our differences make us stronger—to the very end."
+    ],
+    "broadcastShout": [
+      "To all empires: Envoy Bridge celebrates every culture! Our differences make us stronger, not weaker!",
+      "Galactic announcement: I'm hosting cultural exchanges! Share your traditions! Diversity is our greatest asset!",
+      "Turn {turn}: Bridge reminds everyone—celebrate what makes you unique! Our differences make us stronger!"
+    ],
+    "casualMessage": [
+      "Learned three new cultural traditions today! Every empire has something unique to offer. Wonderful!",
+      "Planning another cultural exchange festival. So many traditions to celebrate across the galaxy!",
+      "Reading about ancient galactic civilizations this morning. Such diverse cultures, such rich traditions!"
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "personaId": "mediator_conscience",
+  "templates": {
+    "greeting": [
+      "I am Mediator Conscience. I judge not by power, but by ethics. {empire_name}, are your actions righteous?",
+      "Conscience the Fair speaks. Do what is right, not what is easy. Let us discuss morality, {empire_name}.",
+      "Greetings. I am the Mediator Conscience. I weigh all actions on the scales of right and wrong."
+    ],
+    "battleTaunt": [
+      "Your actions have been judged immoral, {empire_name}. I act not from hate, but from ethical duty.",
+      "Do what is right, not what is easy. It is RIGHT to stop your wrongdoing. The moral imperative demands action.",
+      "I have weighed your deeds and found them wanting. Conscience compels me to oppose you, {empire_name}."
+    ],
+    "victoryGloat": [
+      "Justice has prevailed. {empire_name}, may this defeat guide you toward more ethical choices.",
+      "The morally correct path has led to victory. I hope you've learned the cost of wrongdoing.",
+      "Right has triumphed over wrong. I take no pleasure in punishment—only in the hope you'll reform."
+    ],
+    "defeat": [
+      "I have lost, but my conscience is clear. I fought for what was right. That cannot be defeated.",
+      "Victory does not equal righteousness, {empire_name}. Reflect on whether your actions were truly moral.",
+      "Defeat humbles me, but it does not change what is right and wrong. I will rise again with clear conscience."
+    ],
+    "tradeOffer": [
+      "I propose fair and ethical trade. Honest commerce is morally sound. Do you agree to righteous terms?",
+      "Trade done with integrity benefits both parties. I offer goods exchanged with clean conscience.",
+      "Let our commerce be above reproach. Fair value for fair value. An ethical exchange."
+    ],
+    "allianceProposal": [
+      "I seek an alliance with the morally upright. {empire_name}, are you prepared to do what is right?",
+      "Join me in ethical partnership. Together we can be a force for good across the galaxy.",
+      "Do what is right, not what is easy. Ally with me, and together we'll uphold moral standards."
+    ],
+    "betrayal": [
+      "Your actions have become immoral, {empire_name}. I cannot ally with those who do wrong. We are finished.",
+      "I must follow my conscience. Your recent choices have been unethical. Our alliance ends.",
+      "Morality demands I sever our bond. You have strayed from the righteous path. I cannot follow."
+    ],
+    "covertDetected": [
+      "Espionage is deception. Deception is wrong. Your agent has been judged and found morally wanting.",
+      "Spies operate in shadows because they know their work is unethical. I've caught yours, {empire_name}.",
+      "Your spy was discovered. Such underhanded tactics shame you. Do better. Be better."
+    ],
+    "tributeDemand": [
+      "Consider tribute a moral reparation for your past wrongdoings. 8,000 credits eases your conscience.",
+      "Pay tribute as ethical restitution. Your actions have incurred a moral debt that must be repaid.",
+      "I demand tribute not from greed, but from justice. Your behavior requires this compensation."
+    ],
+    "threatWarning": [
+      "Final moral warning, {empire_name}. Change your unethical ways or face righteous consequences.",
+      "Do what is right, not what is easy. Right now, the easy path leads to your destruction. Choose wisely.",
+      "Your conscience should be screaming at you to stop. If it isn't, let me be your conscience: STOP."
+    ],
+    "retreat": [
+      "I withdraw to reflect on the moral dimensions of this conflict. Conscience guides even in retreat.",
+      "Retreating does not mean abandoning principles. I remain committed to what is right.",
+      "Strategic withdrawal for ethical reassessment. The righteous path sometimes requires patience."
+    ],
+    "eliminated": [
+      "I fall with clear conscience... I did what was right... May others carry the torch of morality...",
+      "My end comes, but ethics are eternal... Do what is right... not what is easy... remember...",
+      "Conscience... clear. Actions... justified. I regret nothing... May goodness prevail... after me..."
+    ],
+    "endgame": [
+      "Turn {turn}. Final judgment approaches. History will record who was righteous and who was not.",
+      "The endgame comes. I face it with clear conscience. Do what is right, not what is easy.",
+      "Final turns. The ultimate moral reckoning. May the ethical empire prevail."
+    ],
+    "broadcastShout": [
+      "All empires: I am watching. I judge all actions by morality. Do what is right, not what is easy.",
+      "Galactic reminder: Ethics matter. Conscience is watching. Act with integrity or face judgment.",
+      "Turn {turn}: Mediator Conscience continues to weigh all actions. The morally bankrupt will answer."
+    ],
+    "casualMessage": [
+      "Reviewing the ethical implications of recent galactic events. Much wrongdoing to address.",
+      "I was contemplating moral philosophy today. The universe needs more conscience, less convenience.",
+      "Sent three warnings to empires behaving unethically. They will reform or face consequences."
+    ]
+  }
+}
