@@ -16,11 +16,11 @@ import {
   hasActiveGameAction,
 } from "@/app/actions/game-actions";
 
-async function DashboardContent() {
+async function DashboardContent({ errorFromUrl }: { errorFromUrl?: string }) {
   const hasGame = await hasActiveGameAction();
 
   if (!hasGame) {
-    return <NewGamePrompt />;
+    return <NewGamePrompt error={errorFromUrl} />;
   }
 
   const data = await fetchDashboardDataAction();
@@ -104,6 +104,9 @@ function NewGamePrompt({ error }: { error?: string }) {
     if (result.success) {
       redirect("/game");
     }
+    // If failed, redirect with error in query param
+    const errorMessage = encodeURIComponent(result.error || "Failed to start game");
+    redirect(`/game?error=${errorMessage}`);
   }
 
   return (
@@ -149,14 +152,21 @@ function DashboardSkeleton() {
   );
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
+  const errorFromUrl = params.error ? decodeURIComponent(params.error) : undefined;
+
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-display text-lcars-amber mb-8">
         Empire Dashboard
       </h1>
       <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardContent />
+        <DashboardContent errorFromUrl={errorFromUrl} />
       </Suspense>
     </div>
   );
