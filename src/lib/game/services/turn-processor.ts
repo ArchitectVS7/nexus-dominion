@@ -33,6 +33,9 @@ import type { CivilStatusLevel } from "../constants";
 import { getIncomeMultiplier, evaluateCivilStatus, logStatusChange, type CivilStatusEvent } from "./civil-status";
 import { processPopulation } from "./population";
 import { processTurnResources, calculateMaintenanceCost } from "./resource-engine";
+import { processBuildQueue } from "./build-queue-service";
+import { calculateUnitMaintenance, type UnitCounts } from "./unit-service";
+import { processResearchProduction } from "./research-service";
 import { perfLogger } from "@/lib/performance/logger";
 
 // =============================================================================
@@ -180,11 +183,26 @@ async function processEmpireTurn(
   // Get current civil status multiplier
   const incomeMultiplier = getIncomeMultiplier(empire.civilStatus as CivilStatusLevel);
 
-  // Calculate resource production with maintenance already deducted
+  // Calculate resource production with planet maintenance already deducted
   const resourceProduction = processTurnResources(planets, incomeMultiplier);
 
-  // Calculate new resource totals
-  const newCredits = Math.max(0, empire.credits + resourceProduction.final.credits);
+  // Calculate unit maintenance (M3)
+  const unitCounts: UnitCounts = {
+    soldiers: empire.soldiers,
+    fighters: empire.fighters,
+    stations: empire.stations,
+    lightCruisers: empire.lightCruisers,
+    heavyCruisers: empire.heavyCruisers,
+    carriers: empire.carriers,
+    covertAgents: empire.covertAgents,
+  };
+  const unitMaintenance = calculateUnitMaintenance(unitCounts);
+  const planetMaintenance = calculateMaintenanceCost(planets.length);
+  const totalMaintenance = planetMaintenance.totalCost + unitMaintenance.totalCost;
+
+  // Calculate new resource totals (deduct unit maintenance from credits)
+  const creditsAfterMaintenance = resourceProduction.final.credits - unitMaintenance.totalCost;
+  const newCredits = Math.max(0, empire.credits + creditsAfterMaintenance);
   const newFood = empire.food + resourceProduction.final.food;
   const newOre = empire.ore + resourceProduction.final.ore;
   const newPetroleum = empire.petroleum + resourceProduction.final.petroleum;
@@ -198,11 +216,10 @@ async function processEmpireTurn(
     empireId: empire.id,
   });
 
-  // Add maintenance event
-  const maintenance = calculateMaintenanceCost(planets.length);
+  // Add maintenance event (combined planet + unit)
   events.push({
     type: "maintenance",
-    message: `Paid ${maintenance.totalCost.toLocaleString()} credits in planet maintenance`,
+    message: `Paid ${totalMaintenance.toLocaleString()} credits in maintenance (${planetMaintenance.totalCost.toLocaleString()} planets, ${unitMaintenance.totalCost.toLocaleString()} units)`,
     severity: "info",
     empireId: empire.id,
   });
@@ -256,7 +273,7 @@ async function processEmpireTurn(
   }
 
   // Check maintenance burden (if credits went negative before clamping)
-  const maintenanceRatio = maintenance.totalCost / Math.max(1, resourceProduction.production.credits);
+  const maintenanceRatio = totalMaintenance / Math.max(1, resourceProduction.production.credits);
   if (maintenanceRatio > 0.8) {
     civilEvents.push({ type: "high_maintenance", severity: maintenanceRatio });
   } else if (maintenanceRatio < 0.3) {
@@ -289,10 +306,44 @@ async function processEmpireTurn(
   }
 
   // ==========================================================================
-  // PHASES 4-6: STUBS FOR FUTURE MILESTONES
+  // PHASE 3.5: RESEARCH PRODUCTION (M3)
   // ==========================================================================
 
-  // Phase 4: Market processing (M3)
+  // Generate research points from research planets (100 RP/planet/turn)
+  const researchPlanets = planets.filter(p => p.type === "research");
+  if (researchPlanets.length > 0) {
+    const researchResult = await processResearchProduction(empire.id, researchPlanets.length);
+    if (researchResult.leveledUp) {
+      events.push({
+        type: "other",
+        message: `Research advanced to Level ${researchResult.newLevel}!`,
+        severity: "info",
+        empireId: empire.id,
+      });
+    }
+  }
+
+  // ==========================================================================
+  // PHASE 4: BUILD QUEUE PROCESSING (M3)
+  // ==========================================================================
+
+  // Process build queue - decrement turns, add completed units
+  const buildQueueResult = await processBuildQueue(empire.id);
+  if (buildQueueResult.success && buildQueueResult.completedBuilds.length > 0) {
+    for (const build of buildQueueResult.completedBuilds) {
+      events.push({
+        type: "other",
+        message: `Completed ${build.quantity.toLocaleString()} ${build.unitType}`,
+        severity: "info",
+        empireId: empire.id,
+      });
+    }
+  }
+
+  // ==========================================================================
+  // PHASES 5-6: STUBS FOR FUTURE MILESTONES
+  // ==========================================================================
+
   // Phase 5: Bot decisions (M5)
   // Phase 6: Actions - covert, diplomatic, movement, combat (M4, M6.5, M7)
 

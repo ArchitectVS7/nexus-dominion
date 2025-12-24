@@ -21,8 +21,8 @@ describe("calculateNetworth", () => {
 
     const result = calculateNetworth(input);
 
-    // 9 * 10 + 100 * 0.0005 = 90 + 0.05 = 90.05
-    expect(result).toBe(90.05);
+    // 9 * 10 + 100 * 0.0005 = 90 + 0.05 = 90.05, rounded to 90
+    expect(result).toBe(90);
   });
 
   it("calculates networth with all unit types", () => {
@@ -48,8 +48,8 @@ describe("calculateNetworth", () => {
     // 5 * 0.002 = 0.01
     // 3 * 0.005 = 0.015
     // 10 * 0.001 = 0.01
-    // Total: 150.625
-    const expected =
+    // Total: 150.625, rounded to 151
+    const rawExpected =
       15 * NETWORTH_MULTIPLIERS.planets +
       1000 * NETWORTH_MULTIPLIERS.soldiers +
       50 * NETWORTH_MULTIPLIERS.fighters +
@@ -59,8 +59,8 @@ describe("calculateNetworth", () => {
       3 * NETWORTH_MULTIPLIERS.carriers +
       10 * NETWORTH_MULTIPLIERS.covertAgents;
 
-    expect(result).toBeCloseTo(expected, 10);
-    expect(result).toBeCloseTo(150.625, 10);
+    expect(result).toBe(Math.round(rawExpected));
+    expect(result).toBe(151);
   });
 
   it("returns 0 for empty empire", () => {
@@ -151,31 +151,32 @@ describe("calculateNetworth", () => {
       covertAgents: 0,
     };
 
-    const oneOfEach = [
-      { ...baseInput, soldiers: 1 },
-      { ...baseInput, fighters: 1 },
-      { ...baseInput, stations: 1 },
-      { ...baseInput, lightCruisers: 1 },
-      { ...baseInput, heavyCruisers: 1 },
-      { ...baseInput, carriers: 1 },
-      { ...baseInput, covertAgents: 1 },
+    // Use 1000 units to get meaningful integer values after rounding
+    const manyOfEach = [
+      { ...baseInput, soldiers: 1000 },      // 1000 * 0.0005 = 0.5 -> 1
+      { ...baseInput, fighters: 1000 },      // 1000 * 0.001 = 1 -> 1
+      { ...baseInput, stations: 1000 },      // 1000 * 0.002 = 2 -> 2
+      { ...baseInput, lightCruisers: 1000 }, // 1000 * 0.001 = 1 -> 1
+      { ...baseInput, heavyCruisers: 1000 }, // 1000 * 0.002 = 2 -> 2
+      { ...baseInput, carriers: 1000 },      // 1000 * 0.005 = 5 -> 5
+      { ...baseInput, covertAgents: 1000 },  // 1000 * 0.001 = 1 -> 1
     ];
 
-    const networths = oneOfEach.map(calculateNetworth);
+    const networths = manyOfEach.map(calculateNetworth);
 
     // Carriers should have highest networth contribution per unit
-    const carrierNetworth = calculateNetworth({ ...baseInput, carriers: 1 });
-    expect(carrierNetworth).toBe(NETWORTH_MULTIPLIERS.carriers);
-    expect(Math.max(...networths)).toBe(NETWORTH_MULTIPLIERS.carriers);
+    const carrierNetworth = calculateNetworth({ ...baseInput, carriers: 1000 });
+    expect(carrierNetworth).toBe(5);
+    expect(Math.max(...networths)).toBe(5); // carriers at 1000 * 0.005 = 5
   });
 });
 
 describe("calculateStartingNetworth", () => {
-  it("returns correct starting networth (90.05)", () => {
+  it("returns correct starting networth (90)", () => {
     const result = calculateStartingNetworth();
 
-    // 9 planets * 10 + 100 soldiers * 0.0005 = 90 + 0.05 = 90.05
-    expect(result).toBe(90.05);
+    // 9 planets * 10 + 100 soldiers * 0.0005 = 90 + 0.05 = 90.05, rounded to 90
+    expect(result).toBe(90);
   });
 
   it("matches manual calculation with starting values", () => {

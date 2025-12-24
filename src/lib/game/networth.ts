@@ -41,7 +41,7 @@ export const NETWORTH_MULTIPLIERS = {
  * @returns The calculated networth as a number
  */
 export function calculateNetworth(input: NetworthInput): number {
-  return (
+  const rawNetworth =
     input.planetCount * NETWORTH_MULTIPLIERS.planets +
     input.soldiers * NETWORTH_MULTIPLIERS.soldiers +
     input.fighters * NETWORTH_MULTIPLIERS.fighters +
@@ -49,15 +49,17 @@ export function calculateNetworth(input: NetworthInput): number {
     input.lightCruisers * NETWORTH_MULTIPLIERS.lightCruisers +
     input.heavyCruisers * NETWORTH_MULTIPLIERS.heavyCruisers +
     input.carriers * NETWORTH_MULTIPLIERS.carriers +
-    input.covertAgents * NETWORTH_MULTIPLIERS.covertAgents
-  );
+    input.covertAgents * NETWORTH_MULTIPLIERS.covertAgents;
+
+  // Round to integer for bigint storage
+  return Math.round(rawNetworth);
 }
 
 /**
  * Calculate the starting networth for a new empire.
  * Default: 9 planets, 100 soldiers, no other units.
  *
- * @returns Starting networth (90.05)
+ * @returns Starting networth (90)
  */
 export function calculateStartingNetworth(): number {
   return calculateNetworth({
