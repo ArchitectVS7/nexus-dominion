@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* LCARS-inspired styling */
+@layer components {
+  .lcars-panel {
+    @apply bg-gray-900 border-l-4 border-lcars-amber rounded-lcars p-4;
+  }
+
+  .lcars-button {
+    @apply px-6 py-2 bg-lcars-amber text-gray-950 font-semibold rounded-lcars-pill
+           hover:brightness-110 transition-all duration-200;
+  }
+
+  .lcars-button-secondary {
+    @apply px-6 py-2 bg-lcars-lavender text-gray-950 font-semibold rounded-lcars-pill
+           hover:brightness-110 transition-all duration-200;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .font-display {
+    font-family: var(--font-orbitron), sans-serif;
+  }
+
+  .font-body {
+    font-family: var(--font-exo2), sans-serif;
+  }
+}
