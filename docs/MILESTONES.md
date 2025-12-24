@@ -183,40 +183,41 @@ Each milestone delivers a **playable vertical slice** that can be tested end-to-
 **Duration**: 2.5 days
 **Dependency**: M2
 **Testable**: Yes
+**Status**: ✅ COMPLETE (Audited 2024-12-24)
 
 ### Deliverables
-- Buy/release planet actions
-- Planet cost scaling: `BaseCost × (1 + OwnedPlanets × 0.05)`
-- Military unit construction (all 7 types)
-- Unit maintenance costs
-- Build queue system
-- **Research system basics** (PRD 9.1-9.3):
-  - 8 fundamental research levels
-  - Research points accumulation
-  - Research investment UI
-  - Light Cruiser unlock (requires research)
-- **Unit upgrades** (3 levels per unit type)
+- ✅ Buy/release planet actions — *`planet-service.ts` with buyPlanet/releasePlanet*
+- ✅ Planet cost scaling: `BaseCost × (1 + OwnedPlanets × 0.05)` — *Uses `calculatePlanetCost()` from formulas*
+- ✅ Military unit construction (all 7 types) — *`unit-service.ts` with validateBuild*
+- ✅ Unit maintenance costs — *`calculateUnitMaintenance()` in unit-service.ts*
+- ✅ Build queue system — *`build-queue-service.ts` with turn-based processing*
+- ✅ **Research system basics** (PRD 9.1-9.3):
+  - ✅ 8 fundamental research levels — *MAX_RESEARCH_LEVEL = 7 (0-7)*
+  - ✅ Research points accumulation — *processResearchProduction() in turn processor*
+  - ✅ Research investment UI — *ResearchPanel.tsx + FundamentalResearchProgress.tsx*
+  - ✅ Light Cruiser unlock (requires research) — *`isUnitLocked()` checks level 2*
+- ✅ **Unit upgrades** (3 levels per unit type) — *`upgrade-service.ts` + `upgrade-config.ts`*
 
 ### Test Criteria
 ```
-✓ Can buy a new planet (credits deducted)
-✓ Planet cost increases with ownership
-✓ Can release planet (50% refund)
-✓ Can build each unit type:
-  - Soldiers (50 credits)
-  - Fighters (200 credits)
-  - Light Cruisers (500 credits) - requires research
-  - Heavy Cruisers (1,000 credits)
-  - Carriers (2,500 credits)
-  - Stations (5,000 credits)
-  - Covert Agents (4,090 credits)
-✓ Unit maintenance deducted per turn
-✓ Insufficient funds prevents purchase
-✓ Research planets generate research points
-✓ Can invest in fundamental research (8 levels)
-✓ Research costs increase exponentially
-✓ Light Cruisers locked until research level 2
-✓ Unit upgrades apply stat bonuses
+✅ Can buy a new planet (credits deducted) — planet-service.ts:buyPlanet()
+✅ Planet cost increases with ownership — calculatePlanetCost() with 5% scaling
+✅ Can release planet (50% refund) — planet-service.ts:releasePlanet()
+✅ Can build each unit type:
+  - Soldiers (50 credits) — UNIT_COSTS.soldiers = 50
+  - Fighters (200 credits) — UNIT_COSTS.fighters = 200
+  - Light Cruisers (500 credits) - requires research — isUnitLocked() check
+  - Heavy Cruisers (1,000 credits) — UNIT_COSTS.heavyCruisers = 1000
+  - Carriers (2,500 credits) — UNIT_COSTS.carriers = 2500
+  - Stations (5,000 credits) — UNIT_COSTS.stations = 5000
+  - Covert Agents (4,090 credits) — UNIT_COSTS.covertAgents = 4090
+✅ Unit maintenance deducted per turn — turn-processor.ts:199
+✅ Insufficient funds prevents purchase — validateBuild() checks credits
+✅ Research planets generate research points — 100 RP/planet/turn
+✅ Can invest in fundamental research (8 levels) — investResearchPoints()
+✅ Research costs increase exponentially — 1000 × 2^level
+✅ Light Cruisers locked until research level 2 — isUnitLocked() check
+✅ Unit upgrades apply stat bonuses — getUpgradeBonuses() in upgrade-config.ts
 ```
 
 ### Database Tables
@@ -226,6 +227,23 @@ Each milestone delivers a **playable vertical slice** that can be tested end-to-
 - `unit_upgrades` ✅ **Pre-created (2024-12-24)**
 
 **Note:** Build queue, research, and upgrade schemas defined ahead of schedule as parallel work during M1.
+
+### Implementation Notes (2024-12-24)
+- **Files Created:**
+  - `src/lib/game/services/planet-service.ts` — Planet buy/release operations
+  - `src/lib/game/services/build-queue-service.ts` — Queued unit construction
+  - `src/lib/game/services/unit-service.ts` — Unit validation & maintenance
+  - `src/lib/game/services/research-service.ts` — Research progression
+  - `src/lib/game/services/upgrade-service.ts` — Unit upgrade system
+  - `src/lib/game/build-config.ts` — Build time constants
+  - `src/lib/game/upgrade-config.ts` — Upgrade costs & bonuses
+  - `src/app/actions/*-actions.ts` — Server actions for all services
+  - `src/components/game/planets/` — Planet UI components
+  - `src/components/game/military/` — Military UI components
+  - `src/components/game/research/` — Research UI components
+  - Test files for all services (637 tests passing)
+
+- ✅ **Fixed:** Added `initializeResearch()` and `initializeUnitUpgrades()` calls to `createPlayerEmpire()` in `game-repository.ts` (2024-12-24)
 
 ---
 

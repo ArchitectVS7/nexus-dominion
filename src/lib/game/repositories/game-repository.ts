@@ -20,6 +20,8 @@ import {
   TOTAL_STARTING_PLANETS,
 } from "../constants";
 import { calculateNetworth } from "../networth";
+import { initializeResearch } from "../services/research-service";
+import { initializeUnitUpgrades } from "../services/upgrade-service";
 
 // =============================================================================
 // GAME OPERATIONS
@@ -99,6 +101,10 @@ export async function createPlayerEmpire(
 
   // Create starting planets
   await createStartingPlanets(empire.id, gameId);
+
+  // Initialize M3 systems (research & upgrades)
+  await initializeResearch(empire.id, gameId);
+  await initializeUnitUpgrades(empire.id, gameId);
 
   return empire;
 }
