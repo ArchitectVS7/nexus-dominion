@@ -8,7 +8,7 @@
  */
 
 import type { EmotionalStateName } from "./states";
-import { DEFAULT_EMOTIONAL_STATE, DEFAULT_INTENSITY, EMOTIONAL_STATES } from "./states";
+import { DEFAULT_EMOTIONAL_STATE, DEFAULT_INTENSITY } from "./states";
 
 // =============================================================================
 // GAME EVENT TYPES
@@ -441,11 +441,10 @@ export function calculateEmotionalResponse(
   currentState: BotEmotionalState
 ): EmotionalResponse {
   const trigger = EVENT_TRIGGERS[event];
-  const { currentState: state, intensity } = currentState;
+  const { currentState: state } = currentState;
 
   // Determine if current state is positive or negative
   const isPositive = state === "confident" || state === "triumphant";
-  const isNegative = !isPositive;
 
   // Get appropriate response
   let response: EmotionalResponse;
@@ -455,7 +454,7 @@ export function calculateEmotionalResponse(
       ...trigger.responses.default,
       ...trigger.responses.fromPositive,
     };
-  } else if (isNegative && trigger.responses.fromNegative) {
+  } else if (!isPositive && trigger.responses.fromNegative) {
     response = {
       ...trigger.responses.default,
       ...trigger.responses.fromNegative,
