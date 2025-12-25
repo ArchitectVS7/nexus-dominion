@@ -24,6 +24,7 @@ import { initializeResearch } from "../services/research-service";
 import { initializeUnitUpgrades } from "../services/upgrade-service";
 import { createBotEmpires } from "@/lib/bots/bot-generator";
 import type { Difficulty } from "@/lib/bots/types";
+import { initializeMarketPrices } from "@/lib/market";
 
 // =============================================================================
 // GAME OPERATIONS
@@ -236,6 +237,9 @@ export async function startNewGame(
 
   // Create bot empires (M5)
   const bots = await createBotEmpires(game.id, botCount);
+
+  // Initialize market prices (M7)
+  await initializeMarketPrices(game.id);
 
   // Update game status to active
   await db

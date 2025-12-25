@@ -30,6 +30,7 @@ import {
 import { db } from "@/lib/db";
 import { empires, games } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { hasActiveTreaty } from "@/lib/diplomacy";
 
 // =============================================================================
 // TYPES
@@ -173,6 +174,13 @@ export async function validateAttack(params: AttackParams): Promise<AttackValida
   // Check if defender is eliminated
   if (defenderAuth.empire?.isEliminated) {
     errors.push("Cannot attack eliminated empire");
+    return { valid: false, errors };
+  }
+
+  // M7: Check for active treaty between attacker and defender
+  const hasTreaty = await hasActiveTreaty(attackerId, defenderId);
+  if (hasTreaty) {
+    errors.push("Cannot attack empire with active treaty (NAP or Alliance)");
     return { valid: false, errors };
   }
 
@@ -404,11 +412,12 @@ export async function executeRetreat(
 
 /**
  * Get targets available for attack.
+ * M7: Filters out empires with active treaties (NAP or Alliance).
  */
 export async function getTargets(
   gameId: string,
   empireId: string
-): Promise<Array<{ id: string; name: string; networth: number; planetCount: number }>> {
+): Promise<Array<{ id: string; name: string; networth: number; planetCount: number; hasTreaty: boolean }>> {
   // Input validation (getAvailableTargets also validates, but validate early)
   if (!isValidUUID(gameId) || !isValidUUID(empireId)) {
     return [];
@@ -416,10 +425,19 @@ export async function getTargets(
 
   const targets = await getAvailableTargets(gameId, empireId);
 
-  return targets.map(t => ({
-    id: t.id,
-    name: t.name,
-    networth: t.networth,
-    planetCount: t.planetCount,
-  }));
+  // Check treaties for each target
+  const targetsWithTreatyInfo = await Promise.all(
+    targets.map(async (t) => {
+      const hasTreatyFlag = await hasActiveTreaty(empireId, t.id);
+      return {
+        id: t.id,
+        name: t.name,
+        networth: t.networth,
+        planetCount: t.planetCount,
+        hasTreaty: hasTreatyFlag,
+      };
+    })
+  );
+
+  return targetsWithTreatyInfo;
 }

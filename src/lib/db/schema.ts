@@ -206,6 +206,9 @@ export const empires = pgTable(
     networth: bigint("networth", { mode: "number" }).notNull().default(0),
     planetCount: integer("planet_count").notNull().default(9),
 
+    // M7: Diplomacy reputation (0-100, starts at 50 = neutral)
+    reputation: integer("reputation").notNull().default(50),
+
     // Game state
     isEliminated: boolean("is_eliminated").notNull().default(false),
     eliminatedAtTurn: integer("eliminated_at_turn"),
@@ -696,6 +699,283 @@ export const combatLogsRelations = relations(combatLogs, ({ one }) => ({
 }));
 
 // ============================================
+// M7: MARKET & DIPLOMACY ENUMS
+// ============================================
+
+export const resourceTypeEnum = pgEnum("resource_type", [
+  "food",
+  "ore",
+  "petroleum",
+  "credits",
+]);
+
+export const marketOrderTypeEnum = pgEnum("market_order_type", [
+  "buy",
+  "sell",
+]);
+
+export const marketOrderStatusEnum = pgEnum("market_order_status", [
+  "pending",
+  "completed",
+  "cancelled",
+]);
+
+export const treatyTypeEnum = pgEnum("treaty_type", [
+  "nap", // Non-Aggression Pact
+  "alliance",
+]);
+
+export const treatyStatusEnum = pgEnum("treaty_status", [
+  "proposed",
+  "active",
+  "rejected",
+  "cancelled",
+  "broken",
+]);
+
+export const reputationEventTypeEnum = pgEnum("reputation_event_type", [
+  "treaty_broken",
+  "treaty_honored",
+  "alliance_formed",
+  "alliance_ended",
+  "nap_formed",
+  "nap_ended",
+]);
+
+// ============================================
+// M7: MARKET PRICES TABLE
+// ============================================
+
+export const marketPrices = pgTable(
+  "market_prices",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+
+    // Resource type
+    resourceType: resourceTypeEnum("resource_type").notNull(),
+
+    // Pricing (PRD 4: 0.4x to 1.6x base price)
+    basePrice: integer("base_price").notNull(),
+    currentPrice: decimal("current_price", { precision: 12, scale: 2 }).notNull(),
+    priceMultiplier: decimal("price_multiplier", { precision: 5, scale: 2 })
+      .notNull()
+      .default("1.00"),
+
+    // Supply/demand tracking
+    totalSupply: bigint("total_supply", { mode: "number" }).notNull().default(0),
+    totalDemand: bigint("total_demand", { mode: "number" }).notNull().default(0),
+
+    // Price history
+    lastUpdated: timestamp("last_updated").notNull().defaultNow(),
+    turnUpdated: integer("turn_updated").notNull().default(1),
+
+    // Timestamps
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("market_prices_game_idx").on(table.gameId),
+    index("market_prices_resource_idx").on(table.resourceType),
+  ]
+);
+
+// ============================================
+// M7: MARKET ORDERS TABLE
+// ============================================
+
+export const marketOrders = pgTable(
+  "market_orders",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+    empireId: uuid("empire_id")
+      .notNull()
+      .references(() => empires.id, { onDelete: "cascade" }),
+
+    // Order details
+    orderType: marketOrderTypeEnum("order_type").notNull(),
+    resourceType: resourceTypeEnum("resource_type").notNull(),
+    quantity: integer("quantity").notNull(),
+    pricePerUnit: decimal("price_per_unit", { precision: 12, scale: 2 }).notNull(),
+    totalCost: decimal("total_cost", { precision: 16, scale: 2 }).notNull(),
+
+    // Status
+    status: marketOrderStatusEnum("status").notNull().default("pending"),
+    turn: integer("turn").notNull(),
+
+    // Timestamps
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    completedAt: timestamp("completed_at"),
+  },
+  (table) => [
+    index("market_orders_game_idx").on(table.gameId),
+    index("market_orders_empire_idx").on(table.empireId),
+    index("market_orders_status_idx").on(table.status),
+    index("market_orders_turn_idx").on(table.turn),
+  ]
+);
+
+// ============================================
+// M7: TREATIES TABLE
+// ============================================
+
+export const treaties = pgTable(
+  "treaties",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+
+    // Treaty parties
+    proposerId: uuid("proposer_id")
+      .notNull()
+      .references(() => empires.id, { onDelete: "cascade" }),
+    recipientId: uuid("recipient_id")
+      .notNull()
+      .references(() => empires.id, { onDelete: "cascade" }),
+
+    // Treaty details
+    treatyType: treatyTypeEnum("treaty_type").notNull(),
+    status: treatyStatusEnum("status").notNull().default("proposed"),
+
+    // Timeline
+    proposedAtTurn: integer("proposed_at_turn").notNull(),
+    activatedAtTurn: integer("activated_at_turn"),
+    endedAtTurn: integer("ended_at_turn"),
+
+    // Breaking info
+    brokenById: uuid("broken_by_id").references(() => empires.id, {
+      onDelete: "set null",
+    }),
+
+    // Timestamps
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("treaties_game_idx").on(table.gameId),
+    index("treaties_proposer_idx").on(table.proposerId),
+    index("treaties_recipient_idx").on(table.recipientId),
+    index("treaties_status_idx").on(table.status),
+  ]
+);
+
+// ============================================
+// M7: REPUTATION LOG TABLE
+// ============================================
+
+export const reputationLog = pgTable(
+  "reputation_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+
+    // Empire that performed the action
+    empireId: uuid("empire_id")
+      .notNull()
+      .references(() => empires.id, { onDelete: "cascade" }),
+
+    // Affected empire (e.g., the betrayed party)
+    affectedEmpireId: uuid("affected_empire_id").references(() => empires.id, {
+      onDelete: "set null",
+    }),
+
+    // Related treaty
+    treatyId: uuid("treaty_id").references(() => treaties.id, {
+      onDelete: "set null",
+    }),
+
+    // Event details
+    eventType: reputationEventTypeEnum("event_type").notNull(),
+    reputationChange: integer("reputation_change").notNull(), // Negative for bad actions
+    description: varchar("description", { length: 500 }),
+
+    // Timeline
+    turn: integer("turn").notNull(),
+
+    // Timestamps
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("reputation_log_game_idx").on(table.gameId),
+    index("reputation_log_empire_idx").on(table.empireId),
+    index("reputation_log_turn_idx").on(table.turn),
+  ]
+);
+
+// ============================================
+// M7: MARKET & DIPLOMACY RELATIONS
+// ============================================
+
+export const marketPricesRelations = relations(marketPrices, ({ one }) => ({
+  game: one(games, {
+    fields: [marketPrices.gameId],
+    references: [games.id],
+  }),
+}));
+
+export const marketOrdersRelations = relations(marketOrders, ({ one }) => ({
+  game: one(games, {
+    fields: [marketOrders.gameId],
+    references: [games.id],
+  }),
+  empire: one(empires, {
+    fields: [marketOrders.empireId],
+    references: [empires.id],
+  }),
+}));
+
+export const treatiesRelations = relations(treaties, ({ one, many }) => ({
+  game: one(games, {
+    fields: [treaties.gameId],
+    references: [games.id],
+  }),
+  proposer: one(empires, {
+    fields: [treaties.proposerId],
+    references: [empires.id],
+    relationName: "treatyProposer",
+  }),
+  recipient: one(empires, {
+    fields: [treaties.recipientId],
+    references: [empires.id],
+    relationName: "treatyRecipient",
+  }),
+  brokenBy: one(empires, {
+    fields: [treaties.brokenById],
+    references: [empires.id],
+    relationName: "treatyBreaker",
+  }),
+  reputationLogs: many(reputationLog),
+}));
+
+export const reputationLogRelations = relations(reputationLog, ({ one }) => ({
+  game: one(games, {
+    fields: [reputationLog.gameId],
+    references: [games.id],
+  }),
+  empire: one(empires, {
+    fields: [reputationLog.empireId],
+    references: [empires.id],
+  }),
+  affectedEmpire: one(empires, {
+    fields: [reputationLog.affectedEmpireId],
+    references: [empires.id],
+    relationName: "reputationAffected",
+  }),
+  treaty: one(treaties, {
+    fields: [reputationLog.treatyId],
+    references: [treaties.id],
+  }),
+}));
+
+// ============================================
 // TYPE EXPORTS
 // ============================================
 
@@ -731,3 +1011,15 @@ export type NewAttack = typeof attacks.$inferInsert;
 
 export type CombatLog = typeof combatLogs.$inferSelect;
 export type NewCombatLog = typeof combatLogs.$inferInsert;
+
+export type MarketPrice = typeof marketPrices.$inferSelect;
+export type NewMarketPrice = typeof marketPrices.$inferInsert;
+
+export type MarketOrder = typeof marketOrders.$inferSelect;
+export type NewMarketOrder = typeof marketOrders.$inferInsert;
+
+export type Treaty = typeof treaties.$inferSelect;
+export type NewTreaty = typeof treaties.$inferInsert;
+
+export type ReputationLog = typeof reputationLog.$inferSelect;
+export type NewReputationLog = typeof reputationLog.$inferInsert;

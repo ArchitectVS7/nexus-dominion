@@ -49,6 +49,7 @@ import {
 } from "./victory-service";
 import { createAutoSave } from "./save-service";
 import { processCovertPointGeneration } from "./covert-service";
+import { updateMarketPrices } from "@/lib/market";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -139,6 +140,13 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
         severity: "info",
       });
     }
+
+    // ==========================================================================
+    // PHASE 6: MARKET PRICE UPDATE (M7)
+    // ==========================================================================
+
+    // Update market prices based on supply/demand from trades this turn
+    await updateMarketPrices(gameId, nextTurn);
 
     // ==========================================================================
     // PHASE 8: VICTORY/DEFEAT CHECK (M6)
