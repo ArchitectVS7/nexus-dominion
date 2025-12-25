@@ -7,6 +7,9 @@
 
 import type { Empire, Planet } from "@/lib/db/schema";
 
+// Re-export for convenience
+export type { Empire, Planet };
+
 // =============================================================================
 // DIFFICULTY TYPES
 // =============================================================================
