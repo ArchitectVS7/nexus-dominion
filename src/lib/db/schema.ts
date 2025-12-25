@@ -743,6 +743,33 @@ export const reputationEventTypeEnum = pgEnum("reputation_event_type", [
 ]);
 
 // ============================================
+// M8: MESSAGE SYSTEM ENUMS
+// ============================================
+
+export const messageChannelEnum = pgEnum("message_channel", [
+  "direct",
+  "broadcast",
+]);
+
+export const messageTriggerEnum = pgEnum("message_trigger", [
+  "greeting",
+  "battle_taunt",
+  "victory_gloat",
+  "defeat",
+  "trade_offer",
+  "alliance_proposal",
+  "betrayal",
+  "covert_detected",
+  "tribute_demand",
+  "threat_warning",
+  "retreat",
+  "eliminated",
+  "endgame",
+  "broadcast_shout",
+  "casual_message",
+]);
+
+// ============================================
 // M7: MARKET PRICES TABLE
 // ============================================
 
@@ -911,6 +938,56 @@ export const reputationLog = pgTable(
 );
 
 // ============================================
+// M8: MESSAGES TABLE
+// ============================================
+
+export const messages = pgTable(
+  "messages",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+
+    // Sender (null for system messages)
+    senderId: uuid("sender_id").references(() => empires.id, {
+      onDelete: "set null",
+    }),
+
+    // Recipient (null for broadcasts)
+    recipientId: uuid("recipient_id").references(() => empires.id, {
+      onDelete: "set null",
+    }),
+
+    // Message details
+    channel: messageChannelEnum("channel").notNull().default("direct"),
+    trigger: messageTriggerEnum("trigger").notNull(),
+    content: varchar("content", { length: 2000 }).notNull(),
+
+    // Template tracking (to prevent repetition)
+    templateId: varchar("template_id", { length: 100 }),
+
+    // Read status (for direct messages to player)
+    isRead: boolean("is_read").notNull().default(false),
+
+    // Timeline
+    turn: integer("turn").notNull(),
+
+    // Timestamps
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    readAt: timestamp("read_at"),
+  },
+  (table) => [
+    index("messages_game_idx").on(table.gameId),
+    index("messages_sender_idx").on(table.senderId),
+    index("messages_recipient_idx").on(table.recipientId),
+    index("messages_channel_idx").on(table.channel),
+    index("messages_turn_idx").on(table.turn),
+    index("messages_is_read_idx").on(table.isRead),
+  ]
+);
+
+// ============================================
 // M7: MARKET & DIPLOMACY RELATIONS
 // ============================================
 
@@ -976,6 +1053,27 @@ export const reputationLogRelations = relations(reputationLog, ({ one }) => ({
 }));
 
 // ============================================
+// M8: MESSAGE RELATIONS
+// ============================================
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  game: one(games, {
+    fields: [messages.gameId],
+    references: [games.id],
+  }),
+  sender: one(empires, {
+    fields: [messages.senderId],
+    references: [empires.id],
+    relationName: "messageSender",
+  }),
+  recipient: one(empires, {
+    fields: [messages.recipientId],
+    references: [empires.id],
+    relationName: "messageRecipient",
+  }),
+}));
+
+// ============================================
 // TYPE EXPORTS
 // ============================================
 
@@ -1023,3 +1121,6 @@ export type NewTreaty = typeof treaties.$inferInsert;
 
 export type ReputationLog = typeof reputationLog.$inferSelect;
 export type NewReputationLog = typeof reputationLog.$inferInsert;
+
+export type Message = typeof messages.$inferSelect;
+export type NewMessage = typeof messages.$inferInsert;
