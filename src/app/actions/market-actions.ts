@@ -28,7 +28,7 @@ import {
 const UUIDSchema = z.string().uuid("Invalid UUID format");
 
 const ResourceTypeSchema = z.enum(["food", "ore", "petroleum"], {
-  errorMap: () => ({ message: "Invalid resource type" }),
+  error: "Invalid resource type",
 });
 
 const MarketStatusSchema = z.object({
@@ -56,7 +56,7 @@ export async function getMarketStatusAction(gameId: string, empireId: string) {
     // Validate inputs
     const parsed = MarketStatusSchema.safeParse({ gameId, empireId });
     if (!parsed.success) {
-      return { success: false as const, error: parsed.error.errors[0]?.message || "Invalid input" };
+      return { success: false as const, error: parsed.error.issues[0]?.message || "Invalid input" };
     }
 
     const status = await getMarketStatus(parsed.data.gameId, parsed.data.empireId);
@@ -84,7 +84,7 @@ export async function buyResourceAction(
     // Validate inputs with Zod
     const parsed = TradeOrderSchema.safeParse({ gameId, empireId, resourceType, quantity });
     if (!parsed.success) {
-      return { success: false as const, error: parsed.error.errors[0]?.message || "Invalid input" };
+      return { success: false as const, error: parsed.error.issues[0]?.message || "Invalid input" };
     }
 
     // Get current turn
@@ -137,7 +137,7 @@ export async function sellResourceAction(
     // Validate inputs with Zod
     const parsed = TradeOrderSchema.safeParse({ gameId, empireId, resourceType, quantity });
     if (!parsed.success) {
-      return { success: false as const, error: parsed.error.errors[0]?.message || "Invalid input" };
+      return { success: false as const, error: parsed.error.issues[0]?.message || "Invalid input" };
     }
 
     // Get current turn
@@ -190,7 +190,7 @@ export async function validateBuyOrderAction(
     // Validate inputs with Zod
     const parsed = TradeOrderSchema.safeParse({ gameId, empireId, resourceType, quantity });
     if (!parsed.success) {
-      return { success: false as const, error: parsed.error.errors[0]?.message || "Invalid input" };
+      return { success: false as const, error: parsed.error.issues[0]?.message || "Invalid input" };
     }
 
     const validation = await validateBuyOrder(
@@ -220,7 +220,7 @@ export async function validateSellOrderAction(
     // Validate inputs with Zod
     const parsed = TradeOrderSchema.safeParse({ gameId, empireId, resourceType, quantity });
     if (!parsed.success) {
-      return { success: false as const, error: parsed.error.errors[0]?.message || "Invalid input" };
+      return { success: false as const, error: parsed.error.issues[0]?.message || "Invalid input" };
     }
 
     const validation = await validateSellOrder(
@@ -249,7 +249,7 @@ export async function getOrderHistoryAction(empireId: string) {
     // Validate inputs with Zod
     const parsed = OrderHistorySchema.safeParse({ empireId });
     if (!parsed.success) {
-      return { success: false as const, error: parsed.error.errors[0]?.message || "Invalid input" };
+      return { success: false as const, error: parsed.error.issues[0]?.message || "Invalid input" };
     }
 
     const orders = await getOrderHistory(parsed.data.empireId);
