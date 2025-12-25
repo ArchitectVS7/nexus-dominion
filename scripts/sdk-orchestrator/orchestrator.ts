@@ -366,7 +366,7 @@ function evaluateCondition(condition: string, state: ExecutionState): boolean {
   // Handle common patterns
   if (condition.includes(".includes(")) {
     const match = condition.match(/(.+)\.includes\(['"](.+)['"]\)/);
-    if (match) {
+    if (match && match[1] && match[2]) {
       const value = String(state.outputs[match[1].replace("outputs.", "")] || "");
       return value.includes(match[2]);
     }

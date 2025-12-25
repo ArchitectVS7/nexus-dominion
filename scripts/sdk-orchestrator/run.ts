@@ -44,16 +44,17 @@ async function main(): Promise<void> {
     return;
   }
 
-  if (configIndex !== -1 && args[configIndex + 1]) {
+  const configArg = args[configIndex + 1];
+  const quickArg = args[quickIndex + 1];
+
+  if (configIndex !== -1 && configArg) {
     // Load from config file
-    const configPath = args[configIndex + 1];
-    console.log(`Loading config from: ${configPath}\n`);
-    config = loadConfig(configPath);
-  } else if (quickIndex !== -1 && args[quickIndex + 1]) {
+    console.log(`Loading config from: ${configArg}\n`);
+    config = loadConfig(configArg);
+  } else if (quickIndex !== -1 && quickArg) {
     // Quick mode with defaults
-    const target = args[quickIndex + 1];
-    console.log(`Quick mode: ${target}\n`);
-    config = await quickConfig(target);
+    console.log(`Quick mode: ${quickArg}\n`);
+    config = await quickConfig(quickArg);
   } else {
     // Interactive setup
     config = await buildConfig();

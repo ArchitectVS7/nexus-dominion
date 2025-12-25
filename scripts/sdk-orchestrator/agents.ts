@@ -123,9 +123,16 @@ Provide:
 2. Key points of disagreement
 3. Final recommendation (if applicable)`;
 
-  const synthesizer = agents[0]; // Use first agent as synthesizer
+  const synthesizer = agents[0]!; // Use first agent as synthesizer (guaranteed non-empty)
   const synthesisResult = await runAgent(
-    { ...synthesizer, id: "synthesizer", name: "Synthesizer" },
+    {
+      id: "synthesizer",
+      name: "Synthesizer",
+      role: synthesizer.role,
+      systemPrompt: synthesizer.systemPrompt,
+      model: synthesizer.model,
+      temperature: synthesizer.temperature,
+    },
     synthesisPrompt,
     state
   );
@@ -219,7 +226,7 @@ export function analyzeQA(qa: string): {
 
   // Extract verdict line
   const verdictMatch = qa.match(/verdict[:\s]+([^\n]+)/i);
-  const verdict = verdictMatch ? verdictMatch[1].trim() : passed ? "PASS" : "FAIL";
+  const verdict = verdictMatch?.[1]?.trim() ?? (passed ? "PASS" : "FAIL");
 
   return { passed, verdict };
 }
