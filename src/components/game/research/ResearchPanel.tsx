@@ -17,12 +17,20 @@ export function ResearchPanel({ refreshTrigger }: ResearchPanelProps) {
     nextUnlock: { unlock: string; level: number } | null;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadInfo = async () => {
-      const data = await getResearchInfoAction();
-      setInfo(data);
-      setIsLoading(false);
+      try {
+        setError(null);
+        const data = await getResearchInfoAction();
+        setInfo(data);
+      } catch (err) {
+        console.error("Failed to load research info:", err);
+        setError(err instanceof Error ? err.message : "Failed to load research data");
+      } finally {
+        setIsLoading(false);
+      }
     };
     loadInfo();
   }, [refreshTrigger]);
@@ -34,6 +42,17 @@ export function ResearchPanel({ refreshTrigger }: ResearchPanelProps) {
           Fundamental Research
         </h2>
         <div className="text-gray-400 text-sm">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="lcars-panel" data-testid="research-panel">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Fundamental Research
+        </h2>
+        <div className="text-red-400 text-sm">Error: {error}</div>
       </div>
     );
   }

@@ -15,12 +15,20 @@ export function FundamentalResearchProgress({
 }: FundamentalResearchProgressProps) {
   const [status, setStatus] = useState<ResearchStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadStatus = async () => {
-      const data = await getResearchStatusAction();
-      setStatus(data);
-      setIsLoading(false);
+      try {
+        setError(null);
+        const data = await getResearchStatusAction();
+        setStatus(data);
+      } catch (err) {
+        console.error("Failed to load research status:", err);
+        setError(err instanceof Error ? err.message : "Failed to load research");
+      } finally {
+        setIsLoading(false);
+      }
     };
     loadStatus();
   }, [refreshTrigger]);
@@ -29,6 +37,14 @@ export function FundamentalResearchProgress({
     return (
       <div className="text-gray-400 text-sm" data-testid="research-progress">
         Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-400 text-sm" data-testid="research-progress">
+        Error: {error}
       </div>
     );
   }

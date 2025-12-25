@@ -11,7 +11,6 @@ import {
   getNextUnlock,
   initializeResearch,
   RESEARCH_POINTS_PER_PLANET,
-  MAX_RESEARCH_LEVEL,
   type ResearchStatus,
   type ResearchResult,
 } from "@/lib/game/services/research-service";
@@ -43,22 +42,27 @@ async function getGameCookies(): Promise<{
  * Get current research status for the player's empire.
  */
 export async function getResearchStatusAction(): Promise<ResearchStatus | null> {
-  const { gameId, empireId } = await getGameCookies();
+  try {
+    const { gameId, empireId } = await getGameCookies();
 
-  if (!gameId || !empireId) {
+    if (!gameId || !empireId) {
+      return null;
+    }
+
+    let status = await getResearchStatus(empireId);
+
+    // Auto-initialize for existing games that don't have research entries
+    if (!status) {
+      await initializeResearch(empireId, gameId);
+      await initializeUnitUpgrades(empireId, gameId);
+      status = await getResearchStatus(empireId);
+    }
+
+    return status;
+  } catch (error) {
+    console.error("Failed to get research status:", error);
     return null;
   }
-
-  let status = await getResearchStatus(empireId);
-
-  // Auto-initialize for existing games that don't have research entries
-  if (!status) {
-    await initializeResearch(empireId, gameId);
-    await initializeUnitUpgrades(empireId, gameId);
-    status = await getResearchStatus(empireId);
-  }
-
-  return status;
 }
 
 /**
@@ -71,13 +75,12 @@ export async function getResearchInfoAction(): Promise<{
   turnsToNextLevel: number;
   nextUnlock: { unlock: string; level: number } | null;
 } | null> {
-  const { gameId, empireId } = await getGameCookies();
-
-  if (!gameId || !empireId) {
-    return null;
-  }
-
   try {
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return null;
+    }
     let status = await getResearchStatus(empireId);
 
     // Auto-initialize for existing games that don't have research entries
@@ -230,7 +233,7 @@ export async function getResearchProjectionAction(
 }
 
 // =============================================================================
-// HELPER EXPORTS
+// NOTE: Do NOT export non-async values from "use server" files.
+// Import constants directly from research-service if needed:
+// import { MAX_RESEARCH_LEVEL, RESEARCH_POINTS_PER_PLANET } from "@/lib/game/services/research-service";
 // =============================================================================
-
-export { MAX_RESEARCH_LEVEL, RESEARCH_POINTS_PER_PLANET };
