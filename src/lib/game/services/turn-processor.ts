@@ -37,6 +37,8 @@ import { processBuildQueue } from "./build-queue-service";
 import { calculateUnitMaintenance, type UnitCounts } from "./unit-service";
 import { processResearchProduction } from "./research-service";
 import { perfLogger } from "@/lib/performance/logger";
+import { processBotTurn, applyBotNightmareBonus } from "@/lib/bots";
+import type { Difficulty } from "@/lib/bots/types";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -102,7 +104,8 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
           empire,
           empire.planets,
           gameId,
-          nextTurn
+          nextTurn,
+          game.difficulty as Difficulty
         );
         empireResults.push(empireResult);
       } catch (error) {
@@ -110,6 +113,21 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
         console.error(`Error processing empire ${empire.id}:`, error);
         empireResults.push(createErrorEmpireResult(empire, error));
       }
+    }
+
+    // ==========================================================================
+    // PHASE 5: BOT DECISIONS (M5)
+    // ==========================================================================
+
+    // Process bot decisions in parallel after all empires have their resources updated
+    const botResults = await processBotTurn(gameId, nextTurn);
+    if (botResults.success && botResults.botResults.length > 0) {
+      const executedCount = botResults.botResults.filter(r => r.executed).length;
+      globalEvents.push({
+        type: "other",
+        message: `${executedCount}/${botResults.botResults.length} bots made decisions (${botResults.totalDurationMs}ms)`,
+        severity: "info",
+      });
     }
 
     // Update game turn counter and processing time
@@ -171,7 +189,8 @@ async function processEmpireTurn(
   empire: Empire,
   planets: Planet[],
   gameId: string,
-  turn: number
+  turn: number,
+  difficulty: Difficulty = "normal"
 ): Promise<EmpireResult> {
   const events: TurnEvent[] = [];
   let civilStatusChange: CivilStatusUpdate | undefined;
@@ -184,7 +203,22 @@ async function processEmpireTurn(
   const incomeMultiplier = getIncomeMultiplier(empire.civilStatus as CivilStatusLevel);
 
   // Calculate resource production with planet maintenance already deducted
-  const resourceProduction = processTurnResources(planets, incomeMultiplier);
+  let resourceProduction = processTurnResources(planets, incomeMultiplier);
+
+  // Apply nightmare difficulty bonus for bot empires (+25% credits)
+  if (empire.type === "bot" && difficulty === "nightmare") {
+    const bonusCredits = applyBotNightmareBonus(
+      resourceProduction.final.credits,
+      difficulty
+    );
+    resourceProduction = {
+      ...resourceProduction,
+      final: {
+        ...resourceProduction.final,
+        credits: bonusCredits,
+      },
+    };
+  }
 
   // Calculate unit maintenance (M3)
   const unitCounts: UnitCounts = {

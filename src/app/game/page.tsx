@@ -16,6 +16,7 @@ import {
   hasActiveGameAction,
   endGameAction,
 } from "@/app/actions/game-actions";
+import { DifficultySelector } from "@/components/start-game/DifficultySelector";
 
 async function DashboardContent({ errorFromUrl }: { errorFromUrl?: string }) {
   const hasGame = await hasActiveGameAction();
@@ -135,7 +136,7 @@ function NewGamePrompt({ error }: { error?: string }) {
   }
 
   return (
-    <div className="lcars-panel max-w-md mx-auto text-center" data-testid="new-game-prompt">
+    <div className="lcars-panel max-w-lg mx-auto text-center" data-testid="new-game-prompt">
       <h2 className="text-xl font-display text-lcars-amber mb-4">
         Welcome, Commander
       </h2>
@@ -144,17 +145,19 @@ function NewGamePrompt({ error }: { error?: string }) {
       )}
       <p className="text-gray-300 mb-6">
         Begin your galactic conquest. Name your empire and prepare for domination.
+        You will face 25 AI-controlled empires.
       </p>
-      <form action={handleStartGame}>
+      <form action={handleStartGame} className="space-y-4">
         <input
           type="text"
           name="empireName"
           placeholder="Empire Name"
-          className="w-full px-4 py-2 mb-4 bg-gray-800 border border-lcars-amber/30 rounded text-white placeholder-gray-500 focus:border-lcars-amber focus:outline-none"
+          className="w-full px-4 py-2 bg-gray-800 border border-lcars-amber/30 rounded text-white placeholder-gray-500 focus:border-lcars-amber focus:outline-none"
           required
           maxLength={100}
           data-testid="empire-name-input"
         />
+        <DifficultySelector defaultValue="normal" />
         <button
           type="submit"
           className="lcars-button w-full"

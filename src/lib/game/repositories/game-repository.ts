@@ -22,6 +22,8 @@ import {
 import { calculateNetworth } from "../networth";
 import { initializeResearch } from "../services/research-service";
 import { initializeUnitUpgrades } from "../services/upgrade-service";
+import { createBotEmpires } from "@/lib/bots/bot-generator";
+import type { Difficulty } from "@/lib/bots/types";
 
 // =============================================================================
 // GAME OPERATIONS
@@ -202,16 +204,38 @@ export async function getPlanetCountsByType(
 // =============================================================================
 
 /**
- * Start a new game with a player empire.
- * Returns both the game and the player's empire.
+ * Start a new game with a player empire and bot empires.
+ * Returns the game, player's empire, and all bot empires.
+ *
+ * @param gameName - Name of the game
+ * @param empireName - Player's empire name
+ * @param emperorName - Player's emperor name (optional)
+ * @param difficulty - Game difficulty (easy/normal/hard/nightmare)
+ * @param botCount - Number of bot empires to create (default 25)
  */
 export async function startNewGame(
   gameName: string,
   empireName: string,
-  emperorName?: string
-): Promise<{ game: Game; empire: Empire }> {
+  emperorName?: string,
+  difficulty: Difficulty = "normal",
+  botCount: number = 25
+): Promise<{ game: Game; empire: Empire; bots: Empire[] }> {
   const game = await createGame(gameName);
+
+  // Set game difficulty and bot count
+  await db
+    .update(games)
+    .set({
+      difficulty,
+      botCount,
+    })
+    .where(eq(games.id, game.id));
+
+  // Create player empire
   const empire = await createPlayerEmpire(game.id, empireName, emperorName);
+
+  // Create bot empires (M5)
+  const bots = await createBotEmpires(game.id, botCount);
 
   // Update game status to active
   await db
@@ -222,7 +246,7 @@ export async function startNewGame(
     })
     .where(eq(games.id, game.id));
 
-  return { game, empire };
+  return { game, empire, bots };
 }
 
 /**

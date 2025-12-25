@@ -7,6 +7,7 @@ import {
   getDashboardData,
   type DashboardData,
 } from "@/lib/game/repositories/game-repository";
+import type { Difficulty } from "@/lib/bots/types";
 
 // =============================================================================
 // COOKIE HELPERS
@@ -60,14 +61,24 @@ export interface StartGameResult {
   error?: string;
   gameId?: string;
   empireId?: string;
+  botCount?: number;
+  difficulty?: Difficulty;
 }
 
 /**
- * Start a new game with the given empire name.
+ * Start a new game with the given empire name and difficulty.
  * Sets cookies for game and empire IDs, then redirects to the game dashboard.
+ * Creates 25 bot empires with random decision-making (M5).
  */
 export async function startGameAction(formData: FormData): Promise<StartGameResult> {
   const empireName = formData.get("empireName") as string;
+  const difficultyRaw = formData.get("difficulty") as string | null;
+
+  // Validate difficulty
+  const validDifficulties: Difficulty[] = ["easy", "normal", "hard", "nightmare"];
+  const difficulty: Difficulty = validDifficulties.includes(difficultyRaw as Difficulty)
+    ? (difficultyRaw as Difficulty)
+    : "normal";
 
   if (!empireName || empireName.trim().length === 0) {
     return { success: false, error: "Empire name is required" };
@@ -78,10 +89,12 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
   }
 
   try {
-    const { game, empire } = await startNewGame(
+    const { game, empire, bots } = await startNewGame(
       "New Game",
       empireName.trim(),
-      undefined
+      undefined,
+      difficulty,
+      25 // Default bot count
     );
 
     await setGameCookies(game.id, empire.id);
@@ -91,6 +104,8 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
       success: true,
       gameId: game.id,
       empireId: empire.id,
+      botCount: bots.length,
+      difficulty,
     };
   } catch (error) {
     console.error("Failed to start game:", error);
