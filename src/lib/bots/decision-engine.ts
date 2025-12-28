@@ -168,7 +168,7 @@ export function getAdjustedWeights(
   context: BotDecisionContext
 ): BotDecisionWeights {
   // Get archetype-specific weights (default to BASE_WEIGHTS if archetype unknown)
-  const archetype = (context.empire as any).archetype as BotArchetype | undefined;
+  const archetype = context.empire.botArchetype;
   const baseWeights = archetype && ARCHETYPE_WEIGHTS[archetype]
     ? ARCHETYPE_WEIGHTS[archetype]
     : BASE_WEIGHTS;
