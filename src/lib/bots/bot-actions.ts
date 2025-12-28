@@ -16,6 +16,8 @@ import { calculatePlanetCost } from "@/lib/formulas/planet-costs";
 import { TIER_1_RECIPES, TIER_2_RECIPES, TIER_3_RECIPES, RESOURCE_TIERS } from "@/lib/game/constants/crafting";
 import type { CraftedResource, Tier1Resource, Tier2Resource, Tier3Resource } from "@/lib/game/constants/crafting";
 import { CONTRACT_CONFIGS } from "@/lib/game/constants/syndicate";
+import { executeAttack as executeCombatAttack } from "@/lib/game/services/combat-service";
+import type { Forces as CombatForces } from "@/lib/combat/phases";
 
 // =============================================================================
 // MAIN EXECUTOR
@@ -208,13 +210,13 @@ async function executeBuyPlanet(
 
 /**
  * Execute an attack decision.
- * For M5, this is a simplified attack that uses existing combat service.
+ * Uses the full combat service to resolve attacks properly.
  */
 async function executeAttack(
   decision: Extract<BotDecision, { type: "attack" }>,
   context: BotDecisionContext
 ): Promise<ExecutionResult> {
-  const { empire, currentTurn, protectionTurns } = context;
+  const { empire, gameId, currentTurn, protectionTurns } = context;
   const { targetId, forces } = decision;
 
   // Verify protection period has ended
@@ -228,7 +230,7 @@ async function executeAttack(
     return { success: false, error: "No forces allocated" };
   }
 
-  // Verify bot has enough units
+  // Verify bot has enough units (early check to avoid unnecessary combat service call)
   if (
     forces.soldiers > empire.soldiers ||
     forces.fighters > empire.fighters ||
@@ -239,33 +241,37 @@ async function executeAttack(
     return { success: false, error: "Insufficient forces" };
   }
 
-  // For M5, we'll just deduct the forces without full combat resolution
-  // Full combat integration will use the combat-service in turn processing
-  // This marks the intent to attack, actual resolution happens in combat phase
+  // Convert bot Forces to combat Forces (add stations field)
+  const combatForces: CombatForces = {
+    soldiers: forces.soldiers,
+    fighters: forces.fighters,
+    stations: 0, // Bots don't use stations in attacks
+    lightCruisers: forces.lightCruisers,
+    heavyCruisers: forces.heavyCruisers,
+    carriers: forces.carriers,
+  };
 
-  // Deduct forces from attacker (they're committed to the attack)
-  await db
-    .update(empires)
-    .set({
-      soldiers: sql`${empires.soldiers} - ${forces.soldiers}`,
-      fighters: sql`${empires.fighters} - ${forces.fighters}`,
-      lightCruisers: sql`${empires.lightCruisers} - ${forces.lightCruisers}`,
-      heavyCruisers: sql`${empires.heavyCruisers} - ${forces.heavyCruisers}`,
-      carriers: sql`${empires.carriers} - ${forces.carriers}`,
-      updatedAt: new Date(),
-    })
-    .where(eq(empires.id, empire.id));
+  // Execute attack using combat service
+  // This handles: validation, combat resolution, saving attack record, applying casualties
+  const result = await executeCombatAttack({
+    gameId,
+    attackerId: empire.id,
+    defenderId: targetId,
+    attackType: "invasion", // Default to invasion for bot attacks
+    forces: combatForces,
+  });
 
-  // Note: In a full implementation, we would:
-  // 1. Create an attack record
-  // 2. Resolve combat using combat-service
-  // 3. Apply casualties to both sides
-  // 4. Transfer planets if attacker wins
-  // For M5, we simplify by just committing forces
+  if (!result.success) {
+    return { success: false, error: result.error ?? "Attack failed" };
+  }
+
+  // Build details message
+  const outcome = result.result?.outcome ?? "unknown";
+  const planetCaptured = result.result?.planetCaptured ? " (captured planet!)" : "";
 
   return {
     success: true,
-    details: `Launched attack on ${targetId} with ${totalForces} units`,
+    details: `Attack on ${targetId}: ${outcome}${planetCaptured} (${totalForces} units deployed)`,
   };
 }
 
