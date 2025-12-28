@@ -119,7 +119,7 @@ function formatUnlockName(unlock: string): string {
 
 export function ResearchTree({ currentLevel }: ResearchTreeProps) {
   const [expandedLevels, setExpandedLevels] = useState<Set<number>>(
-    new Set([currentLevel, currentLevel + 1].filter(l => l >= 0 && l <= 8))
+    new Set([currentLevel, currentLevel + 1].filter(l => l >= 0 && l <= 7))
   );
 
   const toggleLevel = useCallback((level: number) => {
@@ -135,7 +135,7 @@ export function ResearchTree({ currentLevel }: ResearchTreeProps) {
   }, []);
 
   const expandAll = useCallback(() => {
-    setExpandedLevels(new Set([0, 1, 2, 3, 4, 5, 6, 7, 8]));
+    setExpandedLevels(new Set([0, 1, 2, 3, 4, 5, 6, 7]));
   }, []);
 
   const collapseAll = useCallback(() => {
@@ -163,7 +163,7 @@ export function ResearchTree({ currentLevel }: ResearchTreeProps) {
         </div>
       </div>
 
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((level) => (
+      {[0, 1, 2, 3, 4, 5, 6, 7].map((level) => (
         <ResearchTreeNode
           key={level}
           level={level}

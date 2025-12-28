@@ -350,9 +350,9 @@ export function generateBotDecision(
     case "attack":
       return generateAttackDecision(context, randomDecision);
     case "diplomacy":
-      return generateDiplomacyDecision();
+      return generateDiplomacyDecision(context, randomDecision);
     case "trade":
-      return generateTradeDecision();
+      return generateTradeDecision(context, randomDecision);
     // Crafting system decisions
     case "craft_component":
       return generateCraftComponentDecision(context, randomDecision);
@@ -500,19 +500,131 @@ function generateAttackDecision(
 
 /**
  * Generate a diplomacy decision.
- * STUB: Returns do_nothing until M7 (Market & Diplomacy).
+ * Proposes NAP or Alliance based on archetype and target availability.
  */
-function generateDiplomacyDecision(): BotDecision {
-  // Diplomacy not implemented until M7
-  return { type: "do_nothing" };
+function generateDiplomacyDecision(
+  context: BotDecisionContext,
+  random?: number
+): BotDecision {
+  const { empire, availableTargets } = context;
+  const archetype = empire.botArchetype;
+  const roll = random ?? Math.random();
+
+  // No targets = can't propose treaties
+  if (!availableTargets || availableTargets.length === 0) {
+    return { type: "do_nothing" };
+  }
+
+  // Filter to targets without existing treaties
+  const validTargets = availableTargets.filter((t) => !t.hasTreaty);
+  if (validTargets.length === 0) {
+    return { type: "do_nothing" };
+  }
+
+  // Archetype affects treaty preference
+  // Diplomats prefer alliances, others prefer NAPs
+  let treatyAction: "propose_nap" | "propose_alliance";
+  if (archetype === "diplomat") {
+    treatyAction = roll < 0.7 ? "propose_alliance" : "propose_nap";
+  } else if (archetype === "warlord" || archetype === "blitzkrieg") {
+    // Aggressive archetypes rarely propose treaties
+    if (roll > 0.3) {
+      return { type: "do_nothing" };
+    }
+    treatyAction = "propose_nap";
+  } else if (archetype === "turtle" || archetype === "merchant") {
+    // Defensive/economic archetypes prefer NAPs
+    treatyAction = roll < 0.8 ? "propose_nap" : "propose_alliance";
+  } else {
+    // Default: mostly NAPs
+    treatyAction = roll < 0.7 ? "propose_nap" : "propose_alliance";
+  }
+
+  // Select target: prefer similar networth for NAP, stronger for alliance
+  let target;
+  if (treatyAction === "propose_alliance") {
+    // For alliance, prefer stronger empires
+    const sorted = [...validTargets].sort((a, b) => b.networth - a.networth);
+    target = sorted[Math.floor(roll * Math.min(3, sorted.length))];
+  } else {
+    // For NAP, prefer similar strength
+    const sortedByDiff = [...validTargets].sort(
+      (a, b) => Math.abs(a.networth - empire.networth) - Math.abs(b.networth - empire.networth)
+    );
+    target = sortedByDiff[Math.floor(roll * Math.min(3, sortedByDiff.length))];
+  }
+
+  if (!target) {
+    return { type: "do_nothing" };
+  }
+
+  return { type: "diplomacy", action: treatyAction, targetId: target.id };
 }
 
 /**
  * Generate a trade decision.
- * STUB: Returns do_nothing until M7 (Market & Diplomacy).
+ * Buys resources when low, sells when high surplus.
  */
-function generateTradeDecision(): BotDecision {
-  // Trade not implemented until M7
+function generateTradeDecision(
+  context: BotDecisionContext,
+  random?: number
+): BotDecision {
+  const { empire } = context;
+  const roll = random ?? Math.random();
+
+  // Calculate resource needs
+  const lowFood = empire.food < empire.populationTotal * 2; // Need 2x population in food
+  const lowOre = empire.ore < 500;
+  const lowPetroleum = empire.petroleum < 200;
+
+  // Calculate resource surpluses (arbitrary thresholds)
+  const highFood = empire.food > empire.populationTotal * 10;
+  const highOre = empire.ore > 5000;
+  const highPetroleum = empire.petroleum > 2000;
+
+  // Buying takes priority over selling
+  if (lowFood && empire.credits > 5000) {
+    // Buy food to prevent starvation
+    const quantity = Math.min(500, Math.floor(empire.credits / 20));
+    return { type: "trade", resource: "food", quantity, action: "buy" };
+  }
+
+  if (lowOre && empire.credits > 10000 && roll < 0.7) {
+    const quantity = Math.min(300, Math.floor(empire.credits / 50));
+    return { type: "trade", resource: "ore", quantity, action: "buy" };
+  }
+
+  if (lowPetroleum && empire.credits > 8000 && roll < 0.6) {
+    const quantity = Math.min(200, Math.floor(empire.credits / 60));
+    return { type: "trade", resource: "petroleum", quantity, action: "buy" };
+  }
+
+  // Sell surpluses
+  if (highFood && empire.credits < 50000 && roll < 0.5) {
+    const quantity = Math.min(
+      Math.floor((empire.food - empire.populationTotal * 5) / 2),
+      1000
+    );
+    if (quantity > 50) {
+      return { type: "trade", resource: "food", quantity, action: "sell" };
+    }
+  }
+
+  if (highOre && empire.credits < 30000 && roll < 0.4) {
+    const quantity = Math.min(Math.floor((empire.ore - 2000) / 2), 500);
+    if (quantity > 50) {
+      return { type: "trade", resource: "ore", quantity, action: "sell" };
+    }
+  }
+
+  if (highPetroleum && empire.credits < 20000 && roll < 0.3) {
+    const quantity = Math.min(Math.floor((empire.petroleum - 1000) / 2), 300);
+    if (quantity > 30) {
+      return { type: "trade", resource: "petroleum", quantity, action: "sell" };
+    }
+  }
+
+  // No trade needed
   return { type: "do_nothing" };
 }
 

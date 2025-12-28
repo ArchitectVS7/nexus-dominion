@@ -59,21 +59,21 @@ describe("getRecipe", () => {
       expect(recipe).not.toBeNull();
       expect(recipe?.inputs.refined_metals).toBe(2);
       expect(recipe?.inputs.polymers).toBe(1);
-      expect(recipe?.researchRequired).toBe(2);
+      expect(recipe?.researchRequired).toBe(1);
     });
 
     it("should return armor_plating recipe", () => {
       const recipe = getRecipe("armor_plating");
 
       expect(recipe).not.toBeNull();
-      expect(recipe?.researchRequired).toBe(2);
+      expect(recipe?.researchRequired).toBe(1);
     });
 
     it("should return quantum_processors recipe", () => {
       const recipe = getRecipe("quantum_processors");
 
       expect(recipe).not.toBeNull();
-      expect(recipe?.researchRequired).toBe(5);
+      expect(recipe?.researchRequired).toBe(4);
     });
   });
 
@@ -82,7 +82,7 @@ describe("getRecipe", () => {
       const recipe = getRecipe("reactor_cores");
 
       expect(recipe).not.toBeNull();
-      expect(recipe?.researchRequired).toBe(5);
+      expect(recipe?.researchRequired).toBe(4);
     });
 
     it("should return nuclear_warheads as black market only", () => {
@@ -137,10 +137,10 @@ describe("validateCraftingOrder", () => {
     inventory.refined_metals = 10;
     inventory.polymers = 10;
 
-    const result = validateCraftingOrder(order, 1, tier0, inventory); // Research level 1, needs 2
+    const result = validateCraftingOrder(order, 0, tier0, inventory); // Research level 0, needs 1
 
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.includes("Research level 2 required"))).toBe(true);
+    expect(result.errors.some((e) => e.includes("Research level 1 required"))).toBe(true);
   });
 
   it("should scale resource requirements with quantity", () => {
@@ -649,12 +649,12 @@ describe("getAvailableRecipes", () => {
   });
 
   it("should include recipe details", () => {
-    const recipes = getAvailableRecipes(2, true);
+    const recipes = getAvailableRecipes(1, true);
     const electronics = recipes.find((r) => r.resource === "electronics");
 
     expect(electronics).toBeDefined();
     expect(electronics?.tier).toBe(2);
-    expect(electronics?.researchRequired).toBe(2);
+    expect(electronics?.researchRequired).toBe(1);
     expect(electronics?.craftingTime).toBeGreaterThan(0);
     expect(electronics?.inputs).toBeDefined();
   });
