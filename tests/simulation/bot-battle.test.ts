@@ -248,7 +248,7 @@ describe("Bot Battle Simulator", () => {
       expect(result => result).toBeDefined();
     });
 
-    it("should determine survival winner at turn limit", () => {
+    it("should determine survival winner at turn limit (requires economic threshold)", () => {
       const config: SimulationConfig = {
         empireCount: 5,
         turnLimit: 30,
@@ -262,7 +262,14 @@ describe("Bot Battle Simulator", () => {
 
       // Should reach turn limit without other victory
       if (result.turnsPlayed >= config.turnLimit) {
-        expect(result.winner?.victoryType).toBe("survival");
+        // With new rules, survival victory requires 1.5× networth of second place
+        // If no one meets threshold, game ends in stalemate (no winner)
+        if (result.winner) {
+          expect(result.winner.victoryType).toBe("survival");
+        } else {
+          // Stalemate is now valid - no one dominated economically
+          expect(result.winner).toBeUndefined();
+        }
       }
     });
 

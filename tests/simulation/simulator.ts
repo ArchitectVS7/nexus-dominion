@@ -683,6 +683,23 @@ function determineSurvivalWinner(state: SimulationState): SimulatedEmpire | null
   const activeEmpires = state.empires.filter((e) => !e.isEliminated);
   if (activeEmpires.length === 0) return null;
 
-  // Winner is highest networth
-  return [...activeEmpires].sort((a, b) => b.networth - a.networth)[0] ?? null;
+  // Sort by networth
+  const sorted = [...activeEmpires].sort((a, b) => b.networth - a.networth);
+  const firstPlace = sorted[0];
+  const secondPlace = sorted[1];
+
+  if (!firstPlace) return null;
+
+  // If only one remains, they win
+  if (!secondPlace) return firstPlace;
+
+  // Must meet economic threshold (1.5× second place) to win by survival
+  // This prevents pure turtling - you need economic dominance
+  const ECONOMIC_MULTIPLIER = 1.5;
+  if (firstPlace.networth >= secondPlace.networth * ECONOMIC_MULTIPLIER) {
+    return firstPlace;
+  }
+
+  // No winner - game ends in stalemate
+  return null;
 }
