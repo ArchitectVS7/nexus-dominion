@@ -596,7 +596,7 @@ export const CONTRACT_TYPE_LABELS: Record<ContractType, string> = {
 
 export function getTrustLevelFromPoints(points: number): SyndicateTrustLevel {
   for (let i = TRUST_LEVEL_ORDER.length - 1; i >= 0; i--) {
-    const level = TRUST_LEVEL_ORDER[i];
+    const level = TRUST_LEVEL_ORDER[i]!;
     if (points >= TRUST_LEVELS[level].pointsRequired) {
       return level;
     }
@@ -606,8 +606,8 @@ export function getTrustLevelFromPoints(points: number): SyndicateTrustLevel {
 
 export function getNextTrustLevel(current: SyndicateTrustLevel): SyndicateTrustLevel | null {
   const currentIndex = TRUST_LEVEL_ORDER.indexOf(current);
-  if (currentIndex < TRUST_LEVEL_ORDER.length - 1) {
-    return TRUST_LEVEL_ORDER[currentIndex + 1];
+  if (currentIndex >= 0 && currentIndex < TRUST_LEVEL_ORDER.length - 1) {
+    return TRUST_LEVEL_ORDER[currentIndex + 1] ?? null;
   }
   return null;
 }

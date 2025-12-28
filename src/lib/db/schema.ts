@@ -705,6 +705,14 @@ export const empiresRelations = relations(empires, ({ one, many }) => ({
   unitUpgrades: many(unitUpgrades),
   attacksAsAttacker: many(attacks, { relationName: "attacker" }),
   attacksAsDefender: many(attacks, { relationName: "defender" }),
+  // Crafting System Relations
+  resourceInventory: many(resourceInventory),
+  craftingQueue: many(craftingQueue),
+  researchBranchAllocations: many(researchBranchAllocations),
+  // Syndicate System Relations
+  syndicateTrust: many(syndicateTrust),
+  syndicateContracts: many(syndicateContracts, { relationName: "contractHolder" }),
+  syndicateContractsAsTarget: many(syndicateContracts, { relationName: "contractTarget" }),
 }));
 
 export const planetsRelations = relations(planets, ({ one }) => ({

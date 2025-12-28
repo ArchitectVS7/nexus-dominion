@@ -92,7 +92,14 @@ export interface Tier2Recipe {
   craftingTime: number; // turns
 }
 
-export const TIER_2_RECIPES: Record<Tier2Resource, Tier2Recipe> = {
+// Unified Tier 2 Recipes - includes dependencies on other Tier 2 components
+export interface Tier2RecipeUnified {
+  inputs: Partial<Record<Tier1Resource | Tier2Resource, number>>;
+  researchRequired: number;
+  craftingTime: number;
+}
+
+export const TIER_2_RECIPES: Record<Tier2Resource, Tier2RecipeUnified> = {
   electronics: {
     inputs: { refined_metals: 2, polymers: 1 },
     researchRequired: 2,
@@ -118,29 +125,7 @@ export const TIER_2_RECIPES: Record<Tier2Resource, Tier2Recipe> = {
     researchRequired: 3,
     craftingTime: 3,
   },
-  targeting_arrays: {
-    inputs: { refined_metals: 1 },
-    researchRequired: 3,
-    craftingTime: 2,
-  },
-  stealth_composites: {
-    inputs: { polymers: 3 },
-    researchRequired: 4,
-    craftingTime: 3,
-  },
-  quantum_processors: {
-    inputs: { refined_metals: 2 },
-    researchRequired: 5,
-    craftingTime: 4,
-  },
-};
-
-// Extended Tier 2 recipes that require other Tier 2 components
-export const TIER_2_EXTENDED_RECIPES: Record<string, {
-  inputs: Partial<Record<Tier1Resource | Tier2Resource, number>>;
-  researchRequired: number;
-  craftingTime: number;
-}> = {
+  // Advanced Tier 2 - require other Tier 2 components (per docs/crafting-system.md)
   targeting_arrays: {
     inputs: { electronics: 2, refined_metals: 1 },
     researchRequired: 3,
@@ -158,6 +143,9 @@ export const TIER_2_EXTENDED_RECIPES: Record<string, {
   },
 };
 
+// Legacy export for backwards compatibility (deprecated - use TIER_2_RECIPES instead)
+export const TIER_2_EXTENDED_RECIPES: Record<string, Tier2RecipeUnified> = {};
+
 // =============================================================================
 // TIER 3 RECIPES - Advanced Systems
 // =============================================================================
@@ -169,6 +157,7 @@ export interface Tier3Recipe {
   blackMarketOnly?: boolean; // Some items only available via Black Market
 }
 
+// Unified Tier 3 Recipes - includes dependencies on other Tier 3 components (per docs/crafting-system.md)
 export const TIER_3_RECIPES: Record<Tier3Resource, Tier3Recipe> = {
   reactor_cores: {
     inputs: { propulsion_units: 3, electronics: 2, quantum_processors: 1 },
@@ -180,8 +169,9 @@ export const TIER_3_RECIPES: Record<Tier3Resource, Tier3Recipe> = {
     researchRequired: 5,
     craftingTime: 5,
   },
+  // Advanced Tier 3 - require other Tier 3 components
   warp_drives: {
-    inputs: { stealth_composites: 1, targeting_arrays: 1 },
+    inputs: { reactor_cores: 2, stealth_composites: 1, targeting_arrays: 1 },
     researchRequired: 6,
     craftingTime: 6,
   },
@@ -191,7 +181,7 @@ export const TIER_3_RECIPES: Record<Tier3Resource, Tier3Recipe> = {
     craftingTime: 6,
   },
   ion_cannon_cores: {
-    inputs: { weapons_grade_alloy: 2, targeting_arrays: 1 },
+    inputs: { weapons_grade_alloy: 2, reactor_cores: 2, targeting_arrays: 1 },
     researchRequired: 6,
     craftingTime: 6,
   },
@@ -201,10 +191,11 @@ export const TIER_3_RECIPES: Record<Tier3Resource, Tier3Recipe> = {
     craftingTime: 7,
   },
   singularity_containment: {
-    inputs: { shield_generators: 2 },
+    inputs: { reactor_cores: 3, shield_generators: 2 },
     researchRequired: 8,
     craftingTime: 8,
   },
+  // Black Market only items
   bioweapon_synthesis: {
     inputs: { life_support: 2, quantum_processors: 1 },
     researchRequired: 7,
@@ -219,24 +210,8 @@ export const TIER_3_RECIPES: Record<Tier3Resource, Tier3Recipe> = {
   },
 };
 
-// Extended Tier 3 recipes that require other Tier 3 components
-export const TIER_3_EXTENDED_RECIPES: Record<string, Tier3Recipe> = {
-  warp_drives: {
-    inputs: { reactor_cores: 2, stealth_composites: 1, targeting_arrays: 1 },
-    researchRequired: 6,
-    craftingTime: 6,
-  },
-  ion_cannon_cores: {
-    inputs: { weapons_grade_alloy: 2, reactor_cores: 2, targeting_arrays: 1 },
-    researchRequired: 6,
-    craftingTime: 6,
-  },
-  singularity_containment: {
-    inputs: { reactor_cores: 3, shield_generators: 2 },
-    researchRequired: 8,
-    craftingTime: 8,
-  },
-};
+// Legacy export for backwards compatibility (deprecated - use TIER_3_RECIPES instead)
+export const TIER_3_EXTENDED_RECIPES: Record<string, Tier3Recipe> = {};
 
 // =============================================================================
 // MILITARY CRAFTING REQUIREMENTS
