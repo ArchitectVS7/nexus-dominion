@@ -42,8 +42,8 @@ const mockContext: BotDecisionContext = {
   protectionTurns: 20,
   difficulty: "normal",
   availableTargets: [
-    { id: "target-1", name: "Target 1", networth: 500, planetCount: 5, isBot: true, isEliminated: false, militaryPower: 50 },
-    { id: "target-2", name: "Target 2", networth: 800, planetCount: 7, isBot: true, isEliminated: false, militaryPower: 80 },
+    { id: "target-1", name: "Target 1", networth: 500, planetCount: 5, isBot: true, isEliminated: false, militaryPower: 50, hasTreaty: false },
+    { id: "target-2", name: "Target 2", networth: 800, planetCount: 7, isBot: true, isEliminated: false, militaryPower: 80, hasTreaty: false },
   ],
 };
 
@@ -177,14 +177,25 @@ describe("Decision Engine", () => {
   });
 
   describe("generateBotDecision", () => {
-    it("should return do_nothing for diplomacy decision (stub)", () => {
+    it("should return diplomacy decision with targets available", () => {
       const decision = generateBotDecision(mockContext, 0.58); // diplomacy range
-      expect(decision.type).toBe("do_nothing");
+      // Can return diplomacy or do_nothing depending on archetype and random roll
+      expect(["diplomacy", "do_nothing"]).toContain(decision.type);
+      if (decision.type === "diplomacy") {
+        expect(decision.action).toMatch(/propose_nap|propose_alliance/);
+        expect(decision.targetId).toBeDefined();
+      }
     });
 
-    it("should return do_nothing for trade decision (stub)", () => {
+    it("should return trade decision or do_nothing based on resources", () => {
       const decision = generateBotDecision(mockContext, 0.66); // trade range
-      expect(decision.type).toBe("do_nothing");
+      // Can return trade or do_nothing depending on resource levels
+      expect(["trade", "do_nothing"]).toContain(decision.type);
+      if (decision.type === "trade") {
+        expect(["food", "ore", "petroleum"]).toContain(decision.resource);
+        expect(decision.quantity).toBeGreaterThan(0);
+        expect(["buy", "sell"]).toContain(decision.action);
+      }
     });
 
     it("should return build_units decision with valid data", () => {
