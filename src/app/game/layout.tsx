@@ -1,14 +1,17 @@
 import Link from "next/link";
+import { GameFooter } from "@/components/game/GameFooter";
 
 const navItems = [
   { href: "/game", label: "Dashboard" },
   { href: "/game/planets", label: "Planets" },
   { href: "/game/military", label: "Military" },
   { href: "/game/research", label: "Research" },
+  { href: "/game/crafting", label: "Crafting" },
   { href: "/game/combat", label: "Combat" },
   { href: "/game/starmap", label: "Starmap" },
   { href: "/game/diplomacy", label: "Diplomacy" },
   { href: "/game/market", label: "Market" },
+  { href: "/game/syndicate", label: "Syndicate" },
   { href: "/game/covert", label: "Covert" },
   { href: "/game/messages", label: "Messages" },
 ];
@@ -44,9 +47,7 @@ export default function GameLayout({
       <main className="flex-1 p-4 md:p-8">{children}</main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-lcars-amber/30 px-4 py-2 text-center text-sm text-gray-500">
-        Turn 1 | Credits: 100,000 | Networth: 0
-      </footer>
+      <GameFooter />
     </div>
   );
 }

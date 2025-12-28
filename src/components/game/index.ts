@@ -6,3 +6,4 @@ export { PlanetList } from "./PlanetList";
 export { TurnCounter } from "./TurnCounter";
 export { CivilStatusDisplay } from "./CivilStatusDisplay";
 export { EndTurnButton } from "./EndTurnButton";
+export { GameFooter } from "./GameFooter";
