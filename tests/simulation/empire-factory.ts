@@ -7,7 +7,7 @@
 
 import type { SimulatedEmpire, SimulatedPlanet, SimulationConfig, BotTier } from "./types";
 import type { BotArchetype, PlanetType } from "@/lib/bots/types";
-import { PLANET_PRODUCTION, STARTING_CREDITS, STARTING_POPULATION } from "@/lib/game/constants";
+import { PLANET_PRODUCTION, STARTING_RESOURCES, STARTING_POPULATION as STARTING_POP } from "@/lib/game/constants";
 import { calculateNetworth } from "@/lib/game/networth";
 
 // =============================================================================
@@ -105,15 +105,15 @@ export function createSimulatedEmpire(
     archetype,
 
     // Starting resources (scaled by tier)
-    credits: Math.floor((STARTING_CREDITS ?? 50000) * resourceMult),
-    food: Math.floor(1000 * resourceMult),
-    ore: Math.floor(500 * resourceMult),
-    petroleum: Math.floor(200 * resourceMult),
+    credits: Math.floor(STARTING_RESOURCES.credits * resourceMult),
+    food: Math.floor(STARTING_RESOURCES.food * resourceMult),
+    ore: Math.floor(STARTING_RESOURCES.ore * resourceMult),
+    petroleum: Math.floor(STARTING_RESOURCES.petroleum * resourceMult),
     researchPoints: 0,
 
     // Population
-    population: STARTING_POPULATION ?? 10000,
-    populationCap: 100000,
+    population: STARTING_POP.population,
+    populationCap: STARTING_POP.populationCap,
     civilStatus: "content",
 
     // Starting military (scaled by tier)
