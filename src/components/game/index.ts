@@ -7,3 +7,8 @@ export { TurnCounter } from "./TurnCounter";
 export { CivilStatusDisplay } from "./CivilStatusDisplay";
 export { EndTurnButton } from "./EndTurnButton";
 export { GameFooter } from "./GameFooter";
+export { FoodWarning } from "./FoodWarning";
+export { TurnSummary } from "./TurnSummary";
+export { Tooltip } from "./Tooltip";
+export { LockedFeature, LockedSection } from "./LockedFeature";
+export { UnlockNotification, UpcomingUnlocks } from "./UnlockNotification";

@@ -24,6 +24,7 @@ import {
   getReputationHistory,
   getReputationLevel,
 } from "@/lib/diplomacy";
+import { isFeatureUnlocked } from "@/lib/constants/unlocks";
 
 // =============================================================================
 // VALIDATION SCHEMAS
@@ -189,6 +190,11 @@ export async function proposeTreatyAction(
 
     if (!game) {
       return { success: false as const, error: "Game not found" };
+    }
+
+    // Check if diplomacy is unlocked (Turn 10)
+    if (!isFeatureUnlocked("diplomacy_basics", game.currentTurn)) {
+      return { success: false as const, error: "Diplomacy not yet available" };
     }
 
     const result = await proposeTreaty(

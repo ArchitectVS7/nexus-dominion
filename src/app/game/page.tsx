@@ -9,7 +9,10 @@ import {
   TurnCounter,
   CivilStatusDisplay,
   EndTurnButton,
+  FoodWarning,
+  UpcomingUnlocks,
 } from "@/components/game";
+import { PLANET_PRODUCTION } from "@/lib/game/constants";
 import {
   fetchDashboardDataAction,
   startGameAction,
@@ -31,6 +34,11 @@ async function DashboardContent({ errorFromUrl }: { errorFromUrl?: string }) {
     return <NewGamePrompt error="Failed to load game data. Start a new game?" />;
   }
 
+  // Calculate food production from planets
+  const foodProduction = data.planets
+    .filter((p) => p.type === "food")
+    .reduce((sum, p) => sum + (Number(p.productionRate) || PLANET_PRODUCTION.food), 0);
+
   return (
     <div data-testid="dashboard">
       {/* Turn and Status Header */}
@@ -41,6 +49,13 @@ async function DashboardContent({ errorFromUrl }: { errorFromUrl?: string }) {
         />
         <CivilStatusDisplay status={data.stats.civilStatus} />
       </div>
+
+      {/* Food Warning */}
+      <FoodWarning
+        food={data.resources.food}
+        population={data.stats.population}
+        foodProduction={foodProduction}
+      />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -70,6 +85,7 @@ async function DashboardContent({ errorFromUrl }: { errorFromUrl?: string }) {
           researchPoints={data.resources.researchPoints}
         />
         <NetworthPanel networth={data.stats.networth} />
+        <UpcomingUnlocks currentTurn={data.turn.currentTurn} limit={3} />
       </div>
 
       {/* End Turn Section */}

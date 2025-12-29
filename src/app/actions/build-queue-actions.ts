@@ -10,6 +10,10 @@ import {
   type QueueStatus,
 } from "@/lib/game/services/build-queue-service";
 import type { UnitType } from "@/lib/game/unit-config";
+import { isFeatureUnlocked } from "@/lib/constants/unlocks";
+import { db } from "@/lib/db";
+import { games } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 // =============================================================================
 // COOKIE HELPERS
@@ -47,6 +51,16 @@ export async function addToBuildQueueAction(
   }
 
   try {
+    // Check if heavy cruisers are unlocked (Turn 50 - advanced_ships)
+    if (unitType === "heavyCruisers") {
+      const game = await db.query.games.findFirst({
+        where: eq(games.id, gameId),
+      });
+      if (game && !isFeatureUnlocked("advanced_ships", game.currentTurn)) {
+        return { success: false, error: "Heavy Cruisers not yet available (requires Turn 50)" };
+      }
+    }
+
     return await addToBuildQueue(empireId, gameId, unitType, quantity);
   } catch (error) {
     console.error("Failed to add to build queue:", error);

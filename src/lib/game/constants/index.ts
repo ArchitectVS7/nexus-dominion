@@ -9,3 +9,6 @@ export * from "./crafting";
 
 // Syndicate/Black Market System
 export * from "./syndicate";
+
+// Nuclear Warfare System
+export * from "./nuclear";

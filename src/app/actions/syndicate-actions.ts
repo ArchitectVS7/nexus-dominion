@@ -22,6 +22,7 @@ import {
   type SyndicateTrustStatus,
   type ContractOffer,
 } from "@/lib/game/services/syndicate-service";
+import { isFeatureUnlocked } from "@/lib/constants/unlocks";
 import {
   TRUST_LEVELS,
   CONTRACT_CONFIGS,
@@ -480,6 +481,14 @@ export async function purchaseBlackMarketItemAction(
       return { success: false, error: "No active game session" };
     }
 
+    // Check if black market is unlocked (Turn 30)
+    const game = await db.query.games.findFirst({
+      where: eq(games.id, gameId),
+    });
+    if (game && !isFeatureUnlocked("black_market", game.currentTurn)) {
+      return { success: false, error: "Black Market not yet accessible" };
+    }
+
     // Validate quantity
     if (quantity <= 0) {
       return { success: false, error: "Quantity must be positive" };
@@ -567,15 +576,15 @@ export async function purchaseBlackMarketItemAction(
       }
     }
 
-    // Update interaction turn
-    const game = await db.query.games.findFirst({
+    // Update interaction turn - reuse the game query from unlock check
+    const currentGame = await db.query.games.findFirst({
       where: eq(games.id, gameId),
     });
 
     await db
       .update(syndicateTrust)
       .set({
-        lastInteractionTurn: game?.currentTurn ?? 1,
+        lastInteractionTurn: currentGame?.currentTurn ?? 1,
         updatedAt: new Date(),
       })
       .where(eq(syndicateTrust.id, trust.id));

@@ -49,7 +49,7 @@ export default function MilitaryPage() {
     );
   }
 
-  const { empire, military } = data;
+  const { empire, military, turn } = data;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -115,6 +115,7 @@ export default function MilitaryPage() {
             credits={empire.credits}
             population={empire.population}
             researchLevel={empire.fundamentalResearchLevel}
+            currentTurn={turn.currentTurn}
             onBuildQueued={handleRefresh}
           />
 

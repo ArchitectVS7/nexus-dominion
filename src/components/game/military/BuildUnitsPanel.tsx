@@ -11,6 +11,7 @@ import {
   type UnitType,
 } from "@/lib/game/unit-config";
 import { UNIT_BUILD_TIMES } from "@/lib/game/build-config";
+import { isFeatureUnlocked, getUnlockTurn } from "@/lib/constants/unlocks";
 
 const UNIT_TYPE_COLORS: Record<UnitType, string> = {
   soldiers: "text-green-400",
@@ -26,6 +27,7 @@ interface BuildUnitsPanelProps {
   credits: number;
   population: number;
   researchLevel: number;
+  currentTurn?: number;
   onBuildQueued?: () => void;
 }
 
@@ -33,6 +35,7 @@ export function BuildUnitsPanel({
   credits,
   population,
   researchLevel,
+  currentTurn = 1,
   onBuildQueued,
 }: BuildUnitsPanelProps) {
   const [selectedUnit, setSelectedUnit] = useState<UnitType | null>(null);
@@ -64,7 +67,12 @@ export function BuildUnitsPanel({
   };
 
   const isUnitLocked = (unitType: UnitType): boolean => {
+    // Research level lock for light cruisers
     if (unitType === "lightCruisers" && researchLevel < 2) {
+      return true;
+    }
+    // Turn-based lock for heavy cruisers (advanced_ships unlock at Turn 50)
+    if (unitType === "heavyCruisers" && !isFeatureUnlocked("advanced_ships", currentTurn)) {
       return true;
     }
     return false;
@@ -73,6 +81,12 @@ export function BuildUnitsPanel({
   const getUnitLockReason = (unitType: UnitType): string | null => {
     if (unitType === "lightCruisers" && researchLevel < 2) {
       return "Requires Research Level 2";
+    }
+    // Turn-based lock for heavy cruisers
+    if (unitType === "heavyCruisers" && !isFeatureUnlocked("advanced_ships", currentTurn)) {
+      const unlockTurn = getUnlockTurn("advanced_ships");
+      const turnsRemaining = unlockTurn - currentTurn;
+      return `Requires Turn ${unlockTurn} (${turnsRemaining} turn${turnsRemaining !== 1 ? "s" : ""})`;
     }
     return null;
   };
