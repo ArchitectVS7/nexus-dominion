@@ -17,10 +17,8 @@ import {
   treaties,
   empires,
   type Empire,
-  type Coalition,
-  type Treaty,
 } from "@/lib/db/schema";
-import { eq, and, or, desc } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type { GalacticEvent } from "@/lib/events/types";
 
 // =============================================================================

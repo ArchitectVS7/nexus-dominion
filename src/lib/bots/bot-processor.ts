@@ -29,10 +29,12 @@ import { applyNightmareBonus } from "./difficulty";
 import {
   getEmotionalStateWithGrudges,
   processEmotionalEventForBot,
-  applyEmotionalDecay,
 } from "@/lib/game/repositories/bot-emotional-state-repository";
-import { getPermanentGrudges } from "@/lib/game/repositories/bot-memory-repository";
+// Note: applyEmotionalDecay is called in turn-processor.ts Phase 5.5
+// Note: getPermanentGrudges is passed via BotDecisionContext.permanentGrudges
 import type { EmotionalStateName, GameEventType } from "./emotions";
+// M9: Tell system imports
+import { triggerThreatWarning, type TriggerContext, type BotInfo } from "@/lib/messages";
 
 // =============================================================================
 // BOT TURN PROCESSING
@@ -106,6 +108,42 @@ export async function processBotTurn(
     );
 
     const totalDurationMs = Math.round(performance.now() - startTime);
+
+    // M9: Trigger threat warnings for attack decisions against player (tell system)
+    const playerEmpire = game.empires.find((e) => e.type === "player");
+    if (playerEmpire) {
+      const triggerCtx: TriggerContext = {
+        gameId,
+        currentTurn,
+        playerId: playerEmpire.id,
+        playerEmpireName: playerEmpire.name,
+      };
+
+      // Check each bot result for attacks against the player
+      for (const result of results) {
+        if (
+          result.executed &&
+          result.decision.type === "attack" &&
+          "targetId" in result.decision &&
+          result.decision.targetId === playerEmpire.id
+        ) {
+          // Find the bot empire to get archetype info
+          const bot = botEmpires.find((b) => b.id === result.empireId);
+          if (bot && bot.botArchetype) {
+            const botInfo: BotInfo = {
+              id: bot.id,
+              name: bot.name,
+              personaId: `${bot.id.slice(0, 8)}-persona`, // Fallback if no persona
+              archetype: bot.botArchetype as BotInfo["archetype"],
+            };
+            // Trigger threat warning (internally checks archetype tell rate)
+            await triggerThreatWarning(triggerCtx, botInfo).catch(() => {
+              // Don't fail bot processing if threat warning fails
+            });
+          }
+        }
+      }
+    }
 
     // Log performance
     await perfLogger.log({

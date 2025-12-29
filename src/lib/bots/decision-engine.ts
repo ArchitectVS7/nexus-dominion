@@ -51,17 +51,16 @@ import { CONTRACT_CONFIGS, type ContractType } from "@/lib/game/constants/syndic
 // M10: Emotional state imports
 import {
   type EmotionalStateName,
-  type EmotionalModifiers,
   getScaledModifiers,
-  EMOTIONAL_STATES,
+  // EMOTIONAL_STATES, // TODO: Use for state lookup
 } from "./emotions";
 // M9: Archetype behavior imports
 import {
   ARCHETYPE_BEHAVIORS,
   type ArchetypeBehavior,
-  wouldArchetypeAttack,
-  rollTellCheck,
-  rollAdvanceWarning,
+  // wouldArchetypeAttack - Archetype attack weights used via ARCHETYPE_BEHAVIORS
+  // rollTellCheck - Used in bot-processor.ts via triggerThreatWarning
+  // rollAdvanceWarning - Future: for multi-turn attack planning
 } from "./archetypes";
 
 // =============================================================================
@@ -248,7 +247,7 @@ export function applyEmotionalModifiers(
   const tradeMultiplier = 1 + modifiers.negotiation;
 
   // Calculate modified weights
-  let newWeights: BotDecisionWeights = {
+  const newWeights: BotDecisionWeights = {
     build_units: weights.build_units,
     buy_planet: weights.buy_planet,
     attack: Math.max(0, weights.attack * attackMultiplier),

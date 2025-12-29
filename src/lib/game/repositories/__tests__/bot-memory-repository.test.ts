@@ -5,7 +5,7 @@
  * Note: These tests use mocked database calls.
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   calculateMemoryDecay,
   calculateNetRelationship,

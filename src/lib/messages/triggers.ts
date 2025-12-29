@@ -13,6 +13,7 @@ import { eq, and } from "drizzle-orm";
 import { sendBotMessage, sendBroadcastMessage } from "./message-service";
 import { getPersona } from "./template-loader";
 import type { MessageContext, BotArchetype } from "./types";
+import { rollTellCheck, type ArchetypeName } from "@/lib/bots/archetypes";
 
 // =============================================================================
 // TYPES
@@ -385,7 +386,8 @@ export async function triggerTributeDemand(
 }
 
 /**
- * Trigger threat warning message
+ * Trigger threat warning message.
+ * Uses archetype-based tell check (PRD 7.10) to determine if bot telegraphs.
  */
 export async function triggerThreatWarning(
   ctx: TriggerContext,
@@ -394,7 +396,14 @@ export async function triggerThreatWarning(
   const persona = await getPersona(threateningBot.personaId);
   if (!persona) return;
 
-  if (Math.random() > persona.tellRate) return;
+  // Use archetype-based tell check (PRD 7.10)
+  // Schemer: 30%, Blitzkrieg/Opportunist: 40%, Tech Rush: 50%,
+  // Merchant: 60%, Warlord: 70%, Diplomat: 80%, Turtle: 90%
+  // Convert "tech_rush" to "techRush" format for ArchetypeName
+  const archetypeName = (threateningBot.archetype === "tech_rush"
+    ? "techRush"
+    : threateningBot.archetype) as ArchetypeName;
+  if (!rollTellCheck(archetypeName)) return;
 
   const context: MessageContext = {
     empire_name: ctx.playerEmpireName,

@@ -14,7 +14,7 @@ import {
   type NewGalacticEvent,
   type GalacticEvent as DBGalacticEvent,
 } from "@/lib/db/schema";
-import { eq, and, desc, gte, lte } from "drizzle-orm";
+import { eq, and, desc, lte } from "drizzle-orm";
 import type { GalacticEvent, EventEffect } from "@/lib/events/types";
 
 // =============================================================================

@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import type { GalacticEvent, EventEffect } from "@/lib/events/types";
+import type { GalacticEvent } from "@/lib/events/types";
 import type { Empire } from "@/lib/db/schema";
 
 // =============================================================================

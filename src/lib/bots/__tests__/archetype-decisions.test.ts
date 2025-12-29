@@ -13,11 +13,10 @@ import {
   getTellStyle,
   getAdjustedWeights,
 } from "../decision-engine";
-import type { BotArchetype, BotDecisionContext, Empire, Planet } from "../types";
+import type { BotArchetype, BotDecisionContext, Empire } from "../types";
 import {
   ARCHETYPE_BEHAVIORS,
   wouldArchetypeAttack,
-  rollTellCheck,
   getArchetypeTellRate,
 } from "../archetypes";
 

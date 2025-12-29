@@ -4,11 +4,12 @@
  * Nuclear Warfare Server Actions (M11)
  *
  * Server actions for nuclear weapon purchase and deployment.
- * All inputs are validated with Zod schemas.
+ * Uses cookie-based session management for authentication.
  *
  * @see docs/PRD.md Section on Turn 100+ unlocks
  */
 
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { games, empires, resourceInventory, messages } from "@/lib/db/schema";
@@ -26,21 +27,33 @@ import {
 import { getEmpireCoalition } from "@/lib/game/repositories/coalition-repository";
 
 // =============================================================================
+// SESSION MANAGEMENT
+// =============================================================================
+
+const GAME_ID_COOKIE = "gameId";
+const EMPIRE_ID_COOKIE = "empireId";
+
+async function getGameCookies(): Promise<{
+  gameId: string | undefined;
+  empireId: string | undefined;
+}> {
+  try {
+    const cookieStore = await cookies();
+    return {
+      gameId: cookieStore.get(GAME_ID_COOKIE)?.value,
+      empireId: cookieStore.get(EMPIRE_ID_COOKIE)?.value,
+    };
+  } catch (error) {
+    console.error("Failed to read cookies:", error);
+    return { gameId: undefined, empireId: undefined };
+  }
+}
+
+// =============================================================================
 // VALIDATION SCHEMAS
 // =============================================================================
 
 const UUIDSchema = z.string().uuid("Invalid UUID format");
-
-const PurchaseNuclearSchema = z.object({
-  gameId: UUIDSchema,
-  empireId: UUIDSchema,
-});
-
-const LaunchNuclearSchema = z.object({
-  gameId: UUIDSchema,
-  attackerEmpireId: UUIDSchema,
-  targetEmpireId: UUIDSchema,
-});
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -128,18 +141,11 @@ async function getLastNukeLaunchTurn(
   empireId: string,
   gameId: string
 ): Promise<number | null> {
-  // Check for nuclear launch messages from this empire
-  const lastNukeMessage = await db.query.messages.findFirst({
-    where: and(
-      eq(messages.senderId, empireId),
-      eq(messages.gameId, gameId),
-      eq(messages.trigger, "broadcast_shout")
-    ),
-    orderBy: (messages, { desc }) => [desc(messages.turn)],
-  });
-
-  // This is a simplified approach - in production, add a lastNukeLaunchTurn field to empires
-  return null; // Allow launch for now
+  // TODO: In production, add a lastNukeLaunchTurn field to empires table
+  // This stub exists to support future cooldown tracking
+  void empireId;
+  void gameId;
+  return null; // Allow launch for now (no cooldown tracking)
 }
 
 /**
@@ -168,20 +174,20 @@ async function createGlobalBroadcast(
 
 /**
  * Purchase a nuclear weapon from the Syndicate Black Market.
+ * Uses cookie-based session for authentication.
  */
-export async function purchaseNuclearWeaponAction(
-  gameId: string,
-  empireId: string
-) {
+export async function purchaseNuclearWeaponAction() {
   try {
-    const parsed = PurchaseNuclearSchema.safeParse({ gameId, empireId });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Get session from cookies
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get game and empire
     const game = await db.query.games.findFirst({
-      where: eq(games.id, parsed.data.gameId),
+      where: eq(games.id, gameId),
     });
 
     if (!game) {
@@ -189,13 +195,14 @@ export async function purchaseNuclearWeaponAction(
     }
 
     const empire = await db.query.empires.findFirst({
-      where: eq(empires.id, parsed.data.empireId),
+      where: eq(empires.id, empireId),
     });
 
     if (!empire) {
       return { success: false as const, error: "Empire not found" };
     }
 
+    // Verify empire belongs to current game (defense in depth)
     if (empire.gameId !== gameId) {
       return { success: false as const, error: "Empire not in this game" };
     }
@@ -225,10 +232,10 @@ export async function purchaseNuclearWeaponAction(
           credits: empire.credits - cost,
           updatedAt: new Date(),
         })
-        .where(eq(empires.id, parsed.data.empireId));
+        .where(eq(empires.id, empireId));
     });
 
-    await addNuclearWeapon(parsed.data.empireId, parsed.data.gameId);
+    await addNuclearWeapon(empireId, gameId);
 
     return {
       success: true as const,
@@ -250,25 +257,26 @@ export async function purchaseNuclearWeaponAction(
 
 /**
  * Launch a nuclear strike against a target empire.
+ * Uses cookie-based session for authentication.
  */
-export async function launchNuclearStrikeAction(
-  gameId: string,
-  attackerEmpireId: string,
-  targetEmpireId: string
-) {
+export async function launchNuclearStrikeAction(targetEmpireId: string) {
   try {
-    const parsed = LaunchNuclearSchema.safeParse({
-      gameId,
-      attackerEmpireId,
-      targetEmpireId,
-    });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Validate target ID
+    const targetParsed = UUIDSchema.safeParse(targetEmpireId);
+    if (!targetParsed.success) {
+      return { success: false as const, error: "Invalid target empire ID" };
+    }
+
+    // Get session from cookies
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get game
     const game = await db.query.games.findFirst({
-      where: eq(games.id, parsed.data.gameId),
+      where: eq(games.id, gameId),
     });
 
     if (!game) {
@@ -277,20 +285,21 @@ export async function launchNuclearStrikeAction(
 
     // Get attacker
     const attacker = await db.query.empires.findFirst({
-      where: eq(empires.id, parsed.data.attackerEmpireId),
+      where: eq(empires.id, empireId),
     });
 
     if (!attacker) {
-      return { success: false as const, error: "Attacker empire not found" };
+      return { success: false as const, error: "Empire not found" };
     }
 
+    // Verify attacker belongs to current game (defense in depth)
     if (attacker.gameId !== gameId) {
-      return { success: false as const, error: "Attacker not in this game" };
+      return { success: false as const, error: "Empire not in this game" };
     }
 
     // Get target
     const target = await db.query.empires.findFirst({
-      where: eq(empires.id, parsed.data.targetEmpireId),
+      where: eq(empires.id, targetEmpireId),
     });
 
     if (!target) {
@@ -306,12 +315,12 @@ export async function launchNuclearStrikeAction(
     }
 
     // Check if attacker has nuclear weapon
-    const hasNuke = await hasNuclearWeapon(parsed.data.attackerEmpireId);
+    const hasNuke = await hasNuclearWeapon(empireId);
 
     // Get last launch turn
     const lastNukeLaunchTurn = await getLastNukeLaunchTurn(
-      parsed.data.attackerEmpireId,
-      parsed.data.gameId
+      empireId,
+      gameId
     );
 
     // Validate launch
@@ -343,7 +352,7 @@ export async function launchNuclearStrikeAction(
     // Apply consequences in a transaction
     await db.transaction(async (tx) => {
       // Remove nuclear weapon from inventory
-      await removeNuclearWeapon(parsed.data.attackerEmpireId);
+      await removeNuclearWeapon(empireId);
 
       // Apply population damage to target
       if (result.populationKilled > 0) {
@@ -358,7 +367,7 @@ export async function launchNuclearStrikeAction(
             population: newPopulation,
             updatedAt: new Date(),
           })
-          .where(eq(empires.id, parsed.data.targetEmpireId));
+          .where(eq(empires.id, targetEmpireId));
       }
 
       // Apply civil status penalty to attacker
@@ -370,15 +379,15 @@ export async function launchNuclearStrikeAction(
           reputation: Math.max(0, attacker.reputation + result.reputationLoss),
           updatedAt: new Date(),
         })
-        .where(eq(empires.id, parsed.data.attackerEmpireId));
+        .where(eq(empires.id, empireId));
     });
 
     // Create global broadcast if damage occurred
     if (result.globalOutrage) {
       const broadcast = generateGlobalBroadcast(attacker.name, target.name);
       await createGlobalBroadcast(
-        parsed.data.gameId,
-        parsed.data.attackerEmpireId,
+        gameId,
+        empireId,
         broadcast,
         game.currentTurn
       );
@@ -420,17 +429,20 @@ export async function launchNuclearStrikeAction(
 
 /**
  * Get nuclear warfare status for an empire.
+ * Uses cookie-based session for authentication.
  */
-export async function getNuclearStatusAction(gameId: string, empireId: string) {
+export async function getNuclearStatusAction() {
   try {
-    const parsed = PurchaseNuclearSchema.safeParse({ gameId, empireId });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Get session from cookies
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get game
     const game = await db.query.games.findFirst({
-      where: eq(games.id, parsed.data.gameId),
+      where: eq(games.id, gameId),
     });
 
     if (!game) {
@@ -439,7 +451,7 @@ export async function getNuclearStatusAction(gameId: string, empireId: string) {
 
     // Get empire
     const empire = await db.query.empires.findFirst({
-      where: eq(empires.id, parsed.data.empireId),
+      where: eq(empires.id, empireId),
     });
 
     if (!empire) {
@@ -447,18 +459,18 @@ export async function getNuclearStatusAction(gameId: string, empireId: string) {
     }
 
     // Check nuclear weapon inventory
-    const hasNuke = await hasNuclearWeapon(parsed.data.empireId);
+    const hasNuke = await hasNuclearWeapon(empireId);
     const inventory = await db.query.resourceInventory.findFirst({
       where: and(
-        eq(resourceInventory.empireId, parsed.data.empireId),
+        eq(resourceInventory.empireId, empireId),
         eq(resourceInventory.resourceType, "nuclear_warheads")
       ),
     });
 
     // Get last launch turn
     const lastNukeLaunchTurn = await getLastNukeLaunchTurn(
-      parsed.data.empireId,
-      parsed.data.gameId
+      empireId,
+      gameId
     );
 
     const isUnlocked = areNuclearWeaponsUnlocked(game.currentTurn);
@@ -508,27 +520,30 @@ export async function getNuclearStatusAction(gameId: string, empireId: string) {
 
 /**
  * Get potential nuclear strike targets.
+ * Uses cookie-based session for authentication.
  */
-export async function getNuclearTargetsAction(gameId: string, empireId: string) {
+export async function getNuclearTargetsAction() {
   try {
-    const parsed = PurchaseNuclearSchema.safeParse({ gameId, empireId });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Get session from cookies
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get all non-eliminated empires except self
     const targets = await db.query.empires.findMany({
       where: and(
-        eq(empires.gameId, parsed.data.gameId),
+        eq(empires.gameId, gameId),
         eq(empires.isEliminated, false)
       ),
     });
 
     // Get attacker's coalition (if any)
-    const attackerCoalition = await getEmpireCoalition(parsed.data.empireId);
+    const attackerCoalition = await getEmpireCoalition(empireId);
 
     const targetList = targets
-      .filter((e) => e.id !== parsed.data.empireId)
+      .filter((e) => e.id !== empireId)
       .map((e) => ({
         id: e.id,
         name: e.name,

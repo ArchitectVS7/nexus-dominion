@@ -20,6 +20,7 @@
  * 4.5. Covert point generation
  * 4.6. Crafting queue processing
  * 5. Bot decisions
+ * 5.5. Bot emotional decay (M10) - reduce emotional intensity over time
  * 6. Market price update
  * 7. Bot messages
  * 7.5. Galactic events (M11) - every 10-20 turns after turn 15
@@ -55,6 +56,7 @@ import { calculateUnitMaintenance, type UnitCounts } from "./unit-service";
 import { processResearchProduction } from "./research-service";
 import { perfLogger } from "@/lib/performance/logger";
 import { processBotTurn, applyBotNightmareBonus } from "@/lib/bots";
+import { applyEmotionalDecay } from "@/lib/game/repositories/bot-emotional-state-repository";
 import type { Difficulty } from "@/lib/bots/types";
 import {
   checkVictoryConditions,
@@ -178,6 +180,22 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
         severity: "info",
       });
     }
+
+    // ==========================================================================
+    // PHASE 5.5: BOT EMOTIONAL DECAY (M10)
+    // ==========================================================================
+
+    // Apply emotional decay to all bots at end of turn
+    // This gradually reduces emotional intensity over time
+    const botEmpires = game.empires.filter((e) => e.type === "bot" && !e.isEliminated);
+    await Promise.all(
+      botEmpires.map((bot) =>
+        applyEmotionalDecay(bot.id, gameId, nextTurn).catch((err) => {
+          // Don't fail the turn if emotional decay fails for a bot
+          console.warn(`Emotional decay failed for bot ${bot.id}:`, err);
+        })
+      )
+    );
 
     // ==========================================================================
     // PHASE 6: MARKET PRICE UPDATE (M7)

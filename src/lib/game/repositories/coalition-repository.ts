@@ -9,7 +9,6 @@ import { db } from "@/lib/db";
 import {
   coalitions,
   coalitionMembers,
-  empires,
   planets,
   type Coalition,
   type NewCoalition,

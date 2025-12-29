@@ -13,9 +13,8 @@ import {
   empires,
   marketPrices,
   type Empire,
-  type Game,
 } from "@/lib/db/schema";
-import { eq, desc, asc } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type {
   GalacticEvent,
   EventEffect,

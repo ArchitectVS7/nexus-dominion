@@ -29,7 +29,7 @@ import {
   DEFAULT_INTENSITY,
   processEmotionalEvent,
   applyIntensityDecay,
-  createDefaultEmotionalState,
+  // createDefaultEmotionalState - available but using inline defaults
 } from "@/lib/bots/emotions";
 
 // =============================================================================

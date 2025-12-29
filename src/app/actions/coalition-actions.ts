@@ -4,11 +4,12 @@
  * Coalition Server Actions (M11)
  *
  * Server actions for coalition management.
- * All inputs are validated with Zod schemas.
+ * Uses cookie-based session management for authentication.
  *
  * @see docs/PRD.md Section 8.2 (Coalitions)
  */
 
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { games, empires } from "@/lib/db/schema";
@@ -18,7 +19,6 @@ import {
   inviteToCoalition,
   acceptCoalitionInvite,
   leaveCoalition,
-  getCoalitionMembers,
   getCoalitionPower,
   getMyCoalition,
   checkDiplomaticVictory,
@@ -41,39 +41,33 @@ import {
 } from "@/lib/constants/diplomacy";
 
 // =============================================================================
+// SESSION MANAGEMENT
+// =============================================================================
+
+const GAME_ID_COOKIE = "gameId";
+const EMPIRE_ID_COOKIE = "empireId";
+
+async function getGameCookies(): Promise<{
+  gameId: string | undefined;
+  empireId: string | undefined;
+}> {
+  try {
+    const cookieStore = await cookies();
+    return {
+      gameId: cookieStore.get(GAME_ID_COOKIE)?.value,
+      empireId: cookieStore.get(EMPIRE_ID_COOKIE)?.value,
+    };
+  } catch (error) {
+    console.error("Failed to read cookies:", error);
+    return { gameId: undefined, empireId: undefined };
+  }
+}
+
+// =============================================================================
 // VALIDATION SCHEMAS
 // =============================================================================
 
 const UUIDSchema = z.string().uuid("Invalid UUID format");
-
-const CreateCoalitionSchema = z.object({
-  gameId: UUIDSchema,
-  founderEmpireId: UUIDSchema,
-  name: z.string().min(1, "Name required").max(200, "Name too long"),
-});
-
-const InviteToCoalitionSchema = z.object({
-  coalitionId: UUIDSchema,
-  inviterEmpireId: UUIDSchema,
-  inviteeEmpireId: UUIDSchema,
-});
-
-const JoinLeaveCoalitionSchema = z.object({
-  coalitionId: UUIDSchema,
-  empireId: UUIDSchema,
-});
-
-const CoordinatedAttackSchema = z.object({
-  coalitionId: UUIDSchema,
-  proposerEmpireId: UUIDSchema,
-  targetEmpireId: UUIDSchema,
-  scheduledTurn: z.number().int().positive(),
-});
-
-const GameEmpireSchema = z.object({
-  gameId: UUIDSchema,
-  empireId: UUIDSchema,
-});
 
 // =============================================================================
 // GET COALITION STATUS
@@ -81,15 +75,18 @@ const GameEmpireSchema = z.object({
 
 /**
  * Get the coalition the empire belongs to (if any).
+ * Uses cookie-based session for authentication.
  */
-export async function getMyCoalitionAction(empireId: string) {
+export async function getMyCoalitionAction() {
   try {
-    const parsed = UUIDSchema.safeParse(empireId);
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid ID" };
+    // Get session from cookies
+    const { empireId } = await getGameCookies();
+
+    if (!empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
-    const coalition = await getMyCoalition(parsed.data);
+    const coalition = await getMyCoalition(empireId);
 
     if (!coalition) {
       return {
@@ -140,15 +137,18 @@ export async function getMyCoalitionAction(empireId: string) {
 
 /**
  * Get all coalitions in a game.
+ * Uses cookie-based session for authentication.
  */
-export async function getGameCoalitionsAction(gameId: string) {
+export async function getGameCoalitionsAction() {
   try {
-    const parsed = UUIDSchema.safeParse(gameId);
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid ID" };
+    // Get session from cookies
+    const { gameId } = await getGameCookies();
+
+    if (!gameId) {
+      return { success: false as const, error: "No active game session" };
     }
 
-    const coalitions = await getGameCoalitions(parsed.data);
+    const coalitions = await getGameCoalitions(gameId);
 
     // Get details for each coalition
     const coalitionDetails = await Promise.all(
@@ -176,19 +176,22 @@ export async function getGameCoalitionsAction(gameId: string) {
 
 /**
  * Get potential coalition members (empires not in a coalition).
+ * Uses cookie-based session for authentication.
  */
-export async function getAvailableCoalitionMembersAction(gameId: string, excludeEmpireId: string) {
+export async function getAvailableCoalitionMembersAction() {
   try {
-    const parsed = GameEmpireSchema.safeParse({ gameId, empireId: excludeEmpireId });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Get session from cookies
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get all non-eliminated empires in the game
     const allEmpires = await db.query.empires.findMany({
       where: and(
-        eq(empires.gameId, parsed.data.gameId),
-        ne(empires.id, parsed.data.empireId),
+        eq(empires.gameId, gameId),
+        ne(empires.id, empireId),
         eq(empires.isEliminated, false)
       ),
     });
@@ -225,21 +228,27 @@ export async function getAvailableCoalitionMembersAction(gameId: string, exclude
 
 /**
  * Create a new coalition.
+ * Uses cookie-based session for authentication.
  */
-export async function createCoalitionAction(
-  gameId: string,
-  founderEmpireId: string,
-  name: string
-) {
+export async function createCoalitionAction(name: string) {
   try {
-    const parsed = CreateCoalitionSchema.safeParse({ gameId, founderEmpireId, name });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Get session from cookies
+    const { gameId, empireId } = await getGameCookies();
+
+    if (!gameId || !empireId) {
+      return { success: false as const, error: "No active game session" };
+    }
+
+    // Validate name
+    const nameSchema = z.string().min(1, "Name required").max(200, "Name too long");
+    const nameParsed = nameSchema.safeParse(name);
+    if (!nameParsed.success) {
+      return { success: false as const, error: nameParsed.error.issues[0]?.message ?? "Invalid name" };
     }
 
     // Get current turn
     const game = await db.query.games.findFirst({
-      where: eq(games.id, parsed.data.gameId),
+      where: eq(games.id, gameId),
     });
 
     if (!game) {
@@ -255,9 +264,9 @@ export async function createCoalitionAction(
     }
 
     const result = await createCoalition(
-      parsed.data.gameId,
-      parsed.data.founderEmpireId,
-      parsed.data.name,
+      gameId,
+      empireId,
+      name,
       game.currentTurn
     );
 
@@ -284,24 +293,29 @@ export async function createCoalitionAction(
 
 /**
  * Invite an empire to join the coalition.
+ * Uses cookie-based session for authentication.
  */
 export async function inviteToCoalitionAction(
   coalitionId: string,
-  inviterEmpireId: string,
   inviteeEmpireId: string
 ) {
   try {
-    const parsed = InviteToCoalitionSchema.safeParse({
-      coalitionId,
-      inviterEmpireId,
-      inviteeEmpireId,
-    });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Validate coalition and invitee IDs
+    const coalitionParsed = UUIDSchema.safeParse(coalitionId);
+    const inviteeParsed = UUIDSchema.safeParse(inviteeEmpireId);
+    if (!coalitionParsed.success || !inviteeParsed.success) {
+      return { success: false as const, error: "Invalid ID format" };
+    }
+
+    // Get session from cookies (inviter is authenticated user)
+    const { empireId } = await getGameCookies();
+
+    if (!empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get coalition to find game
-    const coalition = await getCoalitionById(parsed.data.coalitionId);
+    const coalition = await getCoalitionById(coalitionId);
     if (!coalition) {
       return { success: false as const, error: "Coalition not found" };
     }
@@ -316,9 +330,9 @@ export async function inviteToCoalitionAction(
     }
 
     const result = await inviteToCoalition(
-      parsed.data.coalitionId,
-      parsed.data.inviterEmpireId,
-      parsed.data.inviteeEmpireId,
+      coalitionId,
+      empireId,
+      inviteeEmpireId,
       game.currentTurn
     );
 
@@ -342,16 +356,25 @@ export async function inviteToCoalitionAction(
 
 /**
  * Join a coalition.
+ * Uses cookie-based session for authentication.
  */
-export async function joinCoalitionAction(coalitionId: string, empireId: string) {
+export async function joinCoalitionAction(coalitionId: string) {
   try {
-    const parsed = JoinLeaveCoalitionSchema.safeParse({ coalitionId, empireId });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Validate coalition ID
+    const coalitionParsed = UUIDSchema.safeParse(coalitionId);
+    if (!coalitionParsed.success) {
+      return { success: false as const, error: "Invalid coalition ID" };
+    }
+
+    // Get session from cookies
+    const { empireId } = await getGameCookies();
+
+    if (!empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get coalition to find game
-    const coalition = await getCoalitionById(parsed.data.coalitionId);
+    const coalition = await getCoalitionById(coalitionId);
     if (!coalition) {
       return { success: false as const, error: "Coalition not found" };
     }
@@ -366,8 +389,8 @@ export async function joinCoalitionAction(coalitionId: string, empireId: string)
     }
 
     const result = await acceptCoalitionInvite(
-      parsed.data.coalitionId,
-      parsed.data.empireId,
+      coalitionId,
+      empireId,
       game.currentTurn
     );
 
@@ -391,16 +414,25 @@ export async function joinCoalitionAction(coalitionId: string, empireId: string)
 
 /**
  * Leave a coalition.
+ * Uses cookie-based session for authentication.
  */
-export async function leaveCoalitionAction(coalitionId: string, empireId: string) {
+export async function leaveCoalitionAction(coalitionId: string) {
   try {
-    const parsed = JoinLeaveCoalitionSchema.safeParse({ coalitionId, empireId });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Validate coalition ID
+    const coalitionParsed = UUIDSchema.safeParse(coalitionId);
+    if (!coalitionParsed.success) {
+      return { success: false as const, error: "Invalid coalition ID" };
+    }
+
+    // Get session from cookies
+    const { empireId } = await getGameCookies();
+
+    if (!empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get coalition to find game
-    const coalition = await getCoalitionById(parsed.data.coalitionId);
+    const coalition = await getCoalitionById(coalitionId);
     if (!coalition) {
       return { success: false as const, error: "Coalition not found" };
     }
@@ -415,8 +447,8 @@ export async function leaveCoalitionAction(coalitionId: string, empireId: string
     }
 
     const result = await leaveCoalition(
-      parsed.data.coalitionId,
-      parsed.data.empireId,
+      coalitionId,
+      empireId,
       game.currentTurn
     );
 
@@ -440,26 +472,33 @@ export async function leaveCoalitionAction(coalitionId: string, empireId: string
 
 /**
  * Propose a coordinated attack.
+ * Uses cookie-based session for authentication.
  */
 export async function proposeCoordinatedAttackAction(
   coalitionId: string,
-  proposerEmpireId: string,
   targetEmpireId: string,
   scheduledTurn: number
 ) {
   try {
-    const parsed = CoordinatedAttackSchema.safeParse({
-      coalitionId,
-      proposerEmpireId,
-      targetEmpireId,
-      scheduledTurn,
-    });
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid input" };
+    // Validate IDs and turn
+    const coalitionParsed = UUIDSchema.safeParse(coalitionId);
+    const targetParsed = UUIDSchema.safeParse(targetEmpireId);
+    const turnSchema = z.number().int().positive();
+    const turnParsed = turnSchema.safeParse(scheduledTurn);
+
+    if (!coalitionParsed.success || !targetParsed.success || !turnParsed.success) {
+      return { success: false as const, error: "Invalid input" };
+    }
+
+    // Get session from cookies (proposer is authenticated user)
+    const { empireId } = await getGameCookies();
+
+    if (!empireId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     // Get coalition to find game
-    const coalition = await getCoalitionById(parsed.data.coalitionId);
+    const coalition = await getCoalitionById(coalitionId);
     if (!coalition) {
       return { success: false as const, error: "Coalition not found" };
     }
@@ -482,10 +521,10 @@ export async function proposeCoordinatedAttackAction(
     }
 
     const result = await proposeCoordinatedAttack(
-      parsed.data.coalitionId,
-      parsed.data.proposerEmpireId,
-      parsed.data.targetEmpireId,
-      parsed.data.scheduledTurn,
+      coalitionId,
+      empireId,
+      targetEmpireId,
+      scheduledTurn,
       game.currentTurn
     );
 
@@ -497,7 +536,7 @@ export async function proposeCoordinatedAttackAction(
       success: true as const,
       data: {
         message: "Coordinated attack proposed",
-        scheduledTurn: parsed.data.scheduledTurn,
+        scheduledTurn,
         bonus: "+10% combat power for all participants",
       },
     };
@@ -543,16 +582,19 @@ export async function checkDiplomaticVictoryAction(coalitionId: string) {
 
 /**
  * Get coalition system info.
+ * Uses cookie-based session for authentication.
  */
-export async function getCoalitionSystemInfoAction(gameId: string) {
+export async function getCoalitionSystemInfoAction() {
   try {
-    const parsed = UUIDSchema.safeParse(gameId);
-    if (!parsed.success) {
-      return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid ID" };
+    // Get session from cookies
+    const { gameId } = await getGameCookies();
+
+    if (!gameId) {
+      return { success: false as const, error: "No active game session" };
     }
 
     const game = await db.query.games.findFirst({
-      where: eq(games.id, parsed.data),
+      where: eq(games.id, gameId),
     });
 
     if (!game) {

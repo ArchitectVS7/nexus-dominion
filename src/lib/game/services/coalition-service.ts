@@ -11,8 +11,8 @@
  */
 
 import { db } from "@/lib/db";
-import { empires, games, type Coalition, type Empire } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { empires, coalitions, coalitionMembers, type Coalition, type Empire } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 import {
   COALITION_MAX_MEMBERS,
   COALITION_MIN_MEMBERS,
@@ -25,9 +25,6 @@ import {
   getCoalitionWithMembers,
   getActiveMembers,
   getCoalitionMember,
-  deactivateCoalitionMember,
-  updateCoalitionStatus,
-  updateCoalitionStats,
   isEmpireInCoalition,
   getEmpireCoalition,
   getTotalPlanetCount,
@@ -269,6 +266,7 @@ export async function inviteToCoalition(
 
 /**
  * Accept a coalition invitation and join.
+ * Uses transaction to prevent race conditions.
  */
 export async function acceptCoalitionInvite(
   coalitionId: string,
@@ -288,15 +286,6 @@ export async function acceptCoalitionInvite(
 
   if (coalition.status === "dissolved") {
     return { success: false, error: "Coalition has been dissolved" };
-  }
-
-  // Check member limit
-  const members = await getActiveMembers(coalitionId);
-  if (members.length >= COALITION_MAX_MEMBERS) {
-    return {
-      success: false,
-      error: `Coalition is full (max ${COALITION_MAX_MEMBERS} members)`,
-    };
   }
 
   // Check if empire exists
@@ -322,24 +311,44 @@ export async function acceptCoalitionInvite(
   }
 
   try {
-    // Add member
-    await addCoalitionMember({
-      coalitionId,
-      empireId,
-      gameId: coalition.gameId,
-      joinedAtTurn: currentTurn,
-    });
+    // Use transaction to ensure atomicity of member check + add
+    await db.transaction(async (tx) => {
+      // Re-check member count inside transaction (prevents race condition)
+      const members = await tx.query.coalitionMembers.findMany({
+        where: and(
+          eq(coalitionMembers.coalitionId, coalitionId),
+          eq(coalitionMembers.isActive, true)
+        ),
+      });
 
-    // Check if coalition should become active (reached minimum members)
-    const updatedMembers = await getActiveMembers(coalitionId);
-    if (updatedMembers.length >= COALITION_MIN_MEMBERS && coalition.status === "forming") {
-      await updateCoalitionStatus(coalitionId, "active");
-    }
+      if (members.length >= COALITION_MAX_MEMBERS) {
+        throw new Error(`Coalition is full (max ${COALITION_MAX_MEMBERS} members)`);
+      }
+
+      // Add member within transaction
+      await tx.insert(coalitionMembers).values({
+        coalitionId,
+        empireId,
+        gameId: coalition.gameId,
+        joinedAtTurn: currentTurn,
+        isActive: true,
+      });
+
+      // Update coalition status if reached minimum members
+      const newMemberCount = members.length + 1;
+      if (newMemberCount >= COALITION_MIN_MEMBERS && coalition.status === "forming") {
+        await tx
+          .update(coalitions)
+          .set({ status: "active", updatedAt: new Date() })
+          .where(eq(coalitions.id, coalitionId));
+      }
+    });
 
     return { success: true };
   } catch (error) {
     console.error("Error joining coalition:", error);
-    return { success: false, error: "Failed to join coalition" };
+    const message = error instanceof Error ? error.message : "Failed to join coalition";
+    return { success: false, error: message };
   }
 }
 
@@ -347,6 +356,7 @@ export async function acceptCoalitionInvite(
  * Leave a coalition.
  * If the leader leaves, a new leader is automatically assigned.
  * If all members leave, the coalition is dissolved.
+ * Uses transaction to ensure consistency.
  */
 export async function leaveCoalition(
   coalitionId: string,
@@ -371,43 +381,66 @@ export async function leaveCoalition(
   }
 
   try {
-    // Deactivate membership
-    await deactivateCoalitionMember(coalitionId, empireId, currentTurn);
+    // Use transaction for all updates
+    await db.transaction(async (tx) => {
+      // Deactivate membership
+      await tx
+        .update(coalitionMembers)
+        .set({
+          isActive: false,
+          leftAtTurn: currentTurn,
+        })
+        .where(
+          and(
+            eq(coalitionMembers.coalitionId, coalitionId),
+            eq(coalitionMembers.empireId, empireId)
+          )
+        );
 
-    // Get remaining members
-    const remainingMembers = await getActiveMembers(coalitionId);
+      // Get remaining members within transaction
+      const remainingMembers = await tx.query.coalitionMembers.findMany({
+        where: and(
+          eq(coalitionMembers.coalitionId, coalitionId),
+          eq(coalitionMembers.isActive, true)
+        ),
+        orderBy: (coalitionMembers, { asc }) => [asc(coalitionMembers.joinedAtTurn)],
+      });
 
-    // If no members left, dissolve the coalition
-    if (remainingMembers.length === 0) {
-      await updateCoalitionStatus(coalitionId, "dissolved", currentTurn);
-      return { success: true };
-    }
-
-    // If leader left, assign new leader (first remaining member by join date)
-    if (coalition.leaderId === empireId) {
-      const newLeader = remainingMembers[0];
-      if (newLeader) {
-        await db
-          .update(empires)
-          .set({ updatedAt: new Date() }) // Just trigger an update
-          .where(eq(empires.id, newLeader.empireId));
-
-        // Update coalition leader
-        const coalitionsTable = await import("@/lib/db/schema").then((m) => m.coalitions);
-        await db
-          .update(coalitionsTable)
+      // If no members left, dissolve the coalition
+      if (remainingMembers.length === 0) {
+        await tx
+          .update(coalitions)
           .set({
-            leaderId: newLeader.empireId,
+            status: "dissolved",
+            dissolvedAtTurn: currentTurn,
             updatedAt: new Date(),
           })
-          .where(eq(coalitionsTable.id, coalitionId));
+          .where(eq(coalitions.id, coalitionId));
+        return;
       }
-    }
 
-    // If below minimum members, revert to "forming" status
-    if (remainingMembers.length < COALITION_MIN_MEMBERS) {
-      await updateCoalitionStatus(coalitionId, "forming");
-    }
+      // If leader left, assign new leader (first remaining member by join date)
+      if (coalition.leaderId === empireId) {
+        const newLeader = remainingMembers[0];
+        if (newLeader) {
+          await tx
+            .update(coalitions)
+            .set({
+              leaderId: newLeader.empireId,
+              updatedAt: new Date(),
+            })
+            .where(eq(coalitions.id, coalitionId));
+        }
+      }
+
+      // If below minimum members, revert to "forming" status
+      if (remainingMembers.length < COALITION_MIN_MEMBERS) {
+        await tx
+          .update(coalitions)
+          .set({ status: "forming", updatedAt: new Date() })
+          .where(eq(coalitions.id, coalitionId));
+      }
+    });
 
     return { success: true };
   } catch (error) {
