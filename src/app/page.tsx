@@ -390,9 +390,9 @@ export default function HomePage() {
       <footer className="py-8 px-8 bg-gray-950 border-t border-gray-800">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
           <div className="flex gap-4">
-            <span>Nexus Dominion v0.7.0</span>
+            <span>Nexus Dominion v0.6-Prototype</span>
             <span>•</span>
-            <span>Milestone 7: Landing Page & UX</span>
+            <span>M11 Complete</span>
           </div>
           <div className="flex gap-6">
             <span>A modernization of Solar Imperium</span>
