@@ -65,7 +65,7 @@ export function EmpireStatusBar({
 
   return (
     <div
-      className="bg-gray-900 border-t border-lcars-amber/30 px-4 py-2"
+      className="hidden lg:block bg-gray-900 border-t border-lcars-amber/30 px-4 py-2"
       data-testid="empire-status-bar"
     >
       <div className="flex items-center justify-between gap-2 flex-wrap">

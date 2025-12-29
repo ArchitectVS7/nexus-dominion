@@ -5,8 +5,9 @@
  *
  * Provides the galaxy-centric layout with:
  * - Main content area (left/center)
- * - Turn Order Panel sidebar (right)
- * - Empire Status Bar (bottom)
+ * - Turn Order Panel sidebar (right) - desktop only
+ * - Empire Status Bar (bottom) - desktop only
+ * - Mobile Bottom Bar + Action Sheet - mobile only
  * - Turn Summary Modal (after END TURN)
  * - Slide-out panels for quick access
  *
@@ -20,6 +21,8 @@ import { TurnOrderPanel } from "./TurnOrderPanel";
 import { TurnSummaryModal } from "./TurnSummaryModal";
 import { EmpireStatusBar, type PanelType } from "./EmpireStatusBar";
 import { SlideOutPanel } from "./SlideOutPanel";
+import { MobileBottomBar } from "./MobileBottomBar";
+import { MobileActionSheet } from "./MobileActionSheet";
 import { OnboardingManager } from "./onboarding";
 import {
   getGameLayoutDataAction,
@@ -61,8 +64,11 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
     victoryResult?: { type: string; message: string };
   } | null>(null);
 
-  // Slide-out panel state
+  // Slide-out panel state (desktop)
   const [activePanel, setActivePanel] = useState<PanelType>(null);
+
+  // Mobile action sheet state
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
   // Refresh layout data
   const refreshLayoutData = useCallback(async () => {
@@ -88,6 +94,8 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
     if (isProcessing) return;
 
     setIsProcessing(true);
+    // Close mobile sheet if open
+    setMobileSheetOpen(false);
 
     try {
       const result = await endTurnEnhancedAction();
@@ -162,12 +170,12 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
 
       {/* Main content area with sidebar */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Main Content Area - add bottom padding on mobile for the bottom bar */}
+        <div className="flex-1 overflow-y-auto pb-28 lg:pb-0">
           {children}
         </div>
 
-        {/* Turn Order Panel Sidebar */}
+        {/* Turn Order Panel Sidebar - Desktop only (hidden on mobile via component) */}
         <TurnOrderPanel
           currentTurn={data.currentTurn}
           turnLimit={data.turnLimit}
@@ -181,7 +189,7 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
         />
       </div>
 
-      {/* Empire Status Bar (bottom) */}
+      {/* Empire Status Bar (bottom) - Desktop only (hidden on mobile via component) */}
       <EmpireStatusBar
         credits={data.credits}
         food={data.food}
@@ -198,7 +206,33 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
         onPanelToggle={handlePanelToggle}
       />
 
-      {/* Slide-out Panels */}
+      {/* Mobile Bottom Bar - Mobile only */}
+      <MobileBottomBar
+        currentTurn={data.currentTurn}
+        turnLimit={data.turnLimit}
+        credits={data.credits}
+        foodStatus={data.foodStatus}
+        armyStrength={data.armyStrength}
+        unreadMessages={data.unreadMessages}
+        onEndTurn={handleEndTurn}
+        onOpenActions={() => setMobileSheetOpen(true)}
+        isProcessing={isProcessing}
+      />
+
+      {/* Mobile Action Sheet - Mobile only */}
+      <MobileActionSheet
+        isOpen={mobileSheetOpen}
+        onClose={() => setMobileSheetOpen(false)}
+        currentTurn={data.currentTurn}
+        turnLimit={data.turnLimit}
+        foodStatus={data.foodStatus}
+        armyStrength={data.armyStrength}
+        threatCount={data.threatCount}
+        unreadMessages={data.unreadMessages}
+        protectionTurnsLeft={data.protectionTurnsLeft}
+      />
+
+      {/* Slide-out Panels - Desktop only */}
       <SlideOutPanel
         isOpen={activePanel === "resources"}
         onClose={() => setActivePanel(null)}

@@ -100,7 +100,7 @@ export function TurnOrderPanel({
 
   return (
     <div
-      className="w-72 bg-gray-900 border-l border-lcars-amber/30 flex flex-col h-full"
+      className="hidden lg:flex w-72 bg-gray-900 border-l border-lcars-amber/30 flex-col h-full"
       data-testid="turn-order-panel"
     >
       {/* Turn Header */}
