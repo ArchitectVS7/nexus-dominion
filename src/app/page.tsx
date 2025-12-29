@@ -172,6 +172,8 @@ function ScreenshotCarousel() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % screenshots.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + screenshots.length) % screenshots.length);
 
+  const currentScreenshot = screenshots[currentSlide] ?? screenshots[0];
+
   return (
     <div className="relative">
       {/* Screenshot placeholder */}
@@ -179,10 +181,10 @@ function ScreenshotCarousel() {
         <div className="text-center p-8">
           <div className="text-6xl mb-4 opacity-50">📸</div>
           <p className="text-lcars-amber font-display text-xl mb-2">
-            {screenshots[currentSlide].title}
+            {currentScreenshot?.title}
           </p>
           <p className="text-gray-400 text-sm">
-            {screenshots[currentSlide].description}
+            {currentScreenshot?.description}
           </p>
           <p className="text-gray-600 text-xs mt-4">
             Screenshot placeholder - Add image to /public/screenshots/
