@@ -9,26 +9,6 @@ interface EmpireTooltipProps {
   y: number;
 }
 
-// Get display value based on intel level
-function getIntelDisplay(
-  empire: EmpireMapData,
-  field: keyof EmpireMapData,
-  intelRequired: IntelLevel
-): string | null {
-  const intelOrder: IntelLevel[] = ["unknown", "basic", "moderate", "full"];
-  const currentLevel = intelOrder.indexOf(empire.intelLevel);
-  const requiredLevel = intelOrder.indexOf(intelRequired);
-
-  if (currentLevel < requiredLevel) {
-    return null;
-  }
-
-  const value = empire[field];
-  if (value === undefined || value === null) return null;
-
-  return String(value);
-}
-
 // Get approximate size description for basic intel
 function getApproximateSize(planetCount: number): string {
   if (planetCount <= 3) return "Small";
