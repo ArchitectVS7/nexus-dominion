@@ -1,0 +1,16 @@
+# Sound Effects Directory
+
+Place audio files here:
+- click.mp3      - Button click chirp (0.3 volume)
+- hover.mp3      - Subtle hover blip (0.15 volume)
+- success.mp3    - Positive confirmation (0.4 volume)
+- error.mp3      - Error/failure sound (0.4 volume)
+- alert.mp3      - Attention notification (0.5 volume)
+- turn-end.mp3   - Turn completion chime (0.4 volume)
+- combat.mp3     - Combat initiated (0.5 volume)
+- build.mp3      - Construction queued (0.3 volume)
+
+Recommended sources (free, CC0/Public Domain):
+- https://freesound.org - Search "sci-fi beep", "UI click"
+- https://pixabay.com/sound-effects/ - "Interface", "Notification"
+- https://kenney.nl/assets - UI Audio pack
