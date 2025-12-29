@@ -958,7 +958,7 @@ treaties.forEach((treaty) => {
 | 4 | Ambient Starmap Music | Howler.js, Audio files | ❌ Not Started |
 | 5 | Pulsing Alert Indicators | CSS only | ✅ Complete |
 | 6 | NASA Nebula Backgrounds | Image assets | ⚠️ Partial (code done, no images) |
-| 7 | Starmap Visual Enhancements | D3.js (existing) | ❌ Not Started |
+| 7 | Starmap Visual Enhancements | D3.js (existing) | ✅ Complete |
 
 ### Implementation Notes (Updated 2024-12-29)
 
@@ -982,6 +982,13 @@ treaties.forEach((treaty) => {
 **Phase 6 Partial:**
 - `SpaceBackground.tsx` created
 - Missing: NASA/space imagery files (only .gitkeep in public/images/backgrounds/)
+
+**Phase 7 Complete:**
+- Starmap already has twinkling stars (`star-twinkle` CSS animation)
+- Empire node pulse effect (`empire-pulse` CSS animation)
+- Treaty/alliance connection lines with animation (`alliance-line` CSS animation)
+- Nebula particle effects on empire nodes
+- All animations respect `prefers-reduced-motion`
 
 ---
 
@@ -1055,3 +1062,213 @@ treaties.forEach((treaty) => {
 - Consider hiring a sound designer for cohesive audio identity
 - GSAP is free for personal/non-commercial use; check license for commercial
 - Test with users for "annoyance factor" on sounds
+
+---
+
+## Phase 8: Boardgame-Style Layout Improvements
+
+**Priority:** Critical
+**Effort:** Medium
+**Impact:** Very High
+
+### Current State (Audit 2024-12-29)
+
+The following boardgame-style components are **already implemented**:
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| TurnOrderPanel | ✅ | Right sidebar, action checklist, quick status |
+| TurnSummaryModal | ✅ | Post-turn payoff modal |
+| GameShell | ✅ | Layout wrapper with sidebar |
+| OnboardingManager | ✅ | 5-turn contextual hints |
+| Theme/Names System | ✅ | Full rebrand in `src/lib/theme/names.ts` |
+| GameFooter | ✅ | Compact status bar |
+
+### Identified Issues
+
+1. **Navigation Redundancy**: Header nav + TurnOrderPanel both provide navigation
+2. **Dashboard Not Galaxy-Centric**: `/game` shows 6-panel grid instead of starmap
+3. **Status Bar Duplication**: Footer and TurnOrderPanel show overlapping info
+4. **Top Menu Too Prominent**: Takes focus away from game content
+
+### Proposed Layout Restructure
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ NEXUS DOMINION              💰 105K | 🍞 Surplus | 👥 12.5K         [☰ Menu]│
+├─────────────────────────────────────────────────────────────────────┬───────┤
+│                                                                     │ T:15  │
+│                                                                     │ ───── │
+│                     GALAXY MAP (PRIMARY VIEW)                       │       │
+│                     Force-directed empire graph                     │ MOVES │
+│                     Click empire → drill down                       │ ○ Frc │
+│                                                                     │ ○ Sec │
+│                     [Replaces dashboard panels]                     │ ○ Cmb │
+│                                                                     │ ○ Dip │
+│                                                                     │ ○ Exh │
+│                                                                     │ ○ Int │
+├─────────────────────────────────────────────────────────────────────┤ ───── │
+│  🌍 12 Sectors | ⚔️ 2,450 Units | 📈 Rank #3 | 😐 Steady           │[CYCLE]│
+└─────────────────────────────────────────────────────────────────────┴───────┘
+```
+
+### Implementation Tasks
+
+#### 8.1 Simplify Header
+Remove navigation links from header. Keep only:
+- Logo/name (links to /game)
+- Compact status indicators
+- Hamburger menu for settings/help
+
+```tsx
+// Proposed header structure
+<header className="bg-gray-900 border-b border-lcars-amber/30 px-4 py-2">
+  <div className="flex items-center justify-between">
+    <Link href="/game" className="font-display text-lcars-amber">
+      NEXUS DOMINION
+    </Link>
+    <CompactStatusBar credits={...} food={...} population={...} />
+    <MenuButton />
+  </div>
+</header>
+```
+
+#### 8.2 Make Dashboard Galaxy-Centric
+Change `/game/page.tsx` to prioritize starmap:
+
+```tsx
+// New dashboard structure
+export default function DashboardPage() {
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex-1 relative">
+        <Starmap empires={...} playerEmpireId={...} />
+        {/* Floating empire info panel on click */}
+        <EmpireInfoSlideout empire={selectedEmpire} />
+      </div>
+      <EmpireStatusBar onExpandPanel={...} />
+    </div>
+  );
+}
+```
+
+#### 8.3 Create EmpireStatusBar Component
+Compact horizontal bar replacing footer:
+
+```tsx
+interface EmpireStatusBarProps {
+  sectors: number;
+  military: number;
+  rank: number;
+  civilStatus: CivilStatusKey;
+  onExpand: (panel: PanelType) => void;
+}
+
+export function EmpireStatusBar({ sectors, military, rank, civilStatus, onExpand }: EmpireStatusBarProps) {
+  return (
+    <div className="bg-gray-900 border-t border-lcars-amber/30 px-4 py-2 flex items-center justify-between">
+      <StatusItem icon="🌍" label="Sectors" value={sectors} onClick={() => onExpand('planets')} />
+      <StatusItem icon="⚔️" label="Units" value={military} onClick={() => onExpand('military')} />
+      <StatusItem icon="📈" label="Rank" value={`#${rank}`} />
+      <CivilStatusBadge status={civilStatus} />
+    </div>
+  );
+}
+```
+
+#### 8.4 Add Slide-Out Panels
+Replace page navigation for quick actions:
+
+```tsx
+// Click status bar item → slide-out panel appears
+<SlideOutPanel isOpen={activePanel === 'military'} onClose={() => setActivePanel(null)}>
+  <QuickMilitaryPanel />
+</SlideOutPanel>
+```
+
+#### 8.5 Enhance TurnOrderPanel with Suggestions
+
+```tsx
+{/* Add to TurnOrderPanel */}
+<div className="p-4 border-t border-yellow-600/30 bg-yellow-900/10">
+  <div className="text-xs text-yellow-400 uppercase mb-2">Suggested Actions</div>
+  {suggestions.map(s => (
+    <div key={s.id} className="text-xs text-gray-300 flex items-center gap-2">
+      <span>{s.icon}</span>
+      <span>{s.message}</span>
+    </div>
+  ))}
+</div>
+```
+
+### Acceptance Criteria
+
+- [ ] Header shows only logo, compact status, menu button
+- [ ] Dashboard centers starmap as primary view
+- [ ] Clicking status bar items opens slide-out panels
+- [ ] TurnOrderPanel shows contextual suggestions
+- [ ] No duplicate navigation elements
+- [ ] Mobile: TurnOrderPanel becomes bottom sheet
+
+---
+
+## Phase 9: Five-Step Tutorial System
+
+**Priority:** High (after layout)
+**Effort:** Medium
+**Impact:** High
+
+### Tutorial Steps
+
+| Step | Turn | Topic | Action |
+|------|------|-------|--------|
+| 1 | 1 | Your Empire | View dashboard, understand resources |
+| 2 | 2 | Growth | Buy a sector, see income increase next turn |
+| 3 | 3 | Defense | Build soldiers, understand maintenance |
+| 4 | 4 | Rivals | Receive a message, understand bots |
+| 5 | 5 | Victory | Show 6 victory paths, pick a goal |
+
+### Current Implementation
+
+The `OnboardingManager` already provides contextual hints for turns 1-5.
+To make it more interactive:
+
+1. **Guided Actions**: Highlight specific buttons during tutorial steps
+2. **Completion Tracking**: Show progress (Step 2/5)
+3. **Skip All**: Already implemented
+4. **Achievement Feel**: "Tutorial Complete!" celebration at turn 6
+
+### Implementation Notes
+
+The current onboarding is passive (hints only). For a true "five-step tutorial":
+- Add interactive overlays that point to specific UI elements
+- Track completion of each step action
+- Show completion celebration after step 5
+
+---
+
+## Asset Checklists
+
+### Audio Files Needed
+- [ ] `/public/audio/sfx/click.mp3`
+- [ ] `/public/audio/sfx/hover.mp3`
+- [ ] `/public/audio/sfx/success.mp3`
+- [ ] `/public/audio/sfx/error.mp3`
+- [ ] `/public/audio/sfx/alert.mp3`
+- [ ] `/public/audio/sfx/turn-end.mp3`
+- [ ] `/public/audio/sfx/combat.mp3`
+- [ ] `/public/audio/sfx/build.mp3`
+- [ ] `/public/audio/ambient/space-ambient.mp3`
+- [ ] `/public/audio/ambient/tension.mp3`
+
+### Image Files Needed
+- [ ] `/public/images/backgrounds/nebula.jpg`
+- [ ] `/public/images/backgrounds/starfield.jpg`
+- [ ] `/public/images/backgrounds/deep-field.jpg`
+
+### Screenshot Priority
+Wait for Phase 8 completion before taking screenshots:
+1. Galaxy-centric dashboard
+2. TurnOrderPanel in action
+3. TurnSummaryModal after turn
+4. Mobile responsive layout
