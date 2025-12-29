@@ -745,40 +745,287 @@ Each milestone delivers a **playable vertical slice** that can be tested end-to-
 **Dependency**: M11
 **Testable**: Yes
 **Gate**: v0.7 Alpha
+**Status**: 🔲 PLANNED
+
+### Overview
+
+Tier 1 bots are the "main characters" of X-Imperium - 10 LLM-powered opponents that feel genuinely intelligent, unpredictable, and memorable. While the other 90 bots provide variety and challenge, these 10 are designed to be the rivals players remember.
+
+### Architecture Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| LLM Count | 10 bots | Balance cost, performance, and distinctiveness |
+| Processing | Async pre-computation | Don't block turn processing |
+| Fallback | Tier 2 algorithmic | Graceful degradation on failure |
+| Provider | Failover chain | Groq → Together → OpenAI for cost optimization |
+| Context | Full game state + emotional memory | Rich decision-making context |
 
 ### Deliverables
-- Upgrade 10 bots to Tier 1 (LLM-powered)
-- OpenAI-compatible provider abstraction
-- Provider failover chain (Groq → Together → OpenAI)
-- Async LLM processing (compute next turn's decisions)
-- Natural language message generation
-- Context-aware strategic decisions
-- Rate limiting:
-  - 5,000 calls per game
-  - 50 calls per turn
-  - 500 calls per hour
-  - $50/day spending cap
-- Cost tracking and alerts
-- Graceful fallback to Tier 2
+
+**Phase 12.1: Provider Abstraction (1 day)**
+- [ ] OpenAI-compatible API wrapper with provider failover
+- [ ] Provider config already exists in `src/lib/llm/constants.ts`
+- [ ] Implement actual API client with retry logic
+- [ ] Circuit breaker pattern for failing providers
+- [ ] Request/response logging for debugging
+
+**Phase 12.2: LLM Decision Engine (1.5 days)**
+- [ ] Tier 1 bot identification (top 10 by persona complexity)
+- [ ] LLM prompt templates for strategic decisions:
+  - Game state summary (resources, military, threats)
+  - Emotional state and grudges
+  - Archetype personality instructions
+  - Available actions with constraints
+- [ ] Response parsing (structured JSON decisions)
+- [ ] Validation layer (ensure decisions are legal moves)
+- [ ] Fallback to Tier 2 on parse failure or invalid decision
+
+**Phase 12.3: Async Pre-computation (1 day)**
+- [ ] Background job to compute NEXT turn's decisions during player's turn
+- [ ] Decision cache table (`llm_decision_cache`)
+- [ ] Cache invalidation on game state change (attack, diplomacy)
+- [ ] Turn processing retrieves cached decision or falls back to Tier 2
+- [ ] Worker function that can run during player think time
+
+**Phase 12.4: Natural Language Messages (0.5 days)**
+- [ ] LLM message generation for Tier 1 bots
+- [ ] Context: recent events, relationship history, emotional state
+- [ ] Persona voice instructions from `data/personas.json`
+- [ ] Message trigger integration (greeting, threat, victory, etc.)
+- [ ] Rate limiting: 1 LLM message per bot per turn max
+
+### LLM Prompt Architecture
+
+```typescript
+interface Tier1DecisionPrompt {
+  // System prompt (cached per archetype)
+  system: {
+    role: "You are {persona.name}, a {archetype} ruler in a galactic empire game.";
+    personality: persona.voice;
+    constraints: "You must respond with valid JSON. Your decision must be executable.";
+  };
+
+  // User prompt (dynamic per turn)
+  user: {
+    gameState: {
+      turn: number;
+      myResources: ResourceSummary;
+      myMilitary: MilitarySummary;
+      myPlanets: number;
+      threats: ThreatAssessment[];
+      opportunities: OpportunitySummary[];
+    };
+    emotionalState: EmotionalContext;
+    relationships: RelationshipSummary[];
+    availableActions: ActionOption[];
+    recentEvents: RecentEvent[];
+  };
+
+  // Expected response format
+  response: {
+    thinking: string;           // Internal reasoning (logged, not shown to player)
+    decision: BotDecision;      // The actual action
+    message?: string;           // Optional message to player
+    confidence: number;         // 0-1 confidence in decision
+  };
+}
+```
+
+### Performance Strategy
+
+**Parallel Processing with Pre-computation:**
+
+```
+Turn N (Player's turn):
+├── Player makes decisions
+├── [Background] Tier 1 bots compute Turn N+1 decisions
+│   ├── 10 parallel LLM calls
+│   ├── Batched with 500ms intervals (5 at a time)
+│   └── Results cached in llm_decision_cache
+└── Player clicks END TURN
+
+Turn N → N+1 Transition:
+├── Load cached Tier 1 decisions (instant)
+├── Execute Tier 1 decisions
+├── Process Tier 2-4 bots (algorithmic, ~300ms)
+├── [Start Background] Pre-compute Turn N+2 decisions
+└── Total turn time: <2 seconds
+```
+
+**Fallback Cascade:**
+
+```typescript
+async function getTier1Decision(bot: Empire, context: GameContext): Promise<BotDecision> {
+  // 1. Check cache first
+  const cached = await getCachedDecision(bot.id, context.turn);
+  if (cached && cached.isValid) return cached.decision;
+
+  // 2. Try LLM (with 3-second timeout for turn processing)
+  try {
+    const decision = await callLLM(bot, context, { timeout: 3000 });
+    return validateDecision(decision) ? decision : fallbackToTier2(bot, context);
+  } catch (error) {
+    // 3. Fallback to Tier 2 algorithmic
+    logFallback(bot.id, error);
+    return fallbackToTier2(bot, context);
+  }
+}
+```
+
+### Rate Limiting Implementation
+
+```typescript
+// Already defined in src/lib/llm/constants.ts
+const RATE_LIMITS = {
+  CALLS_PER_GAME: 5_000,      // ~25 calls/turn × 200 turns
+  CALLS_PER_TURN: 50,         // Safety buffer
+  CALLS_PER_HOUR: 500,        // Provider rate limit protection
+  DAILY_SPEND_CAP_USD: 50.0,  // Cost protection
+  BUDGET_ALERT_THRESHOLD: 0.8 // Alert at 80%
+};
+
+// Rate limit state tracked per game
+interface GameRateLimitState {
+  callsThisGame: number;
+  callsThisTurn: number;
+  callsThisHour: number;
+  spendToday: number;
+  lastHourStart: Date;
+}
+```
+
+### Cost Estimation
+
+| Scenario | Calls/Game | Est. Cost/Game |
+|----------|------------|----------------|
+| 10 bots, 200 turns, 100% LLM | 2,000 | ~$2-4 |
+| 10 bots, 200 turns, 90% LLM | 1,800 | ~$2-3 |
+| 10 bots, 100 turns (early victory) | 900 | ~$1-2 |
+| Worst case (max retries) | 5,000 | ~$8-10 |
+
+**Provider Cost Comparison (per 1K tokens):**
+- Groq (Primary): $0.0005 input, $0.001 output
+- Together (Secondary): $0.0009 both
+- OpenAI (Tertiary): $0.00015 input, $0.0006 output
+
+### Database Schema
+
+```sql
+-- LLM decision cache
+CREATE TABLE llm_decision_cache (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  game_id UUID REFERENCES games(id),
+  empire_id UUID REFERENCES empires(id),
+  for_turn INTEGER NOT NULL,
+  decision JSONB NOT NULL,
+  thinking TEXT,              -- LLM reasoning (debug)
+  confidence DECIMAL(3,2),
+  provider VARCHAR(20),
+  model VARCHAR(50),
+  input_tokens INTEGER,
+  output_tokens INTEGER,
+  cost_usd DECIMAL(10,6),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  is_valid BOOLEAN DEFAULT true,
+
+  UNIQUE(game_id, empire_id, for_turn)
+);
+
+-- LLM call tracking (for rate limits and cost)
+CREATE TABLE llm_call_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  game_id UUID REFERENCES games(id),
+  empire_id UUID REFERENCES empires(id),
+  turn INTEGER NOT NULL,
+  purpose VARCHAR(20),        -- 'decision' | 'message'
+  provider VARCHAR(20),
+  model VARCHAR(50),
+  input_tokens INTEGER,
+  output_tokens INTEGER,
+  cost_usd DECIMAL(10,6),
+  duration_ms INTEGER,
+  status VARCHAR(20),         -- 'success' | 'failed' | 'rate_limited'
+  error_message TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
 
 ### Test Criteria
+
 ```
-✓ LLM bots generate natural language messages
-✓ Messages are contextually appropriate
-✓ Messages reflect bot's archetype and emotional state
-✓ Provider failover works when primary unavailable
-✓ Async processing doesn't block turn completion
-✓ Turn processing still <2 seconds with LLM bots
-✓ Rate limits enforced correctly
-✓ Cost tracking logs all API calls
-✓ Alert triggers at 80% of daily budget
-✓ Fallback to Tier 2 on LLM failure
+✓ LLM bots generate contextually appropriate decisions
+✓ Decisions respect game rules (can't attack allies, can't overspend)
+✓ Messages reflect persona voice and emotional state
+✓ Provider failover works when primary unavailable:
+  - Groq timeout → Together → OpenAI
+  - All fail → Tier 2 fallback
+✓ Async pre-computation doesn't block turn processing
+✓ Turn processing completes in <2 seconds even with 10 LLM bots
+✓ Rate limits enforced correctly:
+  - Calls per game tracked
+  - Calls per turn tracked
+  - Hourly rate respected
+✓ Cost tracking logs all API calls with token counts
+✓ Budget alert triggers at 80% of daily cap
+✓ Graceful degradation: LLM failure → Tier 2 with no player-visible error
+✓ Cached decisions retrieved on turn transition
+✓ Cache invalidated when relevant game state changes
 ```
 
-### Technical Notes
-- Use Vercel AI SDK for provider abstraction
-- LLM decisions computed for NEXT turn while current turn resolves
-- Fallback to Tier 2 logic if LLM timeout/failure
+### Files to Create
+
+```
+src/lib/llm/
+├── client.ts                 # Provider-agnostic LLM client
+├── providers/
+│   ├── groq.ts              # Groq-specific implementation
+│   ├── together.ts          # Together AI implementation
+│   └── openai.ts            # OpenAI implementation
+├── prompts/
+│   ├── decision-prompt.ts   # Decision generation prompts
+│   └── message-prompt.ts    # Message generation prompts
+├── tier1-processor.ts       # Tier 1 bot decision orchestration
+├── decision-cache.ts        # Cache management
+└── cost-tracker.ts          # Cost and rate limit tracking
+
+src/lib/bots/
+├── tier1/
+│   ├── index.ts             # Tier 1 bot exports
+│   ├── identifier.ts        # Which bots are Tier 1
+│   └── fallback.ts          # Tier 2 fallback logic
+```
+
+### Implementation Sequence
+
+1. **Day 1 Morning**: Provider abstraction with Groq primary
+2. **Day 1 Afternoon**: Basic decision prompt + response parsing
+3. **Day 2 Morning**: Cache system + pre-computation background job
+4. **Day 2 Afternoon**: Integration with turn processor
+5. **Day 3 Morning**: Message generation for Tier 1
+6. **Day 3 Afternoon**: Failover chain + fallback to Tier 2
+7. **Day 4 Morning**: Cost tracking + rate limiting
+8. **Day 4 Afternoon**: Testing + polish
+
+### Success Metrics
+
+| Metric | Target |
+|--------|--------|
+| Turn processing time (with LLM) | <2 seconds |
+| LLM decision success rate | >90% |
+| Fallback to Tier 2 rate | <10% |
+| Average cost per game | <$5 |
+| Player perception: "Bots feel smart" | Qualitative |
+
+### Risks & Mitigations
+
+| Risk | Mitigation |
+|------|------------|
+| LLM latency blocks turn | Async pre-computation + 3s timeout |
+| Provider outage | 3-provider failover chain |
+| Invalid LLM responses | Structured output + validation + fallback |
+| Cost overrun | Daily cap + game cap + alerts |
+| Rate limiting by provider | Batched requests + hourly tracking |
 
 ---
 

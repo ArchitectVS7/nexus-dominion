@@ -12,3 +12,8 @@ export { TurnSummary } from "./TurnSummary";
 export { Tooltip } from "./Tooltip";
 export { LockedFeature, LockedSection } from "./LockedFeature";
 export { UnlockNotification, UpcomingUnlocks } from "./UnlockNotification";
+
+// New UI components for galaxy-centric layout
+export { TurnOrderPanel } from "./TurnOrderPanel";
+export { TurnSummaryModal } from "./TurnSummaryModal";
+export { GameShell } from "./GameShell";
