@@ -12,8 +12,8 @@ import { revalidatePath } from "next/cache";
 import { processTurn } from "@/lib/game/services/turn-processor";
 import { db } from "@/lib/db";
 import { games, empires, messages } from "@/lib/db/schema";
-import { eq, and, sql, gt } from "drizzle-orm";
-import type { TurnActionResult, TurnStatus, TurnEvent, ResourceDelta, EmpireResult } from "@/lib/game/types/turn-types";
+import { eq, and, sql } from "drizzle-orm";
+import type { TurnActionResult, TurnStatus, TurnEvent, ResourceDelta } from "@/lib/game/types/turn-types";
 import { GAME_SETTINGS } from "@/lib/game/constants";
 
 // Cookie names (must match game-actions.ts)

@@ -21,7 +21,6 @@ import {
   getTurnOrderPanelDataAction,
   endTurnEnhancedAction,
   type TurnOrderPanelData,
-  type EnhancedTurnResult,
 } from "@/app/actions/turn-actions";
 import type { TurnEvent, ResourceDelta } from "@/lib/game/types/turn-types";
 

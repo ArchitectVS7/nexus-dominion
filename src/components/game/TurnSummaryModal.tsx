@@ -110,9 +110,6 @@ export function TurnSummaryModal({
   if (!isOpen) return null;
 
   // Categorize events
-  const incomeEvents = events.filter((e) =>
-    ["resource_production", "maintenance"].includes(e.type)
-  );
   const populationEvents = events.filter((e) =>
     ["population_change", "starvation"].includes(e.type)
   );
