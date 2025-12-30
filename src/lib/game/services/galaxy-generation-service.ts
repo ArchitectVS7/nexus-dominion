@@ -595,7 +595,7 @@ export function generateGalaxy(
   const {
     empireCount = empires.length,
     empiresPerRegion = GALAXY_CONSTANTS.DEFAULT_EMPIRES_PER_REGION,
-    wormholeCount = Math.ceil(empireCount / 10) * GALAXY_CONSTANTS.WORMHOLES_PER_10_EMPIRES,
+    // wormholeCount is calculated inside generateWormholes
     seed,
   } = config;
 

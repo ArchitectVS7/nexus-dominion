@@ -22,7 +22,6 @@ import type {
 import {
   canStabilizeWormhole,
   stabilizeWormhole,
-  getKnownWormholes,
   WORMHOLE_CONSTANTS,
 } from "@/lib/game/services/wormhole-service";
 

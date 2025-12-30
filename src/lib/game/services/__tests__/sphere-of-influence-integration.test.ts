@@ -9,23 +9,18 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import {
-  generateGalaxy,
-  createSeededRandom,
-} from "../galaxy-generation-service";
+import { generateGalaxy } from "../galaxy-generation-service";
 import {
   calculateInfluenceSphere,
   validateAttack,
   INFLUENCE_CONSTANTS,
 } from "../influence-sphere-service";
-import {
-  attemptWormholeDiscovery,
-  WORMHOLE_CONSTANTS,
-} from "../wormhole-service";
+import { attemptWormholeDiscovery } from "../wormhole-service";
 import {
   validateAttackWithInfluence,
   getAttackTargetsWithInfo,
 } from "../attack-validation-service";
+import type { EmpireInfluence } from "@/lib/db/schema";
 
 describe("Sphere of Influence Integration", () => {
   // Shared test data
@@ -425,7 +420,7 @@ describe("Sphere of Influence Integration", () => {
           extendedNeighborIds: "[]",
           knownWormholeIds: "[]",
           controlledRegionIds: JSON.stringify([playerInfluence.homeRegionId]),
-        } as any,
+        } as EmpireInfluence,
         allEmpiresWithInfo,
         empireRegions,
         regions,

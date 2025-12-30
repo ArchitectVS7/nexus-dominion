@@ -230,7 +230,7 @@ function generateNarrativePhases(
   // Distribute casualties across phases for narrative
   const spaceWeight = 0.4;
   const orbitalWeight = 0.35;
-  const groundWeight = 0.25;
+  // groundWeight = 0.25 (remaining casualties go to ground phase)
 
   // Space Phase (cruisers dominant)
   const spaceAttackerCasualties: Partial<Forces> = {

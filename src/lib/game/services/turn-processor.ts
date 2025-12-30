@@ -41,7 +41,6 @@ import {
   type Empire,
   type Planet,
   type CraftingQueue,
-  type RegionConnection,
 } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import type {

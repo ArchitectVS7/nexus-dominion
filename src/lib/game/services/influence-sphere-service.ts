@@ -323,7 +323,8 @@ export function validateAttack(
   attackerId: string,
   defenderId: string,
   attackerInfluence: InfluenceSphereResult,
-  knownWormholes: string[] = []
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  knownWormholes: string[] = [] // TODO: Implement wormhole path-finding
 ): AttackValidationResult {
   // Check if defender is in direct neighbors
   if (attackerInfluence.directNeighbors.includes(defenderId)) {

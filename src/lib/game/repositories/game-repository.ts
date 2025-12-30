@@ -28,10 +28,7 @@ import { initializeUnitUpgrades } from "../services/upgrade-service";
 import { createBotEmpires } from "@/lib/bots/bot-generator";
 import type { Difficulty } from "@/lib/bots/types";
 import { initializeMarketPrices } from "@/lib/market";
-import {
-  generateGalaxy,
-  createSeededRandom,
-} from "../services/galaxy-generation-service";
+import { generateGalaxy } from "../services/galaxy-generation-service";
 
 // =============================================================================
 // GAME OPERATIONS
