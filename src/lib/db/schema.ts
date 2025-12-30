@@ -296,7 +296,7 @@ export const gameSessions = pgTable(
 
     // Session summary (for session recaps)
     empiresEliminated: integer("empires_eliminated").notNull().default(0),
-    notableEvents: jsonb("notable_events").$type<string[]>().default([]),
+    notableEvents: json("notable_events").$type<string[]>().default([]),
   },
   (table) => [
     index("game_sessions_game_id_idx").on(table.gameId),
