@@ -61,7 +61,7 @@ const survivors1 = test1Result.finalState.empires
 
 console.log('\n   🏆 Top 5 survivors:');
 survivors1.forEach((e, i) => {
-  console.log(`      ${i + 1}. ${e.name} (${e.archetype}): ${e.planets} planets, $${e.networth.toLocaleString()}`);
+  console.log(`      ${i + 1}. ${e.name} (${e.archetype}): ${e.planets.length} planets, $${e.networth.toLocaleString()}`);
 });
 
 // Coverage report
@@ -115,7 +115,7 @@ const survivors2 = test2Result.finalState.empires
 
 console.log('\n   🏆 Top 5 survivors:');
 survivors2.forEach((e, i) => {
-  console.log(`      ${i + 1}. ${e.name} (${e.archetype}): ${e.planets} planets, $${e.networth.toLocaleString()}`);
+  console.log(`      ${i + 1}. ${e.name} (${e.archetype}): ${e.planets.length} planets, $${e.networth.toLocaleString()}`);
 });
 
 // Coverage report
@@ -172,7 +172,7 @@ const survivors3 = test3Result.finalState.empires
 
 console.log('\n   🏆 Top 10 survivors:');
 survivors3.forEach((e, i) => {
-  console.log(`      ${i + 1}. ${e.name} (${e.archetype}): ${e.planets} planets, $${e.networth.toLocaleString()}`);
+  console.log(`      ${i + 1}. ${e.name} (${e.archetype}): ${e.planets.length} planets, $${e.networth.toLocaleString()}`);
 });
 
 // Coverage report
