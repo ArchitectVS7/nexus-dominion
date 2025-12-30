@@ -1,0 +1,879 @@
+{
+  "config": {
+    "configFile": "C:\\dev\\GIT\\x-imperium\\playwright.config.ts",
+    "rootDir": "C:/dev/GIT/x-imperium/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/dev/GIT/x-imperium/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/dev/GIT/x-imperium/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "50-turn-comprehensive-test.spec.ts",
+      "file": "50-turn-comprehensive-test.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "50-Turn Comprehensive Game Test",
+          "file": "50-turn-comprehensive-test.spec.ts",
+          "line": 105,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Complete 50-turn playthrough with all features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 600000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 136661,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "[DEBUG] === STARTING 50-TURN COMPREHENSIVE TEST ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Step 1: Starting new game\n"
+                        },
+                        {
+                          "text": "[DEBUG] Clicked Start button\n"
+                        },
+                        {
+                          "text": "[DEBUG] Step 2: Configuring game\n"
+                        },
+                        {
+                          "text": "✅ Entered game name\n"
+                        },
+                        {
+                          "text": "✅ Entered empire name\n"
+                        },
+                        {
+                          "text": "✅ Selected bot count\n"
+                        },
+                        {
+                          "text": "✅ Clicked: Create/Start Game\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Game dashboard\n"
+                        },
+                        {
+                          "text": "[DEBUG] Step 3: Verifying game started\n"
+                        },
+                        {
+                          "text": "✅ Game started - Turn counter visible\n"
+                        },
+                        {
+                          "text": "[DEBUG] Step 4: Beginning 50-turn playthrough\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 1 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 1: Testing planet purchase\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Planets page\n"
+                        },
+                        {
+                          "text": "[DEBUG] No buy planet button found (might be out of credits)\n"
+                        },
+                        {
+                          "text": "✅ Turn 1: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 2 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 2: Testing unit building\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Military page\n"
+                        },
+                        {
+                          "text": "✅ Turn 2: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 3 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 3: Testing research\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Research page\n"
+                        },
+                        {
+                          "text": "✅ Turn 3: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 4 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 4: Testing market\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Market page\n"
+                        },
+                        {
+                          "text": "✅ Turn 4: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 5 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 5: Testing espionage\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Covert operations page\n"
+                        },
+                        {
+                          "text": "✅ Turn 5: Covert operations page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 5: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 6 ===\n"
+                        },
+                        {
+                          "text": "✅ Turn 6: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 7 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 7: Testing diplomacy\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Diplomacy page\n"
+                        },
+                        {
+                          "text": "✅ Turn 7: Diplomacy page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 7: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 8 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 8: Testing black market/syndicate\n"
+                        },
+                        {
+                          "text": "[DEBUG] Syndicate link not found (might not be unlocked yet)\n"
+                        },
+                        {
+                          "text": "✅ Turn 8: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 9 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 9: Testing messages\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Messages page\n"
+                        },
+                        {
+                          "text": "✅ Turn 9: Messages page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 9: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 10 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 10: Testing starmap\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Starmap page\n"
+                        },
+                        {
+                          "text": "✅ Turn 10: Starmap visualization rendered\n"
+                        },
+                        {
+                          "text": "✅ Turn 10: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 11 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 11: Testing planet purchase\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Planets page\n"
+                        },
+                        {
+                          "text": "[DEBUG] No buy planet button found (might be out of credits)\n"
+                        },
+                        {
+                          "text": "✅ Turn 11: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 12 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 12: Testing unit building\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Military page\n"
+                        },
+                        {
+                          "text": "✅ Turn 12: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 13 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 13: Testing research\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Research page\n"
+                        },
+                        {
+                          "text": "✅ Turn 13: Research page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 13: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 14 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 14: Testing market\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Market page\n"
+                        },
+                        {
+                          "text": "✅ Turn 14: Market interface available (Buy: true, Sell: true, Trade: true)\n"
+                        },
+                        {
+                          "text": "✅ Turn 14: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 15 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 15: Testing espionage\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Covert operations page\n"
+                        },
+                        {
+                          "text": "✅ Turn 15: Covert operations page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 15: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 16 ===\n"
+                        },
+                        {
+                          "text": "✅ Turn 16: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 17 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 17: Testing diplomacy\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Diplomacy page\n"
+                        },
+                        {
+                          "text": "✅ Turn 17: Diplomacy page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 17: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 18 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 18: Testing black market/syndicate\n"
+                        },
+                        {
+                          "text": "[DEBUG] Syndicate link not found (might not be unlocked yet)\n"
+                        },
+                        {
+                          "text": "✅ Turn 18: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 19 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 19: Testing messages\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Messages page\n"
+                        },
+                        {
+                          "text": "✅ Turn 19: Messages page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 19: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 20 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 20: Testing starmap\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Starmap page\n"
+                        },
+                        {
+                          "text": "✅ Turn 20: Starmap visualization rendered\n"
+                        },
+                        {
+                          "text": "✅ Turn 20: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 21 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 21: Testing planet purchase\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Planets page\n"
+                        },
+                        {
+                          "text": "[DEBUG] No buy planet button found (might be out of credits)\n"
+                        },
+                        {
+                          "text": "✅ Turn 21: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 22 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 22: Testing unit building\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Military page\n"
+                        },
+                        {
+                          "text": "✅ Turn 22: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 23 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 23: Testing research\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Research page\n"
+                        },
+                        {
+                          "text": "✅ Turn 23: Research page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 23: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 24 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 24: Testing market\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Market page\n"
+                        },
+                        {
+                          "text": "✅ Turn 24: Market interface available (Buy: true, Sell: true, Trade: true)\n"
+                        },
+                        {
+                          "text": "✅ Turn 24: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 25 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 25: Testing espionage\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Covert operations page\n"
+                        },
+                        {
+                          "text": "✅ Turn 25: Covert operations page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 25: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 26 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 26: Testing combat\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Combat page\n"
+                        },
+                        {
+                          "text": "✅ Turn 26: Combat interface available\n"
+                        },
+                        {
+                          "text": "✅ Turn 26: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 27 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 27: Testing diplomacy\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Diplomacy page\n"
+                        },
+                        {
+                          "text": "✅ Turn 27: Diplomacy page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 27: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 28 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 28: Testing black market/syndicate\n"
+                        },
+                        {
+                          "text": "[DEBUG] Syndicate link not found (might not be unlocked yet)\n"
+                        },
+                        {
+                          "text": "✅ Turn 28: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 29 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 29: Testing messages\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Messages page\n"
+                        },
+                        {
+                          "text": "✅ Turn 29: Messages page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 29: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 30 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 30: Testing starmap\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Starmap page\n"
+                        },
+                        {
+                          "text": "✅ Turn 30: Starmap visualization rendered\n"
+                        },
+                        {
+                          "text": "✅ Turn 30: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 31 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 31: Testing planet purchase\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Planets page\n"
+                        },
+                        {
+                          "text": "[DEBUG] No buy planet button found (might be out of credits)\n"
+                        },
+                        {
+                          "text": "✅ Turn 31: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 32 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 32: Testing unit building\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Military page\n"
+                        },
+                        {
+                          "text": "✅ Turn 32: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 33 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 33: Testing research\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Research page\n"
+                        },
+                        {
+                          "text": "✅ Turn 33: Research page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 33: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 34 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 34: Testing market\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Market page\n"
+                        },
+                        {
+                          "text": "✅ Turn 34: Market interface available (Buy: true, Sell: true, Trade: true)\n"
+                        },
+                        {
+                          "text": "✅ Turn 34: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 35 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 35: Testing espionage\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Covert operations page\n"
+                        },
+                        {
+                          "text": "✅ Turn 35: Covert operations page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 35: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 36 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 36: Testing combat\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Combat page\n"
+                        },
+                        {
+                          "text": "✅ Turn 36: Combat interface available\n"
+                        },
+                        {
+                          "text": "✅ Turn 36: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 37 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 37: Testing diplomacy\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Diplomacy page\n"
+                        },
+                        {
+                          "text": "✅ Turn 37: Diplomacy page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 37: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 38 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 38: Testing black market/syndicate\n"
+                        },
+                        {
+                          "text": "[DEBUG] Syndicate link not found (might not be unlocked yet)\n"
+                        },
+                        {
+                          "text": "✅ Turn 38: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 39 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 39: Testing messages\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Messages page\n"
+                        },
+                        {
+                          "text": "✅ Turn 39: Messages page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 39: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 40 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 40: Testing starmap\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Starmap page\n"
+                        },
+                        {
+                          "text": "✅ Turn 40: Starmap visualization rendered\n"
+                        },
+                        {
+                          "text": "✅ Turn 40: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 41 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 41: Testing planet purchase\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Planets page\n"
+                        },
+                        {
+                          "text": "[DEBUG] No buy planet button found (might be out of credits)\n"
+                        },
+                        {
+                          "text": "✅ Turn 41: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 42 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 42: Testing unit building\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Military page\n"
+                        },
+                        {
+                          "text": "✅ Turn 42: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 43 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 43: Testing research\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Research page\n"
+                        },
+                        {
+                          "text": "✅ Turn 43: Research page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 43: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 44 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 44: Testing market\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Market page\n"
+                        },
+                        {
+                          "text": "✅ Turn 44: Market interface available (Buy: true, Sell: true, Trade: true)\n"
+                        },
+                        {
+                          "text": "✅ Turn 44: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 45 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 45: Testing espionage\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Covert operations page\n"
+                        },
+                        {
+                          "text": "✅ Turn 45: Covert operations page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 45: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 46 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 46: Testing combat\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Combat page\n"
+                        },
+                        {
+                          "text": "✅ Turn 46: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 47 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 47: Testing diplomacy\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Diplomacy page\n"
+                        },
+                        {
+                          "text": "✅ Turn 47: Diplomacy page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 47: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 48 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 48: Testing black market/syndicate\n"
+                        },
+                        {
+                          "text": "[DEBUG] Syndicate link not found (might not be unlocked yet)\n"
+                        },
+                        {
+                          "text": "✅ Turn 48: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 49 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 49: Testing messages\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Messages page\n"
+                        },
+                        {
+                          "text": "✅ Turn 49: Messages page accessible\n"
+                        },
+                        {
+                          "text": "✅ Turn 49: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TURN 50 ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Turn 50: Testing starmap\n"
+                        },
+                        {
+                          "text": "✅ Navigation complete: Starmap page\n"
+                        },
+                        {
+                          "text": "✅ Turn 50: Starmap visualization rendered\n"
+                        },
+                        {
+                          "text": "✅ Turn 50: End Turn clicked\n"
+                        },
+                        {
+                          "text": "[DEBUG] \n=== TEST COMPLETE ===\n"
+                        },
+                        {
+                          "text": "[DEBUG] Writing debug log to file...\n"
+                        },
+                        {
+                          "text": "✅ Debug log written to e2e/debug-log.md\n"
+                        }
+                      ],
+                      "stderr": [
+                        {
+                          "text": "⚠️ UX ISSUE: No turn summary modal at start of turn\n   Suggestion: Add turn summary modal showing income, taxes, population needs before player actions\n"
+                        },
+                        {
+                          "text": "⚠️ UX ISSUE: No trade buttons found on market page\n   Suggestion: Check market panel rendering\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-12-30T04:24:30.839Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8d44eeef8c74a7fbe26e-f6b866cdbf546b0245b6",
+              "file": "50-turn-comprehensive-test.spec.ts",
+              "line": 106,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-12-30T04:24:29.585Z",
+    "duration": 138113.363,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

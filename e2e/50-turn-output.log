@@ -1,0 +1,362 @@
+
+Running 1 test using 1 worker
+
+[DEBUG] === STARTING 50-TURN COMPREHENSIVE TEST ===
+[DEBUG] Step 1: Starting new game
+[DEBUG] Clicked Start button
+[DEBUG] Step 2: Configuring game
+✅ Entered game name
+✅ Entered empire name
+✅ Selected bot count
+✅ Clicked: Create/Start Game
+✅ Navigation complete: Game dashboard
+[DEBUG] Step 3: Verifying game started
+✅ Game started - Turn counter visible
+[DEBUG] Step 4: Beginning 50-turn playthrough
+[DEBUG] 
+=== TURN 1 ===
+⚠️ UX ISSUE: No turn summary modal at start of turn
+   Suggestion: Add turn summary modal showing income, taxes, population needs before player actions
+[DEBUG] Turn 1: Testing planet purchase
+✅ Navigation complete: Planets page
+[DEBUG] No buy planet button found (might be out of credits)
+✅ Turn 1: End Turn clicked
+[DEBUG] 
+=== TURN 2 ===
+[DEBUG] Turn 2: Testing unit building
+✅ Navigation complete: Military page
+✅ Turn 2: End Turn clicked
+[DEBUG] 
+=== TURN 3 ===
+[DEBUG] Turn 3: Testing research
+✅ Navigation complete: Research page
+✅ Turn 3: End Turn clicked
+[DEBUG] 
+=== TURN 4 ===
+[DEBUG] Turn 4: Testing market
+✅ Navigation complete: Market page
+⚠️ UX ISSUE: No trade buttons found on market page
+   Suggestion: Add clear buy/sell buttons for resources
+✅ Turn 4: End Turn clicked
+[DEBUG] 
+=== TURN 5 ===
+[DEBUG] Turn 5: Testing espionage
+✅ Navigation complete: Covert operations page
+✅ Turn 5: Covert operations page accessible
+✅ Turn 5: End Turn clicked
+[DEBUG] 
+=== TURN 6 ===
+✅ Turn 6: End Turn clicked
+[DEBUG] 
+=== TURN 7 ===
+[DEBUG] Turn 7: Testing diplomacy
+✅ Navigation complete: Diplomacy page
+✅ Turn 7: Diplomacy page accessible
+✅ Turn 7: End Turn clicked
+[DEBUG] 
+=== TURN 8 ===
+[DEBUG] Turn 8: Testing black market/syndicate
+[DEBUG] Syndicate link not found (might not be unlocked yet)
+✅ Turn 8: End Turn clicked
+[DEBUG] 
+=== TURN 9 ===
+[DEBUG] Turn 9: Testing messages
+✅ Navigation complete: Messages page
+✅ Turn 9: Messages page accessible
+❌ ERROR: Turn 9: Failed to end turn
+   Details: TimeoutError: locator.click: Timeout 1000ms exceeded.
+Call log:
+[2m  - waiting for locator('button:has-text("NEXT CYCLE")').first()[22m
+[2m    - locator resolved to <button data-testid="turn-order-end-turn" class="w-full py-3 px-4 rounded-lg font-display text-lg transition-all bg-lcars-amber text-gray-900 hover:bg-lcars-amber/90 hover:scale-[1.02]">NEXT CYCLE</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div> from <div data-testid="turn-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div> from <div data-testid="turn-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is visible, enabled and stable[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+[2m    - <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div> from <div data-testid="turn-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center">…</div> subtree intercepts pointer events[22m
+[2m  - retrying click action[22m
+[2m    - waiting 500ms[22m
+
+❌ ERROR: Turn 9 failed
+   Details: TimeoutError: locator.click: Timeout 1000ms exceeded.
+Call log:
+[2m  - waiting for locator('button:has-text("NEXT CYCLE")').first()[22m
+[2m    - locator resolved to <button data-testid="turn-order-end-turn" class="w-full py-3 px-4 rounded-lg font-display text-lg transition-all bg-lcars-amber text-gray-900 hover:bg-lcars-amber/90 hover:scale-[1.02]">NEXT CYCLE</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div> from <div data-testid="turn-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div> from <div data-testid="turn-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    - waiting for element to be visible, enabled and stable[22m
+[2m    - element is visible, enabled and stable[22m
+[2m    - scrolling into view if needed[22m
+[2m    - done scrolling[22m
+[2m    - <div class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div> from <div data-testid="turn-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center">…</div> subtree intercepts pointer events[22m
+[2m  - retrying click action[22m
+[2m    - waiting 500ms[22m
+
+✅ Turn 9: End Turn clicked
+[DEBUG] 
+=== TURN 10 ===
+[DEBUG] Turn 10: Testing starmap
+⚠️ UX ISSUE: Starmap navigation not found
+   Suggestion: Add clear navigation to Starmap visualization
+✅ Turn 10: End Turn clicked
+[DEBUG] 
+=== TURN 11 ===
+[DEBUG] Turn 11: Testing planet purchase
+✅ Navigation complete: Planets page
+[DEBUG] No buy planet button found (might be out of credits)
+✅ Turn 11: End Turn clicked
+[DEBUG] 
+=== TURN 12 ===
+[DEBUG] Turn 12: Testing unit building
+✅ Navigation complete: Military page
+✅ Turn 12: End Turn clicked
+[DEBUG] 
+=== TURN 13 ===
+[DEBUG] Turn 13: Testing research
+✅ Navigation complete: Research page
+✅ Turn 13: End Turn clicked
+[DEBUG] 
+=== TURN 14 ===
+[DEBUG] Turn 14: Testing market
+✅ Navigation complete: Market page
+⚠️ UX ISSUE: No trade buttons found on market page
+   Suggestion: Add clear buy/sell buttons for resources
+✅ Turn 14: End Turn clicked
+[DEBUG] 
+=== TURN 15 ===
+[DEBUG] Turn 15: Testing espionage
+✅ Navigation complete: Covert operations page
+✅ Turn 15: Covert operations page accessible
+✅ Turn 15: End Turn clicked
+[DEBUG] 
+=== TURN 16 ===
+✅ Turn 16: End Turn clicked
+[DEBUG] 
+=== TURN 17 ===
+[DEBUG] Turn 17: Testing diplomacy
+✅ Navigation complete: Diplomacy page
+✅ Turn 17: Diplomacy page accessible
+✅ Turn 17: End Turn clicked
+[DEBUG] 
+=== TURN 18 ===
+[DEBUG] Turn 18: Testing black market/syndicate
+[DEBUG] Syndicate link not found (might not be unlocked yet)
+✅ Turn 18: End Turn clicked
+[DEBUG] 
+=== TURN 19 ===
+[DEBUG] Turn 19: Testing messages
+✅ Navigation complete: Messages page
+✅ Turn 19: Messages page accessible
+✅ Turn 19: End Turn clicked
+[DEBUG] 
+=== TURN 20 ===
+[DEBUG] Turn 20: Testing starmap
+⚠️ UX ISSUE: Starmap navigation not found
+   Suggestion: Add clear navigation to Starmap visualization
+✅ Turn 20: End Turn clicked
+[DEBUG] 
+=== TURN 21 ===
+[DEBUG] Turn 21: Testing planet purchase
+✅ Navigation complete: Planets page
+[DEBUG] No buy planet button found (might be out of credits)
+✅ Turn 21: End Turn clicked
+[DEBUG] 
+=== TURN 22 ===
+[DEBUG] Turn 22: Testing unit building
+✅ Navigation complete: Military page
+✅ Turn 22: End Turn clicked
+[DEBUG] 
+=== TURN 23 ===
+[DEBUG] Turn 23: Testing research
+✅ Navigation complete: Research page
+✅ Turn 23: End Turn clicked
+[DEBUG] 
+=== TURN 24 ===
+[DEBUG] Turn 24: Testing market
+✅ Navigation complete: Market page
+⚠️ UX ISSUE: No trade buttons found on market page
+   Suggestion: Add clear buy/sell buttons for resources
+✅ Turn 24: End Turn clicked
+[DEBUG] 
+=== TURN 25 ===
+[DEBUG] Turn 25: Testing espionage
+✅ Navigation complete: Covert operations page
+✅ Turn 25: Covert operations page accessible
+✅ Turn 25: End Turn clicked
+[DEBUG] 
+=== TURN 26 ===
+[DEBUG] Turn 26: Testing combat
+✅ Navigation complete: Combat page
+✅ Turn 26: End Turn clicked
+[DEBUG] 
+=== TURN 27 ===
+[DEBUG] Turn 27: Testing dipl[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22mWarning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+[2m[WebServer] [22m1. You might have mismatching versions of React and the renderer (such as React DOM)
+[2m[WebServer] [22m2. You might be breaking the Rules of Hooks
+[2m[WebServer] [22m3. You might have more than one copy of React in the same app
+[2m[WebServer] [22mSee https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Internal error: TypeError: Cannot read properties of null (reading 'useContext')
+[2m[WebServer] [22m    at t.useContext (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:162364)
+[2m[WebServer] [22m    at LinkComponent (./node_modules/next/dist/client/link.js:125:40)
+[2m[WebServer] [22m    at au (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:10446)
+[2m[WebServer] [22m    at aw (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:44746)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+[2m[WebServer] [22m    at aj (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+[2m[WebServer] [22m    at aC (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50095)
+[2m[WebServer] [22m    at aj (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+[2m[WebServer] [22m    at C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+[2m[WebServer] [22m    at aw (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+[2m[WebServer] [22m    at aj (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+[2m[WebServer] [22m    at C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+[2m[WebServer] [22m    at aw (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+[2m[WebServer] [22m    at ab (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:11808)
+[2m[WebServer] [22m    at C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+[2m[WebServer] [22m    at aw (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:16908)
+[2m[WebServer] [22m    at aw (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:46505)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+[2m[WebServer] [22m    at aj (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+[2m[WebServer] [22m    at aC (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:52874)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50095)
+[2m[WebServer] [22m    at aj (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:53793)
+[2m[WebServer] [22m    at C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42336
+[2m[WebServer] [22m    at aw (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:42822)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:49776)
+[2m[WebServer] [22m    at a_ (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:50067)
+[2m[WebServer] [22m    at C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:58612
+[2m[WebServer] [22m    at C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:59270
+[2m[WebServer] [22m    at aN (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:59278)
+[2m[WebServer] [22m    at Timeout._onTimeout (C:\dev\GIT\x-imperium\node_modules\next\dist\compiled\next-server\app-page.runtime.dev.js:35:6939)
+[2m[WebServer] [22m    at listOnTimeout (node:internal/timers:588:17)
+[2m[WebServer] [22m    at process.processTimers (node:internal/timers:523:7)
+[2m[WebServer] [22mdigest: "2410538641"
+[2m[WebServer] [22mWarning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+[2m[WebServer] [22m1. You might have mismatching versions of React and the renderer (such as React DOM)
+[2m[WebServer] [22m2. You might be breaking the Rules of Hooks
+[2m[WebServer] [22m3. You might have more than one copy of React in the same app
+[2m[WebServer] [22mSee https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.
+[2m[WebServer] [22mTypeError: Cannot read properties of null (reading 'useContext')
+[2m[WebServer] [22m    at t.useContext [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:162364[90m)[39m
+[2m[WebServer] [22m    at usePathname (webpack-internal:///(ssr)/./node_modules/[4mnext[24m/dist/client/components/navigation.js:121:34)
+[2m[WebServer] [22m    at ErrorBoundary (webpack-internal:///(ssr)/./node_modules/[4mnext[24m/dist/client/components/error-boundary.js:159:50)
+[2m[WebServer] [22m    at au [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:10446[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:15122
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16908[90m)[39m
+[2m[WebServer] [22m    at a_ [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:49776[90m)[39m
+[2m[WebServer] [22m    at ab [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:11808[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16908[90m)[39m
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:46505[90m)[39m
+[2m[WebServer] [22m    at a_ [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:49776[90m)[39m
+[2m[WebServer] [22m    at ab [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:11808[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16908[90m)[39m
+[2m[WebServer] [22m    at a_ [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:49776[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:58612
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:59270
+[2m[WebServer] [22m    at aN [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:59278[90m)[39m
+[2m[WebServer] [22m    at Timeout._onTimeout [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:6939[90m)[39m
+[2m[WebServer] [22m[90m    at listOnTimeout (node:internal/timers:588:17)[39m
+[2m[WebServer] [22m[90m    at process.processTimers (node:internal/timers:523:7)[39m
+[2m[WebServer] [22m [31m[1m⨯[22m[39m TypeError: Cannot read properties of null (reading 'useContext')
+[2m[WebServer] [22m    at t.useContext [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:162364[90m)[39m
+[2m[WebServer] [22m    at usePathname (webpack-internal:///(ssr)/./node_modules/[4mnext[24m/dist/client/components/navigation.js:121:34)
+[2m[WebServer] [22m    at ErrorBoundary (webpack-internal:///(ssr)/./node_modules/[4mnext[24m/dist/client/components/error-boundary.js:159:50)
+[2m[WebServer] [22m    at au [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:10446[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:15122
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16908[90m)[39m
+[2m[WebServer] [22m    at a_ [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:49776[90m)[39m
+[2m[WebServer] [22m    at ab [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:11808[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16908[90m)[39m
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:46505[90m)[39m
+[2m[WebServer] [22m    at a_ [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:49776[90m)[39m
+[2m[WebServer] [22m    at ab [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:11808[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16871
+[2m[WebServer] [22m    at aw [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:16908[90m)[39m
+[2m[WebServer] [22m    at a_ [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:49776[90m)[39m
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:58612
+[2m[WebServer] [22m    at [90mC:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:59270
+[2m[WebServer] [22m    at aN [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:59278[90m)[39m
+[2m[WebServer] [22m    at Timeout._onTimeout [90m(C:\dev\GIT\x-imperium\[39mnode_modules\[4mnext[24m\dist\compiled\next-server\app-page.runtime.dev.js:35:6939[90m)[39m
+[2m[WebServer] [22m[90m    at listOnTimeout (node:internal/timers:588:17)[39m
+[2m[WebServer] [22m[90m    at process.processTimers (node:internal/timers:523:7)[39m {
+[2m[WebServer] [22m  page: [32m'/game'[39m
+[2m[WebServer] [22m}
+[2m[WebServer] [22m [31m[1m⨯[22m[39m Error: aborted
+[2m[WebServer] [22m    at abortIncoming (node:_http_server:809:17)
+[2m[WebServer] [22m    at socketOnClose (node:_http_server:803:3)
+[2m[WebServer] [22m    at Socket.emit (node:events:530:35)
+[2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
+[2m[WebServer] [22mdigest: "3485663598"

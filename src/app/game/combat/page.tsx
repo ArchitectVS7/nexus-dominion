@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { BattleReport } from "@/components/game/combat/BattleReport";
+import { CombatPreview } from "@/components/game/combat/CombatPreview";
 import {
   getAvailableTargetsAction,
   getMyForcesAction,
@@ -245,19 +246,40 @@ export default function CombatPage() {
             </div>
           )}
 
-          {/* Attack Button */}
-          <button
-            onClick={handleAttack}
-            disabled={!selectedTarget || isAttacking}
-            className={`w-full p-4 rounded font-semibold transition-colors ${
-              selectedTarget && !isAttacking
-                ? "bg-red-600 hover:bg-red-700 text-white"
-                : "bg-gray-700 text-gray-400 cursor-not-allowed"
-            }`}
-            data-testid="launch-attack-button"
-          >
-            {isAttacking ? "ATTACKING..." : "LAUNCH ATTACK"}
-          </button>
+          {/* Combat Preview */}
+          {selectedTarget && myForces && (
+            <div className={isAttacking ? "opacity-50 pointer-events-none" : ""}>
+              {isAttacking && (
+                <div className="text-center text-lcars-amber mb-4 animate-pulse font-semibold">
+                  ATTACKING...
+                </div>
+              )}
+              <CombatPreview
+                attackerForces={selectedForces}
+                defenderForces={{
+                  // Estimate defender forces based on networth
+                  soldiers: Math.floor(selectedTarget.networth * 0.001),
+                  fighters: Math.floor(selectedTarget.networth * 0.0002),
+                  stations: selectedTarget.planetCount * 50,
+                  lightCruisers: Math.floor(selectedTarget.networth * 0.00001),
+                  heavyCruisers: Math.floor(selectedTarget.networth * 0.000002),
+                  carriers: Math.floor(selectedTarget.networth * 0.000005),
+                }}
+                attackerName="Your Empire"
+                defenderName={selectedTarget.name}
+                hasFullIntel={false}
+                onConfirmAttack={handleAttack}
+                onCancel={() => setSelectedTarget(null)}
+              />
+            </div>
+          )}
+
+          {/* Attack Button (shown when no target selected) */}
+          {!selectedTarget && (
+            <div className="w-full p-4 rounded font-semibold bg-gray-700 text-gray-400 text-center">
+              Select a target to view combat preview
+            </div>
+          )}
         </div>
 
         {/* Right Column: Results & History */}

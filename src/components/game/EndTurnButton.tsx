@@ -4,11 +4,12 @@
  * End Turn Button Component
  *
  * Client-side component that handles turn processing.
- * Shows loading state during processing and displays events after.
+ * Shows loading state during processing and displays turn summary after.
  */
 
 import { useState, useTransition, useRef } from "react";
 import { endTurnAction } from "@/app/actions/turn-actions";
+import { TurnSummary } from "./TurnSummary";
 import type { TurnEvent } from "@/lib/game/types/turn-types";
 
 interface EndTurnButtonProps {
@@ -50,6 +51,10 @@ export function EndTurnButton({ disabled, onTurnComplete }: EndTurnButtonProps) 
     });
   };
 
+  const handleDismissSummary = () => {
+    setLastResult(null);
+  };
+
   return (
     <div className="space-y-4">
       <button
@@ -75,19 +80,14 @@ export function EndTurnButton({ disabled, onTurnComplete }: EndTurnButtonProps) 
         </div>
       )}
 
-      {/* Success display with processing time */}
+      {/* Turn Summary */}
       {lastResult && !error && (
-        <div
-          className="mt-2 text-sm text-gray-400"
-          data-testid="end-turn-result"
-        >
-          Turn {lastResult.turn} completed in {lastResult.processingMs}ms
-          {lastResult.events.length > 0 && (
-            <span className="ml-2 text-lcars-amber">
-              ({lastResult.events.length} events)
-            </span>
-          )}
-        </div>
+        <TurnSummary
+          turn={lastResult.turn}
+          processingMs={lastResult.processingMs}
+          events={lastResult.events}
+          onDismiss={handleDismissSummary}
+        />
       )}
     </div>
   );

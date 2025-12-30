@@ -4,22 +4,10 @@ import {
   fetchDashboardDataAction,
   hasActiveGameAction,
 } from "@/app/actions/game-actions";
-import { PLANET_TYPE_LABELS, PLANET_PRODUCTION } from "@/lib/game/constants";
+import { PLANET_TYPE_LABELS } from "@/lib/game/constants";
 import type { Planet } from "@/lib/db/schema";
 import { BuyPlanetPanel } from "@/components/game/planets/BuyPlanetPanel";
-
-const PLANET_TYPE_COLORS: Record<string, string> = {
-  food: "border-green-500",
-  ore: "border-gray-500",
-  petroleum: "border-yellow-500",
-  tourism: "border-amber-500",
-  urban: "border-blue-500",
-  education: "border-purple-500",
-  government: "border-red-500",
-  research: "border-cyan-500",
-  supply: "border-orange-500",
-  anti_pollution: "border-green-300",
-};
+import { PlanetsList } from "@/components/game/planets/PlanetsList";
 
 const PLANET_ICONS: Record<string, string> = {
   food: "🌾",
@@ -33,62 +21,6 @@ const PLANET_ICONS: Record<string, string> = {
   supply: "📦",
   anti_pollution: "🌿",
 };
-
-function PlanetCard({ planet }: { planet: Planet }) {
-  const borderColor = PLANET_TYPE_COLORS[planet.type] || "border-gray-600";
-  const icon = PLANET_ICONS[planet.type] || "🪐";
-  const label = PLANET_TYPE_LABELS[planet.type as keyof typeof PLANET_TYPE_LABELS] || planet.type;
-  const production = PLANET_PRODUCTION[planet.type as keyof typeof PLANET_PRODUCTION] || 0;
-
-  const productionUnit = (() => {
-    switch (planet.type) {
-      case "tourism":
-      case "urban":
-        return "credits/turn";
-      case "government":
-        return "agent capacity";
-      case "research":
-        return "RP/turn";
-      case "food":
-        return "food/turn";
-      case "ore":
-        return "ore/turn";
-      case "petroleum":
-        return "petro/turn";
-      default:
-        return "/turn";
-    }
-  })();
-
-  return (
-    <div
-      className={`lcars-panel border-l-4 ${borderColor}`}
-      data-testid={`planet-card-${planet.id}`}
-    >
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{icon}</span>
-          <h3 className="text-lg font-semibold text-lcars-lavender">{label}</h3>
-        </div>
-        <span className="text-sm text-gray-500">#{planet.id.slice(-6)}</span>
-      </div>
-      <div className="text-gray-300 space-y-1">
-        <div className="flex justify-between">
-          <span>Production:</span>
-          <span className="font-mono text-lcars-amber">
-            {production.toLocaleString()} {productionUnit}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span>Base Value:</span>
-          <span className="font-mono text-gray-400">
-            {planet.purchasePrice.toLocaleString()} credits
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 async function PlanetsContent() {
   const hasGame = await hasActiveGameAction();
@@ -155,12 +87,8 @@ async function PlanetsContent() {
         <BuyPlanetPanel credits={data.resources.credits} />
       </div>
 
-      {/* Detailed Planet Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {data.planets.map((planet) => (
-          <PlanetCard key={planet.id} planet={planet} />
-        ))}
-      </div>
+      {/* Detailed Planet Cards with Release Option */}
+      <PlanetsList planets={data.planets} planetCount={data.stats.planetCount} />
     </div>
   );
 }

@@ -1,15 +1,15 @@
 import { test, expect, Page } from "@playwright/test";
 
 /**
- * Comprehensive 50-Turn Game Test
+ * 100-Turn Stress Test with 50 Bots
  *
  * This test validates:
- * 1. All user control surfaces are clickable
- * 2. Complete 50-turn playthrough
- * 3. Use of multiple game features (espionage, trade, combat, research, etc.)
- * 4. Turn phase clarity (income, purchasing, combat phases)
- * 5. Turn acknowledgment UI for income/taxes/population
- * 6. Overall UX flow and engagement
+ * 1. Game stability over extended gameplay (100 turns)
+ * 2. All game features under load with 50 bot players
+ * 3. Elimination tracking and victory conditions
+ * 4. Advanced features (all ship types, max research, etc.)
+ * 5. Performance under high bot count
+ * 6. Endgame scenarios and balance
  */
 
 const DEBUG_LOG: string[] = [];
@@ -102,12 +102,12 @@ async function verifyGameActive(page: Page): Promise<boolean> {
   return true;
 }
 
-test.describe("50-Turn Comprehensive Game Test", () => {
-  test("Complete 50-turn playthrough with all features", async ({ page }) => {
+test.describe("100-Turn Stress Test", () => {
+  test("Complete 100-turn stress test with 50 bots", async ({ page }) => {
     // Extend timeout for long test (10 minutes)
     test.setTimeout(600000);
 
-    logDebug("=== STARTING 50-TURN COMPREHENSIVE TEST ===");
+    logDebug("=== STARTING 100-TURN STRESS TEST WITH 50 BOTS ===");
 
     // Step 1: Start new game
     logDebug("Step 1: Starting new game");
