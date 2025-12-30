@@ -8,9 +8,11 @@ import {
   type DashboardData,
 } from "@/lib/game/repositories/game-repository";
 import { getResumableGames, getLatestSave } from "@/lib/game/services/save-service";
+import { startSession, endSession } from "@/lib/game/services/session-service";
 import { db } from "@/lib/db";
 import type { Difficulty } from "@/lib/bots/types";
 import { triggerGreetings, type TriggerContext } from "@/lib/messages";
+import { GAME_MODE_PRESETS, type GameMode } from "@/lib/game/constants";
 
 // =============================================================================
 // COOKIE HELPERS
@@ -66,6 +68,7 @@ export interface StartGameResult {
   empireId?: string;
   botCount?: number;
   difficulty?: Difficulty;
+  gameMode?: GameMode;
 }
 
 /**
@@ -77,6 +80,16 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
   const empireName = formData.get("empireName") as string;
   const difficultyRaw = formData.get("difficulty") as string | null;
   const botCountRaw = formData.get("botCount") as string | null;
+  const gameModeRaw = formData.get("gameMode") as string | null;
+
+  // Validate game mode
+  const validGameModes: GameMode[] = ["oneshot", "campaign"];
+  const gameMode: GameMode = validGameModes.includes(gameModeRaw as GameMode)
+    ? (gameModeRaw as GameMode)
+    : "oneshot";
+
+  // Get preset for selected game mode
+  const preset = GAME_MODE_PRESETS[gameMode];
 
   // Validate difficulty
   const validDifficulties: Difficulty[] = ["easy", "normal", "hard", "nightmare"];
@@ -84,10 +97,9 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
     ? (difficultyRaw as Difficulty)
     : "normal";
 
-  // Validate bot count
-  const validBotCounts = [10, 25, 50];
-  const botCountNum = parseInt(botCountRaw ?? "25", 10);
-  const botCount = validBotCounts.includes(botCountNum) ? botCountNum : 25;
+  // Validate bot count against game mode constraints
+  const botCountNum = parseInt(botCountRaw ?? String(preset.defaultBots), 10);
+  const botCount = Math.min(Math.max(botCountNum, preset.minBots), preset.maxBots);
 
   if (!empireName || empireName.trim().length === 0) {
     return { success: false, error: "Empire name is required" };
@@ -106,10 +118,16 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
       empireName.trim(),
       undefined,
       difficulty,
-      botCount
+      botCount,
+      gameMode
     );
 
     await setGameCookies(game.id, empire.id);
+
+    // Start session tracking for campaign games
+    if (gameMode === "campaign") {
+      await startSession(game.id);
+    }
 
     // Trigger greeting messages from bots (M8)
     const msgCtx: TriggerContext = {
@@ -127,6 +145,7 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
       empireId: empire.id,
       botCount: bots.length,
       difficulty,
+      gameMode,
     };
   } catch (error) {
     console.error("Failed to start game:", error);
@@ -181,14 +200,128 @@ export async function getCurrentGameAction(): Promise<{
 
 /**
  * End the current game and clear cookies.
+ * Ends any active session before clearing cookies.
  */
 export async function endGameAction(): Promise<void> {
+  const { gameId } = await getGameCookies();
+
+  // End active session if exists
+  if (gameId) {
+    await endSession(gameId);
+  }
+
   await clearGameCookies();
   redirect("/");
 }
 
 // =============================================================================
-// RESUME GAME ACTIONS (DEPRECATED)
+// CAMPAIGN RESUME ACTIONS
+// =============================================================================
+
+export interface ResumableCampaign {
+  gameId: string;
+  gameName: string;
+  empireName: string;
+  empireId: string;
+  currentTurn: number;
+  turnLimit: number;
+  sessionCount: number;
+  lastSessionAt: Date | null;
+  empireCount: number;
+  playerNetworth: number;
+}
+
+/**
+ * Get resumable campaign games.
+ * Returns campaigns that are still active (not completed).
+ */
+export async function getResumableCampaignsAction(): Promise<ResumableCampaign[]> {
+  try {
+    // Find all active campaign games
+    const campaigns = await db.query.games.findMany({
+      where: (g, { and, eq }) => and(
+        eq(g.gameMode, "campaign"),
+        eq(g.status, "active")
+      ),
+      with: {
+        empires: {
+          columns: {
+            id: true,
+            name: true,
+            type: true,
+            credits: true,
+          },
+          with: {
+            planets: {
+              columns: { id: true },
+            },
+          },
+        },
+      },
+    });
+
+    return campaigns.map((game) => {
+      const playerEmpire = game.empires.find((e) => e.type === "player");
+      const activeEmpires = game.empires.filter((e) => e.planets.length > 0);
+
+      return {
+        gameId: game.id,
+        gameName: game.name,
+        empireName: playerEmpire?.name ?? "Unknown",
+        empireId: playerEmpire?.id ?? "",
+        currentTurn: game.currentTurn,
+        turnLimit: game.turnLimit,
+        sessionCount: game.sessionCount,
+        lastSessionAt: game.lastSessionAt,
+        empireCount: activeEmpires.length,
+        playerNetworth: playerEmpire?.credits ?? 0,
+      };
+    });
+  } catch (error) {
+    console.error("Failed to get resumable campaigns:", error);
+    return [];
+  }
+}
+
+/**
+ * Resume a campaign game by setting cookies.
+ */
+export async function resumeCampaignAction(gameId: string): Promise<ResumeGameResult> {
+  try {
+    // Find the player empire for this game
+    const playerEmpire = await db.query.empires.findFirst({
+      where: (e, { and, eq }) => and(
+        eq(e.gameId, gameId),
+        eq(e.type, "player")
+      ),
+    });
+
+    if (!playerEmpire) {
+      return { success: false, error: "No player empire found for this game" };
+    }
+
+    // Set cookies for the resumed game
+    await setGameCookies(gameId, playerEmpire.id);
+
+    // Start/resume session tracking for campaign
+    await startSession(gameId);
+
+    return {
+      success: true,
+      gameId,
+      empireId: playerEmpire.id,
+    };
+  } catch (error) {
+    console.error("Failed to resume campaign:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to resume campaign",
+    };
+  }
+}
+
+// =============================================================================
+// RESUME GAME ACTIONS (LEGACY)
 // These functions supported the multi-galaxy feature which has been removed
 // to simplify onboarding. Kept for potential future use.
 // =============================================================================

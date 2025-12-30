@@ -31,22 +31,22 @@ const EXPECTED_STARTING_STATE = {
   ore: 500,
   petroleum: 200,
   researchPoints: 0,
-  planetCount: 9,
+  planetCount: 5, // Reduced from 9 for faster eliminations
   population: 10000,
   soldiers: 100,
   civilStatus: "Content",
-  // Networth: 9 planets × 10 + 100 soldiers × 0.0005 = 90.05 (stored as 90)
-  networth: 90,
+  // Networth: 5 planets × 10 + 100 soldiers × 0.0005 = 50.05 (stored as 50)
+  networth: 50,
 };
 
+// Updated planet distribution: 5 planets (down from 9)
+// Research planet removed - players must purchase it
 const EXPECTED_PLANET_DISTRIBUTION = {
-  food: 2,
-  ore: 2,
+  food: 1,      // Reduced from 2
+  ore: 1,       // Reduced from 2
   petroleum: 1,
   tourism: 1,
-  urban: 1,
-  government: 1,
-  research: 1,
+  government: 1, // Keeps covert ops capacity
 };
 
 // =============================================================================
@@ -113,14 +113,14 @@ test.describe("Milestone 1: Static Empire View", () => {
   });
 
   test.describe("Planet System", () => {
-    test("planet list shows exactly 9 planets", async ({ gamePage }) => {
+    test("planet list shows exactly 5 planets", async ({ gamePage }) => {
       await ensureGameExists(gamePage, "Planet Count Test Empire");
 
       const state = await getEmpireState(gamePage);
-      expect(state.planetCount).toBe(9);
+      expect(state.planetCount).toBe(5);
 
       const planetList = gamePage.locator('[data-testid="planet-list"]');
-      await expect(planetList).toContainText("Planets (9)");
+      await expect(planetList).toContainText("Planets (5)");
     });
 
     test("planet distribution matches PRD specification", async ({ gamePage }) => {
@@ -141,9 +141,9 @@ test.describe("Milestone 1: Static Empire View", () => {
 
       await navigateToGamePage(gamePage, "planets");
 
-      // FUNCTIONAL: Verify exactly 9 planet cards exist
+      // FUNCTIONAL: Verify exactly 5 planet cards exist (reduced from 9)
       const planetCards = gamePage.locator('[data-testid^="planet-card-"]');
-      await expect(planetCards).toHaveCount(9);
+      await expect(planetCards).toHaveCount(5);
     });
   });
 
@@ -153,10 +153,10 @@ test.describe("Milestone 1: Static Empire View", () => {
 
       const state = await getEmpireState(gamePage);
 
-      // FUNCTIONAL: Networth = 9 planets × 10 + 100 soldiers × 0.0005 = 90.05 → 90
+      // FUNCTIONAL: Networth = 5 planets × 10 + 100 soldiers × 0.0005 = 50.05 → 50
       // Allow small tolerance for floating point
-      expect(state.networth).toBeGreaterThanOrEqual(89);
-      expect(state.networth).toBeLessThanOrEqual(91);
+      expect(state.networth).toBeGreaterThanOrEqual(49);
+      expect(state.networth).toBeLessThanOrEqual(51);
     });
 
     test("networth panel is visible and shows value", async ({ gamePage }) => {

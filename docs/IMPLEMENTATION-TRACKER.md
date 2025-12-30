@@ -32,10 +32,10 @@ This document tracks the status of all major features and redesign initiatives f
 | Coalition mechanics (auto-bonuses vs leaders) | ✅ IMPLEMENTED | P0 | ✓ | Automatic bonuses at 7+ VP (+10% attack, +5% defense) |
 | Combat outcome variety (6 outcomes) | ✅ IMPLEMENTED | P0 | ✓ | Total victory, victory, costly victory, stalemate, repelled, disaster |
 | Weak-first initiative (combat phase only) | ✅ IMPLEMENTED | P1 | ✓ | Sorted by networth ascending in combat phase |
-| Reduce starting planets (9 → 5) | 📋 PLANNED | P0 | - | Makes eliminations achievable (simple config change) |
+| Reduce starting planets (9 → 5) | ✅ IMPLEMENTED | P0 | ✓ | `constants.ts` - 5 planets: food, ore, petro, tourism, govt |
 
 **Dependencies**: None
-**Status**: Core combat system complete, pending starting planet configuration
+**Status**: Core combat system complete, starting planets reduced to 5
 
 ---
 
@@ -56,10 +56,11 @@ This document tracks the status of all major features and redesign initiatives f
 | Wormhole construction UI | 📋 PLANNED | P1 | - | 15k-40k credits, 300-800 petro, 6-15 turns |
 | Border discovery system | 📋 PLANNED | P1 | - | Unlock borders at Turn 10-15 (phased expansion) |
 | **UI Components** | | | | |
-| Galaxy View Component (sector boxes) | 📋 PLANNED | P0 | 1 day | LCARS styled, 10 sectors |
-| Sector Detail Component (empire nodes) | 📋 PLANNED | P0 | 1 day | Force-directed or static layout |
+| Galaxy View Component (sector boxes) | ✅ IMPLEMENTED | P0 | ✓ | `GalaxyView.tsx`, `SectorBox.tsx` - static sector grid |
+| Sector Detail Component (empire nodes) | ✅ IMPLEMENTED | P0 | ✓ | `SectorDetail.tsx` - LCARS panel with empire list & actions |
 | Zoom transition animation (galaxy ↔ sector) | 📋 PLANNED | P1 | 0.5 day | Smooth fade/zoom |
-| LCARS Panel System (semi-transparent) | 📋 PLANNED | P0 | 1 day | Orange/peach/violet palette |
+| LCARS Panel System (semi-transparent) | ✅ IMPLEMENTED | P0 | ✓ | `LCARSPanel.tsx`, `LCARSButton.tsx`, `LCARSHeader.tsx`, `LCARSSidebar.tsx` |
+| Wormhole connections component | ✅ IMPLEMENTED | P0 | ✓ | `WormholeConnection.tsx` - curved paths with status indicators |
 | Threat Assessment Panel | 📋 PLANNED | P1 | 0.5 day | Right sidebar with active threats |
 | Expansion Options Panel | 📋 PLANNED | P1 | 0.5 day | Borders + wormholes |
 | **Onboarding** | | | | |
@@ -83,7 +84,7 @@ This document tracks the status of all major features and redesign initiatives f
 | Item | Status | Priority | Estimated | Notes |
 |------|--------|----------|-----------|-------|
 | Coalition mechanics (automatic) | ✅ IMPLEMENTED | P0 | ✓ | +10% attack bonus vs leaders at 7+ VP |
-| Reverse turn order | 📋 PLANNED | P1 | 0.5 day | Weakest empire goes first |
+| Reverse turn order | ✅ IMPLEMENTED | P1 | ✓ | Weak-first initiative in bot combat processing |
 | Sector traits | 💡 PROPOSED | P2 | 1 day | "Mining Belt" +20% ore, etc. |
 | Victory Points system | 💡 PROPOSED | P2 | 2-3 days | 10 VP from any combination |
 | Leader containment bonus | 📋 PLANNED | P1 | 0.5 day | Adjacent sectors get bonuses vs leader |
@@ -96,20 +97,21 @@ This document tracks the status of all major features and redesign initiatives f
 
 ### Session & Campaign Management 🆕
 
-| Item | Status | Priority | Estimated | Notes |
+| Item | Status | Priority | Completed | Notes |
 |------|--------|----------|-----------|-------|
-| Game creation flow | 📋 PLANNED | P0 | 1 day | Currently missing - no way to start new game |
-| Game mode selection | 📋 PLANNED | P0 | 0.5 day | Oneshot (10-25 empires, 50-100 turns) vs Campaign (50-100 empires, 200+ turns) |
-| Session save/resume | 📋 PLANNED | P0 | 1 day | Save session state, resume later. **NO save-scumming** (no loading previous saves) |
-| Mode selection on return | 📋 PLANNED | P1 | 0.5 day | Returning player can choose: continue campaign OR start new oneshot |
-| Session summary screen | 📋 PLANNED | P1 | 1 day | Between sessions: what happened, eliminations, power rankings |
-| Campaign "chapters" narrative | 💡 PROPOSED | P2 | 0.5 day | "Session 1: The Early Days", "Session 5: Rise of the Hegemony" |
+| Feature flag system | ✅ IMPLEMENTED | P0 | ✓ | `feature-flags.ts` - 8 flags with env/per-game overrides |
+| Game mode schema | ✅ IMPLEMENTED | P0 | ✓ | `schema.ts` - gameModeEnum, sessionCount, lastSessionAt |
+| Game creation flow | ✅ IMPLEMENTED | P0 | ✓ | `GameModeSelector.tsx` - oneshot vs campaign selection |
+| Session save/resume | ✅ IMPLEMENTED | P0 | ✓ | `session-service.ts` - auto-save only, NO save-scumming |
+| Mode selection on return | ✅ IMPLEMENTED | P1 | ✓ | `ReturnModeSelector.tsx` - continue campaign OR start new |
+| Session state tracking | ✅ IMPLEMENTED | P1 | ✓ | Structured events: elimination, combat, alliance, milestone |
+| Session summary screen | 📋 PLANNED | P1 | - | Between sessions: what happened, eliminations, power rankings |
+| Campaign "chapters" narrative | 💡 PROPOSED | P2 | - | "Session 1: The Early Days", "Session 5: Rise of the Hegemony" |
 
 **Philosophy**: Sessions are saved automatically. No manual save/load to prevent exploiting bad decisions. Campaign mode spans multiple sessions; Oneshot is single-session.
 
 **Dependencies**: None
-**Blocker**: None (this is critical infrastructure)
-**ETA**: 3-4 days
+**Status**: Core infrastructure complete (M1 + M2)
 
 ---
 
@@ -137,10 +139,10 @@ This document tracks the status of all major features and redesign initiatives f
 
 | Item | Status | Priority | Feature Flag | Notes |
 |------|--------|----------|--------------|-------|
-| Underdog combat bonus | 📋 PLANNED | P1 | `FEATURE_UNDERDOG_BONUS` | +10-20% when weaker empire attacks stronger one |
-| "Punching up" victory bonus | 📋 PLANNED | P1 | `FEATURE_PUNCHUP_BONUS` | Bonus rewards for **winning** against stronger opponent (not just attacking) |
+| Underdog combat bonus | ✅ IMPLEMENTED | P1 | `FEATURE_UNDERDOG_BONUS` | +10-20% when weaker empire attacks stronger one (networth-based) |
+| "Punching up" victory bonus | ✅ IMPLEMENTED | P1 | `FEATURE_PUNCHUP_BONUS` | +1-3 extra planets captured when winning against stronger opponent |
 
-**Philosophy**: Undecided on automatic underdog bonus - may feel like punishment for success. Alternative "punching up" bonus rewards **victories** against stronger foes, not just attempts. Both will be feature-flagged for playtesting.
+**Philosophy**: Undecided on automatic underdog bonus - may feel like punishment for success. Alternative "punching up" bonus rewards **victories** against stronger foes, not just attempts. Both are feature-flagged for playtesting.
 
 **Note**: Weak players already have asymmetric options: covert ops, sabotage, pirates, Syndicate contracts. May not need direct combat bonus.
 
@@ -288,11 +290,11 @@ This document tracks the status of all major features and redesign initiatives f
 - [✓] Wormhole processing (discovery, collapse, stabilization)
 - [✓] Wormhole slot limits (2 base, +2 research, max 4)
 
-**Frontend (PENDING)**:
-- [ ] Galaxy View Component (Concept 2 - static sector boxes)
-- [ ] Sector Detail Component (empire nodes with LCARS panels)
-- [ ] LCARS panel system (semi-transparent, Star Trek aesthetic)
-- [ ] Wormhole visualization (pulsing connections, discovery states)
+**Frontend (IN PROGRESS)**:
+- [✓] Galaxy View Component (Concept 2 - static sector boxes)
+- [✓] Sector Detail Component (empire nodes with LCARS panels)
+- [✓] LCARS panel system (semi-transparent, Star Trek aesthetic)
+- [✓] Wormhole visualization (curved paths, discovery/stabilized states)
 - [ ] Threat assessment panel (right sidebar)
 - [ ] Expansion options panel (borders + wormholes)
 - [ ] Zoom transition (galaxy ↔ sector view)
@@ -306,9 +308,11 @@ This document tracks the status of all major features and redesign initiatives f
 
 ### Phase 3: Balance & Polish (Week 4)
 **Target**: 2025-01-27
-**Status**: 📋 PLANNED
+**Status**: 🚧 IN PROGRESS
 
-- [ ] Reverse turn order (weakest first)
+- [✓] Reverse turn order (weakest first) - M4: `bot-processor.ts` weak-first initiative
+- [✓] Underdog combat bonus (feature-flagged) - M4: +10-20% networth-based bonus
+- [✓] Punching-up victory bonus (feature-flagged) - M4: +1-3 extra planet capture
 - [ ] Sector traits (Mining Belt, Core Worlds, etc.)
 - [ ] Turn-by-turn goals for tutorial
 - [ ] Feedback tooltips
@@ -359,6 +363,30 @@ This document tracks the status of all major features and redesign initiatives f
 ---
 
 ## Decision Log
+
+### 2025-12-30 (Late Evening) - M5 Integration & Testing
+- ✅ **IMPLEMENTED**: 10-bot integration tests (`tests/integration/quick-wins-10bot.test.ts`)
+  - Starting planets (5), feature flags, weak-first initiative, underdog/punchup bonuses
+  - 21 tests verifying M1-M4 integration
+- ✅ **IMPLEMENTED**: 25-bot simulation tests (`tests/simulation/quick-wins-25bot.test.ts`)
+  - Elimination tracking, leader containment, victory variety
+  - Archetype survival balance, system coverage metrics
+- ✅ **IMPLEMENTED**: 50-bot stress tests (`tests/stress/quick-wins-50bot.test.ts`)
+  - Turn processing performance (<200ms per turn)
+  - Memory usage verification, boss emergence detection
+  - Extended campaign-scale simulation (100+ turns)
+
+### 2025-12-30 (Late Evening) - M4 Game Balance Implementation
+- ✅ **IMPLEMENTED**: Reverse turn order (weak-first initiative) in `bot-processor.ts`
+  - Bot decisions generated in parallel, then attacks sorted by networth ascending and executed sequentially
+  - Non-attack decisions still execute in parallel for performance
+- ✅ **IMPLEMENTED**: Underdog combat bonus in `unified-combat.ts`
+  - Feature-flagged via `FEATURE_UNDERDOG_BONUS`
+  - +10-20% combat power bonus when attacking stronger empire (by networth)
+- ✅ **IMPLEMENTED**: Punching-up victory bonus in `unified-combat.ts`
+  - Feature-flagged via `FEATURE_PUNCHUP_BONUS`
+  - +1-3 extra planets captured when weaker empire defeats stronger one
+- ✅ **UPDATED**: Combat service now uses unified combat system for invasions
 
 ### 2025-12-30 (Evening) - Redesign Documentation Review
 - ✅ **CAPTURED**: 6 ideas from older redesign docs now tracked in Implementation Tracker
@@ -454,4 +482,4 @@ All experimental mechanics are behind feature flags for A/B testing and balance 
 ---
 
 *This tracker is the living source of truth for Nexus Dominion development.*
-*Last updated: 2025-12-30 (Evening) by Claude*
+*Last updated: 2025-12-30 (Late Evening) by Claude - M5 Integration & Testing*

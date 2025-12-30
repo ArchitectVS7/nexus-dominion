@@ -21,6 +21,8 @@ import {
   PLANET_PRODUCTION,
   PLANET_COSTS,
   TOTAL_STARTING_PLANETS,
+  getGameModePreset,
+  type GameMode,
 } from "../constants";
 import { calculateNetworth } from "../networth";
 import { initializeResearch } from "../services/research-service";
@@ -217,22 +219,30 @@ export async function getPlanetCountsByType(
  * @param emperorName - Player's emperor name (optional)
  * @param difficulty - Game difficulty (easy/normal/hard/nightmare)
  * @param botCount - Number of bot empires to create (default 25)
+ * @param gameMode - Game mode: "oneshot" or "campaign" (default "oneshot")
  */
 export async function startNewGame(
   gameName: string,
   empireName: string,
   emperorName?: string,
   difficulty: Difficulty = "normal",
-  botCount: number = 25
+  botCount: number = 25,
+  gameMode: GameMode = "oneshot"
 ): Promise<{ game: Game; empire: Empire; bots: Empire[] }> {
   const game = await createGame(gameName);
 
-  // Set game difficulty and bot count
+  // Get turn limit from game mode preset
+  const preset = getGameModePreset(gameMode);
+  const turnLimit = preset.defaultTurns;
+
+  // Set game difficulty, bot count, mode, and turn limit
   await db
     .update(games)
     .set({
       difficulty,
       botCount,
+      gameMode,
+      turnLimit,
     })
     .where(eq(games.id, game.id));
 

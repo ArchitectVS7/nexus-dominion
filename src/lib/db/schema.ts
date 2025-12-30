@@ -191,6 +191,12 @@ export const difficultyEnum = pgEnum("difficulty", [
   "nightmare",
 ]);
 
+// Game mode: oneshot (quick games) vs campaign (multi-session)
+export const gameModeEnum = pgEnum("game_mode", [
+  "oneshot",   // 10-25 empires, 50-100 turns, single session
+  "campaign",  // 50-100 empires, 200+ turns, multi-session
+]);
+
 export const victoryTypeEnum = pgEnum("victory_type", [
   "conquest",
   "economic",
@@ -239,6 +245,11 @@ export const games = pgTable(
     name: varchar("name", { length: 255 }).notNull(),
     status: gameStatusEnum("status").notNull().default("setup"),
 
+    // Game mode and session tracking
+    gameMode: gameModeEnum("game_mode").notNull().default("oneshot"),
+    sessionCount: integer("session_count").notNull().default(0),
+    lastSessionAt: timestamp("last_session_at"),
+
     // Game settings
     turnLimit: integer("turn_limit").notNull().default(200),
     currentTurn: integer("current_turn").notNull().default(1),
@@ -258,6 +269,39 @@ export const games = pgTable(
     completedAt: timestamp("completed_at"),
   },
   (table) => [index("games_status_idx").on(table.status)]
+);
+
+// ============================================
+// GAME SESSIONS TABLE
+// ============================================
+// Tracks individual play sessions for campaign mode
+// Auto-save only - NO manual save/load to prevent save-scumming
+
+export const gameSessions = pgTable(
+  "game_sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+    sessionNumber: integer("session_number").notNull(),
+
+    // Turn range for this session
+    startTurn: integer("start_turn").notNull(),
+    endTurn: integer("end_turn"),
+
+    // Timestamps
+    startedAt: timestamp("started_at").notNull().defaultNow(),
+    endedAt: timestamp("ended_at"),
+
+    // Session summary (for session recaps)
+    empiresEliminated: integer("empires_eliminated").notNull().default(0),
+    notableEvents: json("notable_events").$type<string[]>().default([]),
+  },
+  (table) => [
+    index("game_sessions_game_id_idx").on(table.gameId),
+    index("game_sessions_session_number_idx").on(table.gameId, table.sessionNumber),
+  ]
 );
 
 // ============================================
@@ -321,7 +365,7 @@ export const empires = pgTable(
 
     // Computed stats (updated each turn)
     networth: bigint("networth", { mode: "number" }).notNull().default(0),
-    planetCount: integer("planet_count").notNull().default(9),
+    planetCount: integer("planet_count").notNull().default(5), // Reduced from 9 for faster eliminations
 
     // M7: Diplomacy reputation (0-100, starts at 50 = neutral)
     reputation: integer("reputation").notNull().default(50),
@@ -693,11 +737,19 @@ export const gamesRelations = relations(games, ({ many }) => ({
   empires: many(empires),
   planets: many(planets),
   saves: many(gameSaves),
+  sessions: many(gameSessions),
   performanceLogs: many(performanceLogs),
   // Geography System Relations
   galaxyRegions: many(galaxyRegions),
   regionConnections: many(regionConnections),
   empireInfluences: many(empireInfluence),
+}));
+
+export const gameSessionsRelations = relations(gameSessions, ({ one }) => ({
+  game: one(games, {
+    fields: [gameSessions.gameId],
+    references: [games.id],
+  }),
 }));
 
 export const empiresRelations = relations(empires, ({ one, many }) => ({
@@ -2226,6 +2278,9 @@ export const empireInfluenceRelations = relations(empireInfluence, ({ one }) => 
 
 export type Game = typeof games.$inferSelect;
 export type NewGame = typeof games.$inferInsert;
+
+export type GameSession = typeof gameSessions.$inferSelect;
+export type NewGameSession = typeof gameSessions.$inferInsert;
 
 export type Empire = typeof empires.$inferSelect;
 export type NewEmpire = typeof empires.$inferInsert;

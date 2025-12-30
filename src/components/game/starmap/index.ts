@@ -1,5 +1,9 @@
 export { Starmap } from "./Starmap";
 export { EmpireTooltip } from "./EmpireTooltip";
+export { GalaxyView } from "./GalaxyView";
+export { SectorBox } from "./SectorBox";
+export { WormholeConnection } from "./WormholeConnection";
+export { SectorDetail } from "./SectorDetail";
 export type {
   EmpireMapData,
   StarmapProps,
@@ -10,3 +14,4 @@ export type {
   TreatyConnection,
   NebulaConfig,
 } from "./types";
+export type { GalaxyRegion, WormholeData } from "./GalaxyView";

@@ -57,13 +57,14 @@ export function calculateNetworth(input: NetworthInput): number {
 
 /**
  * Calculate the starting networth for a new empire.
- * Default: 9 planets, 100 soldiers, no other units.
+ * Default: 5 planets, 100 soldiers, no other units.
+ * (Reduced from 9 planets for faster eliminations)
  *
- * @returns Starting networth (90)
+ * @returns Starting networth (50)
  */
 export function calculateStartingNetworth(): number {
   return calculateNetworth({
-    planetCount: 9,
+    planetCount: 5, // Reduced from 9 for faster eliminations
     soldiers: 100,
     fighters: 0,
     stations: 0,
