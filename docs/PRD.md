@@ -1,9 +1,9 @@
 # Nexus Dominion: Product Requirements Document
 
-**Version:** 1.3
+**Version:** 2.0
 **Date:** December 2024
-**Status:** Draft (Crafting System Integration)
-**Last Updated:** December 28, 2024
+**Status:** Active - Post-Redesign (Combat & Galaxy Structure)
+**Last Updated:** December 30, 2024
 
 ---
 
@@ -14,20 +14,21 @@
 3. [Core Gameplay Loop](#3-core-gameplay-loop)
 4. [Resource System](#4-resource-system)
 5. [Planet System](#5-planet-system)
-6. [Military System](#6-military-system)
-7. [Bot AI System](#7-bot-ai-system)
-8. [Diplomacy System](#8-diplomacy-system)
-9. [Research System](#9-research-system)
-10. [Scenario System](#10-scenario-system)
-11. [Mid-Game Engagement System](#11-mid-game-engagement-system)
-12. [New Player Experience](#12-new-player-experience)
-13. [User Interface](#13-user-interface)
-14. [Tech Stack](#14-tech-stack)
-15. [Development Phases](#15-development-phases)
-16. [Success Metrics](#16-success-metrics)
-17. [Out of Scope](#17-out-of-scope)
-18. [Manufacturing & Crafting System](#18-manufacturing--crafting-system)
-19. [The Galactic Syndicate](#19-the-galactic-syndicate)
+6. [Galaxy Structure & Geography](#6-galaxy-structure--geography)
+7. [Military & Combat System](#7-military--combat-system)
+8. [Bot AI System](#8-bot-ai-system)
+9. [Diplomacy System](#9-diplomacy-system)
+10. [Research System](#10-research-system)
+11. [Scenario System](#11-scenario-system)
+12. [Mid-Game Engagement System](#12-mid-game-engagement-system)
+13. [New Player Experience](#13-new-player-experience)
+14. [User Interface](#14-user-interface)
+15. [Tech Stack](#15-tech-stack)
+16. [Development Phases](#16-development-phases)
+17. [Success Metrics](#17-success-metrics)
+18. [Out of Scope](#18-out-of-scope)
+19. [Manufacturing & Crafting System](#19-manufacturing--crafting-system)
+20. [The Galactic Syndicate](#20-the-galactic-syndicate)
 
 ---
 
@@ -57,8 +58,10 @@ Nexus Dominion transforms the original weeks-long multiplayer experience into a 
 |----------|--------|
 | Tech Stack | TypeScript + Next.js (Greenfield Build) |
 | Resources | 4 (Food, Credits, Ore, Petroleum) + Research Points |
-| Starting Planets | 9 |
+| Starting Planets | **5** (reduced from 9 for faster eliminations) |
 | Bot Count | 25 (v0.5 MVP) → 100 personas (v0.6+) |
+| Galaxy Structure | **10 Sectors** (10 empires each, regional gameplay) |
+| Combat System | **Unified Resolution** (single roll, multiple outcomes) |
 | Turn Processing | Instant (<2 seconds target) |
 | Multiplayer | Single-player v1; Async multiplayer v2 |
 | UI Style | Star Trek LCARS-inspired |
@@ -313,7 +316,120 @@ Players begin with **9 planets**:
 
 ---
 
-## 6. Military System
+## 6. Galaxy Structure & Geography
+
+### 6.1 Sector-Based Galaxy
+
+**Design Philosophy**: "Geography creates strategy"
+
+The galaxy is divided into **10 sectors**, each containing 8-10 empires. This creates manageable cognitive load while preserving the "100 empires" scale.
+
+#### Sector Structure
+
+```
+Galaxy = 10 Sectors
+Each Sector = 8-10 Empires
+Player starts in 1 sector with ~9 neighbors
+
+Phased Gameplay:
+- Turn 1-20:    Focus on your sector (consolidate)
+- Turn 21-40:   Expand to adjacent sectors (via borders)
+- Turn 41-60:   Build wormholes to distant sectors
+- Turn 61-200:  Multi-sector empire management
+```
+
+#### Mental Model
+
+- **Sector** = Your neighborhood in space
+- **Borders** = Roads to adjacent neighborhoods
+- **Wormholes** = Highways to distant regions (fast but expensive)
+
+### 6.2 Attack Accessibility
+
+Not all empires are attackable at all times. Accessibility depends on sector connections:
+
+| Connection Type | Accessibility | Attack Cost Modifier | Notes |
+|-----------------|---------------|---------------------|-------|
+| **Same Sector** | Always | 1.0× (normal) | Can attack freely |
+| **Adjacent Sector** | After border discovery | 1.2× | Requires Turn 10-15+ |
+| **Wormhole Connection** | After construction | 1.5× | Requires Research 4+, 6-15 turns to build |
+| **Unreachable** | Never | N/A | Cannot attack without connection |
+
+**Example**: If you're in Sector D and want to attack an empire in Sector B, you must either:
+1. Expand through Sector C (if it connects D → C → B), OR
+2. Build a wormhole from D → B (expensive but instant access)
+
+### 6.3 Sector Balancing
+
+At game setup, sectors are algorithmically balanced for fairness:
+
+```typescript
+// Sector balancing algorithm
+function balanceSectors(empires: Empire[]): Map<string, Sector> {
+  const sectorCount = 10;
+  const empiresPerSector = Math.floor(empires.length / sectorCount);
+
+  // Sort empires by starting networth
+  empires.sort((a, b) => a.startingNetworth - b.startingNetworth);
+
+  // Distribute to ensure each sector has similar total networth
+  const sectors = new Map();
+  for (let i = 0; i < sectorCount; i++) {
+    const sectorEmpires = distributeEvenly(empires, i);
+    sectors.set(`sector-${i}`, {
+      empires: sectorEmpires,
+      totalNetworth: calculateTotal(sectorEmpires),
+      botTierMix: ensureTierMix(sectorEmpires) // Mix of tiers 1-4
+    });
+  }
+
+  return sectors;
+}
+```
+
+**Fairness Criteria**:
+- Each sector's total networth within ±10% of average
+- Mix of bot tiers (1-2 Tier 2, 6-7 Tier 3, 1-2 Tier 4)
+- Similar resource distribution across sectors
+- **No luck-based advantages** - skill determines victory
+
+### 6.4 Wormhole System
+
+**Purpose**: Connect distant sectors without slow border expansion
+
+**Construction Requirements**:
+- **Cost**: 15,000-40,000 credits (based on distance)
+- **Petroleum**: 300-800 (fuel for construction)
+- **Time**: 6-15 turns (multi-turn construction queue)
+- **Research**: Level 4+ (unlocks around Turn 15-20)
+
+**Slot Limits** (prevents late-game sector collapse):
+- **Base**: 2 wormholes per empire
+- **Research Level 6**: +1 slot (total: 3)
+- **Research Level 8**: +1 slot (total: 4)
+- **Maximum**: 4 wormholes per empire (hard cap)
+
+**Strategic Value**:
+- Bypass crowded borders
+- Access high-value sectors (Core Worlds, Mining Belt)
+- Create surprise attack vectors
+- Expensive investment = meaningful choice (which 2-4 sectors to connect?)
+
+### 6.5 Sector Traits (Future Enhancement)
+
+Different sectors will have distinct characteristics:
+
+| Sector Name | Trait | Benefit |
+|-------------|-------|---------|
+| **Core Worlds** | Economic Hub | +20% credit generation |
+| **Mining Belt** | Rich Resources | +20% ore production |
+| **Frontier** | Unexplored | Bonus research for discoveries |
+| **Dead Zone** | Harsh Conditions | -20% population growth (but less competition) |
+| **Nebula Region** | Stealth | Covert operations +20% success |
+
+---
+
+## 7. Military & Combat System
 
 ### 6.1 Unit Types (Rebalanced)
 
@@ -352,51 +468,87 @@ Players begin with **9 planets**:
 
 *See Section 18 for full crafting system details.*
 
-### 6.2 Combat Mechanics
+### 7.2 Combat Resolution (Unified System)
 
-**Combat Power Calculation**:
-```javascript
-function calculatePower(fleet, isDefender) {
-  let fighters = fleet.fighters * 1;
-  let cruisers = fleet.cruisers * 4;
-  let carriers = fleet.carriers * 12;
+**Design Change (v2.0)**: Replaced sequential 3-phase combat with unified resolution for better balance.
 
-  // Diversity bonus - penalty for mono-unit armies
-  let unitTypes = countUnitTypes(fleet);
-  let diversityBonus = unitTypes >= 4 ? 1.15 : 1.0; // +15% for mixed fleets
+**Previous Problem**: Sequential phases (Space → Orbital → Ground) resulted in 1.2% attacker win rate and 0 eliminations in testing.
 
-  let basePower = fighters + cruisers + carriers;
+**New Solution**: Single combat roll with multiple outcomes.
 
-  if (isDefender) {
-    let stations = fleet.stations * 50 * 2; // 2× on defense
-    basePower += stations;
-    basePower *= 1.2; // Defender advantage
-  }
+```typescript
+// Unified combat resolution
+function resolveCombat(attacker: Forces, defender: Forces): CombatOutcome {
+  // Calculate total combat power for each side
+  const attackerPower = calculateCombatPower(attacker);
+  const defenderPower = calculateCombatPower(defender) * 1.5; // Defender advantage
 
-  return basePower * diversityBonus;
+  // Single D20 roll with power modifier
+  const roll = rollD20(); // 1-20
+  const modifier = (attackerPower - defenderPower) / 100;
+  const result = roll + modifier;
+
+  // Multiple outcomes based on roll
+  if (result >= 18) return {
+    outcome: 'total_victory',
+    planetsCaptured: Math.floor(defender.planets * 0.40),
+    attackerLosses: 0.10, // Light losses
+    defenderLosses: 0.60  // Routed
+  };
+
+  if (result >= 14) return {
+    outcome: 'victory',
+    planetsCaptured: Math.floor(defender.planets * 0.25),
+    attackerLosses: 0.20,
+    defenderLosses: 0.40
+  };
+
+  if (result >= 10) return {
+    outcome: 'costly_victory',
+    planetsCaptured: Math.floor(defender.planets * 0.15),
+    attackerLosses: 0.30, // Both sides lose heavily
+    defenderLosses: 0.30
+  };
+
+  if (result >= 6) return {
+    outcome: 'stalemate',
+    planetsCaptured: 0,
+    attackerLosses: 0.25,
+    defenderLosses: 0.25
+  };
+
+  if (result >= 2) return {
+    outcome: 'repelled',
+    planetsCaptured: 0,
+    attackerLosses: 0.35,
+    defenderLosses: 0.10
+  };
+
+  return {
+    outcome: 'disaster',
+    planetsCaptured: 0,
+    attackerLosses: 0.60, // Attacker routed
+    defenderLosses: 0.05
+  };
 }
 ```
 
-**Casualty Calculation**:
-```javascript
-function calculateLosses(attackPower, defensePower, units) {
-  let powerRatio = defensePower / attackPower;
-  let baseLossRate = 0.25; // Average 25%
+**Key Features**:
+- **Target Win Rate**: 40-50% with equal forces (attacker must be stronger OR lucky)
+- **Defender Advantage**: 1.5× power multiplier (respects "ground war is hardest" philosophy)
+- **Dramatic Outcomes**: 6 possible results create varied narratives
+- **Fast Elimination**: Combined with 5 starting planets (down from 9)
 
-  if (powerRatio > 2) baseLossRate += 0.10;  // Punish bad attacks (35% max)
-  if (powerRatio < 0.5) baseLossRate -= 0.10; // Reward overwhelming force (15% min)
+**Design Rationale**:
+D-Day wasn't "win air superiority, THEN naval battle, THEN beach landing" - it was a **unified operation** where all elements contributed simultaneously.
 
-  return Math.floor(units * baseLossRate * (0.8 + Math.random() * 0.4));
-}
-```
+### 7.3 Combat Types
 
-### 6.3 Combat Types
-
-**Invasion**:
+**Full Invasion**:
 - Full-scale attack to capture planets
 - Requires carriers for troop transport
-- Three phases: Space → Orbital → Ground
-- Victory: Capture 5-15% of enemy planets
+- Single unified resolution (not phases)
+- Victory outcomes: 15-40% planet capture (based on roll)
 - Limit: One invasion per turn
 
 **Guerilla Attack**:
@@ -642,23 +794,54 @@ interface BotPersona {
 
 ---
 
-## 8. Diplomacy System
+## 9. Diplomacy System
 
-### 8.1 Treaties
+### 9.1 Coalition Mechanics (Anti-Snowball Design)
+
+**Design Philosophy**: Prevent runaway victories through automatic balancing.
+
+When any empire reaches **7+ Victory Points**, a coalition automatically forms against them:
+
+```typescript
+// Automatic coalition triggers
+if (empire.victoryPoints >= 7) {
+  // ALL other empires get bonuses vs leader
+  applyAntiLeaderBonuses({
+    attackPower: '+10% when attacking leader',
+    defenseModifier: '+5% if leader attacks them',
+    diplomaticPenalty: 'Leader cannot form new alliances',
+    marketPenalty: 'Leader pays 20% more for resources'
+  });
+}
+```
+
+**Why This Works**:
+- Mathematical rubber-banding (prevents unstoppable leaders)
+- Creates dramatic reversals
+- Makes games competitive until the end
+- Simulates "balance of power" politics
+
+**Reverse Turn Order** (Catchup Mechanic):
+- Weakest empire (lowest VP) goes first each turn
+- Last place gets first crack at neutral opportunities
+- Last place can act before leader consolidates
+- Used in successful board games (7 Wonders, Terraforming Mars)
+
+### 9.2 Treaties
 
 **Types**:
 - **Neutrality (NAP)**: Cannot attack each other
 - **Alliance**: Shared intelligence, mutual defense
-- **Coalition**: Formal group with shared goals
+- **Coalition** (Player-Formed): Formal group with shared goals
 
 **Mechanics**:
 - Propose/accept/reject treaties
 - Breaking treaties incurs reputation penalty
 - Bots remember betrayals (weighted grudge system)
 
-### 8.2 Coalitions
+### 9.3 Player-Formed Coalitions
 
-- Groups of allied empires
+- Groups of allied empires (voluntary)
 - Cannot attack coalition members
 - Shared intelligence
 - Coalition chat (with bot messages)
