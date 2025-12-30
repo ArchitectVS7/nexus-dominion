@@ -99,6 +99,7 @@ import {
   attemptWormholeDiscovery,
 } from "./wormhole-service";
 import { processBorderDiscovery } from "./border-discovery-service";
+import { processWormholeConstruction } from "./wormhole-construction-service";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -352,6 +353,22 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
     const wormholeEvents = await processWormholesForGame(gameId, nextTurn, game.empires);
     for (const event of wormholeEvents) {
       globalEvents.push(event);
+    }
+
+    // ==========================================================================
+    // PHASE 7.9: WORMHOLE CONSTRUCTION COMPLETION (M6.3)
+    // ==========================================================================
+
+    // Process wormhole construction projects and complete any that are ready
+    const constructionResult = await processWormholeConstruction(gameId, nextTurn);
+    if (constructionResult.completed.length > 0) {
+      for (const message of constructionResult.messages) {
+        globalEvents.push({
+          type: "other",
+          message: `🌀 ${message}`,
+          severity: "info",
+        });
+      }
     }
 
     // ==========================================================================

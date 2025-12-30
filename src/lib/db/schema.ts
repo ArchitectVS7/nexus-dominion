@@ -1068,6 +1068,7 @@ export const wormholeStatusEnum = pgEnum("wormhole_status", [
   "discovered",    // Found by an empire
   "stabilized",    // Improved for regular use
   "collapsed",     // No longer usable
+  "constructing",  // Player is building this wormhole (M6.3)
 ]);
 
 // ============================================
