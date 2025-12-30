@@ -11,6 +11,7 @@ import { getResumableGames, getLatestSave } from "@/lib/game/services/save-servi
 import { db } from "@/lib/db";
 import type { Difficulty } from "@/lib/bots/types";
 import { triggerGreetings, type TriggerContext } from "@/lib/messages";
+import { GAME_MODE_PRESETS, type GameMode } from "@/lib/game/constants";
 
 // =============================================================================
 // COOKIE HELPERS
@@ -66,6 +67,7 @@ export interface StartGameResult {
   empireId?: string;
   botCount?: number;
   difficulty?: Difficulty;
+  gameMode?: GameMode;
 }
 
 /**
@@ -77,6 +79,16 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
   const empireName = formData.get("empireName") as string;
   const difficultyRaw = formData.get("difficulty") as string | null;
   const botCountRaw = formData.get("botCount") as string | null;
+  const gameModeRaw = formData.get("gameMode") as string | null;
+
+  // Validate game mode
+  const validGameModes: GameMode[] = ["oneshot", "campaign"];
+  const gameMode: GameMode = validGameModes.includes(gameModeRaw as GameMode)
+    ? (gameModeRaw as GameMode)
+    : "oneshot";
+
+  // Get preset for selected game mode
+  const preset = GAME_MODE_PRESETS[gameMode];
 
   // Validate difficulty
   const validDifficulties: Difficulty[] = ["easy", "normal", "hard", "nightmare"];
@@ -84,10 +96,9 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
     ? (difficultyRaw as Difficulty)
     : "normal";
 
-  // Validate bot count
-  const validBotCounts = [10, 25, 50];
-  const botCountNum = parseInt(botCountRaw ?? "25", 10);
-  const botCount = validBotCounts.includes(botCountNum) ? botCountNum : 25;
+  // Validate bot count against game mode constraints
+  const botCountNum = parseInt(botCountRaw ?? String(preset.defaultBots), 10);
+  const botCount = Math.min(Math.max(botCountNum, preset.minBots), preset.maxBots);
 
   if (!empireName || empireName.trim().length === 0) {
     return { success: false, error: "Empire name is required" };
@@ -106,7 +117,8 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
       empireName.trim(),
       undefined,
       difficulty,
-      botCount
+      botCount,
+      gameMode
     );
 
     await setGameCookies(game.id, empire.id);
@@ -127,6 +139,7 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
       empireId: empire.id,
       botCount: bots.length,
       difficulty,
+      gameMode,
     };
   } catch (error) {
     console.error("Failed to start game:", error);

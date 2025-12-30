@@ -21,6 +21,7 @@ import {
 } from "@/app/actions/game-actions";
 import { DifficultySelector } from "@/components/start-game/DifficultySelector";
 import { BotCountSelector } from "@/components/start-game/BotCountSelector";
+import { GameModeSelector } from "@/components/start-game/GameModeSelector";
 
 async function DashboardContent({ errorFromUrl }: { errorFromUrl?: string }) {
   const hasGame = await hasActiveGameAction();
@@ -174,6 +175,7 @@ function NewGamePrompt({ error }: { error?: string }) {
           maxLength={100}
           data-testid="empire-name-input"
         />
+        <GameModeSelector defaultValue="oneshot" />
         <BotCountSelector defaultValue={25} />
         <DifficultySelector defaultValue="normal" />
         <button
