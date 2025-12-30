@@ -14,9 +14,7 @@ import { db } from "@/lib/db";
 import {
   games,
   gameSessions,
-  empires,
   type GameSession,
-  type NewGameSession,
 } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 

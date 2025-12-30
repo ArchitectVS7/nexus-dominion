@@ -1,11 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import {
   FEATURE_FLAGS,
   isFeatureEnabled,
   isFeatureEnabledForGame,
   getEnabledFeatures,
   getAllFeatureFlags,
-  type FeatureFlag,
   type GameFeatureFlags,
 } from './feature-flags';
 

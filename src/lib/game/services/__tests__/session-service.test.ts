@@ -2,13 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   startSession,
   endSession,
-  getCurrentSession,
-  getGameSessions,
-  recordSessionEvent,
-  recordEmpireEliminated,
   getSessionSummary,
-  getAllSessionSummaries,
-  type SessionSummary,
 } from "../session-service";
 import type { GameSession } from "@/lib/db/schema";
 
