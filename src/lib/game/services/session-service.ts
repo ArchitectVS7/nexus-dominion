@@ -21,6 +21,28 @@ import {
 import { eq, and, desc } from "drizzle-orm";
 
 // =============================================================================
+// SESSION EVENT TYPES
+// =============================================================================
+
+export type SessionEventType =
+  | "elimination"
+  | "combat_victory"
+  | "combat_defeat"
+  | "alliance_formed"
+  | "alliance_broken"
+  | "boss_emergence"
+  | "milestone"
+  | "turn_start";
+
+export interface SessionEvent {
+  turn: number;
+  type: SessionEventType;
+  description: string;
+  empireIds?: string[];
+  metadata?: Record<string, unknown>;
+}
+
+// =============================================================================
 // SESSION MANAGEMENT
 // =============================================================================
 
@@ -157,11 +179,11 @@ export async function getGameSessions(gameId: string): Promise<GameSession[]> {
 
 /**
  * Record a notable event for the current session.
- * Events are stored for session recaps.
+ * Events are stored as JSON strings for session recaps.
  */
 export async function recordSessionEvent(
   gameId: string,
-  event: string
+  event: SessionEvent | string
 ): Promise<void> {
   const session = await getCurrentSession(gameId);
   if (!session) {
@@ -169,30 +191,119 @@ export async function recordSessionEvent(
     return;
   }
 
+  const eventString = typeof event === "string" ? event : JSON.stringify(event);
   const currentEvents = session.notableEvents ?? [];
   await db
     .update(gameSessions)
     .set({
-      notableEvents: [...currentEvents, event],
+      notableEvents: [...currentEvents, eventString],
     })
     .where(eq(gameSessions.id, session.id));
 }
 
 /**
- * Increment the empires eliminated count for the current session.
+ * Record an empire elimination event.
  */
-export async function recordEmpireEliminated(gameId: string): Promise<void> {
+export async function recordElimination(
+  gameId: string,
+  turn: number,
+  eliminatedEmpireId: string,
+  eliminatedEmpireName: string,
+  eliminatorId?: string,
+  eliminatorName?: string
+): Promise<void> {
   const session = await getCurrentSession(gameId);
   if (!session) {
     return;
   }
 
+  const description = eliminatorId
+    ? `${eliminatedEmpireName} was eliminated by ${eliminatorName}`
+    : `${eliminatedEmpireName} collapsed`;
+
+  const event: SessionEvent = {
+    turn,
+    type: "elimination",
+    description,
+    empireIds: eliminatorId
+      ? [eliminatedEmpireId, eliminatorId]
+      : [eliminatedEmpireId],
+  };
+
+  // Update both events and elimination count
+  const currentEvents = session.notableEvents ?? [];
   await db
     .update(gameSessions)
     .set({
+      notableEvents: [...currentEvents, JSON.stringify(event)],
       empiresEliminated: session.empiresEliminated + 1,
     })
     .where(eq(gameSessions.id, session.id));
+}
+
+/**
+ * Record a combat result event.
+ */
+export async function recordCombat(
+  gameId: string,
+  turn: number,
+  isVictory: boolean,
+  attackerName: string,
+  defenderName: string,
+  attackerId: string,
+  defenderId: string
+): Promise<void> {
+  const event: SessionEvent = {
+    turn,
+    type: isVictory ? "combat_victory" : "combat_defeat",
+    description: isVictory
+      ? `${attackerName} defeated ${defenderName} in battle`
+      : `${attackerName} was repelled by ${defenderName}`,
+    empireIds: [attackerId, defenderId],
+  };
+
+  await recordSessionEvent(gameId, event);
+}
+
+/**
+ * Record an alliance event.
+ */
+export async function recordAlliance(
+  gameId: string,
+  turn: number,
+  formed: boolean,
+  empire1Name: string,
+  empire2Name: string,
+  empire1Id: string,
+  empire2Id: string
+): Promise<void> {
+  const event: SessionEvent = {
+    turn,
+    type: formed ? "alliance_formed" : "alliance_broken",
+    description: formed
+      ? `${empire1Name} and ${empire2Name} formed an alliance`
+      : `Alliance between ${empire1Name} and ${empire2Name} dissolved`,
+    empireIds: [empire1Id, empire2Id],
+  };
+
+  await recordSessionEvent(gameId, event);
+}
+
+/**
+ * Record a milestone event (e.g., turn 50, turn 100).
+ */
+export async function recordMilestone(
+  gameId: string,
+  turn: number,
+  description: string
+): Promise<void> {
+  const event: SessionEvent = {
+    turn,
+    type: "milestone",
+    description,
+  };
+
+  await recordSessionEvent(gameId, event);
 }
 
 // =============================================================================
@@ -204,9 +315,39 @@ export interface SessionSummary {
   turnsPlayed: number;
   duration: number | null; // milliseconds
   empiresEliminated: number;
-  notableEvents: string[];
+  notableEvents: SessionEvent[];
+  rawEvents: string[];
   startTurn: number;
   endTurn: number | null;
+}
+
+/**
+ * Parse stored event strings into SessionEvent objects.
+ * Handles both JSON-formatted events and plain strings.
+ */
+export function parseSessionEvents(eventStrings: string[]): SessionEvent[] {
+  return eventStrings
+    .map((str) => {
+      try {
+        const parsed = JSON.parse(str);
+        if (parsed && typeof parsed === "object" && "type" in parsed) {
+          return parsed as SessionEvent;
+        }
+        // Plain string, convert to milestone event
+        return {
+          turn: 0,
+          type: "milestone" as const,
+          description: str,
+        };
+      } catch {
+        // Not JSON, treat as plain string description
+        return {
+          turn: 0,
+          type: "milestone" as const,
+          description: str,
+        };
+      }
+    });
 }
 
 /**
@@ -222,12 +363,15 @@ export function getSessionSummary(session: GameSession): SessionSummary {
       ? session.endedAt.getTime() - session.startedAt.getTime()
       : null;
 
+  const rawEvents = session.notableEvents ?? [];
+
   return {
     sessionNumber: session.sessionNumber,
     turnsPlayed,
     duration,
     empiresEliminated: session.empiresEliminated,
-    notableEvents: session.notableEvents ?? [],
+    notableEvents: parseSessionEvents(rawEvents),
+    rawEvents,
     startTurn: session.startTurn,
     endTurn: session.endTurn,
   };

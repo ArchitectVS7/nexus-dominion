@@ -8,6 +8,7 @@ import {
   type DashboardData,
 } from "@/lib/game/repositories/game-repository";
 import { getResumableGames, getLatestSave } from "@/lib/game/services/save-service";
+import { startSession, endSession } from "@/lib/game/services/session-service";
 import { db } from "@/lib/db";
 import type { Difficulty } from "@/lib/bots/types";
 import { triggerGreetings, type TriggerContext } from "@/lib/messages";
@@ -123,6 +124,11 @@ export async function startGameAction(formData: FormData): Promise<StartGameResu
 
     await setGameCookies(game.id, empire.id);
 
+    // Start session tracking for campaign games
+    if (gameMode === "campaign") {
+      await startSession(game.id);
+    }
+
     // Trigger greeting messages from bots (M8)
     const msgCtx: TriggerContext = {
       gameId: game.id,
@@ -194,8 +200,16 @@ export async function getCurrentGameAction(): Promise<{
 
 /**
  * End the current game and clear cookies.
+ * Ends any active session before clearing cookies.
  */
 export async function endGameAction(): Promise<void> {
+  const { gameId } = await getGameCookies();
+
+  // End active session if exists
+  if (gameId) {
+    await endSession(gameId);
+  }
+
   await clearGameCookies();
   redirect("/");
 }
@@ -288,6 +302,9 @@ export async function resumeCampaignAction(gameId: string): Promise<ResumeGameRe
 
     // Set cookies for the resumed game
     await setGameCookies(gameId, playerEmpire.id);
+
+    // Start/resume session tracking for campaign
+    await startSession(gameId);
 
     return {
       success: true,

@@ -223,7 +223,10 @@ describe("session-service", () => {
         startedAt: startTime,
         endedAt: endTime,
         empiresEliminated: 5,
-        notableEvents: ["Player won battle", "Empire X eliminated"],
+        notableEvents: [
+          JSON.stringify({ turn: 5, type: "combat_victory", description: "Player won battle" }),
+          JSON.stringify({ turn: 10, type: "elimination", description: "Empire X eliminated" }),
+        ],
       };
 
       const summary = getSessionSummary(session);
