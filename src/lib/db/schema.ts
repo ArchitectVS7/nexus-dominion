@@ -374,6 +374,10 @@ export const empires = pgTable(
     isEliminated: boolean("is_eliminated").notNull().default(false),
     eliminatedAtTurn: integer("eliminated_at_turn"),
 
+    // M7: Boss detection (dominant empire tracking)
+    isBoss: boolean("is_boss").notNull().default(false),
+    bossEmergenceTurn: integer("boss_emergence_turn"),
+
     // Timestamps
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),

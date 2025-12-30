@@ -76,6 +76,8 @@ const createMockEmpire = (overrides: Partial<Empire> = {}): Empire => ({
   reputation: 50,
   isEliminated: false,
   eliminatedAtTurn: null,
+  isBoss: false,
+  bossEmergenceTurn: null,
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,

@@ -100,6 +100,7 @@ import {
 } from "./wormhole-service";
 import { processBorderDiscovery } from "./border-discovery-service";
 import { processWormholeConstruction } from "./wormhole-construction-service";
+import { detectBosses } from "./boss-detection-service";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -367,6 +368,22 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
           type: "other",
           message: `🌀 ${message}`,
           severity: "info",
+        });
+      }
+    }
+
+    // ==========================================================================
+    // PHASE 7.10: BOSS DETECTION (M7.1)
+    // ==========================================================================
+
+    // Detect and track dominant empires (bosses)
+    const bossResult = await detectBosses(gameId, nextTurn);
+    if (bossResult.newBosses.length > 0) {
+      for (const boss of bossResult.newBosses) {
+        globalEvents.push({
+          type: "other",
+          message: `👑 ${boss.empireName} has emerged as a DOMINANT POWER! (${boss.battleWins} victories, ${(boss.networthRatio * 100).toFixed(0)}% of average networth)`,
+          severity: "warning",
         });
       }
     }
