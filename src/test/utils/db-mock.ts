@@ -74,8 +74,8 @@ export function createMockEmpire(overrides?: Partial<MockEmpire>): MockEmpire {
     armyEffectiveness: "85.00",
     covertPoints: 0,
     fundamentalResearchLevel: 0,
-    networth: 90,
-    planetCount: 9,
+    networth: 50, // 5 planets × 10 + 100 soldiers × 0.0005 = 50.05 → 50
+    planetCount: 5, // Reduced from 9 for faster eliminations
     isEliminated: false,
     eliminatedAtTurn: null,
     createdAt: new Date(),

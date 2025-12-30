@@ -7,9 +7,9 @@ import {
 } from "./networth";
 
 describe("calculateNetworth", () => {
-  it("calculates networth for starting empire (9 planets, 100 soldiers)", () => {
+  it("calculates networth for starting empire (5 planets, 100 soldiers)", () => {
     const input: NetworthInput = {
-      planetCount: 9,
+      planetCount: 5, // Reduced from 9 for faster eliminations
       soldiers: 100,
       fighters: 0,
       stations: 0,
@@ -21,8 +21,8 @@ describe("calculateNetworth", () => {
 
     const result = calculateNetworth(input);
 
-    // 9 * 10 + 100 * 0.0005 = 90 + 0.05 = 90.05, rounded to 90
-    expect(result).toBe(90);
+    // 5 * 10 + 100 * 0.0005 = 50 + 0.05 = 50.05, rounded to 50
+    expect(result).toBe(50);
   });
 
   it("calculates networth with all unit types", () => {
@@ -172,16 +172,16 @@ describe("calculateNetworth", () => {
 });
 
 describe("calculateStartingNetworth", () => {
-  it("returns correct starting networth (90)", () => {
+  it("returns correct starting networth (50)", () => {
     const result = calculateStartingNetworth();
 
-    // 9 planets * 10 + 100 soldiers * 0.0005 = 90 + 0.05 = 90.05, rounded to 90
-    expect(result).toBe(90);
+    // 5 planets * 10 + 100 soldiers * 0.0005 = 50 + 0.05 = 50.05, rounded to 50
+    expect(result).toBe(50);
   });
 
   it("matches manual calculation with starting values", () => {
     const manualResult = calculateNetworth({
-      planetCount: 9,
+      planetCount: 5, // Reduced from 9 for faster eliminations
       soldiers: 100,
       fighters: 0,
       stations: 0,

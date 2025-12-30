@@ -51,15 +51,14 @@ const ARCHETYPES: BotArchetype[] = [
   "turtle", "blitzkrieg", "tech_rush", "opportunist"
 ];
 
-// Starting planet configuration (PRD 5.1)
+// Starting planet configuration - reduced to 5 for faster eliminations (see IMPLEMENTATION-PLAN.md M1.1)
+// Players must purchase Research planets, encouraging strategic choices early game
 const STARTING_PLANETS: PlanetType[] = [
-  "food", "food",           // 2 Food planets
-  "ore", "ore",             // 2 Ore planets
+  "food",                   // 1 Food planet (reduced from 2)
+  "ore",                    // 1 Ore planet (reduced from 2)
   "petroleum",              // 1 Petroleum planet
   "tourism",                // 1 Tourism planet
-  "urban",                  // 1 Urban planet
-  "government",             // 1 Government planet
-  "research"                // 1 Research planet
+  "government",             // 1 Government planet (keeps covert ops capacity)
 ];
 
 /**

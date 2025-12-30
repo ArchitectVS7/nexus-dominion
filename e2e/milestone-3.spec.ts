@@ -184,23 +184,25 @@ test.describe("Milestone 3: Planet, Units & Research", () => {
   });
 
   test.describe("Planets System", () => {
-    test("planets page loads with 9 starting planets", async ({ gamePage }) => {
+    test("planets page loads with 5 starting planets", async ({ gamePage }) => {
       await ensureGameExists(gamePage, "M3 Planets Load Empire");
 
       await navigateToGamePage(gamePage, "planets");
 
-      // FUNCTIONAL: Verify exactly 9 planet cards
+      // FUNCTIONAL: Verify exactly 5 planet cards (reduced from 9)
       const planetCards = gamePage.locator('[data-testid^="planet-card-"]');
-      await expect(planetCards).toHaveCount(9);
+      await expect(planetCards).toHaveCount(5);
     });
 
-    test("research planet exists in starting configuration", async ({ gamePage }) => {
+    test("research planet must be purchased (not in starting config)", async ({ gamePage }) => {
       await ensureGameExists(gamePage, "M3 Research Planet Empire");
 
       await navigateToGamePage(gamePage, "planets");
 
-      // FUNCTIONAL: At least one research planet should exist
-      await expect(gamePage.locator('[data-testid="planet-type-research"]')).toBeVisible();
+      // FUNCTIONAL: Research planet is no longer in starting configuration
+      // Players must purchase it - this is a strategic choice
+      const researchPlanet = gamePage.locator('[data-testid="planet-type-research"]');
+      await expect(researchPlanet).toHaveCount(0);
     });
 
     test("planet distribution matches starting specification", async ({ gamePage }) => {
@@ -208,20 +210,19 @@ test.describe("Milestone 3: Planet, Units & Research", () => {
 
       const state = await getEmpireState(gamePage);
 
-      // FUNCTIONAL: Verify planet count
-      expect(state.planetCount).toBe(9);
+      // FUNCTIONAL: Verify planet count (reduced from 9 to 5)
+      expect(state.planetCount).toBe(5);
 
       await navigateToGamePage(gamePage, "planets");
 
-      // Verify each planet type count
+      // Verify each planet type count (reduced distribution - 5 planets)
+      // Urban and Research removed - players must purchase them
       const expectedCounts: Record<string, number> = {
-        food: 2,
-        ore: 2,
+        food: 1,       // Reduced from 2
+        ore: 1,        // Reduced from 2
         petroleum: 1,
         tourism: 1,
-        urban: 1,
-        government: 1,
-        research: 1,
+        government: 1, // Keeps covert ops capacity
       };
 
       for (const [type, count] of Object.entries(expectedCounts)) {

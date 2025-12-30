@@ -85,20 +85,20 @@ export const PLANET_COSTS = {
 
 export type PlanetType = Planet["type"];
 
+// Reduced from 9 to 5 planets for faster eliminations (see IMPLEMENTATION-PLAN.md M1.1)
+// Players must now purchase Research planets - encourages strategic choices early game
 export const STARTING_PLANETS: Array<{ type: PlanetType; count: number }> = [
-  { type: "food", count: 2 },
-  { type: "ore", count: 2 },
+  { type: "food", count: 1 },        // Reduced from 2
+  { type: "ore", count: 1 },         // Reduced from 2
   { type: "petroleum", count: 1 },
   { type: "tourism", count: 1 },
-  { type: "urban", count: 1 },
-  { type: "government", count: 1 },
-  { type: "research", count: 1 },
+  { type: "government", count: 1 },  // Keep for covert ops capacity
 ];
 
 export const TOTAL_STARTING_PLANETS = STARTING_PLANETS.reduce(
   (sum, p) => sum + p.count,
   0
-); // Should be 9
+); // Should be 5
 
 // =============================================================================
 // PLANET TYPE DISPLAY LABELS
