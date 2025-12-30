@@ -98,6 +98,7 @@ import {
   processWormholesTurn,
   attemptWormholeDiscovery,
 } from "./wormhole-service";
+import { processBorderDiscovery } from "./border-discovery-service";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -330,7 +331,21 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
     }
 
     // ==========================================================================
-    // PHASE 7.7: WORMHOLE PROCESSING (Geography System)
+    // PHASE 7.7: BORDER DISCOVERY (Geography System M6.2)
+    // ==========================================================================
+
+    // Process border discovery - unlocks borders between turns 10-15
+    const borderDiscoveryResults = await processBorderDiscovery(gameId, nextTurn);
+    if (borderDiscoveryResults.length > 0) {
+      globalEvents.push({
+        type: "other",
+        message: `🗺️ ${borderDiscoveryResults.length} new border route${borderDiscoveryResults.length > 1 ? "s" : ""} discovered! Expansion opportunities await.`,
+        severity: "info",
+      });
+    }
+
+    // ==========================================================================
+    // PHASE 7.8: WORMHOLE PROCESSING (Geography System)
     // ==========================================================================
 
     // Process wormhole discovery, collapse, and reopen mechanics

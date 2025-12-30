@@ -31,6 +31,7 @@ import { createBotEmpires } from "@/lib/bots/bot-generator";
 import type { Difficulty } from "@/lib/bots/types";
 import { initializeMarketPrices } from "@/lib/market";
 import { generateGalaxy } from "../services/galaxy-generation-service";
+import { initializeBorderDiscovery } from "../services/border-discovery-service";
 
 // =============================================================================
 // GAME OPERATIONS
@@ -325,6 +326,10 @@ async function initializeGalaxyGeography(
   if (wormholesWithRealIds.length > 0) {
     await db.insert(regionConnections).values(wormholesWithRealIds);
   }
+
+  // Initialize border discovery turns (M6.2)
+  // This assigns discovery turns (10-15) to non-wormhole connections
+  await initializeBorderDiscovery(gameId);
 
   // Update empire assignments with actual region IDs
   const influenceRecordsWithRealIds = galaxy.empireInfluenceRecords.map((record) => {
