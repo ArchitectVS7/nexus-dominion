@@ -6,6 +6,7 @@ import {
   cleanupOldGamesAction,
   getDatabaseStatsAction,
   deleteAllGamesAction,
+  truncateAllTablesAction,
   pruneAllMemoriesAction,
   prunePerformanceLogsAction,
 } from "@/app/actions/admin-actions";
@@ -91,6 +92,29 @@ export default function AdminPage() {
     setLoading(false);
     if (res.success) {
       setResult(`Deleted ${res.deletedCount} games. Database cleared.`);
+      setStats(null);
+    } else {
+      setResult(`Error: ${res.error}`);
+    }
+  };
+
+  const handleTruncateAll = async () => {
+    const confirmed = window.confirm(
+      "⚠️⚠️⚠️ NUCLEAR OPTION ⚠️⚠️⚠️\n\nThis will TRUNCATE ALL TABLES individually!\nUse this only if CASCADE delete isn't working.\n\nAre you ABSOLUTELY sure?"
+    );
+    if (!confirmed) return;
+
+    const doubleConfirm = window.confirm(
+      "Last chance! This will erase EVERYTHING.\n\nType YES in the next prompt to continue."
+    );
+    if (!doubleConfirm) return;
+
+    setLoading(true);
+    setResult(null);
+    const res = await truncateAllTablesAction();
+    setLoading(false);
+    if (res.success) {
+      setResult(`Truncated ${res.tablesCleared.length} tables: ${res.tablesCleared.join(", ")}`);
       setStats(null);
     } else {
       setResult(`Error: ${res.error}`);
@@ -246,17 +270,38 @@ export default function AdminPage() {
           <h2 className="text-lg font-semibold text-red-400 mb-4">
             ⚠️ Danger Zone
           </h2>
-          <p className="text-gray-400 text-sm mb-4">
-            Delete ALL games using TRUNCATE CASCADE. This is instant and cannot
-            be undone.
-          </p>
-          <button
-            onClick={handleDeleteAll}
-            disabled={loading}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition-all disabled:opacity-50"
-          >
-            {loading ? "Deleting..." : "TRUNCATE ALL DATA"}
-          </button>
+          <div className="space-y-4">
+            <div>
+              <p className="text-gray-400 text-sm mb-2">
+                Delete ALL games using TRUNCATE CASCADE. This is instant and cannot
+                be undone.
+              </p>
+              <button
+                onClick={handleDeleteAll}
+                disabled={loading}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition-all disabled:opacity-50"
+              >
+                {loading ? "Deleting..." : "TRUNCATE ALL DATA"}
+              </button>
+            </div>
+            <div className="pt-4 border-t border-red-500/30">
+              <p className="text-red-300 text-sm mb-2 font-semibold">
+                ☢️ NUCLEAR OPTION ☢️
+              </p>
+              <p className="text-gray-400 text-sm mb-2">
+                Truncate ALL tables individually. Use this ONLY if CASCADE isn&apos;t working.
+                This will clear: games, empires, planets, research_progress, market_prices,
+                and 18 other tables.
+              </p>
+              <button
+                onClick={handleTruncateAll}
+                disabled={loading}
+                className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-500 transition-all disabled:opacity-50 border-2 border-orange-400"
+              >
+                {loading ? "Nuking..." : "☢️ TRUNCATE ALL TABLES ☢️"}
+              </button>
+            </div>
+          </div>
         </div>
 
         {result && (

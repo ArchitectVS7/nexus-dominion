@@ -162,7 +162,7 @@ export async function deleteAllGamesAction(): Promise<{
     await db.execute(sql`TRUNCATE games CASCADE`);
 
     // Also clean up performance logs (not cascade-deleted)
-    await db.execute(sql`TRUNCATE performance_logs`);
+    await db.execute(sql`TRUNCATE performance_logs CASCADE`);
 
     return {
       success: true,
@@ -173,6 +173,64 @@ export async function deleteAllGamesAction(): Promise<{
     return {
       success: false,
       deletedCount: 0,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+/**
+ * Nuclear option: TRUNCATE all major tables individually.
+ * Use this if CASCADE isn't working as expected.
+ */
+export async function truncateAllTablesAction(): Promise<{
+  success: boolean;
+  tablesCleared: string[];
+  error?: string;
+}> {
+  try {
+    const tablesToTruncate = [
+      "games",
+      "empires",
+      "planets",
+      "research_progress",
+      "market_prices",
+      "market_orders",
+      "attacks",
+      "combat_logs",
+      "messages",
+      "treaties",
+      "bot_memories",
+      "bot_emotional_states",
+      "build_queue",
+      "reputation_log",
+      "unit_upgrades",
+      "research_branch_allocations",
+      "performance_logs",
+      "resource_inventory",
+      "crafting_queue",
+      "syndicate_contracts",
+      "galactic_events",
+      "coalitions",
+      "covert_operations",
+    ];
+
+    for (const table of tablesToTruncate) {
+      try {
+        await db.execute(sql.raw(`TRUNCATE ${table} CASCADE`));
+      } catch (err) {
+        console.warn(`Failed to truncate ${table}:`, err);
+      }
+    }
+
+    return {
+      success: true,
+      tablesCleared: tablesToTruncate,
+    };
+  } catch (error) {
+    console.error("Failed to truncate all tables:", error);
+    return {
+      success: false,
+      tablesCleared: [],
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
