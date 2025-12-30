@@ -193,18 +193,59 @@ export function SectorBox({
           const cx = col * 35 + size / 2;
           const cy = row * 30 + size / 2;
 
+          const isBoss = empire.isBoss ?? false;
+
           return (
             <g key={empire.id}>
+              {/* Boss glow effect */}
+              {isBoss && (
+                <>
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={size / 2 + 6}
+                    fill="none"
+                    stroke="#dc2626"
+                    strokeWidth={2}
+                    strokeOpacity={0.3}
+                    className="animate-pulse"
+                  />
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={size / 2 + 4}
+                    fill="none"
+                    stroke="#f87171"
+                    strokeWidth={1}
+                    strokeOpacity={0.5}
+                  />
+                </>
+              )}
+
               {/* Empire circle */}
               <circle
                 cx={cx}
                 cy={cy}
                 r={size / 2}
-                fill={color}
-                stroke={isPlayer ? "#60a5fa" : "none"}
-                strokeWidth={isPlayer ? 2 : 0}
+                fill={isBoss ? "#dc2626" : color}
+                stroke={isPlayer ? "#60a5fa" : isBoss ? "#fca5a5" : "none"}
+                strokeWidth={isPlayer ? 2 : isBoss ? 2 : 0}
                 opacity={empire.intelLevel === "unknown" && !isPlayer ? 0.4 : 0.9}
               />
+
+              {/* Boss crown indicator */}
+              {isBoss && (
+                <text
+                  x={cx}
+                  y={cy - size / 2 - 4}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize="10"
+                  className="pointer-events-none select-none"
+                >
+                  👑
+                </text>
+              )}
 
               {/* Player star indicator */}
               {isPlayer && (
@@ -223,7 +264,7 @@ export function SectorBox({
               )}
 
               {/* Threat indicator for aggressors */}
-              {empire.recentAggressor && !isPlayer && (
+              {empire.recentAggressor && !isPlayer && !isBoss && (
                 <circle
                   cx={cx}
                   cy={cy}
@@ -237,7 +278,7 @@ export function SectorBox({
               )}
 
               {/* Treaty indicator */}
-              {empire.hasTreaty && !isPlayer && (
+              {empire.hasTreaty && !isPlayer && !isBoss && (
                 <circle
                   cx={cx}
                   cy={cy}
