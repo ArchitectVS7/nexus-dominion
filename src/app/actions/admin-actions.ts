@@ -283,39 +283,52 @@ export async function truncateAllTablesAction(): Promise<{
   error?: string;
 }> {
   try {
+    // Order matters! Truncate child tables before parents to avoid FK constraint issues
     const tablesToTruncate = [
-      "games",
-      "empires",
-      "planets",
-      "research_progress",
-      "market_prices",
-      "market_orders",
+      // Child tables first (have foreign keys to other tables)
+      "bot_memories",
+      "bot_emotional_states",
       "attacks",
       "combat_logs",
       "messages",
       "treaties",
-      "bot_memories",
-      "bot_emotional_states",
       "build_queue",
       "reputation_log",
       "unit_upgrades",
       "research_branch_allocations",
-      "performance_logs",
       "resource_inventory",
       "crafting_queue",
-      "syndicate_contracts",
+      "covert_operations",
+      "research_progress",
+      "market_orders",
+      "planets",
+      // Then parent tables
+      "empires",
+      "market_prices",
       "galactic_events",
       "coalitions",
-      "covert_operations",
+      "syndicate_contracts",
+      "performance_logs",
+      "games", // Games last since everything references it
     ];
 
     const succeeded: string[] = [];
     const failed: string[] = [];
 
+    console.log("Starting nuclear cleanup - truncating all tables...");
+
     for (const table of tablesToTruncate) {
       try {
         console.log(`Truncating ${table}...`);
-        await db.execute(sql.raw(`TRUNCATE TABLE ${table} CASCADE`));
+
+        // Try TRUNCATE first
+        try {
+          await db.execute(sql.raw(`TRUNCATE TABLE ${table} CASCADE`));
+        } catch (truncateErr) {
+          console.warn(`TRUNCATE failed for ${table}, trying DELETE...`, truncateErr);
+          // If TRUNCATE fails, use DELETE (slower but more reliable)
+          await db.execute(sql.raw(`DELETE FROM ${table}`));
+        }
 
         // Verify it worked
         const countResult = await db.execute(sql.raw(`SELECT COUNT(*) as count FROM ${table}`));
@@ -328,11 +341,11 @@ export async function truncateAllTablesAction(): Promise<{
           console.log(`✓ ${table} cleared`);
           succeeded.push(table);
         } else {
-          console.warn(`✗ ${table} still has ${count} rows`);
+          console.warn(`✗ ${table} still has ${count} rows after cleanup`);
           failed.push(table);
         }
       } catch (err) {
-        console.warn(`Failed to truncate ${table}:`, err);
+        console.error(`Failed to clear ${table}:`, err);
         failed.push(table);
       }
     }
@@ -341,10 +354,11 @@ export async function truncateAllTablesAction(): Promise<{
       return {
         success: false,
         tablesCleared: succeeded,
-        error: `Failed to clear ${failed.length} tables: ${failed.join(", ")}`,
+        error: `Failed to clear ${failed.length} tables: ${failed.join(", ")}. Check console logs.`,
       };
     }
 
+    console.log(`✓ Successfully cleared all ${succeeded.length} tables`);
     return {
       success: true,
       tablesCleared: succeeded,
