@@ -12,7 +12,7 @@
 
 import { db } from "@/lib/db";
 import { regionConnections } from "@/lib/db/schema";
-import { eq, and, inArray, sql } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 // =============================================================================
 // CONSTANTS
@@ -366,12 +366,10 @@ export async function initializeBorderDiscovery(
  * Get border discovery status for UI display.
  *
  * @param gameId - Game ID
- * @param currentTurn - Current turn
  * @returns Summary of border discovery status
  */
 export async function getBorderDiscoveryStatus(
-  gameId: string,
-  currentTurn: number
+  gameId: string
 ): Promise<{
   totalBorders: number;
   discoveredBorders: number;

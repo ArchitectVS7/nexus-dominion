@@ -291,7 +291,7 @@ export function balanceEmpiresToSectors(
 
   // Step 3: Aggressive rebalancing if needed
   if (!isBalanced && sectorBalances.length >= 2) {
-    aggressiveRebalance(assignments, empires, regions, random);
+    aggressiveRebalance(assignments, empires, regions);
 
     // Recalculate after rebalancing
     const newBalances = calculateSectorBalances(assignments, empires, regions);
@@ -319,8 +319,7 @@ export function balanceEmpiresToSectors(
 function aggressiveRebalance(
   assignments: Map<string, string>,
   empires: EmpireForBalancing[],
-  regions: RegionForBalancing[],
-  random: () => number
+  regions: RegionForBalancing[]
 ): void {
   const baseNetworth = calculateStartingNetworth();
   const regionMap = new Map(regions.map((r) => [r.id, r]));
@@ -384,10 +383,10 @@ function aggressiveRebalance(
     if (!richRegion || !poorRegion) break;
 
     const richEmpiresIds = Array.from(assignments.entries())
-      .filter(([_, rId]) => rId === richestId)
+      .filter(([, rId]) => rId === richestId)
       .map(([eId]) => eId);
     const poorEmpireIds = Array.from(assignments.entries())
-      .filter(([_, rId]) => rId === poorestId)
+      .filter(([, rId]) => rId === poorestId)
       .map(([eId]) => eId);
 
     const richBots = richEmpiresIds
@@ -441,76 +440,6 @@ function aggressiveRebalance(
       poorestId,
       (regionNetworth.get(poorestId) ?? 0) - poorBotOldNw + richBotNewNw
     );
-  }
-}
-
-/**
- * Attempt to rebalance sectors by swapping empires (legacy)
- */
-function rebalanceSectors(
-  assignments: Map<string, string>,
-  empires: EmpireForBalancing[],
-  regions: RegionForBalancing[],
-  balances: SectorBalance[],
-  random: () => number
-): void {
-  const regionMap = new Map(regions.map((r) => [r.id, r]));
-  const empireMap = new Map(empires.map((e) => [e.id, e]));
-
-  // Find richest and poorest sectors
-  const sortedBalances = [...balances].sort(
-    (a, b) => b.effectiveNetworth - a.effectiveNetworth
-  );
-
-  const maxSwapAttempts = 10;
-  let attempts = 0;
-
-  while (attempts < maxSwapAttempts) {
-    attempts++;
-
-    const richest = sortedBalances[0];
-    const poorest = sortedBalances[sortedBalances.length - 1];
-
-    if (!richest || !poorest || richest.regionId === poorest.regionId) break;
-
-    // Find a bot to swap from richest to poorest
-    const richBots = richest.empireIds
-      .map((id) => empireMap.get(id))
-      .filter((e) => e?.type === "bot") as EmpireForBalancing[];
-
-    const poorBots = poorest.empireIds
-      .map((id) => empireMap.get(id))
-      .filter((e) => e?.type === "bot") as EmpireForBalancing[];
-
-    if (richBots.length === 0 || poorBots.length === 0) break;
-
-    // Find bots with different tiers to swap
-    const richBot = richBots.find((b) =>
-      poorBots.some((p) => (b.botTier ?? 3) < (p.botTier ?? 3))
-    );
-    const poorBot = poorBots.find(
-      (p) => richBot && (p.botTier ?? 3) > (richBot.botTier ?? 3)
-    );
-
-    if (richBot && poorBot) {
-      // Swap assignments
-      assignments.set(richBot.id, poorest.regionId);
-      assignments.set(poorBot.id, richest.regionId);
-
-      // Recalculate and check
-      const newBalances = calculateSectorBalances(assignments, empires, regions);
-      const { isBalanced } = checkBalance(newBalances);
-
-      if (isBalanced) break;
-
-      // Update sorted balances for next iteration
-      sortedBalances.length = 0;
-      sortedBalances.push(
-        ...newBalances.sort((a, b) => b.effectiveNetworth - a.effectiveNetworth)
-      );
-    } else {
-      break; // No more swaps possible
-    }
   }
 }
 

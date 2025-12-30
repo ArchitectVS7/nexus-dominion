@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { db } from "@/lib/db";
-import { games, empires, empireInfluence, galaxyRegions } from "@/lib/db/schema";
+import { games, empires } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import {
   calculateMaxWormholeSlots,
@@ -10,7 +10,6 @@ import {
   getConstructionProjects,
   getPotentialDestinations,
   startWormholeConstruction,
-  WORMHOLE_CONSTRUCTION_CONSTANTS,
 } from "@/lib/game/services/wormhole-construction-service";
 
 // =============================================================================

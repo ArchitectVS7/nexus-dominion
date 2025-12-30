@@ -2,7 +2,7 @@
  * Tests for Sector Balancing Service (M6.1)
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   balanceEmpiresToSectors,
   calculateEffectiveNetworth,
