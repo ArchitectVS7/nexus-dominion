@@ -93,6 +93,9 @@ export function calculateRegionThreatLevel(
   empireCount: number,
   maxEmpires: number
 ): ThreatLevelSimple {
+  // Guard against division by zero
+  if (maxEmpires <= 0) return "low";
+
   const density = empireCount / maxEmpires;
 
   if (density >= 0.8) return "high";

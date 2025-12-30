@@ -327,7 +327,7 @@ export async function queueCraftingOrderAction(
 
     // Get current game turn
     const game = await db.query.games.findFirst({
-      where: eq(empires.gameId, gameId),
+      where: eq(games.id, gameId),
     });
     const currentTurn = game?.currentTurn ?? 1;
 

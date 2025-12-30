@@ -15,7 +15,7 @@ import {
   marketOrders,
   type MarketOrder,
 } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import {
   MARKET_BASE_PRICES,
   type TradableResource,
@@ -278,16 +278,11 @@ export async function executeBuyOrder(
     })
     .returning();
 
-  // Update demand tracking
+  // Update demand tracking (atomic increment to prevent race conditions)
   await db
     .update(marketPrices)
     .set({
-      totalDemand: (await db.query.marketPrices.findFirst({
-        where: and(
-          eq(marketPrices.gameId, gameId),
-          eq(marketPrices.resourceType, resourceType)
-        ),
-      }))!.totalDemand + quantity,
+      totalDemand: sql`${marketPrices.totalDemand} + ${quantity}`,
       lastUpdated: new Date(),
     })
     .where(
@@ -431,16 +426,11 @@ export async function executeSellOrder(
     })
     .returning();
 
-  // Update supply tracking
+  // Update supply tracking (atomic increment to prevent race conditions)
   await db
     .update(marketPrices)
     .set({
-      totalSupply: (await db.query.marketPrices.findFirst({
-        where: and(
-          eq(marketPrices.gameId, gameId),
-          eq(marketPrices.resourceType, resourceType)
-        ),
-      }))!.totalSupply + quantity,
+      totalSupply: sql`${marketPrices.totalSupply} + ${quantity}`,
       lastUpdated: new Date(),
     })
     .where(
