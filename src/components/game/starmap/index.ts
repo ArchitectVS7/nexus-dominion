@@ -3,6 +3,7 @@ export { EmpireTooltip } from "./EmpireTooltip";
 export { GalaxyView } from "./GalaxyView";
 export { SectorBox } from "./SectorBox";
 export { WormholeConnection } from "./WormholeConnection";
+export { SectorDetail } from "./SectorDetail";
 export type {
   EmpireMapData,
   StarmapProps,
