@@ -24,6 +24,7 @@ import { SlideOutPanel } from "./SlideOutPanel";
 import { MobileBottomBar } from "./MobileBottomBar";
 import { MobileActionSheet } from "./MobileActionSheet";
 import { OnboardingManager } from "./onboarding";
+import { TutorialOverlay } from "./tutorial";
 import {
   getGameLayoutDataAction,
   endTurnEnhancedAction,
@@ -337,6 +338,21 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
         botBattles={turnResult?.botBattles ?? 0}
         empiresEliminated={turnResult?.empiresEliminated ?? []}
         victoryResult={turnResult?.victoryResult}
+      />
+
+      {/* Tutorial Overlay (5-step guided tutorial for new players) */}
+      <TutorialOverlay
+        onActionRequired={(action) => {
+          if (action === "end_turn") {
+            // Tutorial asks player to end their first turn
+            handleEndTurn();
+          }
+        }}
+        onComplete={(completed) => {
+          console.log(
+            completed ? "Tutorial completed!" : "Tutorial skipped"
+          );
+        }}
       />
     </div>
   );

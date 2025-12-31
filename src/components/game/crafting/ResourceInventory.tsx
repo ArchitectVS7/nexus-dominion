@@ -87,27 +87,37 @@ export function ResourceInventory({ refreshTrigger, compact = false }: ResourceI
   if (compact) {
     return (
       <div className="space-y-1">
-        <div className="text-xs text-gray-400 mb-2">
-          {totalItems} resource type{totalItems !== 1 ? "s" : ""} in inventory
+        <div className="text-xs text-gray-400 mb-2 font-semibold">
+          📦 {totalItems} resource type{totalItems !== 1 ? "s" : ""} in inventory
         </div>
         {([1, 2, 3] as const).map((tier) => {
           const tierItems = inventory.byTier[tier].filter((i) => i.quantity > 0);
           if (tierItems.length === 0) return null;
           return (
-            <div key={tier} className="flex items-center gap-2 text-xs">
-              <span className={`${TIER_COLORS[tier]} font-mono`}>T{tier}:</span>
-              <span className="text-gray-300">
+            <div key={tier} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs">
+              <span className={`${TIER_COLORS[tier]} font-mono font-semibold whitespace-nowrap`}>T{tier}:</span>
+              <span className="text-gray-300 break-words">
                 {tierItems.map((i) => `${i.label} (${i.quantity})`).join(", ")}
               </span>
             </div>
           );
         })}
+        {totalItems === 0 && (
+          <div className="text-xs text-gray-500 italic">
+            No crafted components yet. Start crafting to build your inventory!
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
+      {/* Help text */}
+      <div className="bg-gray-800/50 border border-gray-700 rounded p-2 md:p-3 text-xs text-gray-400">
+        <p>📦 Components stored here are used when building advanced units. Higher tiers are required for more powerful ships and weapons.</p>
+      </div>
+
       {([1, 2, 3] as const).map((tier) => {
         const tierItems = inventory.byTier[tier];
         const nonZeroItems = tierItems.filter((i) => i.quantity > 0);
@@ -120,18 +130,19 @@ export function ResourceInventory({ refreshTrigger, compact = false }: ResourceI
           >
             <button
               onClick={() => toggleTier(tier)}
-              className="w-full p-2 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+              className="w-full p-2 md:p-3 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+              title={`Click to ${isExpanded ? "collapse" : "expand"} ${TIER_LABELS[tier]}`}
             >
-              <div className="flex items-center gap-2">
-                <span className={`font-semibold ${TIER_COLORS[tier]}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span className={`font-semibold text-sm md:text-base ${TIER_COLORS[tier]}`}>
                   {TIER_LABELS[tier]}
                 </span>
                 <span className="text-xs text-gray-500">
-                  ({nonZeroItems.length} items)
+                  ({nonZeroItems.length} item{nonZeroItems.length !== 1 ? "s" : ""})
                 </span>
               </div>
               <svg
-                className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${isExpanded ? "rotate-180" : ""}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -141,16 +152,21 @@ export function ResourceInventory({ refreshTrigger, compact = false }: ResourceI
             </button>
 
             {isExpanded && (
-              <div className="px-2 pb-2 space-y-1">
+              <div className="px-2 md:px-3 pb-2 space-y-1">
                 {tierItems.length === 0 ? (
-                  <div className="text-xs text-gray-500 py-1">No recipes unlocked</div>
+                  <div className="text-xs text-gray-500 py-1 italic">
+                    🔒 No recipes unlocked yet. Increase research level to unlock crafting.
+                  </div>
                 ) : nonZeroItems.length === 0 ? (
-                  <div className="text-xs text-gray-500 py-1">None in stock</div>
+                  <div className="text-xs text-gray-500 py-1 italic">
+                    Empty inventory. Visit the Craft tab to queue production.
+                  </div>
                 ) : (
                   nonZeroItems.map((item) => (
                     <div
                       key={item.resourceType}
-                      className="flex justify-between items-center text-sm py-1 px-2 bg-black/30 rounded"
+                      className="flex justify-between items-center text-xs md:text-sm py-1 px-2 bg-black/30 rounded"
+                      title={`${item.quantity.toLocaleString()} ${item.label} in stock`}
                     >
                       <span className="text-gray-300">{item.label}</span>
                       <span className={`font-mono ${TIER_COLORS[tier]}`}>

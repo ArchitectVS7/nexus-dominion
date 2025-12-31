@@ -115,20 +115,28 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
 
   return (
     <div className="lcars-panel" data-testid="black-market-panel">
-      <h2 className="text-lg font-semibold text-lcars-purple mb-4">
+      <h2 className="text-base md:text-lg font-semibold text-lcars-purple mb-4">
         The Galactic Syndicate
       </h2>
+
+      {/* Help text - visible on first visit */}
+      {!status?.hasAccess && !status?.hasReceivedInvitation && !status?.isHostile && (
+        <div className="bg-gray-800/50 border border-gray-700 rounded p-3 md:p-4 mb-4 text-xs md:text-sm text-gray-400">
+          <p className="mb-2">🎭 The Syndicate rewards those who prove their worth.</p>
+          <p>Complete contracts to earn trust, unlock rare components, and access forbidden weapons. Betray them... and face the consequences.</p>
+        </div>
+      )}
 
       {/* Action Message */}
       {actionMessage && (
         <div
-          className={`p-3 rounded mb-4 ${
+          className={`p-3 md:p-4 rounded mb-4 ${
             actionMessage.type === "success"
               ? "bg-green-900/30 border border-green-800/50 text-green-400"
               : "bg-red-900/30 border border-red-800/50 text-red-400"
           }`}
         >
-          <p className="text-sm">{actionMessage.text}</p>
+          <p className="text-xs md:text-sm">{actionMessage.text}</p>
         </div>
       )}
 
@@ -140,22 +148,22 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
 
       {/* Recruitment Invitation */}
       {recruitmentStatus?.eligible && !status?.hasReceivedInvitation && (
-        <div className="mt-4 p-4 bg-purple-900/30 border border-purple-800/50 rounded">
-          <h3 className="font-semibold text-purple-300 mb-2">
+        <div className="mt-4 p-3 md:p-4 bg-purple-900/30 border border-purple-800/50 rounded">
+          <h3 className="font-semibold text-purple-300 mb-2 text-sm md:text-base">
             You Have Been Contacted
           </h3>
-          <p className="text-gray-300 text-sm mb-3">
+          <p className="text-gray-300 text-xs md:text-sm mb-3">
             The Syndicate sees potential in you. Accept their invitation to gain access
             to the Black Market and lucrative contracts.
           </p>
-          <div className="flex items-center gap-4 mb-3">
-            <div className="text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
+            <div className="text-xs md:text-sm">
               <span className="text-gray-400">Startup Funds:</span>{" "}
               <span className="text-lcars-amber font-mono">
                 {recruitmentStatus.bonuses?.startupFunds.toLocaleString()} Cr
               </span>
             </div>
-            <div className="text-sm">
+            <div className="text-xs md:text-sm">
               <span className="text-gray-400">Trust Bonus:</span>{" "}
               <span className="text-cyan-400 font-mono">
                 +{recruitmentStatus.bonuses?.trustBonusPercent}%
@@ -165,7 +173,7 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
           <button
             onClick={handleAcceptInvitation}
             disabled={isLoading}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-500
+            className="w-full sm:w-auto px-4 py-2 md:py-3 bg-purple-600 text-white text-sm md:text-base rounded hover:bg-purple-500
                      disabled:opacity-50 transition-colors"
           >
             {isLoading ? "Accepting..." : "Accept Invitation"}
@@ -176,10 +184,10 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
       {/* Tabs (only if has access) */}
       {hasAccess && (
         <>
-          <div className="flex border-b border-gray-700/50 mt-4 mb-4">
+          <div className="flex border-b border-gray-700/50 mt-4 mb-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab("overview")}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === "overview"
                   ? "text-lcars-lavender border-b-2 border-lcars-lavender"
                   : "text-gray-400 hover:text-gray-300"
@@ -189,7 +197,7 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
             </button>
             <button
               onClick={() => setActiveTab("contracts")}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === "contracts"
                   ? "text-lcars-lavender border-b-2 border-lcars-lavender"
                   : "text-gray-400 hover:text-gray-300"
@@ -199,7 +207,7 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
             </button>
             <button
               onClick={() => setActiveTab("catalog")}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === "catalog"
                   ? "text-lcars-lavender border-b-2 border-lcars-lavender"
                   : "text-gray-400 hover:text-gray-300"

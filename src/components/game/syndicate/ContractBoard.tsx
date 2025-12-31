@@ -89,11 +89,18 @@ export function ContractBoard({ refreshTrigger, onContractAccepted }: ContractBo
 
   return (
     <div className="bg-black/40 border border-gray-700/50 rounded overflow-hidden">
+      {/* Help text */}
+      <div className="p-3 md:p-4 bg-gray-800/50 border-b border-gray-700">
+        <p className="text-xs text-gray-400">
+          💼 Accept contracts to earn credits and trust points. Complete them on time to build your reputation. Fail or ignore them, and face the consequences.
+        </p>
+      </div>
+
       {/* Tabs */}
       <div className="flex border-b border-gray-700/50">
         <button
           onClick={() => setActiveTab("available")}
-          className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex-1 px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors ${
             activeTab === "available"
               ? "bg-lcars-purple/20 text-lcars-purple border-b-2 border-lcars-purple"
               : "text-gray-400 hover:text-gray-300"
@@ -103,7 +110,7 @@ export function ContractBoard({ refreshTrigger, onContractAccepted }: ContractBo
         </button>
         <button
           onClick={() => setActiveTab("active")}
-          className={`flex-1 px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex-1 px-3 md:px-4 py-2 text-xs md:text-sm font-medium transition-colors ${
             activeTab === "active"
               ? "bg-lcars-amber/20 text-lcars-amber border-b-2 border-lcars-amber"
               : "text-gray-400 hover:text-gray-300"
@@ -132,15 +139,15 @@ export function ContractBoard({ refreshTrigger, onContractAccepted }: ContractBo
               {availableContracts.map((contract) => (
                 <div
                   key={contract.id}
-                  className={`border rounded p-3 ${
+                  className={`border rounded p-2 md:p-3 ${
                     contract.isAvailable
                       ? "border-gray-700/50 bg-black/20"
                       : "border-gray-800/50 bg-black/10 opacity-60"
                   }`}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h4 className="font-medium text-white">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-white text-sm md:text-base">
                         {CONTRACT_TYPE_LABELS[contract.type]}
                       </h4>
                       <span
@@ -149,8 +156,8 @@ export function ContractBoard({ refreshTrigger, onContractAccepted }: ContractBo
                         {contract.config.risk.replace("_", " ").toUpperCase()} RISK
                       </span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-lcars-amber font-mono">
+                    <div className="text-left sm:text-right flex sm:flex-col gap-2 sm:gap-0">
+                      <div className="text-lcars-amber font-mono text-sm md:text-base">
                         {formatReward(contract.creditReward)}
                       </div>
                       <div className="text-cyan-400 text-xs">
@@ -169,17 +176,18 @@ export function ContractBoard({ refreshTrigger, onContractAccepted }: ContractBo
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                     <span className="text-xs text-gray-500">
-                      {contract.config.turnsToComplete} turns to complete
+                      ⏱ {contract.config.turnsToComplete} turns to complete
                     </span>
                     {contract.isAvailable ? (
                       <button
                         onClick={() => handleAcceptContract(contract)}
                         disabled={acceptingContract === contract.type}
-                        className="px-3 py-1 bg-lcars-purple/20 border border-lcars-purple/50
+                        className="w-full sm:w-auto px-3 py-1.5 md:py-1 bg-lcars-purple/20 border border-lcars-purple/50
                                    text-lcars-purple text-xs rounded hover:bg-lcars-purple/30
                                    disabled:opacity-50 transition-colors"
+                        title={`Accept ${CONTRACT_TYPE_LABELS[contract.type]}`}
                       >
                         {acceptingContract === contract.type ? "Accepting..." : "Accept"}
                       </button>

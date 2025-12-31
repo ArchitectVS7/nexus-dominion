@@ -84,10 +84,15 @@ function SyndicateSkeleton() {
 
 export default function SyndicatePage() {
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-display text-lcars-purple mb-8">
-        The Galactic Syndicate
-      </h1>
+    <div className="max-w-6xl mx-auto px-4 md:px-0">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 md:mb-8 gap-2">
+        <h1 className="text-2xl md:text-3xl font-display text-lcars-purple">
+          The Galactic Syndicate
+        </h1>
+        <p className="text-xs md:text-sm text-gray-400 italic max-w-md">
+          A shadowy network offering contracts, components, and forbidden weapons - for those willing to deal in the dark.
+        </p>
+      </div>
       <Suspense fallback={<SyndicateSkeleton />}>
         <SyndicateContent />
       </Suspense>

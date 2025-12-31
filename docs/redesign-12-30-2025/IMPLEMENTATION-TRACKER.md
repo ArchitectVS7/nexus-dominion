@@ -64,12 +64,12 @@ This document tracks the status of all major features and redesign initiatives f
 | Threat Assessment Panel | 📋 PLANNED | P1 | 0.5 day | Right sidebar with active threats |
 | Expansion Options Panel | 📋 PLANNED | P1 | 0.5 day | Borders + wormholes |
 | **Onboarding** | | | | |
-| 5-step tutorial system | 📋 PLANNED | P0 | 2 days | Welcome → Neighbors → Galaxy → Interface → First Turn |
-| Victory condition tutorial (Step 6) | 📋 PLANNED | P0 | 0.5 day | Explain 6 victory paths |
-| Contextual UI (hide panels until relevant) | 📋 PLANNED | P0 | 1 day | Turn 1-10 basic, 11-20 add threats, 21+ full |
-| Turn-by-turn goals | 📋 PLANNED | P1 | 1 day | "Turn 5: Have 200 soldiers" guidance |
-| Feedback tooltips | 📋 PLANNED | P1 | 0.5 day | "Good choice!" for newbie actions |
-| Skip tutorial checkbox | 📋 PLANNED | P1 | 0.5 day | LocalStorage flag for returning players |
+| 5-step tutorial system | ✅ IMPLEMENTED | P0 | ✓ | `TutorialOverlay.tsx` - Welcome → Neighbors → Galaxy → Interface → First Turn |
+| Victory condition tutorial (Step 6) | ✅ IMPLEMENTED | P0 | ✓ | Included in TutorialOverlay - explains 6 victory paths |
+| Contextual UI (hide panels until relevant) | ✅ IMPLEMENTED | P0 | ✓ | `ContextualPanel.tsx`, `usePanelVisibility` - Turn-based UI progression |
+| Turn-by-turn goals | ✅ IMPLEMENTED | P1 | ✓ | `TurnGoalIndicator.tsx` - "Turn 5: Have 200 soldiers" guidance |
+| Feedback tooltips | ✅ IMPLEMENTED | P1 | ✓ | `OnboardingManager.tsx` - Contextual hints on turns 1-5 |
+| Skip tutorial checkbox | ✅ IMPLEMENTED | P1 | ✓ | LocalStorage flag in tutorial-service.ts |
 
 **Dependencies**: Combat system redesign (ideally complete first for tutorial accuracy)
 **Blocker**: None

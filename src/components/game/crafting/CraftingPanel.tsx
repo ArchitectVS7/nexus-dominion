@@ -38,19 +38,22 @@ export function CraftingPanel({ refreshTrigger }: CraftingPanelProps) {
 
   return (
     <div className="lcars-panel" data-testid="crafting-panel">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-lcars-lavender">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+        <h2 className="text-lg md:text-xl font-semibold text-lcars-lavender">
           Manufacturing
         </h2>
+        <p className="text-xs text-gray-400 italic">
+          Convert raw resources into advanced components for ships and weapons
+        </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-4 border-b border-gray-700 pb-2">
+      <div className="flex gap-1 mb-4 border-b border-gray-700 pb-2 overflow-x-auto">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-3 py-1.5 text-sm rounded-t transition-colors ${
+            className={`px-3 md:px-4 py-1.5 text-xs md:text-sm rounded-t transition-colors whitespace-nowrap ${
               activeTab === tab.id
                 ? "bg-lcars-purple/20 text-lcars-purple border-b-2 border-lcars-purple"
                 : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"

@@ -90,6 +90,42 @@ const ONBOARDING_HINTS = [
     position: "top" as const,
     action: { label: `View ${UI_LABELS.galaxyMap}`, href: "/game/starmap" },
   },
+
+  // Turn 10: Research system
+  {
+    id: "research",
+    turnToShow: 10,
+    title: "Unlock Advanced Technology",
+    message:
+      `Research unlocks powerful units and systems. Visit ${UI_LABELS.research} to invest in tech branches. Higher research levels enable Heavy Cruisers, Defense Stations, and more. Progress takes time - start now!`,
+    icon: "🔬",
+    position: "top" as const,
+    action: { label: `View ${UI_LABELS.research}`, href: "/game/research" },
+  },
+
+  // Turn 15: Crafting system
+  {
+    id: "crafting",
+    turnToShow: 15,
+    title: "Craft Advanced Components",
+    message:
+      `Advanced ships require crafted components. Visit Crafting to turn raw resources into Electronics, Armor Plating, and Reactor Cores. Queue items for future turns - they take time to build!`,
+    icon: "⚙️",
+    position: "top" as const,
+    action: { label: "Visit Crafting", href: "/game/crafting" },
+  },
+
+  // Turn 20: Black Market / Syndicate (protection ends!)
+  {
+    id: "syndicate",
+    turnToShow: 20,
+    title: "Protection Ends - New Opportunities",
+    message:
+      `Your protection period is over! Attacks are now possible. The Galactic Syndicate offers contracts, components, and... forbidden weapons. Visit the Syndicate to build trust and access the Black Market.`,
+    icon: "🎭",
+    position: "top" as const,
+    action: { label: "Visit Syndicate", href: "/game/syndicate" },
+  },
 ];
 
 const STORAGE_KEY_DISABLED = "x-imperium-onboarding-disabled";
@@ -110,8 +146,8 @@ export function OnboardingManager({ currentTurn }: OnboardingManagerProps) {
 
   if (isOnboardingDisabled) return null;
 
-  // Only show hints for turns 1-5
-  if (currentTurn > 5) return null;
+  // Only show hints for turns 1-20 (extended onboarding)
+  if (currentTurn > 20) return null;
 
   // Get hints for current turn
   const currentHints = ONBOARDING_HINTS.filter((h) => h.turnToShow === currentTurn);

@@ -74,56 +74,60 @@ export function TrustMeter({ refreshTrigger, onStatusChange }: TrustMeterProps) 
   return (
     <div className="bg-black/40 border border-gray-700/50 rounded overflow-hidden">
       {/* Header */}
-      <div className={`${colorClass} px-4 py-2`}>
+      <div className={`${colorClass} px-3 md:px-4 py-2 md:py-3`}>
         <div className="flex justify-between items-center">
-          <span className="text-black font-bold text-lg">
+          <span className="text-black font-bold text-base md:text-lg">
             {status.isHostile ? "HOSTILE" : TRUST_LEVEL_LABELS[status.trustLevel]}
           </span>
-          <span className="text-black/80 text-sm">
+          <span className="text-black/80 text-xs md:text-sm font-mono">
             {status.trustPoints.toLocaleString()} TP
           </span>
         </div>
       </div>
 
       {/* Status Message */}
-      <div className="p-4 border-b border-gray-700/50">
-        <p className={`text-sm ${status.isHostile ? "text-red-400" : "text-gray-300"}`}>
+      <div className="p-3 md:p-4 border-b border-gray-700/50">
+        <p className={`text-xs md:text-sm ${status.isHostile ? "text-red-400" : "text-gray-300"}`}>
           {status.statusMessage}
         </p>
       </div>
 
       {/* Progress Bar (if not at max or hostile) */}
       {!status.isHostile && status.pointsToNextLevel !== null && (
-        <div className="p-4 border-b border-gray-700/50">
+        <div className="p-3 md:p-4 border-b border-gray-700/50">
           <div className="flex justify-between text-xs text-gray-400 mb-1">
-            <span>Progress to {status.nextLevelTitle}</span>
-            <span>{status.progressPercent.toFixed(1)}%</span>
+            <span className="truncate mr-2">Progress to {status.nextLevelTitle}</span>
+            <span className="font-mono flex-shrink-0">{status.progressPercent.toFixed(1)}%</span>
           </div>
           <div className="h-2 bg-gray-800 rounded overflow-hidden">
             <div
               className={`h-full ${colorClass} transition-all duration-300`}
               style={{ width: `${status.progressPercent}%` }}
+              title={`${status.progressPercent.toFixed(1)}% complete`}
             />
           </div>
-          <div className="text-xs text-gray-500 mt-1 text-right">
+          <div className="text-xs text-gray-500 mt-1 text-right font-mono">
             {status.pointsToNextLevel?.toLocaleString()} TP to next level
           </div>
         </div>
       )}
 
       {/* Stats Grid */}
-      <div className="p-4 grid grid-cols-2 gap-3 text-sm">
-        <div className="bg-black/30 p-2 rounded">
-          <div className="text-gray-500 text-xs">Contracts Completed</div>
-          <div className="font-mono text-green-400">{status.contractsCompleted}</div>
+      <div className="p-3 md:p-4 grid grid-cols-2 gap-2 md:gap-3 text-sm">
+        <div className="bg-black/30 p-2 md:p-3 rounded">
+          <div className="text-gray-500 text-xs">Completed</div>
+          <div className="font-mono text-green-400 text-sm md:text-base">{status.contractsCompleted}</div>
         </div>
-        <div className="bg-black/30 p-2 rounded">
-          <div className="text-gray-500 text-xs">Contracts Failed</div>
-          <div className="font-mono text-red-400">{status.contractsFailed}</div>
+        <div className="bg-black/30 p-2 md:p-3 rounded">
+          <div className="text-gray-500 text-xs">Failed</div>
+          <div className="font-mono text-red-400 text-sm md:text-base">{status.contractsFailed}</div>
         </div>
-        <div className="bg-black/30 p-2 rounded col-span-2">
-          <div className="text-gray-500 text-xs">Price Multiplier</div>
-          <div className="font-mono text-lcars-amber">
+        <div className="bg-black/30 p-2 md:p-3 rounded col-span-2">
+          <div className="text-gray-500 text-xs mb-1">
+            Price Multiplier
+            <span className="ml-1 text-gray-600" title="Higher trust = lower prices">ⓘ</span>
+          </div>
+          <div className="font-mono text-lcars-amber text-sm md:text-base">
             {status.priceMultiplier === 0 ? "No Access" : `${status.priceMultiplier}x`}
           </div>
         </div>
@@ -131,8 +135,8 @@ export function TrustMeter({ refreshTrigger, onStatusChange }: TrustMeterProps) 
 
       {/* Unlocks Preview */}
       {status.hasAccess && levelConfig.unlocks.length > 0 && (
-        <div className="p-4 border-t border-gray-700/50">
-          <div className="text-xs text-gray-400 mb-2">Current Unlocks:</div>
+        <div className="p-3 md:p-4 border-t border-gray-700/50">
+          <div className="text-xs text-gray-400 mb-2 font-semibold">🔓 Current Unlocks:</div>
           <div className="flex flex-wrap gap-1">
             {levelConfig.unlocks.map((unlock, i) => (
               <span
