@@ -13,6 +13,7 @@ import { db } from "@/lib/db";
 import type { Difficulty } from "@/lib/bots/types";
 import { triggerGreetings, type TriggerContext } from "@/lib/messages";
 import { GAME_MODE_PRESETS, type GameMode } from "@/lib/game/constants";
+import { checkRateLimit } from "@/lib/security/rate-limiter";
 
 // =============================================================================
 // COOKIE HELPERS
@@ -29,14 +30,14 @@ async function setGameCookies(gameId: string, empireId: string) {
     path: "/",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
   });
   cookieStore.set(EMPIRE_ID_COOKIE, empireId, {
     maxAge: COOKIE_MAX_AGE,
     path: "/",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
   });
 }
 
@@ -72,11 +73,46 @@ export interface StartGameResult {
 }
 
 /**
+ * Get a unique identifier for rate limiting.
+ * Uses empireId from cookies if available, otherwise uses a session-based identifier.
+ */
+async function getRateLimitIdentifier(): Promise<string> {
+  const { empireId } = await getGameCookies();
+  if (empireId) return empireId;
+
+  // Fallback: use a cookie-based session ID or generate one
+  const cookieStore = await cookies();
+  let sessionId = cookieStore.get("rate_limit_id")?.value;
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    cookieStore.set("rate_limit_id", sessionId, {
+      maxAge: 60 * 60, // 1 hour
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+  }
+  return sessionId;
+}
+
+/**
  * Start a new game with the given empire name and difficulty.
  * Sets cookies for game and empire IDs, then redirects to the game dashboard.
  * Creates 25 bot empires with random decision-making (M5).
  */
 export async function startGameAction(formData: FormData): Promise<StartGameResult> {
+  // Rate limit check for auth-like actions
+  const identifier = await getRateLimitIdentifier();
+  const rateLimitResult = checkRateLimit(identifier, "AUTH_ACTION");
+  if (!rateLimitResult.allowed) {
+    const waitSeconds = Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000);
+    return {
+      success: false,
+      error: `Too many attempts. Please wait ${waitSeconds} seconds before trying again.`,
+    };
+  }
+
   const empireName = formData.get("empireName") as string;
   const difficultyRaw = formData.get("difficulty") as string | null;
   const botCountRaw = formData.get("botCount") as string | null;
@@ -287,6 +323,17 @@ export async function getResumableCampaignsAction(): Promise<ResumableCampaign[]
  * Resume a campaign game by setting cookies.
  */
 export async function resumeCampaignAction(gameId: string): Promise<ResumeGameResult> {
+  // Rate limit check for auth-like actions
+  const identifier = await getRateLimitIdentifier();
+  const rateLimitResult = checkRateLimit(identifier, "AUTH_ACTION");
+  if (!rateLimitResult.allowed) {
+    const waitSeconds = Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000);
+    return {
+      success: false,
+      error: `Too many attempts. Please wait ${waitSeconds} seconds before trying again.`,
+    };
+  }
+
   try {
     // Find the player empire for this game
     const playerEmpire = await db.query.empires.findFirst({

@@ -1015,13 +1015,14 @@ function BorderOptionRow({ option }: { option: BorderOption }) {
 ### Purpose
 Implement coordinated attack bonuses against bosses, with territory distribution.
 
-> **NOTE (2025-12-31):** Original M9 scope (Coalition Raids) was replaced with an onboarding tutorial system. The tutorial system (TutorialOverlay.tsx) provides contextual guidance for new players. Coalition raid mechanics remain as future work.
+> **NOTE (2025-12-31):** M9 Coalition Raid mechanics have been implemented. Additionally, an onboarding tutorial system (TutorialOverlay.tsx) was added to provide contextual guidance for new players.
 
 ### 9.1 Coalition Raid Detection
 
-**Status**: ⏸️ DEFERRED (Replaced with tutorial system)
+**Status**: ✅ COMPLETE
+**Implemented**: 2025-12-31
+**Files**: `src/lib/combat/coalition-raid-service.ts`, `src/lib/combat/__tests__/coalition-raid-service.test.ts`
 **Feature Flag**: `FEATURE_COALITION_RAIDS`
-**Note**: Tutorial system implemented instead (TutorialOverlay.tsx)
 
 **Criteria**:
 - Target must be a detected boss
@@ -1083,8 +1084,9 @@ export function detectCoalitionRaid(
 
 ### 9.2 Raid Combat Bonuses
 
-**Status**: ⏸️ DEFERRED
-**Note**: Part of coalition raid mechanics, deferred with M9.1
+**Status**: ✅ COMPLETE
+**Implemented**: 2025-12-31
+**Files**: `src/lib/combat/coalition-raid-service.ts`
 
 **Mechanics**:
 - All raid participants get +5% combat power per additional attacker
@@ -1125,8 +1127,9 @@ export function resolveCombatWithRaidBonus(
 
 ### 9.3 Raid Territory Distribution
 
-**Status**: ⏸️ DEFERRED
-**Note**: Part of coalition raid mechanics, deferred with M9.1
+**Status**: ✅ COMPLETE
+**Implemented**: 2025-12-31
+**Files**: `src/lib/combat/coalition-raid-service.ts`
 
 **Mechanics**: When boss is eliminated via raid, distribute captured planets
 
@@ -1513,15 +1516,16 @@ After M9 (Coalition Raids):
 | M7.3 Containment Bonus | ✅ Complete | 2025-12-30 |
 | M8.1 Threat Panel | ✅ Complete | 2025-12-30 |
 | M8.2 Expansion Panel | ✅ Complete | 2025-12-30 |
-| M9.* Coalition Raids | ⏸️ Deferred | - |
+| M9.* Coalition Raids | ✅ Complete | 2025-12-31 |
 | M10.1 Sector Traits | ✅ Complete | 2025-12-31 |
 | M10.2 Victory Points | ✅ Complete | 2025-12-31 |
 | M10.3 Shared Rewards | ✅ Complete | 2025-12-31 |
 
 ### Notes
 
-- **M9 Scope Change**: Original coalition raid mechanics were replaced with an onboarding tutorial system (TutorialOverlay.tsx). Coalition raids remain as future work.
-- **Test Coverage**: 881+ tests passing across all service modules
+- **M9 Complete**: Coalition raid mechanics fully implemented with detection, combat bonuses, and territory distribution.
+- **Tutorial System**: Onboarding tutorial system (TutorialOverlay.tsx) provides contextual guidance for new players.
+- **Test Coverage**: 2333+ tests passing across all service modules
 
 ### Security Review (2025-12-31)
 
@@ -1532,10 +1536,19 @@ A comprehensive security review was conducted. Key findings:
 - Admin endpoints lack authorization
 - SQL injection risk in admin-actions.ts via `sql.raw()`
 
-**Recommendations:**
+**Remediated Issues:**
+- ✅ Set sameSite: "strict" on game cookies (CSRF protection)
+- ✅ Added rate limiting to game actions and combat actions
+
+**Rate Limiting Implementation:**
+- New `src/lib/security/rate-limiter.ts` with sliding window algorithm
+- Integrated into `game-actions.ts` (AUTH_ACTION: 5 req/min)
+- Integrated into `combat-actions.ts` (COMBAT_ACTION: 10 req/min)
+- 18 new tests for rate limiter
+
+**Remaining Recommendations:**
 - Implement authentication before production deployment
-- Add rate limiting to game actions
-- Set sameSite: "strict" on cookies
+- Address SQL injection in admin-actions.ts
 
 See security review documentation for full details.
 
@@ -1543,4 +1556,4 @@ See security review documentation for full details.
 
 *Plan created: 2025-12-30*
 *Last updated: 2025-12-31*
-*Status: IMPLEMENTATION COMPLETE (M6, M7, M8, M10)*
+*Status: IMPLEMENTATION COMPLETE (M6, M7, M8, M9, M10)*

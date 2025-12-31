@@ -6,6 +6,7 @@
  * Server actions for combat operations with:
  * - Cookie-based session management
  * - Input validation at the boundary
+ * - Rate limiting for abuse prevention
  * - Proper error handling and logging
  */
 
@@ -28,6 +29,7 @@ import {
 } from "@/lib/game/repositories/combat-repository";
 import type { Forces, AttackType } from "@/lib/combat/phases";
 import type { Attack } from "@/lib/db/schema";
+import { checkRateLimit } from "@/lib/security/rate-limiter";
 
 // =============================================================================
 // COOKIE HELPERS
@@ -116,6 +118,16 @@ export async function launchAttackAction(
 
     if (!gameId || !empireId) {
       return { success: false, error: "No active game session" };
+    }
+
+    // Rate limit check for combat actions
+    const rateLimitResult = checkRateLimit(empireId, "COMBAT_ACTION");
+    if (!rateLimitResult.allowed) {
+      const waitSeconds = Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000);
+      return {
+        success: false,
+        error: `Too many attacks. Please wait ${waitSeconds} seconds before trying again.`,
+      };
     }
 
     // Validate inputs at action boundary
