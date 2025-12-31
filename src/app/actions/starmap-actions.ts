@@ -704,6 +704,9 @@ export async function getGalaxyViewDataAction(): Promise<GalaxyViewData | null> 
         intelLevel,
         recentAggressor: attackedPlayerIds.has(empire.id),
         hasTreaty: treatyMap.has(empire.id),
+        // M7: Boss indicators (visible to all players)
+        isBoss: empire.isBoss,
+        bossEmergenceTurn: empire.bossEmergenceTurn,
       };
 
       // Add detailed info for known empires

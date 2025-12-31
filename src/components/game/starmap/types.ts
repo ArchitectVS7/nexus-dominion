@@ -49,6 +49,11 @@ export interface EmpireMapData {
   recentAggressor?: boolean;
   // Has active treaty with player
   hasTreaty?: boolean;
+  // M7: Boss detection - dominant empire indicators
+  isBoss?: boolean;
+  bossEmergenceTurn?: number | null;
+  battleWins?: number;
+  networthRatio?: number;
   // Computed for visualization
   x?: number;
   y?: number;

@@ -98,6 +98,9 @@ import {
   processWormholesTurn,
   attemptWormholeDiscovery,
 } from "./wormhole-service";
+import { processBorderDiscovery } from "./border-discovery-service";
+import { processWormholeConstruction } from "./wormhole-construction-service";
+import { detectBosses } from "./boss-detection-service";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -330,13 +333,59 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
     }
 
     // ==========================================================================
-    // PHASE 7.7: WORMHOLE PROCESSING (Geography System)
+    // PHASE 7.7: BORDER DISCOVERY (Geography System M6.2)
+    // ==========================================================================
+
+    // Process border discovery - unlocks borders between turns 10-15
+    const borderDiscoveryResults = await processBorderDiscovery(gameId, nextTurn);
+    if (borderDiscoveryResults.length > 0) {
+      globalEvents.push({
+        type: "other",
+        message: `🗺️ ${borderDiscoveryResults.length} new border route${borderDiscoveryResults.length > 1 ? "s" : ""} discovered! Expansion opportunities await.`,
+        severity: "info",
+      });
+    }
+
+    // ==========================================================================
+    // PHASE 7.8: WORMHOLE PROCESSING (Geography System)
     // ==========================================================================
 
     // Process wormhole discovery, collapse, and reopen mechanics
     const wormholeEvents = await processWormholesForGame(gameId, nextTurn, game.empires);
     for (const event of wormholeEvents) {
       globalEvents.push(event);
+    }
+
+    // ==========================================================================
+    // PHASE 7.9: WORMHOLE CONSTRUCTION COMPLETION (M6.3)
+    // ==========================================================================
+
+    // Process wormhole construction projects and complete any that are ready
+    const constructionResult = await processWormholeConstruction(gameId, nextTurn);
+    if (constructionResult.completed.length > 0) {
+      for (const message of constructionResult.messages) {
+        globalEvents.push({
+          type: "other",
+          message: `🌀 ${message}`,
+          severity: "info",
+        });
+      }
+    }
+
+    // ==========================================================================
+    // PHASE 7.10: BOSS DETECTION (M7.1)
+    // ==========================================================================
+
+    // Detect and track dominant empires (bosses)
+    const bossResult = await detectBosses(gameId, nextTurn);
+    if (bossResult.newBosses.length > 0) {
+      for (const boss of bossResult.newBosses) {
+        globalEvents.push({
+          type: "other",
+          message: `👑 ${boss.empireName} has emerged as a DOMINANT POWER! (${boss.battleWins} victories, ${(boss.networthRatio * 100).toFixed(0)}% of average networth)`,
+          severity: "warning",
+        });
+      }
     }
 
     // ==========================================================================

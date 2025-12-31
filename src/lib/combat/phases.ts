@@ -264,7 +264,7 @@ function calculatePhaseCasualties(
 /**
  * Apply casualties to forces, returning new force totals.
  */
-function applyPhraseCasualties(forces: Forces, casualties: Partial<Forces>): Forces {
+function applyPhaseCasualties(forces: Forces, casualties: Partial<Forces>): Forces {
   return {
     soldiers: Math.max(0, forces.soldiers - (casualties.soldiers ?? 0)),
     fighters: Math.max(0, forces.fighters - (casualties.fighters ?? 0)),
@@ -314,8 +314,8 @@ export function resolveSpaceCombat(
     randomValue
   );
 
-  const attackerForcesEnd = applyPhraseCasualties(attackerForces, attackerCasualties);
-  const defenderForcesEnd = applyPhraseCasualties(defenderForces, defenderCasualties);
+  const attackerForcesEnd = applyPhaseCasualties(attackerForces, attackerCasualties);
+  const defenderForcesEnd = applyPhaseCasualties(defenderForces, defenderCasualties);
 
   return {
     phase: "space",
@@ -367,8 +367,8 @@ export function resolveOrbitalCombat(
     randomValue
   );
 
-  const attackerForcesEnd = applyPhraseCasualties(attackerForces, attackerCasualties);
-  const defenderForcesEnd = applyPhraseCasualties(defenderForces, defenderCasualties);
+  const attackerForcesEnd = applyPhaseCasualties(attackerForces, attackerCasualties);
+  const defenderForcesEnd = applyPhaseCasualties(defenderForces, defenderCasualties);
 
   return {
     phase: "orbital",
@@ -420,8 +420,8 @@ export function resolveGroundCombat(
     randomValue
   );
 
-  const attackerForcesEnd = applyPhraseCasualties(attackerForces, attackerCasualties);
-  const defenderForcesEnd = applyPhraseCasualties(defenderForces, defenderCasualties);
+  const attackerForcesEnd = applyPhaseCasualties(attackerForces, attackerCasualties);
+  const defenderForcesEnd = applyPhaseCasualties(defenderForces, defenderCasualties);
 
   return {
     phase: "ground",
@@ -477,7 +477,7 @@ export function resolveInvasion(
 
   // If attacker lost space phase, defender wins
   if (spaceResult.winner === "defender") {
-    return createCombatResult(phases, "defender_victory", defenderPlanetCount, 0);
+    return createCombatResult(phases, "defender_victory", 0);
   }
 
   // Phase 2: Orbital Combat (only if space won or draw)
@@ -488,7 +488,7 @@ export function resolveInvasion(
 
   // If attacker lost orbital phase, defender wins
   if (orbitalResult.winner === "defender") {
-    return createCombatResult(phases, "defender_victory", defenderPlanetCount, 0);
+    return createCombatResult(phases, "defender_victory", 0);
   }
 
   // Phase 3: Ground Combat (only if orbital won or draw)
@@ -511,7 +511,7 @@ export function resolveInvasion(
     outcome = "stalemate";
   }
 
-  return createCombatResult(phases, outcome, defenderPlanetCount, planetsCaptured);
+  return createCombatResult(phases, outcome, planetsCaptured);
 }
 
 /**
@@ -559,7 +559,7 @@ export function resolveGuerillaAttack(
 
   const outcome = winner === "attacker" ? "attacker_victory" : "defender_victory";
 
-  return createCombatResult([phaseResult], outcome, 0, 0);
+  return createCombatResult([phaseResult], outcome, 0);
 }
 
 /**
@@ -623,7 +623,6 @@ function sumCasualties(phases: PhaseResult[], side: "attacker" | "defender"): Fo
 function createCombatResult(
   phases: PhaseResult[],
   outcome: CombatResult["outcome"],
-  _defenderPlanetCount: number,
   planetsCaptured: number
 ): CombatResult {
   const attackerTotalCasualties = sumCasualties(phases, "attacker");
