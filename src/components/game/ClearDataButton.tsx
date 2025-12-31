@@ -8,19 +8,21 @@ export function ClearDataButton() {
   const router = useRouter();
 
   const handleClear = async () => {
-    if (!confirm("Are you sure you want to clear all game data? This cannot be undone.")) {
+    if (!confirm("Are you sure you want to clear all game data and start fresh? This cannot be undone.")) {
       return;
     }
 
     setIsClearing(true);
     try {
-      const response = await fetch("/api/admin/clear-games", {
-        method: "POST",
-      });
+      // Clear both games and cookies
+      const [gamesResponse, cookiesResponse] = await Promise.all([
+        fetch("/api/admin/clear-games", { method: "POST" }),
+        fetch("/api/admin/clear-cookies", { method: "POST" }),
+      ]);
 
-      if (response.ok) {
-        // Refresh the page to show new game form
-        router.refresh();
+      if (gamesResponse.ok && cookiesResponse.ok) {
+        // Force a hard refresh to clear all state
+        window.location.href = "/game?newGame=true";
       } else {
         alert("Failed to clear data. Check console for details.");
       }

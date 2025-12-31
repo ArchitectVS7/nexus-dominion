@@ -52,7 +52,7 @@
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
         ],
-        "timeout": 600000
+        "timeout": 30000
       }
     ],
     "shard": null,
@@ -60,7 +60,7 @@
     "updateSnapshots": "missing",
     "updateSourceMethod": "patch",
     "version": "1.57.0",
-    "workers": 1,
+    "workers": 4,
     "webServer": {
       "command": "npm run dev",
       "url": "http://localhost:3000",
@@ -79,12 +79,12 @@
         {
           "title": "Bot Scaling Tests",
           "file": "bot-scaling-test.spec.ts",
-          "line": 100,
+          "line": 139,
           "column": 15,
           "specs": [
             {
               "title": "10 bots - 5 turns",
-              "ok": false,
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -97,28 +97,9 @@
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 11883,
-                      "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"empire-name-input\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"empire-name-input\"]') to be visible\u001b[22m\n\n    at createGameWithBots (C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts:41:21)\n    at C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts:103:5",
-                        "location": {
-                          "file": "C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts",
-                          "column": 21,
-                          "line": 41
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 39 |\u001b[39m     \u001b[90m// Wait for and fill setup form\u001b[39m\n \u001b[90m 40 |\u001b[39m     \u001b[36mconst\u001b[39m nameInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-testid=\"empire-name-input\"]'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 41 |\u001b[39m     \u001b[36mawait\u001b[39m nameInput\u001b[33m.\u001b[39mwaitFor({ state\u001b[33m:\u001b[39m \u001b[32m\"visible\"\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 42 |\u001b[39m     \u001b[36mawait\u001b[39m nameInput\u001b[33m.\u001b[39mfill(\u001b[32m`Bot Test ${botCount}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 43 |\u001b[39m\n \u001b[90m 44 |\u001b[39m     \u001b[90m// Select bot count\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts",
-                            "column": 21,
-                            "line": 41
-                          },
-                          "message": "TimeoutError: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"empire-name-input\"]') to be visible\u001b[22m\n\n\n  39 |     // Wait for and fill setup form\n  40 |     const nameInput = page.locator('[data-testid=\"empire-name-input\"]');\n> 41 |     await nameInput.waitFor({ state: \"visible\", timeout: 10000 });\n     |                     ^\n  42 |     await nameInput.fill(`Bot Test ${botCount}`);\n  43 |\n  44 |     // Select bot count\n    at createGameWithBots (C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts:41:21)\n    at C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts:103:5"
-                        }
-                      ],
+                      "status": "passed",
+                      "duration": 8328,
+                      "errors": [],
                       "stdout": [
                         {
                           "text": "\n=== 10 bots test: Testing with 10 bots ===\n"
@@ -128,139 +109,72 @@
                         },
                         {
                           "text": "  Creating new game...\n"
+                        },
+                        {
+                          "text": "  Skipping tutorial...\n"
+                        },
+                        {
+                          "text": "  Selected 10 bots\n"
+                        },
+                        {
+                          "text": "  Form submitted, waiting for game creation...\n"
+                        },
+                        {
+                          "text": "  Dismissing post-creation tutorial modals...\n"
+                        },
+                        {
+                          "text": "  Dismissed modal 1 via \"Got it\" button\n"
+                        },
+                        {
+                          "text": "  Dismissed modal 2 via X button\n"
+                        },
+                        {
+                          "text": "  Dismissed 2 tutorial modals\n"
+                        },
+                        {
+                          "text": "  Game is ready - turn order panel visible\n"
+                        },
+                        {
+                          "text": "✅ Game ready with 10 bots\n"
+                        },
+                        {
+                          "text": "Processing 5 turns with 10 bots...\n"
+                        },
+                        {
+                          "text": "  Turn 1/5: 54ms\n"
+                        },
+                        {
+                          "text": "  Turn 2/5: 27ms\n"
+                        },
+                        {
+                          "text": "  Turn 3/5: 39ms\n"
+                        },
+                        {
+                          "text": "  Turn 4/5: 43ms\n"
+                        },
+                        {
+                          "text": "  Turn 5/5: 71ms\n"
+                        },
+                        {
+                          "text": "✅ 5 turns completed in 2806ms (avg: 561ms/turn)\n"
+                        },
+                        {
+                          "text": "\n✅ 10 bots: Average 561ms per turn\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-31T04:48:42.527Z",
+                      "startTime": "2025-12-31T11:15:28.285Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\dev\\GIT\\x-imperium\\test-results\\bot-scaling-test-Bot-Scaling-Tests-10-bots---5-turns-chromium\\test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\dev\\GIT\\x-imperium\\test-results\\bot-scaling-test-Bot-Scaling-Tests-10-bots---5-turns-chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\dev\\GIT\\x-imperium\\e2e\\bot-scaling-test.spec.ts",
-                        "column": 21,
-                        "line": 41
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
               "id": "0e59e5cd7878eb2e4ffe-5ef546429ccbddcd982c",
               "file": "bot-scaling-test.spec.ts",
-              "line": 101,
-              "column": 7
-            },
-            {
-              "title": "25 bots - 5 turns",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 600000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": -1,
-                      "parallelIndex": -1,
-                      "status": "skipped",
-                      "duration": 0,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-31T04:48:54.584Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "skipped"
-                }
-              ],
-              "id": "0e59e5cd7878eb2e4ffe-fe8e8eb9e45b62e76c1b",
-              "file": "bot-scaling-test.spec.ts",
-              "line": 110,
-              "column": 7
-            },
-            {
-              "title": "50 bots - 5 turns",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 600000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": -1,
-                      "parallelIndex": -1,
-                      "status": "skipped",
-                      "duration": 0,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-31T04:48:54.584Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "skipped"
-                }
-              ],
-              "id": "0e59e5cd7878eb2e4ffe-d9bce55d31ea8d8b2266",
-              "file": "bot-scaling-test.spec.ts",
-              "line": 119,
-              "column": 7
-            },
-            {
-              "title": "100 bots - 5 turns",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 600000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": -1,
-                      "parallelIndex": -1,
-                      "status": "skipped",
-                      "duration": 0,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-31T04:48:54.584Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "skipped"
-                }
-              ],
-              "id": "0e59e5cd7878eb2e4ffe-cd86c9eee78d50a6dcbb",
-              "file": "bot-scaling-test.spec.ts",
-              "line": 128,
+              "line": 140,
               "column": 7
             }
           ]
@@ -270,11 +184,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-12-31T04:48:40.669Z",
-    "duration": 14565.097000000002,
-    "expected": 0,
-    "skipped": 3,
-    "unexpected": 1,
+    "startTime": "2025-12-31T11:15:25.465Z",
+    "duration": 12543.909,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
     "flaky": 0
   }
 }
