@@ -266,13 +266,16 @@ export function generateRegions(
   }
 
   // Ensure total capacity >= empireCount (fix for issue where RNG can create insufficient capacity)
-  const totalCapacity = regions.reduce((sum, r) => sum + r.maxEmpires, 0);
+  const totalCapacity = regions.reduce((sum, r) => sum + (r.maxEmpires ?? 0), 0);
   if (totalCapacity < empireCount) {
     const deficit = empireCount - totalCapacity;
     // Distribute deficit across regions proportionally
     for (let i = 0; i < deficit; i++) {
       const targetIndex = i % regions.length;
-      regions[targetIndex]!.maxEmpires += 1;
+      const region = regions[targetIndex];
+      if (region) {
+        region.maxEmpires = (region.maxEmpires ?? 0) + 1;
+      }
     }
   }
 
