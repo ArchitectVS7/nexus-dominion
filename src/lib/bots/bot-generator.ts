@@ -24,7 +24,7 @@ import { initializeResearch } from "@/lib/game/services/research-service";
 import { initializeUnitUpgrades } from "@/lib/game/services/upgrade-service";
 import { getBotEmpireName, getBotEmperorName } from "./bot-names";
 import type { BotArchetype, BotTier } from "./types";
-import personasData from "../../../data/personas.json";
+import personasData from "@/data/personas.json";
 
 // =============================================================================
 // PERSONA TYPES

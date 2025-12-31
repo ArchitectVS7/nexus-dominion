@@ -360,3 +360,221 @@ Call log:
 [2m[WebServer] [22m    at Socket.emit (node:events:530:35)
 [2m[WebServer] [22m    at TCP.<anonymous> (node:net:351:12)
 [2m[WebServer] [22mdigest: "3485663598"
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1220:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1218 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1219 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1220 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1221 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1222 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1223 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1264:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1262 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1263 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1264 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1265 |[39m     [36mconst[39m persona [33m=[39m personas[33m.[39m[36mdefault[39m[33m.[39mfind((p[33m:[39m any) [33m=>[39m p[33m.[39mid [33m===[39m context[33m.[39mempire[33m.[39mpersonaId)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1266 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1267 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1264:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1262 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1263 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1264 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1265 |[39m     [36mconst[39m persona [33m=[39m getPersonaForBot(context[33m.[39mempire[33m,[39m personas[33m.[39m[36mdefault[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1266 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1267 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1264:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1262 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1263 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1264 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1265 |[39m     [36mconst[39m persona [33m=[39m getPersonaForBot(context[33m.[39mempire[33m,[39m personas[33m.[39m[36mdefault[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1266 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1267 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/bots/index.ts
+[2m[WebServer] [22m./src/lib/game/services/turn-processor.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1264:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1262 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1263 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1264 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1265 |[39m     [36mconst[39m persona [33m=[39m getPersonaForBot(context[33m.[39mempire[33m,[39m personas[33m.[39m[36mdefault[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1266 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1267 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/llm/pre-compute.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1273:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1271 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1272 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1273 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1274 |[39m     [36mconst[39m persona [33m=[39m getPersonaForBot(context[33m.[39mempire[33m,[39m personas[33m.[39m[36mdefault[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1275 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1276 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/llm/pre-compute.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx
+[2m[WebServer] [22m [31m[1m⨯[22m[39m ./src/lib/bots/decision-engine.ts:1273:28
+[2m[WebServer] [22m[31m[1mModule not found[22m[39m: Can't resolve '[32m@/data/personas.json[39m'
+[2m[WebServer] [22m[0m [90m 1271 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1272 |[39m     [90m// Load personas dynamically[39m[0m
+[2m[WebServer] [22m[0m[31m[1m>[22m[39m[90m 1273 |[39m     [36mconst[39m personas [33m=[39m [36mawait[39m [36mimport[39m([32m"@/data/personas.json"[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m      |[39m                            [31m[1m^[22m[39m[0m
+[2m[WebServer] [22m[0m [90m 1274 |[39m     [36mconst[39m persona [33m=[39m getPersonaForBot(context[33m.[39mempire[33m,[39m personas[33m.[39m[36mdefault[39m)[33m;[39m[0m
+[2m[WebServer] [22m[0m [90m 1275 |[39m[0m
+[2m[WebServer] [22m[0m [90m 1276 |[39m     [36mif[39m ([33m![39mpersona) {[0m
+[2m[WebServer] [22m
+[2m[WebServer] [22mhttps://nextjs.org/docs/messages/module-not-found
+[2m[WebServer] [22m
+[2m[WebServer] [22mImport trace for requested module:
+[2m[WebServer] [22m./src/lib/llm/pre-compute.ts
+[2m[WebServer] [22m./src/app/actions/turn-actions.ts
+[2m[WebServer] [22m./src/app/game/layout.tsx

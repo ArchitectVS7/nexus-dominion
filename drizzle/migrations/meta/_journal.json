@@ -8,6 +8,13 @@
       "when": 1767057146880,
       "tag": "0000_fuzzy_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767147802011,
+      "tag": "0001_spicy_butterfly",
+      "breakpoints": true
     }
   ]
 }

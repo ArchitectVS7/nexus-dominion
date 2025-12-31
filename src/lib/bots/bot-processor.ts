@@ -294,8 +294,17 @@ async function generateBotDecisionWithContext(
     permanentGrudges,
   };
 
-  // Generate decision
-  const decision = generateBotDecision(decisionContext);
+  // Generate decision (M12: Route Tier 1 LLM bots to LLM decision engine)
+  let decision: BotDecision;
+
+  if (empire.botTier === "tier1_llm" && empire.llmEnabled) {
+    // Tier 1: Use LLM-powered decision (with cache + fallback)
+    const { generateTier1Decision } = await import("./decision-engine");
+    decision = await generateTier1Decision(decisionContext);
+  } else {
+    // Tier 2-4: Use scripted decision
+    decision = generateBotDecision(decisionContext);
+  }
 
   return {
     bot: empire,

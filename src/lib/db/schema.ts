@@ -1710,6 +1710,52 @@ export const llmUsageLogs = pgTable(
 );
 
 // ============================================
+// M12: LLM DECISION CACHE TABLE
+// ============================================
+
+export const llmDecisionCache = pgTable(
+  "llm_decision_cache",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    gameId: uuid("game_id")
+      .notNull()
+      .references(() => games.id, { onDelete: "cascade" }),
+    empireId: uuid("empire_id")
+      .notNull()
+      .references(() => empires.id, { onDelete: "cascade" }),
+
+    // The turn this decision is FOR (pre-computed for next turn)
+    forTurn: integer("for_turn").notNull(),
+
+    // Cached decision (full BotDecision structure)
+    decisionJson: json("decision_json").notNull(),
+
+    // LLM reasoning (for debugging/analysis)
+    reasoning: varchar("reasoning", { length: 1000 }),
+
+    // LLM-generated message (for this turn)
+    message: varchar("message", { length: 500 }),
+
+    // Provider metadata
+    provider: llmProviderEnum("provider").notNull(),
+    model: varchar("model", { length: 100 }).notNull(),
+
+    // Usage tracking
+    tokensUsed: integer("tokens_used").notNull().default(0),
+    costUsd: decimal("cost_usd", { precision: 10, scale: 6 }).notNull().default("0.000000"),
+
+    // Timestamps
+    cachedAt: timestamp("cached_at").notNull().defaultNow(),
+  },
+  (table) => [
+    // Unique constraint: one cached decision per bot per turn
+    index("llm_cache_unique_idx").on(table.gameId, table.empireId, table.forTurn),
+    index("llm_cache_game_idx").on(table.gameId),
+    index("llm_cache_turn_idx").on(table.forTurn),
+  ]
+);
+
+// ============================================
 // CRAFTING SYSTEM TABLES
 // ============================================
 

@@ -14,7 +14,7 @@
 import { runSimulation } from "./simulator";
 import type { SimulationConfig, SimulationResult, BotTier } from "./types";
 import type { BotArchetype } from "@/lib/bots/types";
-import personas from "../../data/personas.json";
+import personas from "@/data/personas.json";
 
 // =============================================================================
 // BATTLE CONFIGURATIONS

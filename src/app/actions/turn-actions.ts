@@ -84,6 +84,25 @@ export async function endTurnAction(): Promise<TurnActionResult> {
     // Revalidate the game dashboard to show updated data
     revalidatePath("/game");
 
+    // M12: Trigger async pre-computation for next turn's LLM decisions
+    // This runs in the background while the player plans their next move
+    const nextTurn = result.turn + 1;
+    if (nextTurn <= game.turnLimit) {
+      import("@/lib/llm/pre-compute")
+        .then(({ preComputeNextTurnDecisions }) => {
+          return preComputeNextTurnDecisions(gameId, nextTurn);
+        })
+        .then((precomputeResult) => {
+          console.log(
+            `[M12 Pre-Compute] Completed for turn ${nextTurn}:`,
+            precomputeResult
+          );
+        })
+        .catch((error) => {
+          console.warn("[M12 Pre-Compute] Failed (non-critical):", error);
+        });
+    }
+
     // Extract player events (assuming single player for now)
     const firstEmpire = result.empireResults[0];
     const playerEvents: TurnEvent[] = firstEmpire?.events ?? [];

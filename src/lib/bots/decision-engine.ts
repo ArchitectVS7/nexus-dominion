@@ -1168,3 +1168,167 @@ export function validateWeights(weights: BotDecisionWeights): boolean {
   const sum = getWeightSum(weights);
   return Math.abs(sum - 1.0) < 0.001;
 }
+
+// =============================================================================
+// M12: TIER 1 LLM DECISION GENERATION
+// =============================================================================
+
+/**
+ * Get persona for a bot based on archetype, tier, and LLM status.
+ * Matches personas from personas.json based on bot properties.
+ *
+ * @param bot - Empire object (bot empire)
+ * @param personas - Array of personas from personas.json
+ * @returns Matching persona or null if not found
+ */
+export function getPersonaForBot(
+  bot: { botArchetype: string | null; botTier: string | null; llmEnabled: boolean },
+  personas: Array<{
+    id: string;
+    name: string;
+    emperorName: string;
+    archetype: string;
+    tier: number;
+    voice: {
+      tone: string;
+      quirks: string[];
+      vocabulary: string[];
+      catchphrase: string;
+    };
+    tellRate: number;
+    llmEnabled?: boolean;
+  }>
+): typeof personas[0] | null {
+  if (!bot.botArchetype || !bot.botTier) {
+    return null;
+  }
+
+  // Convert tier string to number (e.g., "tier1_llm" -> 1)
+  const tierNum = parseInt(bot.botTier.replace(/\D/g, "")) || 1;
+
+  // Find matching personas (treat undefined llmEnabled as false)
+  const matches = personas.filter(
+    (p) =>
+      p.archetype === bot.botArchetype &&
+      p.tier === tierNum &&
+      (p.llmEnabled ?? false) === bot.llmEnabled
+  );
+
+  if (matches.length === 0) {
+    // Fallback: try without llmEnabled match
+    const fallbackMatches = personas.filter(
+      (p) => p.archetype === bot.botArchetype && p.tier === tierNum
+    );
+    return fallbackMatches[0] ?? null;
+  }
+
+  // Return first match (could randomize here if desired)
+  return matches[0] ?? null;
+}
+
+/**
+ * Generate decision for Tier 1 LLM bots.
+ *
+ * Flow:
+ * 1. Check cache for pre-computed decision
+ * 2. If found: return cached decision
+ * 3. If not found: attempt sync LLM call (3s timeout)
+ * 4. If LLM fails: fall back to Tier 2 scripted logic
+ *
+ * @param context - Bot decision context
+ * @returns Bot decision (either from LLM or fallback)
+ */
+export async function generateTier1Decision(
+  context: BotDecisionContext
+): Promise<BotDecision> {
+  const { getCachedDecision } = await import("@/lib/llm/cache");
+
+  // Step 1: Check cache for pre-computed decision
+  const cached = await getCachedDecision(
+    context.gameId,
+    context.empire.id,
+    context.currentTurn
+  );
+
+  if (cached) {
+    console.log(
+      `[Tier 1] Using cached decision for ${context.empire.name}: ${cached.decision.type}`
+    );
+    return cached.decision;
+  }
+
+  // Step 2: Cache miss - attempt synchronous LLM call
+  console.warn(
+    `[Tier 1] Cache miss for ${context.empire.name} turn ${context.currentTurn}. Attempting sync LLM call...`
+  );
+
+  try {
+    const { callLlmWithFailover } = await import("@/lib/llm/client");
+    const { buildDecisionPrompt } = await import("@/lib/llm/prompts/tier1-prompt");
+    const { parseLlmResponse } = await import("@/lib/llm/response-parser");
+    const { logLlmCall } = await import("@/lib/llm/cost-tracker");
+    const { TIER1_BOT_CONFIG } = await import("@/lib/llm/constants");
+
+    // Load personas dynamically
+    const personas = await import("@/data/personas.json");
+    const persona = getPersonaForBot(context.empire, personas.default);
+
+    if (!persona) {
+      throw new Error(
+        `No persona found for bot ${context.empire.name} (archetype: ${context.empire.botArchetype}, tier: ${context.empire.botTier})`
+      );
+    }
+
+    // Build prompt
+    const messages = buildDecisionPrompt(persona, context);
+
+    // Call LLM with 3s timeout (sync mode)
+    const llmResponse = await callLlmWithFailover(
+      {
+        messages,
+        temperature: TIER1_BOT_CONFIG.DECISION_TEMPERATURE,
+        maxTokens: TIER1_BOT_CONFIG.DECISION_MAX_TOKENS,
+      },
+      "decision",
+      "groq",
+      ["together", "openai"],
+      3000 // 3s timeout for sync call
+    );
+
+    // Log call
+    await logLlmCall(
+      context.gameId,
+      context.empire.id,
+      context.currentTurn,
+      "decision",
+      llmResponse
+    );
+
+    // Parse response
+    if (llmResponse.status === "completed") {
+      const parsed = parseLlmResponse(llmResponse.content, context);
+
+      if (parsed.success && parsed.decision) {
+        console.log(
+          `[Tier 1] Sync LLM success for ${context.empire.name}: ${parsed.decision.type}`
+        );
+        return parsed.decision;
+      } else {
+        console.warn(
+          `[Tier 1] LLM response parsing failed for ${context.empire.name}: ${parsed.error}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error(
+      `[Tier 1] Sync LLM call failed for ${context.empire.name}:`,
+      error
+    );
+  }
+
+  // Step 3: Fallback to Tier 2 scripted logic
+  console.warn(
+    `[Tier 1] Falling back to Tier 2 scripted logic for ${context.empire.name}`
+  );
+  return generateBotDecision(context);
+}
