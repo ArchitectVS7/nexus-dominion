@@ -9,6 +9,8 @@
 import { PLANET_TYPE_LABELS, PLANET_PRODUCTION } from "@/lib/game/constants";
 import type { Planet } from "@/lib/db/schema";
 import { ReleasePlanetButton } from "./ReleasePlanetButton";
+import { SectorIcons } from "@/lib/theme/icons";
+import { Globe } from "lucide-react";
 
 const PLANET_TYPE_COLORS: Record<string, string> = {
   food: "border-green-500",
@@ -23,19 +25,6 @@ const PLANET_TYPE_COLORS: Record<string, string> = {
   anti_pollution: "border-green-300",
 };
 
-const PLANET_ICONS: Record<string, string> = {
-  food: "🌾",
-  ore: "⛏️",
-  petroleum: "🛢️",
-  tourism: "🏖️",
-  urban: "🏙️",
-  education: "📚",
-  government: "🏛️",
-  research: "🔬",
-  supply: "📦",
-  anti_pollution: "🌿",
-};
-
 interface PlanetCardProps {
   planet: Planet;
   planetCount: number;
@@ -44,7 +33,7 @@ interface PlanetCardProps {
 
 export function PlanetCard({ planet, planetCount, onRelease }: PlanetCardProps) {
   const borderColor = PLANET_TYPE_COLORS[planet.type] || "border-gray-600";
-  const icon = PLANET_ICONS[planet.type] || "🪐";
+  const IconComponent = SectorIcons[planet.type as keyof typeof SectorIcons] || Globe;
   const label = PLANET_TYPE_LABELS[planet.type as keyof typeof PLANET_TYPE_LABELS] || planet.type;
   const production = PLANET_PRODUCTION[planet.type as keyof typeof PLANET_PRODUCTION] || 0;
 
@@ -75,7 +64,7 @@ export function PlanetCard({ planet, planetCount, onRelease }: PlanetCardProps) 
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{icon}</span>
+          <IconComponent className="w-6 h-6" />
           <h3 className="text-lg font-semibold text-lcars-lavender">{label}</h3>
         </div>
         <span className="text-sm text-gray-500">#{planet.id.slice(-6)}</span>

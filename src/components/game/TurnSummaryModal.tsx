@@ -11,7 +11,10 @@
 
 import { useEffect, useCallback } from "react";
 import type { TurnEvent, ResourceDelta } from "@/lib/game/types/turn-types";
-import { RESOURCE_NAMES, RESOURCE_ICONS, GAME_TERMS, UI_LABELS } from "@/lib/theme/names";
+import { RESOURCE_NAMES, GAME_TERMS, UI_LABELS } from "@/lib/theme/names";
+import { ResourceIcons, ActionIcons } from "@/lib/theme/icons";
+import { TrendingUp, Users, Swords, Mail, Map, AlertTriangle, Trophy, Skull, BarChart3 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export interface TurnSummaryModalProps {
   isOpen: boolean;
@@ -37,40 +40,40 @@ export interface TurnSummaryModalProps {
   };
 }
 
-const CATEGORY_CONFIG = {
+const CATEGORY_CONFIG: Record<string, { title: string; icon: LucideIcon; bgColor: string; borderColor: string }> = {
   income: {
     title: "Income & Production",
-    icon: "📈",
+    icon: TrendingUp,
     bgColor: "bg-green-900/20",
     borderColor: "border-green-600/30",
   },
   population: {
     title: RESOURCE_NAMES.population,
-    icon: RESOURCE_ICONS.population,
+    icon: Users,
     bgColor: "bg-blue-900/20",
     borderColor: "border-blue-600/30",
   },
   military: {
     title: UI_LABELS.military,
-    icon: "⚔️",
+    icon: Swords,
     bgColor: "bg-red-900/20",
     borderColor: "border-red-600/30",
   },
   diplomacy: {
     title: `${UI_LABELS.diplomacy} & ${UI_LABELS.messages}`,
-    icon: "📬",
+    icon: Mail,
     bgColor: "bg-purple-900/20",
     borderColor: "border-purple-600/30",
   },
   galaxy: {
     title: `${GAME_TERMS.galaxy} Activity`,
-    icon: "🌌",
+    icon: Map,
     bgColor: "bg-indigo-900/20",
     borderColor: "border-indigo-600/30",
   },
   alerts: {
     title: "Alerts",
-    icon: "⚠️",
+    icon: AlertTriangle,
     bgColor: "bg-yellow-900/20",
     borderColor: "border-yellow-600/30",
   },
@@ -147,7 +150,7 @@ export function TurnSummaryModal({
                 Processed in {processingMs}ms
               </p>
             </div>
-            <div className="text-4xl">📊</div>
+            <BarChart3 className="w-10 h-10 text-lcars-amber" />
           </div>
         </div>
 
@@ -157,9 +160,11 @@ export function TurnSummaryModal({
           {victoryResult && (
             <div className="p-4 bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border border-yellow-600/50 rounded-lg">
               <div className="flex items-center gap-3">
-                <span className="text-3xl">
-                  {victoryResult.type === "defeat" ? "💀" : "🏆"}
-                </span>
+                {victoryResult.type === "defeat" ? (
+                  <Skull className="w-8 h-8 text-red-400" />
+                ) : (
+                  <Trophy className="w-8 h-8 text-yellow-400" />
+                )}
                 <div>
                   <div className="text-lg font-bold text-yellow-400">
                     {victoryResult.type === "defeat" ? "Defeat!" : "Victory!"}
@@ -174,15 +179,15 @@ export function TurnSummaryModal({
           {resourceChanges && (
             <SummarySection category="income">
               <div className="grid grid-cols-2 gap-3">
-                <ResourceChange label={RESOURCE_NAMES.credits} value={resourceChanges.credits} icon={RESOURCE_ICONS.credits} />
-                <ResourceChange label={RESOURCE_NAMES.food} value={resourceChanges.food} icon={RESOURCE_ICONS.food} />
-                <ResourceChange label={RESOURCE_NAMES.ore} value={resourceChanges.ore} icon={RESOURCE_ICONS.ore} />
-                <ResourceChange label={RESOURCE_NAMES.petroleum} value={resourceChanges.petroleum} icon={RESOURCE_ICONS.petroleum} />
+                <ResourceChange label={RESOURCE_NAMES.credits} value={resourceChanges.credits} icon={ResourceIcons.credits} />
+                <ResourceChange label={RESOURCE_NAMES.food} value={resourceChanges.food} icon={ResourceIcons.food} />
+                <ResourceChange label={RESOURCE_NAMES.ore} value={resourceChanges.ore} icon={ResourceIcons.ore} />
+                <ResourceChange label={RESOURCE_NAMES.petroleum} value={resourceChanges.petroleum} icon={ResourceIcons.petroleum} />
                 {resourceChanges.researchPoints > 0 && (
                   <ResourceChange
                     label={RESOURCE_NAMES.researchPoints}
                     value={resourceChanges.researchPoints}
-                    icon={RESOURCE_ICONS.researchPoints}
+                    icon={ResourceIcons.researchPoints}
                   />
                 )}
               </div>
@@ -254,8 +259,9 @@ export function TurnSummaryModal({
                 </div>
               )}
               {empiresEliminated.length > 0 && (
-                <div className="text-sm text-red-400">
-                  💀 Eliminated: {empiresEliminated.join(", ")}
+                <div className="text-sm text-red-400 flex items-center gap-2">
+                  <Skull className="w-4 h-4" />
+                  <span>Eliminated: {empiresEliminated.join(", ")}</span>
                 </div>
               )}
             </SummarySection>
@@ -300,11 +306,14 @@ function SummarySection({
   children: React.ReactNode;
 }) {
   const config = CATEGORY_CONFIG[category];
+  if (!config) return null;
+
+  const IconComponent = config.icon;
 
   return (
     <div className={`p-4 rounded-lg border ${config.bgColor} ${config.borderColor}`}>
       <div className="flex items-center gap-2 mb-3">
-        <span>{config.icon}</span>
+        <IconComponent className="w-4 h-4" />
         <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
           {config.title}
         </h3>
@@ -317,18 +326,18 @@ function SummarySection({
 function ResourceChange({
   label,
   value,
-  icon,
+  icon: IconComponent,
 }: {
   label: string;
   value: number;
-  icon: string;
+  icon: LucideIcon;
 }) {
   const isPositive = value >= 0;
 
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-gray-400 flex items-center gap-1">
-        <span>{icon}</span> {label}
+        <IconComponent className="w-4 h-4" /> {label}
       </span>
       <span className={isPositive ? "text-green-400" : "text-red-400"}>
         {isPositive ? "+" : ""}

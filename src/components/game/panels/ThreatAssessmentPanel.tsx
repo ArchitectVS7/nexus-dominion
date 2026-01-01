@@ -8,6 +8,7 @@ import {
   formatRecentAction,
 } from "@/lib/game/services/threat-service";
 import { getThreatAssessmentAction } from "@/app/actions/threat-actions";
+import { Circle, Crown, Handshake, ScrollText, Swords } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -25,13 +26,13 @@ interface ThreatAssessmentPanelProps {
 function ThreatIcon({ level }: { level: ThreatLevel }) {
   switch (level) {
     case "immediate":
-      return <span className="text-red-500">🔴</span>;
+      return <Circle className="w-3 h-3 fill-red-500 text-red-500" />;
     case "watch":
-      return <span className="text-yellow-500">🟡</span>;
+      return <Circle className="w-3 h-3 fill-yellow-500 text-yellow-500" />;
     case "neutral":
-      return <span className="text-gray-500">⚪</span>;
+      return <Circle className="w-3 h-3 fill-gray-500 text-gray-500" />;
     case "friendly":
-      return <span className="text-green-500">🟢</span>;
+      return <Circle className="w-3 h-3 fill-green-500 text-green-500" />;
   }
 }
 
@@ -83,7 +84,7 @@ function ThreatRow({
           <ThreatIcon level={threat.threatLevel} />
           <span className="font-medium truncate">{threat.empireName}</span>
           {threat.isBoss && (
-            <span className="text-xs text-red-400 flex-shrink-0">👑</span>
+            <Crown className="w-3 h-3 text-amber-400 flex-shrink-0" />
           )}
         </div>
         {!compact && <ThreatBadge level={threat.threatLevel} />}
@@ -126,14 +127,15 @@ function ThreatRow({
           {threat.diplomaticStatus !== "neutral" && (
             <div
               className={cn(
+                "flex items-center gap-1",
                 threat.diplomaticStatus === "allied" && "text-green-400",
                 threat.diplomaticStatus === "nap" && "text-blue-400",
                 threat.diplomaticStatus === "hostile" && "text-red-400"
               )}
             >
-              {threat.diplomaticStatus === "allied" && "🤝 Alliance"}
-              {threat.diplomaticStatus === "nap" && "📜 Non-Aggression Pact"}
-              {threat.diplomaticStatus === "hostile" && "⚔️ Hostile"}
+              {threat.diplomaticStatus === "allied" && <><Handshake className="w-3 h-3" /> Alliance</>}
+              {threat.diplomaticStatus === "nap" && <><ScrollText className="w-3 h-3" /> Non-Aggression Pact</>}
+              {threat.diplomaticStatus === "hostile" && <><Swords className="w-3 h-3" /> Hostile</>}
             </div>
           )}
         </div>
@@ -154,15 +156,15 @@ function ThreatSummary({
   return (
     <div className="flex gap-3 text-xs mb-3">
       <div className="flex items-center gap-1">
-        <span className="text-red-500">🔴</span>
+        <Circle className="w-3 h-3 fill-red-500 text-red-500" />
         <span className="text-gray-400">{immediateCount}</span>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-yellow-500">🟡</span>
+        <Circle className="w-3 h-3 fill-yellow-500 text-yellow-500" />
         <span className="text-gray-400">{watchCount}</span>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-green-500">🟢</span>
+        <Circle className="w-3 h-3 fill-green-500 text-green-500" />
         <span className="text-gray-400">{friendlyCount}</span>
       </div>
     </div>

@@ -8,19 +8,7 @@ import { PLANET_TYPE_LABELS } from "@/lib/game/constants";
 import type { Planet } from "@/lib/db/schema";
 import { BuyPlanetPanel } from "@/components/game/planets/BuyPlanetPanel";
 import { PlanetsList } from "@/components/game/planets/PlanetsList";
-
-const PLANET_ICONS: Record<string, string> = {
-  food: "🌾",
-  ore: "⛏️",
-  petroleum: "🛢️",
-  tourism: "🏖️",
-  urban: "🏙️",
-  education: "📚",
-  government: "🏛️",
-  research: "🔬",
-  supply: "📦",
-  anti_pollution: "🌿",
-};
+import { SectorIcons } from "@/lib/theme/icons";
 
 async function PlanetsContent() {
   const hasGame = await hasActiveGameAction();
@@ -64,14 +52,16 @@ async function PlanetsContent() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {sortedTypes.map(([type, planets]) => {
             const label = PLANET_TYPE_LABELS[type as keyof typeof PLANET_TYPE_LABELS] || type;
-            const icon = PLANET_ICONS[type] || "🪐";
+            const IconComponent = SectorIcons[type as keyof typeof SectorIcons];
             return (
               <div
                 key={type}
                 className="text-center p-2 bg-gray-800/50 rounded"
                 data-testid={`planet-summary-${type}`}
               >
-                <div className="text-2xl mb-1">{icon}</div>
+                <div className="text-2xl mb-1 flex justify-center">
+                  {IconComponent ? <IconComponent className="w-7 h-7" /> : <span>?</span>}
+                </div>
                 <div className="text-lcars-amber font-mono text-xl">
                   {planets.length}
                 </div>

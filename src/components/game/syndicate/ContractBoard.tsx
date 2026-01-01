@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Clock } from "lucide-react";
 import {
   getAvailableContractsAction,
   getActiveContractsAction,
@@ -177,8 +178,8 @@ export function ContractBoard({ refreshTrigger, onContractAccepted }: ContractBo
                   )}
 
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                    <span className="text-xs text-gray-500">
-                      ⏱ {contract.config.turnsToComplete} turns to complete
+                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {contract.config.turnsToComplete} turns to complete
                     </span>
                     {contract.isAvailable ? (
                       <button

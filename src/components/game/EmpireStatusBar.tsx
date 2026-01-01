@@ -9,13 +9,13 @@
  */
 
 import {
-  RESOURCE_ICONS,
   CIVIL_STATUS_NAMES,
-  CIVIL_STATUS_ICONS,
   SECTOR_TERM,
   SECTORS_TERM,
   type CivilStatusKey,
 } from "@/lib/theme/names";
+import { ResourceIconWithValue, CivilStatusIcons, UnitIcons } from "@/lib/theme/icons";
+import { MapPin } from "lucide-react";
 
 export type PanelType = "resources" | "military" | "planets" | "population" | null;
 
@@ -61,7 +61,7 @@ export function EmpireStatusBar({
   };
 
   const statusName = CIVIL_STATUS_NAMES[civilStatus] ?? civilStatus;
-  const statusIcon = CIVIL_STATUS_ICONS[civilStatus] ?? "😐";
+  const StatusIconComponent = CivilStatusIcons[civilStatus] ?? CivilStatusIcons.content;
 
   return (
     <div
@@ -78,11 +78,11 @@ export function EmpireStatusBar({
               : "hover:bg-gray-800"
           }`}
         >
-          <StatusItem icon={RESOURCE_ICONS.credits} value={formatCompact(credits)} color="text-lcars-amber" />
-          <StatusItem icon={RESOURCE_ICONS.food} value={formatCompact(food)} color="text-green-400" />
-          <StatusItem icon={RESOURCE_ICONS.ore} value={formatCompact(ore)} color="text-gray-400" />
-          <StatusItem icon={RESOURCE_ICONS.petroleum} value={formatCompact(petroleum)} color="text-purple-400" />
-          <StatusItem icon={RESOURCE_ICONS.researchPoints} value={formatCompact(researchPoints)} color="text-blue-400" />
+          <ResourceIconWithValue resource="credits" value={credits} compact />
+          <ResourceIconWithValue resource="food" value={food} compact />
+          <ResourceIconWithValue resource="ore" value={ore} compact />
+          <ResourceIconWithValue resource="petroleum" value={petroleum} compact />
+          <ResourceIconWithValue resource="researchPoints" value={researchPoints} compact />
         </button>
 
         {/* Divider */}
@@ -97,7 +97,7 @@ export function EmpireStatusBar({
               : "hover:bg-gray-800"
           }`}
         >
-          <span>🌍</span>
+          <MapPin className="w-4 h-4 text-green-400" />
           <span className="text-sm text-gray-300">
             <span className="font-mono text-white">{sectorCount}</span>{" "}
             <span className="hidden sm:inline">{sectorCount === 1 ? SECTOR_TERM : SECTORS_TERM}</span>
@@ -113,7 +113,7 @@ export function EmpireStatusBar({
               : "hover:bg-gray-800"
           }`}
         >
-          <span>⚔️</span>
+          <UnitIcons.soldiers className="w-4 h-4 text-red-400" />
           <span className="text-sm text-gray-300">
             <span className="font-mono text-white">{formatCompact(militaryPower)}</span>{" "}
             <span className="hidden sm:inline">Power</span>
@@ -132,13 +132,12 @@ export function EmpireStatusBar({
               : "hover:bg-gray-800"
           }`}
         >
-          <span>{RESOURCE_ICONS.population}</span>
-          <span className="text-sm text-gray-300 font-mono">{formatCompact(population)}</span>
+          <ResourceIconWithValue resource="population" value={population} compact />
         </button>
 
         {/* Civil Status */}
         <div className="flex items-center gap-1 px-2 py-1">
-          <span>{statusIcon}</span>
+          <StatusIconComponent className="w-4 h-4 text-gray-400" />
           <span className="text-sm text-gray-400 hidden sm:inline">{statusName}</span>
         </div>
 
@@ -156,23 +155,6 @@ export function EmpireStatusBar({
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function StatusItem({
-  icon,
-  value,
-  color = "text-white",
-}: {
-  icon: string;
-  value: string;
-  color?: string;
-}) {
-  return (
-    <div className="flex items-center gap-1">
-      <span className="text-sm">{icon}</span>
-      <span className={`text-sm font-mono ${color}`}>{value}</span>
     </div>
   );
 }

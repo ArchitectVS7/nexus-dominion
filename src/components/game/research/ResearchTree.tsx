@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { Check, Circle } from "lucide-react";
 import { RESEARCH_LEVELS, RESEARCH_UNLOCKS_BY_LEVEL } from "@/lib/game/constants/crafting";
 
 interface ResearchTreeProps {
@@ -94,9 +95,11 @@ function ResearchTreeNode({ level, currentLevel, isExpanded, onToggle }: TreeNod
                     : "bg-gray-800/50 text-gray-400"
                 }`}
               >
-                <span className={isUnlocked ? "text-green-500" : "text-gray-500"}>
-                  {isUnlocked ? "✓" : "○"}
-                </span>
+                {isUnlocked ? (
+                  <Check className="w-4 h-4 text-green-500" />
+                ) : (
+                  <Circle className="w-4 h-4 text-gray-500" />
+                )}
                 <span>{formatUnlockName(unlock)}</span>
               </div>
             ))}

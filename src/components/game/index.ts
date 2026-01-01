@@ -20,3 +20,7 @@ export { GameShell } from "./GameShell";
 
 // Session components
 export { SessionSummaryScreen } from "./session";
+
+// Frontend redesign components (icon system, compact UI)
+export { CompactCommandBar } from "./CompactCommandBar";
+export { TurnPhaseIndicator } from "./TurnPhaseIndicator";

@@ -2,33 +2,41 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Telescope, Globe, Zap, Swords, Camera } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 // 4X Feature Cards Data
-const features = [
+const features: Array<{
+  title: string;
+  icon: LucideIcon;
+  description: string;
+  color: string;
+  borderColor: string;
+}> = [
   {
     title: "EXPLORE",
-    icon: "🔭",
+    icon: Telescope,
     description: "Survey the galaxy through your Star Chart. Gather intelligence on rival empires through covert operations.",
     color: "from-blue-600 to-cyan-500",
     borderColor: "border-lcars-blue",
   },
   {
     title: "EXPAND",
-    icon: "🌍",
+    icon: Globe,
     description: "Acquire new sectors to grow your domain. Each planet type provides unique resources and capabilities.",
     color: "from-green-600 to-emerald-500",
     borderColor: "border-lcars-mint",
   },
   {
     title: "EXPLOIT",
-    icon: "⚡",
+    icon: Zap,
     description: "Harvest resources, grow your population, and research powerful technologies to gain an edge.",
     color: "from-yellow-600 to-amber-500",
     borderColor: "border-lcars-amber",
   },
   {
     title: "EXTERMINATE",
-    icon: "⚔️",
+    icon: Swords,
     description: "Build fleets, train armies, and crush your rivals. Only the strongest empire will dominate the galaxy.",
     color: "from-red-600 to-rose-500",
     borderColor: "border-lcars-salmon",
@@ -173,7 +181,7 @@ function ScreenshotCarousel() {
       {/* Screenshot placeholder */}
       <div className="aspect-video bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden">
         <div className="text-center p-8">
-          <div className="text-6xl mb-4 opacity-50">📸</div>
+          <div className="text-6xl mb-4 opacity-50"><Camera className="w-16 h-16 mx-auto" /></div>
           <p className="text-lcars-amber font-display text-xl mb-2">
             {currentScreenshot?.title}
           </p>
@@ -272,13 +280,15 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => (
+            {features.map((feature) => {
+              const IconComponent = feature.icon;
+              return (
               <div
                 key={feature.title}
                 className={`relative p-6 bg-gray-900/80 rounded-lg border-l-4 ${feature.borderColor} hover:bg-gray-800/80 transition-all duration-300 group`}
               >
                 <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
-                  {feature.icon}
+                  <IconComponent className="w-10 h-10" />
                 </div>
                 <h3 className={`text-xl font-display bg-gradient-to-r ${feature.color} bg-clip-text text-transparent mb-3`}>
                   {feature.title}
@@ -287,7 +297,8 @@ export default function HomePage() {
                   {feature.description}
                 </p>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>

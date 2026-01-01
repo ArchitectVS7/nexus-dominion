@@ -7,6 +7,7 @@ import {
   type RecipeDisplay,
 } from "@/app/actions/crafting-actions";
 import type { CraftedResource } from "@/lib/game/constants/crafting";
+import { Clock, Lock, Lightbulb } from "lucide-react";
 
 interface RecipeListProps {
   refreshTrigger?: number;
@@ -220,12 +221,12 @@ export function RecipeList({ refreshTrigger, onCraftQueued }: RecipeListProps) {
                         </div>
                       </div>
                       <div className="text-left sm:text-right text-xs flex sm:flex-col gap-2 sm:gap-0">
-                        <div className="text-gray-400">
-                          ⏱ {recipe.craftingTime} turn{recipe.craftingTime !== 1 ? "s" : ""}
+                        <div className="text-gray-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {recipe.craftingTime} turn{recipe.craftingTime !== 1 ? "s" : ""}
                         </div>
                         {!recipe.isAvailable && (
-                          <div className="text-red-400">
-                            🔒 Research L{recipe.researchRequired}
+                          <div className="text-red-400 flex items-center gap-1">
+                            <Lock className="w-3 h-3" /> Research L{recipe.researchRequired}
                           </div>
                         )}
                       </div>
@@ -242,8 +243,8 @@ export function RecipeList({ refreshTrigger, onCraftQueued }: RecipeListProps) {
       {selectedRecipe && (
         <div className="border-t border-gray-700 pt-3">
           <div className="bg-lcars-purple/10 border border-lcars-purple/30 rounded p-3 mb-3">
-            <div className="text-xs text-gray-400 mb-2">
-              💡 <span className="font-semibold text-lcars-purple">Tip:</span> Items are queued and complete over multiple turns. You can queue multiple items - they&apos;ll build in order.
+            <div className="text-xs text-gray-400 mb-2 flex items-start gap-1">
+              <Lightbulb className="w-4 h-4 text-lcars-purple flex-shrink-0" /> <span><span className="font-semibold text-lcars-purple">Tip:</span> Items are queued and complete over multiple turns. You can queue multiple items - they&apos;ll build in order.</span>
             </div>
           </div>
 

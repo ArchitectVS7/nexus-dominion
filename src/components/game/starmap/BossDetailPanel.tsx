@@ -1,5 +1,6 @@
 "use client";
 
+import { Crown } from "lucide-react";
 import type { EmpireMapData } from "./types";
 
 // =============================================================================
@@ -47,7 +48,7 @@ export function BossDetailPanel({
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-xl">👑</span>
+          <Crown className="w-5 h-5 text-amber-400" />
           <span className="text-red-400 font-bold text-sm uppercase tracking-wide">
             Dominant Empire
           </span>

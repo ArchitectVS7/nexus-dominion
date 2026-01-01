@@ -6,6 +6,8 @@
  */
 
 import type { Forces } from "@/lib/combat";
+import { UnitIcons } from "@/lib/theme/icons";
+import type { LucideIcon } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -24,16 +26,16 @@ interface CasualtyReportProps {
 // CONSTANTS
 // =============================================================================
 
-const UNIT_DISPLAY = {
-  soldiers: { label: "Soldiers", icon: "👤", color: "text-green-400" },
-  fighters: { label: "Fighters", icon: "✈️", color: "text-blue-400" },
-  stations: { label: "Stations", icon: "🛰️", color: "text-purple-400" },
-  lightCruisers: { label: "L. Cruisers", icon: "🚀", color: "text-cyan-400" },
-  heavyCruisers: { label: "H. Cruisers", icon: "🛸", color: "text-orange-400" },
-  carriers: { label: "Carriers", icon: "🚢", color: "text-red-400" },
-} as const;
+const UNIT_DISPLAY: Record<string, { label: string; icon: LucideIcon; color: string }> = {
+  soldiers: { label: "Soldiers", icon: UnitIcons.soldiers, color: "text-green-400" },
+  fighters: { label: "Fighters", icon: UnitIcons.fighters, color: "text-blue-400" },
+  stations: { label: "Stations", icon: UnitIcons.stations, color: "text-purple-400" },
+  lightCruisers: { label: "L. Cruisers", icon: UnitIcons.lightCruisers, color: "text-cyan-400" },
+  heavyCruisers: { label: "H. Cruisers", icon: UnitIcons.heavyCruisers, color: "text-orange-400" },
+  carriers: { label: "Carriers", icon: UnitIcons.carriers, color: "text-red-400" },
+};
 
-type UnitKey = keyof typeof UNIT_DISPLAY;
+type UnitKey = keyof Forces & keyof typeof UNIT_DISPLAY;
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -78,13 +80,15 @@ export function CasualtyReport({ casualties, label, compact = false }: CasualtyR
           {casualtyEntries.map(key => {
             const count = casualties[key] ?? 0;
             const config = UNIT_DISPLAY[key];
+            if (!config) return null;
+            const IconComponent = config.icon;
             return (
               <span
                 key={key}
-                className={`${config.color} bg-black/30 px-1 rounded`}
+                className={`${config.color} bg-black/30 px-1 rounded flex items-center gap-0.5`}
                 title={config.label}
               >
-                {config.icon} {formatNumber(count)}
+                <IconComponent className="w-3 h-3" /> {formatNumber(count)}
               </span>
             );
           })}
@@ -110,13 +114,15 @@ export function CasualtyReport({ casualties, label, compact = false }: CasualtyR
               if (count === 0) return null;
 
               const config = UNIT_DISPLAY[key];
+              if (!config) return null;
+              const IconComponent = config.icon;
               return (
                 <div
                   key={key}
                   className="flex justify-between items-center text-sm"
                 >
                   <span className="flex items-center gap-1">
-                    <span>{config.icon}</span>
+                    <IconComponent className={`w-4 h-4 ${config.color}`} />
                     <span className="text-gray-400">{config.label}</span>
                   </span>
                   <span className={`font-mono ${config.color}`}>

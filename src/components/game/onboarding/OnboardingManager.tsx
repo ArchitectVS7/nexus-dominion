@@ -15,13 +15,25 @@
 import { useState, useEffect } from "react";
 import { OnboardingHint } from "./OnboardingHint";
 import { UI_LABELS, RESOURCE_NAMES, GAME_TERMS, THEME_INFO } from "@/lib/theme/names";
+import { Rocket, ClipboardList, Coins, Swords, Globe, Eye, FlaskConical, Settings, Drama } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface OnboardingManagerProps {
   currentTurn: number;
 }
 
 // Define all onboarding hints
-const ONBOARDING_HINTS = [
+interface OnboardingHintConfig {
+  id: string;
+  turnToShow: number;
+  title: string;
+  message: string;
+  icon: LucideIcon;
+  position: "top" | "bottom" | "inline";
+  action?: { label: string; href: string };
+}
+
+const ONBOARDING_HINTS: OnboardingHintConfig[] = [
   // Turn 1: Welcome and orientation
   {
     id: "welcome",
@@ -29,8 +41,8 @@ const ONBOARDING_HINTS = [
     title: `Welcome to ${THEME_INFO.name}!`,
     message:
       `You command a fledgling ${GAME_TERMS.empire.toLowerCase()}. Your goal: survive, expand, and dominate. Start by exploring the menu to see your resources and ${UI_LABELS.military.toLowerCase()}.`,
-    icon: "🚀",
-    position: "top" as const,
+    icon: Rocket,
+    position: "top",
     action: { label: "Show me around", href: "/game" },
   },
   {
@@ -39,8 +51,8 @@ const ONBOARDING_HINTS = [
     title: `Your ${GAME_TERMS.turn} Order`,
     message:
       `The panel on the right tracks your ${GAME_TERMS.turn.toLowerCase()}. Visit different sections to take actions, then click ${UI_LABELS.endTurn.toUpperCase()} when ready. You're protected from attacks for the first 20 ${GAME_TERMS.turn.toLowerCase()}s.`,
-    icon: "📋",
-    position: "bottom" as const,
+    icon: ClipboardList,
+    position: "bottom",
   },
 
   // Turn 2: Resources and growth
@@ -50,8 +62,8 @@ const ONBOARDING_HINTS = [
     title: "Understanding Resources",
     message:
       `${RESOURCE_NAMES.credits} fund everything. ${RESOURCE_NAMES.food} feeds your ${RESOURCE_NAMES.population.toLowerCase()}. ${RESOURCE_NAMES.ore} and ${RESOURCE_NAMES.petroleum} are for advanced units. Watch your ${RESOURCE_NAMES.food.toLowerCase()} - starving ${RESOURCE_NAMES.population.toLowerCase()} rebel!`,
-    icon: "💰",
-    position: "top" as const,
+    icon: Coins,
+    position: "top",
     action: { label: "View Resources", href: "/game" },
   },
 
@@ -62,8 +74,8 @@ const ONBOARDING_HINTS = [
     title: "Build Your Defenses",
     message:
       `Protection ends at ${GAME_TERMS.turn} 20. Start building units now. Visit ${UI_LABELS.military} to queue construction. Units cost ${RESOURCE_NAMES.credits.toLowerCase()} but provide security.`,
-    icon: "⚔️",
-    position: "top" as const,
+    icon: Swords,
+    position: "top",
     action: { label: `Go to ${UI_LABELS.military}`, href: "/game/military" },
   },
 
@@ -74,8 +86,8 @@ const ONBOARDING_HINTS = [
     title: `Grow Your ${GAME_TERMS.empire}`,
     message:
       `More ${UI_LABELS.planets.toLowerCase()} = more resources. Visit ${UI_LABELS.planets} to buy new territories. Different types produce different resources. Balance is key!`,
-    icon: "🌍",
-    position: "top" as const,
+    icon: Globe,
+    position: "top",
     action: { label: `Buy ${UI_LABELS.planets}`, href: "/game/planets" },
   },
 
@@ -86,8 +98,8 @@ const ONBOARDING_HINTS = [
     title: `Know Your ${GAME_TERMS.bots}`,
     message:
       `25 AI ${GAME_TERMS.empires.toLowerCase()} compete with you. Check ${UI_LABELS.messages} for communications. Watch the ${UI_LABELS.galaxyMap} for threats. Some ${GAME_TERMS.empires.toLowerCase()} are friendly, others... not so much.`,
-    icon: "👁️",
-    position: "top" as const,
+    icon: Eye,
+    position: "top",
     action: { label: `View ${UI_LABELS.galaxyMap}`, href: "/game/starmap" },
   },
 
@@ -98,8 +110,8 @@ const ONBOARDING_HINTS = [
     title: "Unlock Advanced Technology",
     message:
       `Research unlocks powerful units and systems. Visit ${UI_LABELS.research} to invest in tech branches. Higher research levels enable Heavy Cruisers, Defense Stations, and more. Progress takes time - start now!`,
-    icon: "🔬",
-    position: "top" as const,
+    icon: FlaskConical,
+    position: "top",
     action: { label: `View ${UI_LABELS.research}`, href: "/game/research" },
   },
 
@@ -110,8 +122,8 @@ const ONBOARDING_HINTS = [
     title: "Craft Advanced Components",
     message:
       `Advanced ships require crafted components. Visit Crafting to turn raw resources into Electronics, Armor Plating, and Reactor Cores. Queue items for future turns - they take time to build!`,
-    icon: "⚙️",
-    position: "top" as const,
+    icon: Settings,
+    position: "top",
     action: { label: "Visit Crafting", href: "/game/crafting" },
   },
 
@@ -122,8 +134,8 @@ const ONBOARDING_HINTS = [
     title: "Protection Ends - New Opportunities",
     message:
       `Your protection period is over! Attacks are now possible. The Galactic Syndicate offers contracts, components, and... forbidden weapons. Visit the Syndicate to build trust and access the Black Market.`,
-    icon: "🎭",
-    position: "top" as const,
+    icon: Drama,
+    position: "top",
     action: { label: "Visit Syndicate", href: "/game/syndicate" },
   },
 ];

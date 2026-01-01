@@ -9,6 +9,21 @@
 
 import { useState } from "react";
 import type { TurnEvent } from "@/lib/game/types/turn-types";
+import {
+  Coins,
+  Users,
+  Landmark,
+  Wrench,
+  WalletCards,
+  Apple,
+  Trophy,
+  Skull,
+  Swords,
+  ClipboardList,
+  BarChart3,
+  ChevronDown,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface TurnSummaryProps {
   turn: number;
@@ -17,17 +32,17 @@ interface TurnSummaryProps {
   onDismiss?: () => void;
 }
 
-const EVENT_ICONS: Record<string, string> = {
-  resource_production: "💰",
-  population_change: "👥",
-  civil_status_change: "🏛️",
-  maintenance: "🔧",
-  bankruptcy: "💸",
-  starvation: "🍞",
-  victory: "🏆",
-  defeat: "💀",
-  revolt_consequences: "⚔️",
-  other: "📋",
+const EVENT_ICONS: Record<string, LucideIcon> = {
+  resource_production: Coins,
+  population_change: Users,
+  civil_status_change: Landmark,
+  maintenance: Wrench,
+  bankruptcy: WalletCards,
+  starvation: Apple,
+  victory: Trophy,
+  defeat: Skull,
+  revolt_consequences: Swords,
+  other: ClipboardList,
 };
 
 const SEVERITY_STYLES: Record<string, string> = {
@@ -78,7 +93,7 @@ export function TurnSummary({ turn, processingMs, events, onDismiss }: TurnSumma
         className="w-full p-3 bg-gray-800/70 flex items-center justify-between hover:bg-gray-800 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <span className="text-lg">📊</span>
+          <BarChart3 className="w-5 h-5 text-lcars-amber" />
           <span className="text-white font-semibold">Turn {turn} Summary</span>
           {hasIssues && (
             <span className="px-2 py-0.5 text-xs bg-yellow-900/50 text-yellow-400 rounded">
@@ -88,21 +103,11 @@ export function TurnSummary({ turn, processingMs, events, onDismiss }: TurnSumma
         </div>
         <div className="flex items-center gap-3">
           <span className="text-gray-500 text-sm">{processingMs}ms</span>
-          <svg
+          <ChevronDown
             className={`w-4 h-4 text-gray-400 transition-transform ${
               isExpanded ? "rotate-180" : ""
             }`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+          />
         </div>
       </button>
 
@@ -142,7 +147,7 @@ export function TurnSummary({ turn, processingMs, events, onDismiss }: TurnSumma
 }
 
 function EventItem({ event }: { event: TurnEvent }) {
-  const icon = EVENT_ICONS[event.type] || EVENT_ICONS.other;
+  const IconComponent = EVENT_ICONS[event.type] ?? ClipboardList;
   const severityStyle = SEVERITY_STYLES[event.severity] || SEVERITY_STYLES.info;
   const textColor = SEVERITY_TEXT[event.severity] || SEVERITY_TEXT.info;
 
@@ -152,7 +157,7 @@ function EventItem({ event }: { event: TurnEvent }) {
       data-testid={`turn-event-${event.type}`}
     >
       <div className="flex items-start gap-2">
-        <span className="text-sm">{icon}</span>
+        <IconComponent className={`w-4 h-4 mt-0.5 ${textColor}`} />
         <p className={`text-sm ${textColor}`}>{event.message}</p>
       </div>
     </div>

@@ -10,6 +10,7 @@ import {
   reportToCoordinatorAction,
   type TrustStatusDisplay,
 } from "@/app/actions/syndicate-actions";
+import { Drama } from "lucide-react";
 
 type TabType = "overview" | "contracts" | "catalog";
 
@@ -122,7 +123,7 @@ export function BlackMarketPanel({ refreshTrigger: externalTrigger }: BlackMarke
       {/* Help text - visible on first visit */}
       {!status?.hasAccess && !status?.hasReceivedInvitation && !status?.isHostile && (
         <div className="bg-gray-800/50 border border-gray-700 rounded p-3 md:p-4 mb-4 text-xs md:text-sm text-gray-400">
-          <p className="mb-2">🎭 The Syndicate rewards those who prove their worth.</p>
+          <p className="mb-2 flex items-start gap-2"><Drama className="w-5 h-5 text-lcars-purple flex-shrink-0" /> The Syndicate rewards those who prove their worth.</p>
           <p>Complete contracts to earn trust, unlock rare components, and access forbidden weapons. Betray them... and face the consequences.</p>
         </div>
       )}

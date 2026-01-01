@@ -12,6 +12,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { UI_LABELS, GAME_TERMS, RESOURCE_NAMES } from "@/lib/theme/names";
+import { ActionIcons, UIIcons } from "@/lib/theme/icons";
+import { Shield, Home, Map, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface MobileActionSheetProps {
   isOpen: boolean;
@@ -29,19 +32,19 @@ interface ActionItem {
   id: string;
   label: string;
   href: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 const ACTIONS: ActionItem[] = [
-  { id: "military", label: UI_LABELS.military, href: "/game/military", icon: "⚔️" },
-  { id: "planets", label: UI_LABELS.planets, href: "/game/planets", icon: "🌍" },
-  { id: "combat", label: UI_LABELS.combat, href: "/game/combat", icon: "💥" },
-  { id: "diplomacy", label: UI_LABELS.diplomacy, href: "/game/diplomacy", icon: "🤝" },
-  { id: "market", label: UI_LABELS.market, href: "/game/market", icon: "📊" },
-  { id: "covert", label: UI_LABELS.covert, href: "/game/covert", icon: "🕵️" },
-  { id: "crafting", label: UI_LABELS.crafting, href: "/game/crafting", icon: "🔧" },
-  { id: "research", label: UI_LABELS.research, href: "/game/research", icon: "🔬" },
-  { id: "starmap", label: "Starmap", href: "/game/starmap", icon: "🗺️" },
+  { id: "military", label: UI_LABELS.military, href: "/game/military", icon: ActionIcons.military },
+  { id: "planets", label: UI_LABELS.planets, href: "/game/planets", icon: ActionIcons.planets },
+  { id: "combat", label: UI_LABELS.combat, href: "/game/combat", icon: ActionIcons.combat },
+  { id: "diplomacy", label: UI_LABELS.diplomacy, href: "/game/diplomacy", icon: ActionIcons.diplomacy },
+  { id: "market", label: UI_LABELS.market, href: "/game/market", icon: ActionIcons.market },
+  { id: "covert", label: UI_LABELS.covert, href: "/game/covert", icon: ActionIcons.covert },
+  { id: "crafting", label: UI_LABELS.crafting, href: "/game/crafting", icon: ActionIcons.crafting },
+  { id: "research", label: UI_LABELS.research, href: "/game/research", icon: ActionIcons.research },
+  { id: "starmap", label: "Starmap", href: "/game/starmap", icon: ActionIcons.starmap },
 ];
 
 const STATUS_STYLES = {
@@ -173,15 +176,14 @@ export function MobileActionSheet({
               className="p-2 text-gray-400 hover:text-white"
               aria-label="Close"
             >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-6 h-6" />
             </button>
           </div>
           {/* Protection notice */}
           {protectionTurnsLeft && protectionTurnsLeft > 0 && (
-            <div className="mt-2 text-xs text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded inline-block">
-              🛡️ Protected for {protectionTurnsLeft} turns
+            <div className="mt-2 text-xs text-cyan-400 bg-cyan-900/20 px-2 py-1 rounded inline-flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              Protected for {protectionTurnsLeft} turns
             </div>
           )}
         </div>
@@ -194,6 +196,7 @@ export function MobileActionSheet({
             <div className="grid grid-cols-4 gap-3">
               {ACTIONS.map((action) => {
                 const isCurrent = pathname.startsWith(action.href);
+                const IconComponent = action.icon;
                 return (
                   <Link
                     key={action.id}
@@ -205,7 +208,7 @@ export function MobileActionSheet({
                         : "bg-gray-800 hover:bg-gray-700"
                     }`}
                   >
-                    <span className="text-2xl">{action.icon}</span>
+                    <IconComponent className={`w-6 h-6 ${isCurrent ? "text-lcars-amber" : "text-gray-400"}`} />
                     <span className={`text-xs ${isCurrent ? "text-lcars-amber" : "text-gray-300"}`}>
                       {action.label}
                     </span>
@@ -225,7 +228,7 @@ export function MobileActionSheet({
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-xl">📬</span>
+                <ActionIcons.messages className={`w-5 h-5 ${pathname === "/game/messages" ? "text-lcars-amber" : "text-gray-400"}`} />
                 <span className={pathname === "/game/messages" ? "text-lcars-amber" : "text-gray-300"}>
                   {UI_LABELS.messages}
                 </span>
@@ -268,7 +271,7 @@ export function MobileActionSheet({
               onClick={onClose}
               className="flex items-center gap-2 text-gray-400 hover:text-gray-200"
             >
-              <span>🏠</span>
+              <Home className="w-4 h-4" />
               <span className="text-sm">{UI_LABELS.dashboard}</span>
             </Link>
             <Link
@@ -276,7 +279,7 @@ export function MobileActionSheet({
               onClick={onClose}
               className="flex items-center gap-2 text-gray-400 hover:text-gray-200 mt-2"
             >
-              <span>🌌</span>
+              <Map className="w-4 h-4" />
               <span className="text-sm">{UI_LABELS.galaxyMap}</span>
             </Link>
           </div>

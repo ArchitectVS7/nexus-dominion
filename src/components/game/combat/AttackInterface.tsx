@@ -11,6 +11,9 @@ import { useState, useMemo } from "react";
 import type { Forces } from "@/lib/combat";
 import { SOLDIERS_PER_CARRIER } from "@/lib/combat";
 import { CombatPreview } from "./CombatPreview";
+import { UnitIcons, UIIcons, ActionIcons } from "@/lib/theme/icons";
+import { Swords } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -179,13 +182,13 @@ export function AttackInterface({
   }
 
   // Unit configuration
-  const units: { key: keyof Forces; label: string; icon: string; color: string; forGuerilla: boolean }[] = [
-    { key: "soldiers", label: "Soldiers", icon: "👤", color: "text-green-400", forGuerilla: true },
-    { key: "fighters", label: "Fighters", icon: "✈️", color: "text-blue-400", forGuerilla: false },
-    { key: "stations", label: "Stations", icon: "🛰️", color: "text-purple-400", forGuerilla: false },
-    { key: "lightCruisers", label: "Light Cruisers", icon: "🚀", color: "text-cyan-400", forGuerilla: false },
-    { key: "heavyCruisers", label: "Heavy Cruisers", icon: "🛸", color: "text-orange-400", forGuerilla: false },
-    { key: "carriers", label: "Carriers", icon: "🚢", color: "text-red-400", forGuerilla: false },
+  const units: { key: keyof Forces; label: string; icon: LucideIcon; color: string; forGuerilla: boolean }[] = [
+    { key: "soldiers", label: "Soldiers", icon: UnitIcons.soldiers, color: "text-green-400", forGuerilla: true },
+    { key: "fighters", label: "Fighters", icon: UnitIcons.fighters, color: "text-blue-400", forGuerilla: false },
+    { key: "stations", label: "Stations", icon: UnitIcons.stations, color: "text-purple-400", forGuerilla: false },
+    { key: "lightCruisers", label: "Light Cruisers", icon: UnitIcons.lightCruisers, color: "text-cyan-400", forGuerilla: false },
+    { key: "heavyCruisers", label: "Heavy Cruisers", icon: UnitIcons.heavyCruisers, color: "text-orange-400", forGuerilla: false },
+    { key: "carriers", label: "Carriers", icon: UnitIcons.carriers, color: "text-red-400", forGuerilla: false },
   ];
 
   return (
@@ -210,7 +213,7 @@ export function AttackInterface({
                 : "border-gray-700 hover:border-gray-500"
             }`}
           >
-            <div className="text-2xl mb-1">⚔️</div>
+            <ActionIcons.combat className="w-8 h-8 mx-auto mb-1" />
             <div className={`font-semibold ${attackType === "invasion" ? "text-lcars-amber" : "text-gray-300"}`}>
               Invasion
             </div>
@@ -227,7 +230,7 @@ export function AttackInterface({
                 : "border-gray-700 hover:border-gray-500"
             }`}
           >
-            <div className="text-2xl mb-1">🗡️</div>
+            <Swords className="w-8 h-8 mx-auto mb-1" />
             <div className={`font-semibold ${attackType === "guerilla" ? "text-lcars-amber" : "text-gray-300"}`}>
               Guerilla
             </div>
@@ -260,7 +263,7 @@ export function AttackInterface({
         </div>
 
         <div className="space-y-3">
-          {units.map(({ key, label, icon, color, forGuerilla }) => {
+          {units.map(({ key, label, icon: IconComponent, color, forGuerilla }) => {
             const isDisabled = attackType === "guerilla" && !forGuerilla && key !== "soldiers";
             const available = availableForces[key];
             const selected = selectedForces[key];
@@ -272,7 +275,7 @@ export function AttackInterface({
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="flex items-center gap-2">
-                    <span>{icon}</span>
+                    <IconComponent className={`w-4 h-4 ${color}`} />
                     <span className={color}>{label}</span>
                   </span>
                   <span className="text-xs text-gray-500">
@@ -316,8 +319,9 @@ export function AttackInterface({
             </span>
           </div>
           {selectedForces.soldiers > carrierCapacity && (
-            <div className="text-xs text-orange-400 mt-1">
-              ⚠️ Only {formatNumber(carrierCapacity)} soldiers will participate
+            <div className="text-xs text-orange-400 mt-1 flex items-center gap-1">
+              <UIIcons.warning className="w-3 h-3" />
+              <span>Only {formatNumber(carrierCapacity)} soldiers will participate</span>
             </div>
           )}
         </div>
@@ -327,8 +331,9 @@ export function AttackInterface({
       {validationErrors.length > 0 && (
         <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-lg">
           {validationErrors.map((error, index) => (
-            <p key={index} className="text-red-400 text-sm">
-              ⚠️ {error}
+            <p key={index} className="text-red-400 text-sm flex items-center gap-1">
+              <UIIcons.warning className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
             </p>
           ))}
         </div>

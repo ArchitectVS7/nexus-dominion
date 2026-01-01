@@ -7,6 +7,8 @@
  * Food consumption: 0.05 per citizen per turn.
  */
 
+import { Siren, AlertTriangle, Apple } from "lucide-react";
+
 interface FoodWarningProps {
   food: number;
   population: number;
@@ -57,8 +59,14 @@ export function FoodWarning({ food, population, foodProduction }: FoodWarningPro
       data-testid="food-warning"
     >
       <div className="flex items-start gap-3">
-        <span className="text-xl" aria-hidden="true">
-          {severity === "critical" ? "🚨" : severity === "danger" ? "⚠️" : "🍞"}
+        <span className={`${textColor}`} aria-hidden="true">
+          {severity === "critical" ? (
+            <Siren className="w-6 h-6" />
+          ) : severity === "danger" ? (
+            <AlertTriangle className="w-6 h-6" />
+          ) : (
+            <Apple className="w-6 h-6" />
+          )}
         </span>
         <div className="flex-1">
           <p className={`font-semibold ${textColor}`}>{message}</p>

@@ -11,6 +11,7 @@ import {
   getCurrentTurnGoal,
   type TurnGoalState,
 } from "@/lib/tutorial/types";
+import { Check, Circle } from "lucide-react";
 
 // =============================================================================
 // PROPS
@@ -54,7 +55,7 @@ export function TurnGoalIndicator({
         )}
         data-testid="turn-goal-compact"
       >
-        <span>{isComplete ? "✓" : "○"}</span>
+        {isComplete ? <Check className="w-3 h-3" /> : <Circle className="w-3 h-3" />}
         <span className="truncate">{goal.title}</span>
         {!isComplete && turnsRemaining > 0 && (
           <span className="text-gray-500">({turnsRemaining}T)</span>
@@ -79,12 +80,11 @@ export function TurnGoalIndicator({
           <div className="flex items-center gap-2">
             <span
               className={cn(
-                "text-lg",
                 isComplete && "text-green-400",
                 !isComplete && "text-lcars-amber"
               )}
             >
-              {isComplete ? "✓" : "●"}
+              {isComplete ? <Check className="w-5 h-5" /> : <Circle className="w-5 h-5 fill-current" />}
             </span>
             <h4 className="font-medium text-white truncate">{goal.title}</h4>
           </div>

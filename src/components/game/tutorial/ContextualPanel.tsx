@@ -8,6 +8,7 @@
  */
 
 import { type ReactNode } from "react";
+import { Lock } from "lucide-react";
 import { isPanelVisible, getUIVisibilityLevel } from "@/lib/tutorial/types";
 
 // =============================================================================
@@ -57,7 +58,7 @@ export function ContextualPanel({
         data-testid={`contextual-placeholder-${panelId}`}
       >
         <div className="text-center text-gray-500 text-sm">
-          <div className="mb-1">🔒</div>
+          <div className="mb-1 flex justify-center"><Lock className="w-5 h-5" /></div>
           <div>{placeholderText ?? defaultPlaceholder}</div>
         </div>
       </div>

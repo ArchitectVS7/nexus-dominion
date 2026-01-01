@@ -17,6 +17,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UI_LABELS, GAME_TERMS, RESOURCE_NAMES } from "@/lib/theme/names";
+import { ActionIcons } from "@/lib/theme/icons";
+import { Shield, Mail, Check, AlertCircle, AlertTriangle, Eye, Lightbulb } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export interface TurnOrderPanelProps {
   currentTurn: number;
@@ -43,15 +46,15 @@ interface ActionItem {
 }
 
 const ACTIONS: ActionItem[] = [
-  { id: "military", label: UI_LABELS.military, href: "/game/military", icon: "⚔️", description: "Build units, manage forces" },
-  { id: "planets", label: UI_LABELS.planets, href: "/game/planets", icon: "🌍", description: "Buy or release sectors" },
-  { id: "combat", label: UI_LABELS.combat, href: "/game/combat", icon: "💥", description: "Launch attacks" },
-  { id: "diplomacy", label: UI_LABELS.diplomacy, href: "/game/diplomacy", icon: "🤝", description: "Treaties and alliances" },
-  { id: "market", label: UI_LABELS.market, href: "/game/market", icon: "📊", description: "Buy and sell resources" },
-  { id: "covert", label: UI_LABELS.covert, href: "/game/covert", icon: "🕵️", description: "Spy operations" },
-  { id: "crafting", label: UI_LABELS.crafting, href: "/game/crafting", icon: "🔧", description: "Manufacture components" },
-  { id: "research", label: UI_LABELS.research, href: "/game/research", icon: "🔬", description: "Advance technology" },
-  { id: "starmap", label: "Starmap", href: "/game/starmap", icon: "🗺️", description: "View galaxy map" },
+  { id: "military", label: UI_LABELS.military, href: "/game/military", icon: "military", description: "Build units, manage forces" },
+  { id: "planets", label: UI_LABELS.planets, href: "/game/planets", icon: "planets", description: "Buy or release sectors" },
+  { id: "combat", label: UI_LABELS.combat, href: "/game/combat", icon: "combat", description: "Launch attacks" },
+  { id: "diplomacy", label: UI_LABELS.diplomacy, href: "/game/diplomacy", icon: "diplomacy", description: "Treaties and alliances" },
+  { id: "market", label: UI_LABELS.market, href: "/game/market", icon: "market", description: "Buy and sell resources" },
+  { id: "covert", label: UI_LABELS.covert, href: "/game/covert", icon: "covert", description: "Spy operations" },
+  { id: "crafting", label: UI_LABELS.crafting, href: "/game/crafting", icon: "crafting", description: "Manufacture components" },
+  { id: "research", label: UI_LABELS.research, href: "/game/research", icon: "research", description: "Advance technology" },
+  { id: "starmap", label: "Starmap", href: "/game/starmap", icon: "starmap", description: "View galaxy map" },
 ];
 
 const STATUS_STYLES = {
@@ -128,8 +131,9 @@ export function TurnOrderPanel({
         </div>
         {/* Protection period notice */}
         {protectionTurnsLeft && protectionTurnsLeft > 0 && (
-          <div className="mt-2 text-xs text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded">
-            🛡️ Protected for {protectionTurnsLeft} more turns
+          <div className="mt-2 text-xs text-cyan-400 bg-cyan-900/20 px-2 py-1 rounded flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            Protected for {protectionTurnsLeft} more turns
           </div>
         )}
       </div>
@@ -141,6 +145,8 @@ export function TurnOrderPanel({
           {ACTIONS.map((action) => {
             const isVisited = visitedActions.has(action.id);
             const isCurrent = pathname.startsWith(action.href);
+
+            const IconComponent = ActionIcons[action.icon as keyof typeof ActionIcons];
 
             return (
               <Link
@@ -154,14 +160,14 @@ export function TurnOrderPanel({
                     : "hover:bg-gray-800/50"
                 }`}
               >
-                <span className="text-lg">{action.icon}</span>
+                <IconComponent className={`w-4 h-4 ${isCurrent ? "text-lcars-amber" : "text-gray-400"}`} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className={`text-sm ${isCurrent ? "text-lcars-amber" : "text-gray-300"}`}>
                       {action.label}
                     </span>
                     {isVisited && !isCurrent && (
-                      <span className="text-green-400 text-xs">✓</span>
+                      <Check className="w-3 h-3 text-green-400" />
                     )}
                   </div>
                 </div>
@@ -179,7 +185,7 @@ export function TurnOrderPanel({
               : "hover:bg-gray-800/50"
           }`}
         >
-          <span className="text-lg">📬</span>
+          <Mail className={`w-4 h-4 ${pathname === "/game/messages" ? "text-lcars-amber" : "text-gray-400"}`} />
           <div className="flex-1">
             <span className={`text-sm ${pathname === "/game/messages" ? "text-lcars-amber" : "text-gray-300"}`}>
               {UI_LABELS.messages}
@@ -280,18 +286,18 @@ function SuggestionsPanel({
   protectionTurnsLeft?: number;
   currentTurn: number;
 }) {
-  const suggestions: Array<{ icon: string; message: string; priority: "high" | "medium" | "low" }> = [];
+  const suggestions: Array<{ icon: LucideIcon; message: string; priority: "high" | "medium" | "low" }> = [];
 
   // High priority: Critical issues
   if (foodStatus === "critical") {
     suggestions.push({
-      icon: "🚨",
+      icon: AlertCircle,
       message: "Food critical! Buy Agriculture sectors",
       priority: "high",
     });
   } else if (foodStatus === "deficit") {
     suggestions.push({
-      icon: "⚠️",
+      icon: AlertTriangle,
       message: "Food deficit - expand Agriculture",
       priority: "medium",
     });
@@ -299,13 +305,13 @@ function SuggestionsPanel({
 
   if (armyStrength === "critical") {
     suggestions.push({
-      icon: "🚨",
+      icon: AlertCircle,
       message: "Military critical! Build units now",
       priority: "high",
     });
   } else if (armyStrength === "weak") {
     suggestions.push({
-      icon: "⚠️",
+      icon: AlertTriangle,
       message: "Military weak - consider building units",
       priority: "medium",
     });
@@ -314,7 +320,7 @@ function SuggestionsPanel({
   // Protection ending warning
   if (protectionTurnsLeft && protectionTurnsLeft > 0 && protectionTurnsLeft <= 5) {
     suggestions.push({
-      icon: "🛡️",
+      icon: Shield,
       message: `Protection ends in ${protectionTurnsLeft} turns!`,
       priority: "high",
     });
@@ -323,7 +329,7 @@ function SuggestionsPanel({
   // Threat warnings
   if (threatCount >= 5) {
     suggestions.push({
-      icon: "👁️",
+      icon: Eye,
       message: "Many threats - consider diplomacy",
       priority: "medium",
     });
@@ -332,7 +338,7 @@ function SuggestionsPanel({
   // Early game tips
   if (currentTurn <= 5) {
     suggestions.push({
-      icon: "💡",
+      icon: Lightbulb,
       message: "Early game: focus on expansion",
       priority: "low",
     });
@@ -354,21 +360,24 @@ function SuggestionsPanel({
     <div className="px-4 py-3 border-t border-yellow-600/30 bg-yellow-900/10">
       <div className="text-xs text-yellow-400 uppercase tracking-wider mb-2">Suggested</div>
       <div className="space-y-1">
-        {topSuggestions.map((suggestion, i) => (
-          <div
-            key={i}
-            className={`text-xs flex items-start gap-2 ${
-              suggestion.priority === "high"
-                ? "text-red-400"
-                : suggestion.priority === "medium"
-                ? "text-yellow-400"
-                : "text-gray-400"
-            }`}
-          >
-            <span>{suggestion.icon}</span>
-            <span>{suggestion.message}</span>
-          </div>
-        ))}
+        {topSuggestions.map((suggestion, i) => {
+          const IconComponent = suggestion.icon;
+          return (
+            <div
+              key={i}
+              className={`text-xs flex items-start gap-2 ${
+                suggestion.priority === "high"
+                  ? "text-red-400"
+                  : suggestion.priority === "medium"
+                  ? "text-yellow-400"
+                  : "text-gray-400"
+              }`}
+            >
+              <IconComponent className="w-3 h-3 mt-0.5 flex-shrink-0" />
+              <span>{suggestion.message}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

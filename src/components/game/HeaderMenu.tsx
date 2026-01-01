@@ -10,30 +10,33 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { UI_LABELS } from "@/lib/theme/names";
+import { ActionIcons } from "@/lib/theme/icons";
+import { Home, Map, Menu, X, LogOut } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface MenuItem {
   href: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 const MENU_SECTIONS = {
   primary: [
-    { href: "/game", label: UI_LABELS.dashboard, icon: "🏠" },
-    { href: "/game/starmap", label: UI_LABELS.galaxyMap, icon: "🌌" },
+    { href: "/game", label: UI_LABELS.dashboard, icon: Home },
+    { href: "/game/starmap", label: UI_LABELS.galaxyMap, icon: Map },
   ] as MenuItem[],
   actions: [
-    { href: "/game/military", label: UI_LABELS.military, icon: "⚔️" },
-    { href: "/game/planets", label: UI_LABELS.planets, icon: "🌍" },
-    { href: "/game/combat", label: UI_LABELS.combat, icon: "💥" },
-    { href: "/game/diplomacy", label: UI_LABELS.diplomacy, icon: "🤝" },
-    { href: "/game/market", label: UI_LABELS.market, icon: "📊" },
-    { href: "/game/covert", label: UI_LABELS.covert, icon: "🕵️" },
-    { href: "/game/research", label: UI_LABELS.research, icon: "🔬" },
-    { href: "/game/crafting", label: UI_LABELS.crafting, icon: "🔧" },
+    { href: "/game/military", label: UI_LABELS.military, icon: ActionIcons.military },
+    { href: "/game/planets", label: UI_LABELS.planets, icon: ActionIcons.planets },
+    { href: "/game/combat", label: UI_LABELS.combat, icon: ActionIcons.combat },
+    { href: "/game/diplomacy", label: UI_LABELS.diplomacy, icon: ActionIcons.diplomacy },
+    { href: "/game/market", label: UI_LABELS.market, icon: ActionIcons.market },
+    { href: "/game/covert", label: UI_LABELS.covert, icon: ActionIcons.covert },
+    { href: "/game/research", label: UI_LABELS.research, icon: ActionIcons.research },
+    { href: "/game/crafting", label: UI_LABELS.crafting, icon: ActionIcons.crafting },
   ] as MenuItem[],
   communication: [
-    { href: "/game/messages", label: UI_LABELS.messages, icon: "📬" },
+    { href: "/game/messages", label: UI_LABELS.messages, icon: ActionIcons.messages },
   ] as MenuItem[],
 };
 
@@ -79,13 +82,7 @@ export function HeaderMenu() {
         aria-label="Menu"
         aria-expanded={isOpen}
       >
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          {isOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          )}
-        </svg>
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
       {isOpen && (
@@ -125,7 +122,7 @@ export function HeaderMenu() {
               className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              <span>🚪</span>
+              <LogOut className="w-4 h-4" />
               <span>Exit to Main Menu</span>
             </Link>
           </div>
@@ -136,13 +133,14 @@ export function HeaderMenu() {
 }
 
 function MenuLink({ item, onClick }: { item: MenuItem; onClick: () => void }) {
+  const IconComponent = item.icon;
   return (
     <Link
       href={item.href}
       onClick={onClick}
       className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors"
     >
-      <span>{item.icon}</span>
+      <IconComponent className="w-4 h-4" />
       <span>{item.label}</span>
     </Link>
   );

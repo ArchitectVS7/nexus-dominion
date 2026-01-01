@@ -7,6 +7,7 @@
  */
 
 import { useState, useCallback, useEffect } from "react";
+import { Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   type TutorialState,
@@ -247,7 +248,7 @@ export function TutorialOverlay({
         {/* Highlight hint */}
         {currentStep.targetElement && (
           <div className="mt-4 text-xs text-lcars-amber/70 flex items-center gap-2">
-            <span className="animate-pulse">●</span>
+            <Circle className="w-3 h-3 fill-current animate-pulse" />
             <span>Look for the highlighted element on screen</span>
           </div>
         )}

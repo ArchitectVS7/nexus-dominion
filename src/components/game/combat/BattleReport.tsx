@@ -11,6 +11,9 @@
 
 import type { PhaseResult, CombatResult } from "@/lib/combat";
 import { CasualtyReport } from "./CasualtyReport";
+import { UnitIcons, ActionIcons } from "@/lib/theme/icons";
+import { Rocket, CircleDot, Swords, Scale, Trophy, Shield, UserX } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -37,74 +40,74 @@ interface PhaseReportProps {
 // PHASE ICONS & LABELS
 // =============================================================================
 
-const PHASE_CONFIG = {
+const PHASE_CONFIG: Record<string, { icon: LucideIcon; label: string; description: string; color: string; bgColor: string }> = {
   space: {
-    icon: "🚀",
+    icon: Rocket,
     label: "Space Combat",
     description: "Cruisers clash for space superiority",
     color: "text-blue-400",
     bgColor: "bg-blue-900/30",
   },
   orbital: {
-    icon: "🛸",
+    icon: CircleDot,
     label: "Orbital Combat",
     description: "Fighters vs Stations for orbital control",
     color: "text-purple-400",
     bgColor: "bg-purple-900/30",
   },
   ground: {
-    icon: "⚔️",
+    icon: Swords,
     label: "Ground Combat",
     description: "Soldiers fight to capture planets",
     color: "text-green-400",
     bgColor: "bg-green-900/30",
   },
   guerilla: {
-    icon: "🗡️",
+    icon: Swords,
     label: "Guerilla Raid",
     description: "Quick strike raid",
     color: "text-orange-400",
     bgColor: "bg-orange-900/30",
   },
   pirate_defense: {
-    icon: "🏴‍☠️",
+    icon: Shield,
     label: "Pirate Defense",
     description: "Defending against pirates",
     color: "text-red-400",
     bgColor: "bg-red-900/30",
   },
-} as const;
+};
 
-const OUTCOME_CONFIG = {
+const OUTCOME_CONFIG: Record<string, { icon: LucideIcon; label: string; description: string; color: string; bgColor: string }> = {
   attacker_victory: {
-    icon: "🏆",
+    icon: Trophy,
     label: "Victory",
     description: "Invasion Successful",
     color: "text-green-400",
     bgColor: "bg-green-900/50",
   },
   defender_victory: {
-    icon: "🛡️",
+    icon: Shield,
     label: "Defended",
     description: "Invasion Repelled",
     color: "text-red-400",
     bgColor: "bg-red-900/50",
   },
   retreat: {
-    icon: "🏃",
+    icon: UserX,
     label: "Retreat",
     description: "Forces Withdrew",
     color: "text-yellow-400",
     bgColor: "bg-yellow-900/50",
   },
   stalemate: {
-    icon: "⚖️",
+    icon: Scale,
     label: "Stalemate",
     description: "No Victor",
     color: "text-gray-400",
     bgColor: "bg-gray-900/50",
   },
-} as const;
+};
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -141,6 +144,8 @@ function getWinnerColor(winner: "attacker" | "defender" | "draw"): string {
 
 function PhaseReport({ phase, attackerName, defenderName }: PhaseReportProps) {
   const config = PHASE_CONFIG[phase.phase];
+  if (!config) return null;
+  const IconComponent = config.icon;
   const winnerLabel = phase.winner === "attacker" ? attackerName :
                       phase.winner === "defender" ? defenderName : "Draw";
 
@@ -149,7 +154,7 @@ function PhaseReport({ phase, attackerName, defenderName }: PhaseReportProps) {
       {/* Phase Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{config.icon}</span>
+          <IconComponent className={`w-8 h-8 ${config.color}`} />
           <div>
             <h4 className={`font-semibold ${config.color}`}>
               Phase {phase.phaseNumber}: {config.label}
@@ -211,12 +216,14 @@ export function BattleReport({
   onDismiss,
 }: BattleReportProps) {
   const outcomeConfig = OUTCOME_CONFIG[result.outcome];
+  if (!outcomeConfig) return null;
+  const OutcomeIcon = outcomeConfig.icon;
 
   return (
     <div className="lcars-panel max-w-2xl mx-auto" data-testid="battle-report">
       {/* Header */}
       <div className={`${outcomeConfig.bgColor} rounded-lg p-4 mb-4 text-center`}>
-        <span className="text-4xl mb-2 block">{outcomeConfig.icon}</span>
+        <OutcomeIcon className={`w-12 h-12 mx-auto mb-2 ${outcomeConfig.color}`} />
         <h2 className={`text-2xl font-bold ${outcomeConfig.color}`}>
           {outcomeConfig.label}
         </h2>

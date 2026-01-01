@@ -289,6 +289,104 @@ export async function waitForCondition(
 // =============================================================================
 
 /**
+ * Skip the tutorial system by setting localStorage keys.
+ * This should be called BEFORE navigating to the game page.
+ */
+export async function skipTutorialViaLocalStorage(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    // Skip the main tutorial overlay
+    localStorage.setItem("nexus-dominion-tutorial-skipped", "true");
+    // Also set tutorial state as skipped
+    localStorage.setItem("nexus-dominion-tutorial", JSON.stringify({
+      isActive: false,
+      currentStep: null,
+      completedSteps: [],
+      skipped: true,
+      startedAt: null,
+      completedAt: null,
+    }));
+    // Dismiss contextual hints too
+    localStorage.setItem("nexus-dominion-contextual-hints-dismissed", "true");
+  });
+}
+
+/**
+ * Dismiss any tutorial overlays that might be blocking the UI.
+ * Loops through all possible tutorial dismissal patterns.
+ */
+export async function dismissTutorialOverlays(page: Page): Promise<void> {
+  // First try to dismiss tutorial overlay via JavaScript
+  await page.evaluate(() => {
+    localStorage.setItem("nexus-dominion-tutorial-skipped", "true");
+    localStorage.setItem("nexus-dominion-contextual-hints-dismissed", "true");
+  }).catch(() => {});
+
+  // Loop to dismiss multiple overlays via click
+  for (let round = 0; round < 5; round++) {
+    let dismissed = false;
+
+    // Try "Skip all tutorials" link
+    const skipAllLink = page.locator('text=Skip all tutorials').first();
+    if (await skipAllLink.isVisible({ timeout: 300 }).catch(() => false)) {
+      await skipAllLink.click({ force: true });
+      await page.waitForTimeout(200);
+      dismissed = true;
+      continue;
+    }
+
+    // Try "Skip tutorial" text/button
+    const skipTutorial = page.locator('text=Skip tutorial').first();
+    if (await skipTutorial.isVisible({ timeout: 300 }).catch(() => false)) {
+      await skipTutorial.click({ force: true });
+      await page.waitForTimeout(200);
+      dismissed = true;
+      continue;
+    }
+
+    // Try [data-testid="tutorial-skip"]
+    const tutorialSkipButton = page.locator('[data-testid="tutorial-skip"]');
+    if (await tutorialSkipButton.isVisible({ timeout: 200 }).catch(() => false)) {
+      await tutorialSkipButton.click({ force: true });
+      await page.waitForTimeout(200);
+      dismissed = true;
+      continue;
+    }
+
+    // Try "Got it" button
+    const gotItButton = page.locator('button:has-text("Got it")').first();
+    if (await gotItButton.isVisible({ timeout: 200 }).catch(() => false)) {
+      await gotItButton.click({ force: true });
+      await page.waitForTimeout(150);
+      dismissed = true;
+      continue;
+    }
+
+    // Try "Dismiss hint" button
+    const dismissHintButton = page.locator('button:has-text("Dismiss hint")').first();
+    if (await dismissHintButton.isVisible({ timeout: 200 }).catch(() => false)) {
+      await dismissHintButton.click({ force: true });
+      await page.waitForTimeout(150);
+      dismissed = true;
+      continue;
+    }
+
+    // Try X close button (the × symbol)
+    const xButton = page.locator('button:has-text("×")').first();
+    if (await xButton.isVisible({ timeout: 200 }).catch(() => false)) {
+      await xButton.click({ force: true });
+      await page.waitForTimeout(150);
+      dismissed = true;
+      continue;
+    }
+
+    // If we didn't dismiss anything this round, we're done
+    if (!dismissed) {
+      break;
+    }
+  }
+}
+
+/**
  * Ensure a game exists, creating one if needed.
  * This is a more robust version that waits for all elements.
  */
@@ -296,18 +394,49 @@ export async function ensureGameExists(
   page: Page,
   empireName: string = "Test Empire"
 ): Promise<void> {
+  // Dismiss any tutorial overlays that might still appear
+  await dismissTutorialOverlays(page);
+
   const nameInput = page.locator('[data-testid="empire-name-input"]');
 
   if (await nameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
     await nameInput.fill(empireName);
+    await dismissTutorialOverlays(page);
+
+    // Click the start game button
     await page.locator('[data-testid="start-game-button"]').click();
+
+    // Wait for navigation to complete (redirects to starmap)
+    await page.waitForURL(/\/game\/(starmap)?/, { timeout: 15000 });
     await page.waitForLoadState("networkidle");
   }
 
-  // Wait for dashboard with generous timeout (game creation takes ~10s)
+  // Dismiss any post-game-creation tutorials
+  await dismissTutorialOverlays(page);
+
+  // Wait for either dashboard or starmap (game may start on starmap)
+  const dashboardOrGamePage = page.locator('[data-testid="dashboard"], [data-testid="starmap-page"]');
+  await expect(dashboardOrGamePage.first()).toBeVisible({ timeout: 15000 });
+
+  // Dismiss tutorials again after page loads
+  await dismissTutorialOverlays(page);
+
+  // If not on dashboard, navigate there
+  const dashboard = page.locator('[data-testid="dashboard"]');
+  if (!await dashboard.isVisible({ timeout: 1000 }).catch(() => false)) {
+    // Navigate to dashboard
+    await page.goto("/game");
+    await page.waitForLoadState("networkidle");
+    await dismissTutorialOverlays(page);
+  }
+
+  // Wait for dashboard to be visible
   await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
-    timeout: 20000,
+    timeout: 10000,
   });
+
+  // Dismiss any remaining tutorials
+  await dismissTutorialOverlays(page);
 
   // Wait for resources to be loaded
   await expect(page.locator('[data-testid="credits"]')).toBeVisible();
@@ -321,6 +450,8 @@ export async function startNewGameWithDifficulty(
   empireName: string = "Test Empire",
   difficulty: "easy" | "normal" | "hard" | "nightmare" = "normal"
 ): Promise<void> {
+  await dismissTutorialOverlays(page);
+
   const nameInput = page.locator('[data-testid="empire-name-input"]');
 
   if (await nameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
@@ -333,12 +464,24 @@ export async function startNewGameWithDifficulty(
     }
 
     await page.locator('[data-testid="start-game-button"]').click();
+
+    // Wait for navigation to complete
+    await page.waitForURL(/\/game\/(starmap)?/, { timeout: 15000 });
     await page.waitForLoadState("networkidle");
   }
 
-  await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
-    timeout: 20000,
-  });
+  await dismissTutorialOverlays(page);
+
+  // Navigate to dashboard if on starmap
+  const dashboard = page.locator('[data-testid="dashboard"]');
+  if (!await dashboard.isVisible({ timeout: 1000 }).catch(() => false)) {
+    await page.goto("/game");
+    await page.waitForLoadState("networkidle");
+    await dismissTutorialOverlays(page);
+  }
+
+  await expect(dashboard).toBeVisible({ timeout: 10000 });
+  await dismissTutorialOverlays(page);
 }
 
 // =============================================================================
@@ -352,6 +495,9 @@ export async function navigateToGamePage(
   page: Page,
   path: "planets" | "military" | "research" | "combat" | "market" | "diplomacy" | "covert" | "messages" | "starmap"
 ): Promise<void> {
+  // Dismiss any tutorial overlays that might block navigation
+  await dismissTutorialOverlays(page);
+
   await page.click(`a[href="/game/${path}"]`);
   await page.waitForLoadState("networkidle");
   await expect(page.locator(`[data-testid="${path}-page"]`)).toBeVisible({
@@ -365,9 +511,16 @@ export async function navigateToGamePage(
 
 export const test = base.extend<GameFixtures>({
   gamePage: async ({ page }, use) => {
+    // Skip tutorials BEFORE navigating to avoid overlay issues
+    await skipTutorialViaLocalStorage(page);
+
     // Navigate to game and wait for page to load
     await page.goto("/game");
     await page.waitForLoadState("networkidle");
+
+    // Dismiss any remaining overlays that might appear
+    await dismissTutorialOverlays(page);
+
     await use(page);
   },
 });

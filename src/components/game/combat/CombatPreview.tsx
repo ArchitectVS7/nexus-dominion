@@ -12,6 +12,9 @@ import {
   calculateGroundPhasePower,
   SOLDIERS_PER_CARRIER,
 } from "@/lib/combat";
+import { UIIcons } from "@/lib/theme/icons";
+import { Rocket, CircleDot, Swords } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 // =============================================================================
 // TYPES
@@ -85,11 +88,11 @@ interface PhasePreviewProps {
   phase: "space" | "orbital" | "ground";
   attackerPower: number;
   defenderPower: number;
-  icon: string;
+  icon: LucideIcon;
   label: string;
 }
 
-function PhasePreview({ attackerPower, defenderPower, icon, label }: PhasePreviewProps) {
+function PhasePreview({ attackerPower, defenderPower, icon: IconComponent, label }: PhasePreviewProps) {
   const ratio = defenderPower > 0 ? attackerPower / defenderPower : Infinity;
   const percentage = Math.min(100, Math.round((ratio / (ratio + 1)) * 100));
 
@@ -97,7 +100,7 @@ function PhasePreview({ attackerPower, defenderPower, icon, label }: PhasePrevie
     <div className="bg-gray-900/50 rounded-lg p-3">
       <div className="flex items-center justify-between mb-2">
         <span className="flex items-center gap-2">
-          <span>{icon}</span>
+          <IconComponent className="w-5 h-5 text-gray-400" />
           <span className="text-sm text-gray-300">{label}</span>
         </span>
         <span className={`text-sm font-semibold ${getOddsColor(ratio)}`}>
@@ -176,9 +179,9 @@ export function CombatPreview({
       {/* Intelligence Warning */}
       {!hasFullIntel && (
         <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-3 mb-4">
-          <p className="text-yellow-400 text-sm">
-            ⚠️ Limited intelligence. Defender strength is estimated.
-            Send spies for accurate data.
+          <p className="text-yellow-400 text-sm flex items-center gap-1">
+            <UIIcons.warning className="w-4 h-4 flex-shrink-0" />
+            <span>Limited intelligence. Defender strength is estimated. Send spies for accurate data.</span>
           </p>
         </div>
       )}
@@ -186,9 +189,9 @@ export function CombatPreview({
       {/* Carrier Capacity Warning */}
       {soldiersOverCapacity && (
         <div className="bg-orange-900/30 border border-orange-700 rounded-lg p-3 mb-4">
-          <p className="text-orange-400 text-sm">
-            ⚠️ Insufficient carriers! Only {formatNumber(carrierCapacity)} of {formatNumber(attackerForces.soldiers)} soldiers can be transported.
-            You need {Math.ceil(attackerForces.soldiers / SOLDIERS_PER_CARRIER)} carriers.
+          <p className="text-orange-400 text-sm flex items-center gap-1">
+            <UIIcons.warning className="w-4 h-4 flex-shrink-0" />
+            <span>Insufficient carriers! Only {formatNumber(carrierCapacity)} of {formatNumber(attackerForces.soldiers)} soldiers can be transported. You need {Math.ceil(attackerForces.soldiers / SOLDIERS_PER_CARRIER)} carriers.</span>
           </p>
         </div>
       )}
@@ -213,7 +216,7 @@ export function CombatPreview({
           phase="space"
           attackerPower={spacePowerAttacker}
           defenderPower={spacePowerDefender}
-          icon="🚀"
+          icon={Rocket}
           label="Phase 1: Space Combat"
         />
 
@@ -221,7 +224,7 @@ export function CombatPreview({
           phase="orbital"
           attackerPower={orbitalPowerAttacker}
           defenderPower={orbitalPowerDefender}
-          icon="🛸"
+          icon={CircleDot}
           label="Phase 2: Orbital Combat"
         />
 
@@ -229,7 +232,7 @@ export function CombatPreview({
           phase="ground"
           attackerPower={groundPowerAttacker}
           defenderPower={groundPowerDefender}
-          icon="⚔️"
+          icon={Swords}
           label="Phase 3: Ground Combat"
         />
       </div>

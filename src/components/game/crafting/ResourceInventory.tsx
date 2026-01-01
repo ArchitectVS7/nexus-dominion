@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Lock } from "lucide-react";
 import {
   getResourceInventoryAction,
   type InventoryItem,
@@ -154,8 +155,8 @@ export function ResourceInventory({ refreshTrigger, compact = false }: ResourceI
             {isExpanded && (
               <div className="px-2 md:px-3 pb-2 space-y-1">
                 {tierItems.length === 0 ? (
-                  <div className="text-xs text-gray-500 py-1 italic">
-                    🔒 No recipes unlocked yet. Increase research level to unlock crafting.
+                  <div className="text-xs text-gray-500 py-1 italic flex items-center gap-1">
+                    <Lock className="w-3 h-3" /> No recipes unlocked yet. Increase research level to unlock crafting.
                   </div>
                 ) : nonZeroItems.length === 0 ? (
                   <div className="text-xs text-gray-500 py-1 italic">

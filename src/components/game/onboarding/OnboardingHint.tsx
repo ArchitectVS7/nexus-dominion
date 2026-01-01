@@ -8,6 +8,8 @@
  */
 
 import { useState, useEffect } from "react";
+import { Lightbulb, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export interface OnboardingHintProps {
   hintId: string;
@@ -16,7 +18,7 @@ export interface OnboardingHintProps {
   turnToShow: number; // Show this hint on this turn
   currentTurn: number;
   position?: "top" | "bottom" | "inline";
-  icon?: string;
+  icon?: LucideIcon;
   action?: {
     label: string;
     href?: string;
@@ -49,7 +51,7 @@ export function OnboardingHint({
   turnToShow,
   currentTurn,
   position = "inline",
-  icon = "💡",
+  icon: IconComponent = Lightbulb,
   action,
 }: OnboardingHintProps) {
   const [isDismissed, setIsDismissed] = useState(true);
@@ -97,7 +99,7 @@ export function OnboardingHint({
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{icon}</span>
+            <IconComponent className="w-6 h-6 text-blue-300" />
             <h3 className="font-semibold text-blue-200">{title}</h3>
           </div>
           <button
@@ -105,9 +107,7 @@ export function OnboardingHint({
             className="text-gray-400 hover:text-white transition-colors"
             aria-label="Dismiss hint"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 

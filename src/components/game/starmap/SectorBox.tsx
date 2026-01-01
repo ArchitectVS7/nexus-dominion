@@ -240,10 +240,11 @@ export function SectorBox({
                   y={cy - size / 2 - 4}
                   textAnchor="middle"
                   dominantBaseline="middle"
+                  fill="#fbbf24"
                   fontSize="10"
                   className="pointer-events-none select-none"
                 >
-                  👑
+                  ♛
                 </text>
               )}
 
@@ -351,12 +352,21 @@ export function SectorBox({
       {/* Danger level indicator */}
       {region.dangerLevel > 70 && (
         <g transform={`translate(${x + width - 18}, ${y + height - 16})`}>
-          <text
+          <polygon
+            points="6,0 12,10 0,10"
             fill="#ef4444"
-            fontSize="10"
+            opacity={0.8}
+          />
+          <text
+            x="6"
+            y="9"
+            textAnchor="middle"
+            fill="white"
+            fontSize="7"
+            fontWeight="bold"
             className="pointer-events-none select-none"
           >
-            ⚠
+            !
           </text>
         </g>
       )}

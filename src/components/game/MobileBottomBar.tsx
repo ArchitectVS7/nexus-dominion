@@ -11,7 +11,9 @@
  * Visible only on mobile (< lg breakpoint)
  */
 
-import { RESOURCE_ICONS, UI_LABELS } from "@/lib/theme/names";
+import { UI_LABELS } from "@/lib/theme/names";
+import { ResourceIcons, ActionIcons } from "@/lib/theme/icons";
+import { Menu } from "lucide-react";
 
 interface MobileBottomBarProps {
   currentTurn: number;
@@ -72,13 +74,13 @@ export function MobileBottomBar({
 
         {/* Credits */}
         <div className="flex items-center gap-1">
-          <span className="text-sm">{RESOURCE_ICONS.credits}</span>
+          <ResourceIcons.credits className="w-4 h-4 text-lcars-amber" />
           <span className="text-sm font-mono text-lcars-amber">{formatCompact(credits)}</span>
         </div>
 
         {/* Food status indicator */}
         <div className="flex items-center gap-1">
-          <span className="text-sm">{RESOURCE_ICONS.food}</span>
+          <ResourceIcons.food className="w-4 h-4 text-green-400" />
           <span className={`text-xs ${FOOD_COLORS[foodStatus]}`}>
             {foodStatus.charAt(0).toUpperCase() + foodStatus.slice(1)}
           </span>
@@ -86,7 +88,7 @@ export function MobileBottomBar({
 
         {/* Army status indicator */}
         <div className="flex items-center gap-1">
-          <span className="text-sm">⚔️</span>
+          <ActionIcons.military className="w-4 h-4 text-red-400" />
           <span className={`text-xs ${ARMY_COLORS[armyStrength]}`}>
             {armyStrength.charAt(0).toUpperCase() + armyStrength.slice(1)}
           </span>
@@ -98,9 +100,7 @@ export function MobileBottomBar({
           className="relative p-2 text-gray-400 hover:text-white"
           aria-label="Open actions"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <Menu className="w-5 h-5" />
           {unreadMessages > 0 && (
             <span className="absolute -top-1 -right-1 w-4 h-4 text-[10px] bg-red-500 text-white rounded-full flex items-center justify-center">
               {unreadMessages > 9 ? "9+" : unreadMessages}

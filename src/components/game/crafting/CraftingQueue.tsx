@@ -6,6 +6,7 @@ import {
   cancelCraftingOrderAction,
   type QueueItemDisplay,
 } from "@/app/actions/crafting-actions";
+import { Factory, ClipboardList, Clock, Wrench } from "lucide-react";
 
 interface CraftingQueueProps {
   refreshTrigger?: number;
@@ -80,7 +81,7 @@ export function CraftingQueue({ refreshTrigger, onQueueUpdated }: CraftingQueueP
     return (
       <div className="space-y-3">
         <div className="bg-gray-800/50 border border-gray-700 rounded p-3 text-xs text-gray-400">
-          <p className="mb-2">🏭 Your crafting queue is empty.</p>
+          <p className="mb-2 flex items-center gap-1"><Factory className="w-4 h-4" /> Your crafting queue is empty.</p>
           <p>Visit the <span className="text-lcars-purple font-semibold">Craft</span> tab to select recipes and queue production. Items will complete over multiple turns.</p>
         </div>
         <div className="text-gray-500 text-sm p-3 bg-black/30 rounded border border-gray-700/50 text-center italic">
@@ -94,7 +95,7 @@ export function CraftingQueue({ refreshTrigger, onQueueUpdated }: CraftingQueueP
     <div className="space-y-3">
       {/* Help text */}
       <div className="bg-gray-800/50 border border-gray-700 rounded p-2 md:p-3 text-xs text-gray-400">
-        <p>🏭 Items build sequentially. The first item shows a progress bar. Cancel queued items anytime to refund resources.</p>
+        <p className="flex items-start gap-1"><Factory className="w-4 h-4 flex-shrink-0" /> Items build sequentially. The first item shows a progress bar. Cancel queued items anytime to refund resources.</p>
       </div>
 
       {error && (
@@ -105,11 +106,11 @@ export function CraftingQueue({ refreshTrigger, onQueueUpdated }: CraftingQueueP
 
       {/* Summary */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 text-xs md:text-sm p-2 md:p-3 bg-black/30 rounded">
-        <span className="text-gray-400 font-semibold">
-          📋 {queue.items.length} item{queue.items.length !== 1 ? "s" : ""} in queue
+        <span className="text-gray-400 font-semibold flex items-center gap-1">
+          <ClipboardList className="w-4 h-4" /> {queue.items.length} item{queue.items.length !== 1 ? "s" : ""} in queue
         </span>
-        <span className="text-lcars-amber font-mono">
-          ⏱ {queue.totalTurnsRemaining} turn{queue.totalTurnsRemaining !== 1 ? "s" : ""} total
+        <span className="text-lcars-amber font-mono flex items-center gap-1">
+          <Clock className="w-4 h-4" /> {queue.totalTurnsRemaining} turn{queue.totalTurnsRemaining !== 1 ? "s" : ""} total
         </span>
       </div>
 
@@ -117,7 +118,7 @@ export function CraftingQueue({ refreshTrigger, onQueueUpdated }: CraftingQueueP
       {queue.currentlyBuilding && (
         <div className="p-3 md:p-4 bg-lcars-amber/10 border border-lcars-amber/30 rounded">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
-            <span className="text-lcars-amber font-semibold text-sm md:text-base">🔧 Currently Building</span>
+            <span className="text-lcars-amber font-semibold text-sm md:text-base flex items-center gap-1"><Wrench className="w-4 h-4" /> Currently Building</span>
             <span className="text-xs px-2 py-0.5 rounded bg-lcars-amber text-black font-mono self-start sm:self-auto">
               {queue.currentlyBuilding.turnsRemaining} turn{queue.currentlyBuilding.turnsRemaining !== 1 ? "s" : ""} left
             </span>
@@ -160,8 +161,8 @@ export function CraftingQueue({ refreshTrigger, onQueueUpdated }: CraftingQueueP
                   <div className={`${TIER_COLORS[item.tier]} text-sm md:text-base font-medium`}>
                     {item.quantity}x {item.label}
                   </div>
-                  <div className="text-xs text-gray-500 flex flex-wrap gap-1">
-                    <span>⏱ {item.turnsRemaining} turn{item.turnsRemaining !== 1 ? "s" : ""}</span>
+                  <div className="text-xs text-gray-500 flex flex-wrap gap-1 items-center">
+                    <Clock className="w-3 h-3" /> <span>{item.turnsRemaining} turn{item.turnsRemaining !== 1 ? "s" : ""}</span>
                     <span>•</span>
                     <span>Complete turn {item.completionTurn}</span>
                   </div>

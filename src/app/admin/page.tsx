@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Search, AlertTriangle, Radiation } from "lucide-react";
 import {
   cleanupOldGamesAction,
   getDatabaseStatsAction,
@@ -97,7 +98,7 @@ export default function AdminPage() {
 
   const handleDeleteAll = async () => {
     const confirmed = window.confirm(
-      "⚠️ WARNING: This will delete ALL games and data!\n\nAre you sure you want to proceed?"
+      "WARNING: This will delete ALL games and data!\n\nAre you sure you want to proceed?"
     );
     if (!confirmed) return;
 
@@ -115,7 +116,7 @@ export default function AdminPage() {
 
   const handleTruncateAll = async () => {
     const confirmed = window.confirm(
-      "⚠️⚠️⚠️ NUCLEAR OPTION ⚠️⚠️⚠️\n\nThis will TRUNCATE ALL TABLES individually!\nUse this only if CASCADE delete isn't working.\n\nAre you ABSOLUTELY sure?"
+      "!!! NUCLEAR OPTION !!!\n\nThis will TRUNCATE ALL TABLES individually!\nUse this only if CASCADE delete isn't working.\n\nAre you ABSOLUTELY sure?"
     );
     if (!confirmed) return;
 
@@ -161,8 +162,8 @@ export default function AdminPage() {
         </div>
 
         <div className="lcars-panel mb-6">
-          <h2 className="text-lg font-semibold text-lcars-orange mb-4">
-            🔍 Diagnostics
+          <h2 className="text-lg font-semibold text-lcars-orange mb-4 flex items-center gap-2">
+            <Search className="w-5 h-5" /> Diagnostics
           </h2>
           <p className="text-gray-400 text-sm mb-4">
             First, check if your database tables exist. If they don&apos;t, you need to run migrations.
@@ -188,7 +189,9 @@ export default function AdminPage() {
               </div>
               {tables.length === 0 && (
                 <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded">
-                  <p className="text-red-400 font-semibold">⚠️ No tables found!</p>
+                  <p className="text-red-400 font-semibold flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" /> No tables found!
+                  </p>
                   <p className="text-gray-400 text-sm mt-2">
                     Run migrations: <code className="bg-gray-900 px-2 py-1 rounded">npm run db:push</code>
                   </p>
@@ -320,8 +323,8 @@ export default function AdminPage() {
         </div>
 
         <div className="lcars-panel border-red-500/50">
-          <h2 className="text-lg font-semibold text-red-400 mb-4">
-            ⚠️ Danger Zone
+          <h2 className="text-lg font-semibold text-red-400 mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5" /> Danger Zone
           </h2>
           <div className="space-y-4">
             <div>
@@ -338,8 +341,8 @@ export default function AdminPage() {
               </button>
             </div>
             <div className="pt-4 border-t border-red-500/30">
-              <p className="text-red-300 text-sm mb-2 font-semibold">
-                ☢️ NUCLEAR OPTION ☢️
+              <p className="text-red-300 text-sm mb-2 font-semibold flex items-center gap-2">
+                <Radiation className="w-4 h-4" /> NUCLEAR OPTION <Radiation className="w-4 h-4" />
               </p>
               <p className="text-gray-400 text-sm mb-2">
                 Truncate ALL tables individually. Use this ONLY if CASCADE isn&apos;t working.
@@ -349,9 +352,11 @@ export default function AdminPage() {
               <button
                 onClick={handleTruncateAll}
                 disabled={loading}
-                className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-500 transition-all disabled:opacity-50 border-2 border-orange-400"
+                className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-500 transition-all disabled:opacity-50 border-2 border-orange-400 flex items-center gap-2"
               >
-                {loading ? "Nuking..." : "☢️ TRUNCATE ALL TABLES ☢️"}
+                <Radiation className="w-4 h-4" />
+                {loading ? "Nuking..." : "TRUNCATE ALL TABLES"}
+                <Radiation className="w-4 h-4" />
               </button>
             </div>
           </div>
