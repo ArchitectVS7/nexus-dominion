@@ -12,7 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { UI_LABELS, GAME_TERMS, RESOURCE_NAMES } from "@/lib/theme/names";
-import { ActionIcons, UIIcons } from "@/lib/theme/icons";
+import { ActionIcons } from "@/lib/theme/icons";
 import { Shield, Home, Map, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 

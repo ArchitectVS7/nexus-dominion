@@ -10,9 +10,7 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 1
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "reporter": [
       [
@@ -42,9 +40,7 @@
         "outputDir": "C:/dev/GIT/x-imperium/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 1
-        },
+        "metadata": {},
         "id": "chromium",
         "name": "chromium",
         "testDir": "C:/dev/GIT/x-imperium/e2e",
@@ -88,93 +84,4094 @@
               "tags": [],
               "tests": [
                 {
-                  "timeout": 180000,
+                  "timeout": 30000,
                   "annotations": [],
                   "expectedStatus": "passed",
                   "projectId": "chromium",
                   "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8328,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "\n=== 10 bots test: Testing with 10 bots ===\n"
-                        },
-                        {
-                          "text": "  Database cleanup skipped\n"
-                        },
-                        {
-                          "text": "  Creating new game...\n"
-                        },
-                        {
-                          "text": "  Skipping tutorial...\n"
-                        },
-                        {
-                          "text": "  Selected 10 bots\n"
-                        },
-                        {
-                          "text": "  Form submitted, waiting for game creation...\n"
-                        },
-                        {
-                          "text": "  Dismissing post-creation tutorial modals...\n"
-                        },
-                        {
-                          "text": "  Dismissed modal 1 via \"Got it\" button\n"
-                        },
-                        {
-                          "text": "  Dismissed modal 2 via X button\n"
-                        },
-                        {
-                          "text": "  Dismissed 2 tutorial modals\n"
-                        },
-                        {
-                          "text": "  Game is ready - turn order panel visible\n"
-                        },
-                        {
-                          "text": "✅ Game ready with 10 bots\n"
-                        },
-                        {
-                          "text": "Processing 5 turns with 10 bots...\n"
-                        },
-                        {
-                          "text": "  Turn 1/5: 54ms\n"
-                        },
-                        {
-                          "text": "  Turn 2/5: 27ms\n"
-                        },
-                        {
-                          "text": "  Turn 3/5: 39ms\n"
-                        },
-                        {
-                          "text": "  Turn 4/5: 43ms\n"
-                        },
-                        {
-                          "text": "  Turn 5/5: 71ms\n"
-                        },
-                        {
-                          "text": "✅ 5 turns completed in 2806ms (avg: 561ms/turn)\n"
-                        },
-                        {
-                          "text": "\n✅ 10 bots: Average 561ms per turn\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-31T11:15:28.285Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
+                  "results": [],
+                  "status": "skipped"
                 }
               ],
               "id": "0e59e5cd7878eb2e4ffe-5ef546429ccbddcd982c",
               "file": "bot-scaling-test.spec.ts",
               "line": 140,
+              "column": 7
+            },
+            {
+              "title": "25 bots - 5 turns",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0e59e5cd7878eb2e4ffe-fe8e8eb9e45b62e76c1b",
+              "file": "bot-scaling-test.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "50 bots - 5 turns",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0e59e5cd7878eb2e4ffe-d9bce55d31ea8d8b2266",
+              "file": "bot-scaling-test.spec.ts",
+              "line": 158,
+              "column": 7
+            },
+            {
+              "title": "100 bots - 5 turns",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "0e59e5cd7878eb2e4ffe-cd86c9eee78d50a6dcbb",
+              "file": "bot-scaling-test.spec.ts",
+              "line": 167,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "comprehensive-test.spec.ts",
+      "file": "comprehensive-test.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "10-Turn Comprehensive Game Test",
+          "file": "comprehensive-test.spec.ts",
+          "line": 108,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Complete 10-turn playthrough with all features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b5cbbe0716864200cf62-b213e1ccf87b94a8f2d5",
+              "file": "comprehensive-test.spec.ts",
+              "line": 109,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "crafting-system.spec.ts",
+      "file": "crafting-system.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crafting System",
+          "file": "crafting-system.spec.ts",
+          "line": 18,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Navigation",
+              "file": "crafting-system.spec.ts",
+              "line": 43,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to crafting page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-5e019dabdb06ab53ee9c",
+                  "file": "crafting-system.spec.ts",
+                  "line": 44,
+                  "column": 9
+                },
+                {
+                  "title": "can navigate to syndicate page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-bf60c548dc49a9fc88eb",
+                  "file": "crafting-system.spec.ts",
+                  "line": 60,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Resource Inventory",
+              "file": "crafting-system.spec.ts",
+              "line": 77,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays initial resource inventory",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-d9cb3f81bafbc816f96e",
+                  "file": "crafting-system.spec.ts",
+                  "line": 78,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Crafting Recipes",
+              "file": "crafting-system.spec.ts",
+              "line": 112,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays available recipes",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-69080cb2a78c81e109ec",
+                  "file": "crafting-system.spec.ts",
+                  "line": 113,
+                  "column": 9
+                },
+                {
+                  "title": "can filter recipes by tier",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-4d89035ae68c839082d5",
+                  "file": "crafting-system.spec.ts",
+                  "line": 135,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Crafting Queue",
+              "file": "crafting-system.spec.ts",
+              "line": 158,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can add item to crafting queue",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-e8c3204c13666467c542",
+                  "file": "crafting-system.spec.ts",
+                  "line": 159,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Turn Processing",
+              "file": "crafting-system.spec.ts",
+              "line": 204,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "crafting queue processes on turn end",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-77286c0d5f90501bff17",
+                  "file": "crafting-system.spec.ts",
+                  "line": 205,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Syndicate System",
+          "file": "crafting-system.spec.ts",
+          "line": 242,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Trust System",
+              "file": "crafting-system.spec.ts",
+              "line": 263,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays initial trust level",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-d7eb644f4e347c18a7e4",
+                  "file": "crafting-system.spec.ts",
+                  "line": 264,
+                  "column": 9
+                },
+                {
+                  "title": "shows available contracts",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-0426eca82d7791ca84ff",
+                  "file": "crafting-system.spec.ts",
+                  "line": 301,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Black Market Catalog",
+              "file": "crafting-system.spec.ts",
+              "line": 323,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays black market items",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-8fab55fbdfe71d0aef97",
+                  "file": "crafting-system.spec.ts",
+                  "line": 324,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Integration",
+              "file": "crafting-system.spec.ts",
+              "line": 346,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "crafting and syndicate pages coexist",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-cf247359ad7d204e8bde",
+                  "file": "crafting-system.spec.ts",
+                  "line": 347,
+                  "column": 9
+                },
+                {
+                  "title": "can craft and use syndicate in same game",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ab7cdb13a85b485daac-3fec9eff99c6e1a27e36",
+                  "file": "crafting-system.spec.ts",
+                  "line": 363,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-1.spec.ts",
+      "file": "milestone-1.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 1: Static Empire View",
+          "file": "milestone-1.spec.ts",
+          "line": 56,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Game Creation",
+              "file": "milestone-1.spec.ts",
+              "line": 57,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "shows new game prompt when no game exists",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-c306aea3801193eb8e0d",
+                  "file": "milestone-1.spec.ts",
+                  "line": 58,
+                  "column": 9
+                },
+                {
+                  "title": "can create a new game and verify initial state",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-af64861737d9621db91c",
+                  "file": "milestone-1.spec.ts",
+                  "line": 70,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Resource Display",
+              "file": "milestone-1.spec.ts",
+              "line": 86,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "dashboard displays correct starting resources with exact values",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-9f36851644b6cda0e2e2",
+                  "file": "milestone-1.spec.ts",
+                  "line": 87,
+                  "column": 9
+                },
+                {
+                  "title": "resource panel shows all resource types",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-b5227a07390e8d0ab8b4",
+                  "file": "milestone-1.spec.ts",
+                  "line": 100,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Planet System",
+              "file": "milestone-1.spec.ts",
+              "line": 115,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "planet list shows exactly 5 planets",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-f3bdf07ffbf97e1262d2",
+                  "file": "milestone-1.spec.ts",
+                  "line": 116,
+                  "column": 9
+                },
+                {
+                  "title": "planet distribution matches PRD specification",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-76ca749dad80bff17e27",
+                  "file": "milestone-1.spec.ts",
+                  "line": 126,
+                  "column": 9
+                },
+                {
+                  "title": "can navigate to planets page and see all planet cards",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-52d925bfa9c164ea661a",
+                  "file": "milestone-1.spec.ts",
+                  "line": 139,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Networth Calculation",
+              "file": "milestone-1.spec.ts",
+              "line": 150,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "networth displays using correct formula from PRD",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-8c1ad110760c3f3c3d71",
+                  "file": "milestone-1.spec.ts",
+                  "line": 151,
+                  "column": 9
+                },
+                {
+                  "title": "networth panel is visible and shows value",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-6a36a87c23a3e2ba0e52",
+                  "file": "milestone-1.spec.ts",
+                  "line": 162,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Population & Civil Status",
+              "file": "milestone-1.spec.ts",
+              "line": 174,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "population count is exactly 10,000 at game start",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-9dc23e783ba2e2d56660",
+                  "file": "milestone-1.spec.ts",
+                  "line": 175,
+                  "column": 9
+                },
+                {
+                  "title": "civil status starts as Content",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-bc8d0f941bacb3247ba3",
+                  "file": "milestone-1.spec.ts",
+                  "line": 184,
+                  "column": 9
+                },
+                {
+                  "title": "population panel displays correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-d0ad1321476bdd12306c",
+                  "file": "milestone-1.spec.ts",
+                  "line": 193,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Military Panel",
+              "file": "milestone-1.spec.ts",
+              "line": 204,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "military panel shows exactly 100 starting soldiers",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-ed9f51ead90d2dd8446e",
+                  "file": "milestone-1.spec.ts",
+                  "line": 205,
+                  "column": 9
+                },
+                {
+                  "title": "military panel is visible on dashboard",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-ece6b99a857439eb2966",
+                  "file": "milestone-1.spec.ts",
+                  "line": 214,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Turn System",
+              "file": "milestone-1.spec.ts",
+              "line": 224,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "game starts at turn 1",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-9488eb1166f5db78a6b0",
+                  "file": "milestone-1.spec.ts",
+                  "line": 225,
+                  "column": 9
+                },
+                {
+                  "title": "end turn button is visible and clickable",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-c4bf70e2c63ff48c375b",
+                  "file": "milestone-1.spec.ts",
+                  "line": 232,
+                  "column": 9
+                },
+                {
+                  "title": "ending turn increments turn counter and updates resources",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-f6cdfabffe9fe184d000",
+                  "file": "milestone-1.spec.ts",
+                  "line": 240,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation",
+              "file": "milestone-1.spec.ts",
+              "line": 263,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to all main game pages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "17474125fd6fd4ab60b2-20d14416e3898e1a7770",
+                  "file": "milestone-1.spec.ts",
+                  "line": 264,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-12-llm-bots.spec.ts",
+      "file": "milestone-12-llm-bots.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 12: LLM-Powered Tier 1 Bots",
+          "file": "milestone-12-llm-bots.spec.ts",
+          "line": 19,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Tier Distribution",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 57,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "creates game with correct tier distribution (25 bots)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-7a57d0e603cddfefe0cc",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 58,
+                  "column": 9
+                },
+                {
+                  "title": "LLM bots have llmEnabled flag set",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-122c13bebee34e2fb4b1",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 94,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "LLM Decision Making",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 126,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "processes turns with LLM bot decisions",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-ff30faf0072dd1a68f6f",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 127,
+                  "column": 9
+                },
+                {
+                  "title": "LLM decisions are logged to database",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-4a1729f3ea4e53d7d098",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 151,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Decision Cache",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 183,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "pre-computes decisions for next turn",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-cb87b70968132beae92c",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 184,
+                  "column": 9
+                },
+                {
+                  "title": "retrieves cached decisions on turn processing",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-edbf127d43cf8654e5b1",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 221,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "LLM Messages",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 251,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "LLM bots send contextual messages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-2322f1c6aba15d874e78",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 252,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Cost Tracking",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 286,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "tracks LLM costs and token usage",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-4bd3fcc48d48bcd14664",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 287,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Fallback Behavior",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 333,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "continues working even if LLM calls fail",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-5e51824798b43f4e35bc",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 334,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Performance",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 358,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "turn processing completes within reasonable time",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-baa00bd581a734f10b79",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 359,
+                  "column": 9
+                },
+                {
+                  "title": "multiple turns can be processed in sequence",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-d80299d53dd78cfff27f",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 389,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Integration",
+              "file": "milestone-12-llm-bots.spec.ts",
+              "line": 416,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "LLM bots interact with other game systems",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "b001e70ea3ee065ddf91-729c5026e8ba159a07e6",
+                  "file": "milestone-12-llm-bots.spec.ts",
+                  "line": 417,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-3.spec.ts",
+      "file": "milestone-3.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 3: Planet, Units & Research",
+          "file": "milestone-3.spec.ts",
+          "line": 35,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Research System",
+              "file": "milestone-3.spec.ts",
+              "line": 36,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to research page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-9d4d3d2b2be527d94ab2",
+                  "file": "milestone-3.spec.ts",
+                  "line": 37,
+                  "column": 9
+                },
+                {
+                  "title": "research panel loads and shows Level 0 for new game",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-e65ce71bc63e42df7143",
+                  "file": "milestone-3.spec.ts",
+                  "line": 46,
+                  "column": 9
+                },
+                {
+                  "title": "research progress component displays correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-9ab09476f66864bdb80a",
+                  "file": "milestone-3.spec.ts",
+                  "line": 59,
+                  "column": 9
+                },
+                {
+                  "title": "research info shows correct starting data",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-b3b64f752fb1a3d4067e",
+                  "file": "milestone-3.spec.ts",
+                  "line": 73,
+                  "column": 9
+                },
+                {
+                  "title": "research system info displays unlock information",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-1e7e2e29473f7465cfc2",
+                  "file": "milestone-3.spec.ts",
+                  "line": 88,
+                  "column": 9
+                },
+                {
+                  "title": "research points accumulate after ending turn",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-09d980bb84c74c42c076",
+                  "file": "milestone-3.spec.ts",
+                  "line": 100,
+                  "column": 9
+                },
+                {
+                  "title": "research level increases when threshold reached",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-04b009336abe263a9a47",
+                  "file": "milestone-3.spec.ts",
+                  "line": 115,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Military System",
+              "file": "milestone-3.spec.ts",
+              "line": 131,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to military page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-1eeabf5477b7324018b0",
+                  "file": "milestone-3.spec.ts",
+                  "line": 132,
+                  "column": 9
+                },
+                {
+                  "title": "military page shows starting soldiers count",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-e3ffc0b07bfb86b73ce4",
+                  "file": "milestone-3.spec.ts",
+                  "line": 141,
+                  "column": 9
+                },
+                {
+                  "title": "military page shows all unit types",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-3aac8eeb53de62afcde7",
+                  "file": "milestone-3.spec.ts",
+                  "line": 156,
+                  "column": 9
+                },
+                {
+                  "title": "can see build queue section",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-b64cd8a2421ee64481fa",
+                  "file": "milestone-3.spec.ts",
+                  "line": 170,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Planets System",
+              "file": "milestone-3.spec.ts",
+              "line": 186,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "planets page loads with 5 starting planets",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-0fe0e53876c376f27774",
+                  "file": "milestone-3.spec.ts",
+                  "line": 187,
+                  "column": 9
+                },
+                {
+                  "title": "research planet must be purchased (not in starting config)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-db32ab3bbd0fec2fe84f",
+                  "file": "milestone-3.spec.ts",
+                  "line": 197,
+                  "column": 9
+                },
+                {
+                  "title": "planet distribution matches starting specification",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-d9f7975ae5b73aa24a0d",
+                  "file": "milestone-3.spec.ts",
+                  "line": 208,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Dashboard Integration",
+              "file": "milestone-3.spec.ts",
+              "line": 237,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "dashboard shows research points",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-f3d20976cf89d051ffe0",
+                  "file": "milestone-3.spec.ts",
+                  "line": 238,
+                  "column": 9
+                },
+                {
+                  "title": "dashboard updates after turn processing",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-ed31bda5b1e64b4d6a8f",
+                  "file": "milestone-3.spec.ts",
+                  "line": 249,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation Flow",
+              "file": "milestone-3.spec.ts",
+              "line": 268,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate between all M3 pages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-0dbfc7fa7047444209cd",
+                  "file": "milestone-3.spec.ts",
+                  "line": 269,
+                  "column": 9
+                },
+                {
+                  "title": "state persists across navigation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "ab599ca29e5f71555456-f669936a3a71529dc553",
+                  "file": "milestone-3.spec.ts",
+                  "line": 291,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-4.spec.ts",
+      "file": "milestone-4.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 4: Combat System",
+          "file": "milestone-4.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Combat Page Navigation",
+              "file": "milestone-4.spec.ts",
+              "line": 34,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to combat page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-70313e9e5b0358edfc16",
+                  "file": "milestone-4.spec.ts",
+                  "line": 35,
+                  "column": 9
+                },
+                {
+                  "title": "combat page loads without errors",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-01ffd657ab534e71ff9c",
+                  "file": "milestone-4.spec.ts",
+                  "line": 47,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Combat UI Elements",
+              "file": "milestone-4.spec.ts",
+              "line": 58,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "shows target selection panel",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-06dc9d8464ffe5e7e687",
+                  "file": "milestone-4.spec.ts",
+                  "line": 59,
+                  "column": 9
+                },
+                {
+                  "title": "shows attack type options (invasion and guerilla)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-22b0fa0c430e3571e6dd",
+                  "file": "milestone-4.spec.ts",
+                  "line": 68,
+                  "column": 9
+                },
+                {
+                  "title": "attack type buttons toggle correctly",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-4df0537cc4c46602ad56",
+                  "file": "milestone-4.spec.ts",
+                  "line": 79,
+                  "column": 9
+                },
+                {
+                  "title": "shows launch attack button",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-b73a05c4ca459cc6c6e5",
+                  "file": "milestone-4.spec.ts",
+                  "line": 96,
+                  "column": 9
+                },
+                {
+                  "title": "launch attack button disabled without target selection",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-aa8f6936bc29e6e7bce5",
+                  "file": "milestone-4.spec.ts",
+                  "line": 107,
+                  "column": 9
+                },
+                {
+                  "title": "shows combat system info panel",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-35d2a36be5fd29609f88",
+                  "file": "milestone-4.spec.ts",
+                  "line": 117,
+                  "column": 9
+                },
+                {
+                  "title": "shows recent battles section (empty for new game)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-75e8e704e5ad968703e8",
+                  "file": "milestone-4.spec.ts",
+                  "line": 129,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Force Selection",
+              "file": "milestone-4.spec.ts",
+              "line": 140,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "shows force selection inputs with correct starting soldiers",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-4c93df066f51b0cb2ede",
+                  "file": "milestone-4.spec.ts",
+                  "line": 141,
+                  "column": 9
+                },
+                {
+                  "title": "force inputs show available count matching empire state",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-b81ba47312b99f22bde4",
+                  "file": "milestone-4.spec.ts",
+                  "line": 155,
+                  "column": 9
+                },
+                {
+                  "title": "guerilla mode disables non-soldier force inputs",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-ea94629687d47a63fe8e",
+                  "file": "milestone-4.spec.ts",
+                  "line": 168,
+                  "column": 9
+                },
+                {
+                  "title": "invasion mode enables all force inputs",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-3a5fbfb20e636c517190",
+                  "file": "milestone-4.spec.ts",
+                  "line": 184,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Target Display",
+              "file": "milestone-4.spec.ts",
+              "line": 199,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays bot empires as potential targets",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-7449029c064a374f3616",
+                  "file": "milestone-4.spec.ts",
+                  "line": 200,
+                  "column": 9
+                },
+                {
+                  "title": "can select a target empire",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-6a13a3d62c8b7256b679",
+                  "file": "milestone-4.spec.ts",
+                  "line": 211,
+                  "column": 9
+                },
+                {
+                  "title": "selecting target enables attack button (outside protection period)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-0f13db811eee313f74b0",
+                  "file": "milestone-4.spec.ts",
+                  "line": 226,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Combat State Verification",
+              "file": "milestone-4.spec.ts",
+              "line": 255,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "state is preserved after visiting combat page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-4f41942c29b0c9288ff0",
+                  "file": "milestone-4.spec.ts",
+                  "line": 256,
+                  "column": 9
+                },
+                {
+                  "title": "turn advances without error when no combat initiated",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-0387844e3278398fd348",
+                  "file": "milestone-4.spec.ts",
+                  "line": 277,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation Integration",
+              "file": "milestone-4.spec.ts",
+              "line": 288,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate from combat to military and back",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-248f50cbf8b758089b95",
+                  "file": "milestone-4.spec.ts",
+                  "line": 289,
+                  "column": 9
+                },
+                {
+                  "title": "can navigate between all game pages including combat",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "46affe3c66a2444f9f8f-d1fb165a3d750a9b352d",
+                  "file": "milestone-4.spec.ts",
+                  "line": 305,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-5.spec.ts",
+      "file": "milestone-5.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 5: Random Bots",
+          "file": "milestone-5.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Difficulty Selector",
+              "file": "milestone-5.spec.ts",
+              "line": 36,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "shows difficulty selector on new game",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-3ae005732a200a286795",
+                  "file": "milestone-5.spec.ts",
+                  "line": 37,
+                  "column": 9
+                },
+                {
+                  "title": "normal difficulty is selected by default",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-f9ddc43584ea0eecfe8f",
+                  "file": "milestone-5.spec.ts",
+                  "line": 51,
+                  "column": 9
+                },
+                {
+                  "title": "can select different difficulty levels",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-840d5f965c6ff0dd3482",
+                  "file": "milestone-5.spec.ts",
+                  "line": 59,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Game Start with Bots",
+              "file": "milestone-5.spec.ts",
+              "line": 75,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "starting a game shows 25 AI empires message",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-8d829fdf6ec0d1f043f7",
+                  "file": "milestone-5.spec.ts",
+                  "line": 76,
+                  "column": 9
+                },
+                {
+                  "title": "game starts successfully with bots",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-809880ef6a100babc1b5",
+                  "file": "milestone-5.spec.ts",
+                  "line": 84,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Starmap",
+              "file": "milestone-5.spec.ts",
+              "line": 95,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to starmap page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-68f3e012b18fc65c7ba1",
+                  "file": "milestone-5.spec.ts",
+                  "line": 96,
+                  "column": 9
+                },
+                {
+                  "title": "starmap shows empire count",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-e645de0e79e50b4f036d",
+                  "file": "milestone-5.spec.ts",
+                  "line": 112,
+                  "column": 9
+                },
+                {
+                  "title": "starmap displays force-directed graph",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-c84a9a31edce000bb10b",
+                  "file": "milestone-5.spec.ts",
+                  "line": 125,
+                  "column": 9
+                },
+                {
+                  "title": "starmap shows empire nodes",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-38d268b0aa1992305c9d",
+                  "file": "milestone-5.spec.ts",
+                  "line": 139,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Turn Processing with Bots",
+              "file": "milestone-5.spec.ts",
+              "line": 157,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "end turn processes bot decisions",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-bab451b7ee5f20231c9e",
+                  "file": "milestone-5.spec.ts",
+                  "line": 158,
+                  "column": 9
+                },
+                {
+                  "title": "multiple turns can be processed",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-3efa22a7dc6b1398c9de",
+                  "file": "milestone-5.spec.ts",
+                  "line": 177,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Protection Period",
+              "file": "milestone-5.spec.ts",
+              "line": 192,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "during protection period, combat targets may be limited",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-3a5ebba6819648e83d79",
+                  "file": "milestone-5.spec.ts",
+                  "line": 193,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation Integration",
+              "file": "milestone-5.spec.ts",
+              "line": 207,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate between starmap and other pages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-66d1f07f7794f720f493",
+                  "file": "milestone-5.spec.ts",
+                  "line": 208,
+                  "column": 9
+                },
+                {
+                  "title": "navigation includes starmap link",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "15a7abc254bdd8f80d58-a6d1ad248ddd603ffd3b",
+                  "file": "milestone-5.spec.ts",
+                  "line": 232,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-6.5.spec.ts",
+      "file": "milestone-6.5.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 6.5: Covert Operations",
+          "file": "milestone-6.5.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Covert Page Navigation",
+              "file": "milestone-6.5.spec.ts",
+              "line": 18,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to covert operations page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-177680a458f23fd1f0c9",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 19,
+                  "column": 9
+                },
+                {
+                  "title": "covert page link is in navigation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-defe91c15355587e7768",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 35,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Covert Status Panel",
+              "file": "milestone-6.5.spec.ts",
+              "line": 43,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays covert status panel with points",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-de900cd5f86a347f0e86",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 44,
+                  "column": 9
+                },
+                {
+                  "title": "displays agent count and capacity",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-f0958c7215cab8d114f9",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 59,
+                  "column": 9
+                },
+                {
+                  "title": "shows points accumulation rate (+5/turn)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-2ba10fddd59d1e5d8451",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 69,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Target Selector",
+              "file": "milestone-6.5.spec.ts",
+              "line": 80,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays target selector panel",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-cc8b5e4ca9fd10dce114",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 81,
+                  "column": 9
+                },
+                {
+                  "title": "target selector has selectable empires",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-cd6b62530ee9e3805fe8",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 96,
+                  "column": 9
+                },
+                {
+                  "title": "can select a target empire",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-0cc46a8864432b4474a6",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 110,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Operations Display",
+              "file": "milestone-6.5.spec.ts",
+              "line": 136,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays available covert operations heading",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-dd801d2250dc39c04792",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 137,
+                  "column": 9
+                },
+                {
+                  "title": "shows message to select target when no target selected",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-678af3acc8ee205fb723",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 147,
+                  "column": 9
+                },
+                {
+                  "title": "displays operation cards when target is selected",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-d0d02a6a6b4070c1fde1",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 161,
+                  "column": 9
+                },
+                {
+                  "title": "operation cards show cost and risk level",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-c6f049fb9cc9a702ce34",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 188,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Covert Points Accumulation",
+              "file": "milestone-6.5.spec.ts",
+              "line": 222,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "covert points increase after ending turn",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-4456550e39149098947c",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 223,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation Integration",
+              "file": "milestone-6.5.spec.ts",
+              "line": 255,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate between covert and other pages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "9ac1abfbaf645e925c09-6a2a5fc495efa1c4d6a7",
+                  "file": "milestone-6.5.spec.ts",
+                  "line": 256,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-6.spec.ts",
+      "file": "milestone-6.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 6: Victory & Persistence",
+          "file": "milestone-6.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Game Resume (Ironman Save)",
+              "file": "milestone-6.spec.ts",
+              "line": 18,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "game persists across page reloads",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-1ce28a310485bbfdd8e0",
+                  "file": "milestone-6.spec.ts",
+                  "line": 19,
+                  "column": 9
+                },
+                {
+                  "title": "can navigate to dashboard after reload",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-f7ff4d021d0d95716498",
+                  "file": "milestone-6.spec.ts",
+                  "line": 47,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Result Page Navigation",
+              "file": "milestone-6.spec.ts",
+              "line": 66,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "result page exists and is accessible",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-4f7201bb32b2d8383369",
+                  "file": "milestone-6.spec.ts",
+                  "line": 67,
+                  "column": 9
+                },
+                {
+                  "title": "result page has continue playing button when game in progress",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-d41af327cc05cc7dc587",
+                  "file": "milestone-6.spec.ts",
+                  "line": 80,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Victory Conditions Display",
+              "file": "milestone-6.spec.ts",
+              "line": 100,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "dashboard shows networth which is used for economic victory",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-15998b4cf05821348b27",
+                  "file": "milestone-6.spec.ts",
+                  "line": 101,
+                  "column": 9
+                },
+                {
+                  "title": "turn counter shows current turn (survival victory at 200)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-27448792df3d6a4d8580",
+                  "file": "milestone-6.spec.ts",
+                  "line": 112,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Defeat Condition Awareness",
+              "file": "milestone-6.spec.ts",
+              "line": 127,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "civil status is visible (relates to civil collapse defeat)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-1cc75c9af0de05f570ab",
+                  "file": "milestone-6.spec.ts",
+                  "line": 128,
+                  "column": 9
+                },
+                {
+                  "title": "resources panel shows credits (relates to bankruptcy defeat)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-1ed6cf9a51f92b90bbc8",
+                  "file": "milestone-6.spec.ts",
+                  "line": 144,
+                  "column": 9
+                },
+                {
+                  "title": "planet count is visible (relates to elimination defeat)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-60a6535fb0616007d4bc",
+                  "file": "milestone-6.spec.ts",
+                  "line": 155,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation Integration",
+              "file": "milestone-6.spec.ts",
+              "line": 171,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate from home to new game",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-8f608b499f835381be29",
+                  "file": "milestone-6.spec.ts",
+                  "line": 172,
+                  "column": 9
+                },
+                {
+                  "title": "return home link works from various pages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "f8404b825019836b2820-bc092d13126a19cef130",
+                  "file": "milestone-6.spec.ts",
+                  "line": 187,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-7.spec.ts",
+      "file": "milestone-7.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 7: Market & Diplomacy",
+          "file": "milestone-7.spec.ts",
+          "line": 38,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Market Page Navigation",
+              "file": "milestone-7.spec.ts",
+              "line": 39,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to market page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-19df45d82035b2548ac0",
+                  "file": "milestone-7.spec.ts",
+                  "line": 40,
+                  "column": 9
+                },
+                {
+                  "title": "market page link visible in navigation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-96a8175b03b281734222",
+                  "file": "milestone-7.spec.ts",
+                  "line": 52,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Market Panel Display",
+              "file": "milestone-7.spec.ts",
+              "line": 59,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays market prices for all tradeable resources",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-55ee6a3164e1215b0383",
+                  "file": "milestone-7.spec.ts",
+                  "line": 60,
+                  "column": 9
+                },
+                {
+                  "title": "displays player resources in market context",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-20a2a4a359b57b3de2fc",
+                  "file": "milestone-7.spec.ts",
+                  "line": 76,
+                  "column": 9
+                },
+                {
+                  "title": "has buy and sell tabs",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-3f3c892b89ed1f5ede4f",
+                  "file": "milestone-7.spec.ts",
+                  "line": 88,
+                  "column": 9
+                },
+                {
+                  "title": "can switch between buy and sell tabs",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-b5809d6b1453d3a9244c",
+                  "file": "milestone-7.spec.ts",
+                  "line": 98,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Market Trading UI",
+              "file": "milestone-7.spec.ts",
+              "line": 116,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "has quantity input field",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-86cb5408b01a36171278",
+                  "file": "milestone-7.spec.ts",
+                  "line": 117,
+                  "column": 9
+                },
+                {
+                  "title": "can enter quantity and see cost preview",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-6a1f732622299a1606a2",
+                  "file": "milestone-7.spec.ts",
+                  "line": 126,
+                  "column": 9
+                },
+                {
+                  "title": "has trade button",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-cf055ed689b1eeeac53e",
+                  "file": "milestone-7.spec.ts",
+                  "line": 147,
+                  "column": 9
+                },
+                {
+                  "title": "can select different resources to trade",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-5161ce3307fd4a390f94",
+                  "file": "milestone-7.spec.ts",
+                  "line": 156,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Market Functional Trading",
+              "file": "milestone-7.spec.ts",
+              "line": 170,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "buying resources decreases credits and increases resource",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-e432e41d29d93f9accc2",
+                  "file": "milestone-7.spec.ts",
+                  "line": 171,
+                  "column": 9
+                },
+                {
+                  "title": "selling resources increases credits and decreases resource",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-41e48c580dd96c5118bd",
+                  "file": "milestone-7.spec.ts",
+                  "line": 203,
+                  "column": 9
+                },
+                {
+                  "title": "cannot buy more than credits allow",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-8ae444bd76eadd9c9b24",
+                  "file": "milestone-7.spec.ts",
+                  "line": 236,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Diplomacy Page Navigation",
+              "file": "milestone-7.spec.ts",
+              "line": 259,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to diplomacy page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-503e2961dc8ac6b8ecce",
+                  "file": "milestone-7.spec.ts",
+                  "line": 260,
+                  "column": 9
+                },
+                {
+                  "title": "diplomacy page link visible in navigation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-055477f2349c3fa8a1d2",
+                  "file": "milestone-7.spec.ts",
+                  "line": 270,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Diplomacy Panel Display",
+              "file": "milestone-7.spec.ts",
+              "line": 277,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays reputation starting at Neutral (50)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-dd9ec63f3369fee4f977",
+                  "file": "milestone-7.spec.ts",
+                  "line": 278,
+                  "column": 9
+                },
+                {
+                  "title": "displays reputation bar",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-c3dfeac0cd232fce3378",
+                  "file": "milestone-7.spec.ts",
+                  "line": 291,
+                  "column": 9
+                },
+                {
+                  "title": "shows active treaties section (empty for new game)",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-a1dc58bb384c2697adbb",
+                  "file": "milestone-7.spec.ts",
+                  "line": 300,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Treaty Proposal Panel",
+              "file": "milestone-7.spec.ts",
+              "line": 311,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays propose treaty panel",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-ef2bc17f22f45cb6dc76",
+                  "file": "milestone-7.spec.ts",
+                  "line": 312,
+                  "column": 9
+                },
+                {
+                  "title": "displays list of empires for treaty proposals",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-4eb3a6dfd1379763e7fb",
+                  "file": "milestone-7.spec.ts",
+                  "line": 322,
+                  "column": 9
+                },
+                {
+                  "title": "can select an empire for treaty proposal",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-e674ac8187805813f1da",
+                  "file": "milestone-7.spec.ts",
+                  "line": 335,
+                  "column": 9
+                },
+                {
+                  "title": "shows NAP and Alliance treaty type options",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-bd40fd4a60be3bb76ce9",
+                  "file": "milestone-7.spec.ts",
+                  "line": 350,
+                  "column": 9
+                },
+                {
+                  "title": "shows treaty benefits when target selected",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-9f4a4cd1d63c2b1fd08a",
+                  "file": "milestone-7.spec.ts",
+                  "line": 366,
+                  "column": 9
+                },
+                {
+                  "title": "has send proposal button with correct state",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-5b2444d6f15672ebc580",
+                  "file": "milestone-7.spec.ts",
+                  "line": 379,
+                  "column": 9
+                },
+                {
+                  "title": "can send treaty proposal",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-fc0189904a51d864c878",
+                  "file": "milestone-7.spec.ts",
+                  "line": 392,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Market and Diplomacy Integration",
+              "file": "milestone-7.spec.ts",
+              "line": 421,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate between market and diplomacy",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-3a38aff0ac02bd460b20",
+                  "file": "milestone-7.spec.ts",
+                  "line": 422,
+                  "column": 9
+                },
+                {
+                  "title": "state persists after market/diplomacy navigation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "45522c24b75087fff9fd-ddc9b3c0ab52848468f2",
+                  "file": "milestone-7.spec.ts",
+                  "line": 438,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "milestone-8.spec.ts",
+      "file": "milestone-8.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Milestone 8: Bot Personas & Messages",
+          "file": "milestone-8.spec.ts",
+          "line": 27,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Messages Page Navigation",
+              "file": "milestone-8.spec.ts",
+              "line": 28,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to messages page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-a45c92e062f205205706",
+                  "file": "milestone-8.spec.ts",
+                  "line": 29,
+                  "column": 9
+                },
+                {
+                  "title": "messages page link visible in navigation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-d0a668b369a6b42098b8",
+                  "file": "milestone-8.spec.ts",
+                  "line": 38,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Messages Page UI",
+              "file": "milestone-8.spec.ts",
+              "line": 45,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "displays inbox and galactic news tabs",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-a1084633ee27ce998e30",
+                  "file": "milestone-8.spec.ts",
+                  "line": 46,
+                  "column": 9
+                },
+                {
+                  "title": "inbox tab is active by default",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-f6c77f1c7568f170421a",
+                  "file": "milestone-8.spec.ts",
+                  "line": 57,
+                  "column": 9
+                },
+                {
+                  "title": "can switch between inbox and galactic news tabs",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-a5b0f5045f8a2679bfa0",
+                  "file": "milestone-8.spec.ts",
+                  "line": 68,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Bot Greeting Messages",
+              "file": "milestone-8.spec.ts",
+              "line": 88,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "bot greetings appear in inbox after game creation",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-27382aa1032dfd02fcf7",
+                  "file": "milestone-8.spec.ts",
+                  "line": 89,
+                  "column": 9
+                },
+                {
+                  "title": "unread count badge shows on inbox tab when messages exist",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-b8a40fdfec81af9cb552",
+                  "file": "milestone-8.spec.ts",
+                  "line": 118,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Message Interaction",
+              "file": "milestone-8.spec.ts",
+              "line": 142,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "clicking a message marks it as read",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-bb693704b6cb08c58452",
+                  "file": "milestone-8.spec.ts",
+                  "line": 143,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Galactic News Feed",
+              "file": "milestone-8.spec.ts",
+              "line": 179,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "galactic news tab displays broadcast messages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-96354abb21faf1d9bcc0",
+                  "file": "milestone-8.spec.ts",
+                  "line": 180,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Message State After Turn",
+              "file": "milestone-8.spec.ts",
+              "line": 201,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "new messages may appear after advancing turn",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-990b396d425b94c97c4b",
+                  "file": "milestone-8.spec.ts",
+                  "line": 202,
+                  "column": 9
+                }
+              ]
+            },
+            {
+              "title": "Navigation Integration",
+              "file": "milestone-8.spec.ts",
+              "line": 234,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "can navigate to messages from all game pages",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-d52dc1a2d158d6f7b622",
+                  "file": "milestone-8.spec.ts",
+                  "line": 235,
+                  "column": 9
+                },
+                {
+                  "title": "state persists after visiting messages page",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [],
+                      "status": "skipped"
+                    }
+                  ],
+                  "id": "211e763b8a9619e4747e-a28584d714ae2cf8c787",
+                  "file": "milestone-8.spec.ts",
+                  "line": 258,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "quick-diagnostic.spec.ts",
+      "file": "quick-diagnostic.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Quick 5-Turn Diagnostic",
+          "file": "quick-diagnostic.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Validate core game flow and UI elements",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "962c0f54b9beb72488bb-54c0cfb4a5b94d816bc9",
+              "file": "quick-diagnostic.spec.ts",
+              "line": 9,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "smoke-test.spec.ts",
+      "file": "smoke-test.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Smoke Test",
+          "file": "smoke-test.spec.ts",
+          "line": 20,
+          "column": 6,
+          "specs": [
+            {
+              "title": "basic game creation and turn processing",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3f58d441499060f9c0b2-3d7fe43e28d2a9bf0d73",
+              "file": "smoke-test.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "critical UI elements exist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3f58d441499060f9c0b2-8ad4d4e342097ad00893",
+              "file": "smoke-test.spec.ts",
+              "line": 114,
               "column": 7
             }
           ]
@@ -184,10 +4181,10 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-12-31T11:15:25.465Z",
-    "duration": 12543.909,
-    "expected": 1,
-    "skipped": 0,
+    "startTime": "2026-01-01T02:28:51.416Z",
+    "duration": 581.8029999999999,
+    "expected": 0,
+    "skipped": 166,
     "unexpected": 0,
     "flaky": 0
   }

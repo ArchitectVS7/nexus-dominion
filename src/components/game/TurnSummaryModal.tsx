@@ -12,7 +12,7 @@
 import { useEffect, useCallback } from "react";
 import type { TurnEvent, ResourceDelta } from "@/lib/game/types/turn-types";
 import { RESOURCE_NAMES, GAME_TERMS, UI_LABELS } from "@/lib/theme/names";
-import { ResourceIcons, ActionIcons } from "@/lib/theme/icons";
+import { ResourceIcons } from "@/lib/theme/icons";
 import { TrendingUp, Users, Swords, Mail, Map, AlertTriangle, Trophy, Skull, BarChart3 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 

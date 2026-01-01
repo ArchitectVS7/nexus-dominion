@@ -11,7 +11,6 @@
 
 import type { PhaseResult, CombatResult } from "@/lib/combat";
 import { CasualtyReport } from "./CasualtyReport";
-import { UnitIcons, ActionIcons } from "@/lib/theme/icons";
 import { Rocket, CircleDot, Swords, Scale, Trophy, Shield, UserX } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
