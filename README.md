@@ -98,8 +98,11 @@ npm run db:migrate       # Run migrations
 
 ## Documentation
 
+- **[Current Implementation Plan](.claude/plans/recursive-dazzling-chipmunk.md)** - Active redesign plan (Phases 1-3: 93% complete)
 - [CLAUDE.md](CLAUDE.md) - AI assistant context and codebase guide
-- [docs/PRD.md](docs/PRD.md) - Product Requirements Document
+- [docs/PRD.md](docs/PRD.md) - Product Requirements Document (v3.0)
+- [docs/VISION.md](docs/VISION.md) - Game vision and design philosophy
+- [docs/PHASE-1-3-AUDIT.md](docs/PHASE-1-3-AUDIT.md) - Implementation audit report
 - [docs/MILESTONES.md](docs/MILESTONES.md) - Development roadmap
 - [docs/design/BOT_ARCHITECTURE.md](docs/design/BOT_ARCHITECTURE.md) - Bot AI system design
 

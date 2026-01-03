@@ -96,9 +96,9 @@ function resolveCombat(attacker: Forces, defender: Forces): CombatOutcome {
   const modifier = (attackerPower - defenderPower) / 100;
   const result = roll + modifier;
 
-  if (result >= 18) return 'total_victory';      // 40% planets, enemy routed
-  if (result >= 14) return 'victory';            // 25% planets captured
-  if (result >= 10) return 'costly_victory';     // 15% planets, both lose units
+  if (result >= 18) return 'total_victory';      // 40% sectors, enemy routed
+  if (result >= 14) return 'victory';            // 25% sectors captured
+  if (result >= 10) return 'costly_victory';     // 15% sectors, both lose units
   if (result >= 6)  return 'stalemate';          // No capture, both lose units
   if (result >= 2)  return 'repelled';           // Attacker retreats, loses units
   return 'disaster';                             // Attacker routed, loses 2× units
@@ -111,7 +111,7 @@ function resolveCombat(attacker: Forces, defender: Forces): CombatOutcome {
 - **Defender advantage**: 1.5× multiplier (respects "ground war is hardest" philosophy)
 - **Multiple outcomes**: Not just win/lose - drama through variety
 - **Target win rate**: 40-50% with equal forces (attacker must be stronger OR lucky)
-- **Faster eliminations**: Combined with 5 starting planets (down from 9)
+- **Faster eliminations**: Combined with 5 starting sectors (down from 9)
 
 #### Design Rationale
 
@@ -211,7 +211,7 @@ if (empire.victoryPoints >= 7) {
 
 **Weakest empire goes first each turn**:
 1. Catchup mechanic built into game flow
-2. Last place gets first crack at neutral planets
+2. Last place gets first crack at neutral sectors
 3. Last place can attack before leader consolidates
 4. Used in successful board games (7 Wonders, Terraforming Mars)
 
@@ -329,7 +329,7 @@ Six paths to victory, each supporting different playstyles:
 | **Survival** | Highest score at Turn 200 | Balanced | 200 |
 
 **Defeat Conditions**:
-- All planets lost (elimination)
+- All sectors lost (elimination)
 - Population reaches 0 (starvation)
 - Bankruptcy + civil revolt (empire collapse)
 - Mathematically impossible to achieve any victory (warning given at Turn 150)
@@ -381,11 +381,11 @@ Four primary resources + Research Points:
 
 | Resource | Source | Primary Use | Scarcity |
 |----------|--------|-------------|----------|
-| **Credits** | Tourism planets, taxes | Buying, maintenance | Common |
-| **Food** | Food planets | Population, soldiers | Critical |
-| **Ore** | Ore planets | Military maintenance | Moderate |
-| **Petroleum** | Petroleum planets | Military fuel, wormholes | Scarce |
-| **Research Points** | Research/Education planets | Tech advancement | Investment |
+| **Credits** | Tourism sectors, taxes | Buying, maintenance | Common |
+| **Food** | Food sectors | Population, soldiers | Critical |
+| **Ore** | Ore sectors | Military maintenance | Moderate |
+| **Petroleum** | Petroleum sectors | Military fuel, wormholes | Scarce |
+| **Research Points** | Research/Urban sectors | Tech advancement | Investment |
 
 #### Resource Balance
 - **Food/Military Balance**: More military = more food needed
@@ -404,24 +404,20 @@ Four primary resources + Research Points:
 
 ---
 
-### 9. Planet System
+### 9. Sector System
 
-**Starting Planets**: 5 (down from 9 for faster eliminations)
+**Starting Sectors**: 5 (down from 9 for faster eliminations)
 
-#### Planet Types
-- **Food Planets**: High food production
-- **Ore Planets**: High ore production
-- **Petroleum Planets**: High petroleum production
-- **Tourism Planets**: High credit generation
-- **Urban Planets**: High population capacity
-- **Education Planets**: Research point generation
-- **Government Planets**: Reduces civil unrest
-- **Research Planets**: Bonus research points
-- **Supply Planets**: Mixed production
-- **Anti-Pollution Planets**: Reduces environmental impact
-- **Industrial Planets**: Tier 0 → Tier 1 resource processing
+#### Sector Types
+- **Food Sectors**: High food production
+- **Ore Sectors**: High ore production
+- **Petroleum Sectors**: High petroleum production
+- **Tourism Sectors**: High credit generation
+- **Urban Sectors**: High population capacity, research point generation
+- **Government Sectors**: Reduces civil unrest
+- **Research Sectors**: Bonus research points
 
-#### Planet Acquisition
+#### Sector Acquisition
 - **Buy**: Costs increase exponentially (1000, 2000, 4000, 8000...)
 - **Capture**: Through successful attacks (15-40% per victory)
 - **Release**: Sell back to neutral (70% of purchase price)
@@ -706,9 +702,9 @@ This architecture allows the game to scale to 100+ bots while maintaining the st
 **Trade-off**: Reduces player agency (can't always ally with leader), creates balance.
 **Verdict**: Fun > realism. Runaway victories aren't fun.
 
-### Why 5 Starting Planets (Not 9)?
-**Problem**: 9 planets = ~9 successful attacks to eliminate = ~900 turns at 1.2% win rate.
-**Solution**: 5 planets = ~5 successful attacks = achievable in 200 turns.
+### Why 5 Starting Sectors (Not 9)?
+**Problem**: 9 sectors = ~9 successful attacks to eliminate = ~900 turns at 1.2% win rate.
+**Solution**: 5 sectors = ~5 successful attacks = achievable in 200 turns.
 **Trade-off**: Less empire building early, but eliminations become possible.
 **Verdict**: Eliminations must happen or game feels static.
 
@@ -726,6 +722,59 @@ This architecture allows the game to scale to 100+ bots while maintaining the st
 
 ---
 
+## Core Game vs Expansion Content
+
+### What's in the Base Game (v1.0)
+
+**✅ Core Systems:**
+- 3-tier draft-based research (War Machine / Fortress / Commerce doctrines)
+- Unified D20 combat with 6 dramatic outcomes
+- Sector-based galaxy (10 sectors, wormholes, borders)
+- 100 AI bots with 8 archetypes and personality systems
+- 6 victory conditions (Conquest, Economic, Research, Military, Diplomatic, Survival)
+- Coalition mechanics and anti-snowball systems
+- Covert operations (10 types)
+- Diplomacy (treaties, coalitions)
+- Market trading
+- Map-centric UI (starmap as command center)
+
+**✅ Military Units (Credits Only):**
+- Soldiers, Fighters, Carriers, Stations, Cruisers
+- All units purchasable with credits (no crafting required)
+- Research unlocks unit types (War Machine → Heavy Cruisers, etc.)
+
+### What's NOT in the Base Game
+
+**❌ Deferred to Expansion Packs:**
+
+**Crafting System** (`docs/expansion/CRAFTING-EXPANSION.md`)
+- 4-tier resource progression (Tier 0 → Tier 3)
+- Industrial Sectors and manufacturing queues
+- Crafted components for advanced units
+- **Why not v1.0**: Adds cognitive load, competes with core empire management
+
+**Galactic Syndicate** (`docs/expansion/SYNDICATE-EXPANSION.md`)
+- 8-level trust progression
+- Contract missions (4 tiers)
+- Black Market for WMDs and components
+- Comeback mechanics for struggling empires
+- **Why not v1.0**: Parallel progression track dilutes focus
+
+**Alternative Vision**: See `docs/redesign-01-02-2026/` for expansion concepts with board game mechanics:
+- **CRAFTING-EXPANSION-CONCEPT.md** - Tech card draft system (Lord of Waterdeep style)
+- **SYNDICATE-EXPANSION-CONCEPT.md** - Hidden traitor mechanics (Betrayal at House on the Hill style)
+
+### Expansion Strategy
+
+**If released as DLC:**
+- **"Industrial Age"** - Crafting system
+- **"Shadow War"** - Syndicate with hidden traitor mechanics
+- **"Complete Edition"** - Both expansions bundled
+
+**Prerequisites**: Base game complete, player demand demonstrated, positive reviews.
+
+---
+
 ## Future Vision (Post v1.0)
 
 ### Async Multiplayer (v2.0)
@@ -735,7 +784,7 @@ This architecture allows the game to scale to 100+ bots while maintaining the st
 - Unified Actor Model makes this seamless
 
 ### Scenario System (v1.5)
-- "Start with 10 planets" (builder mode)
+- "Start with 10 sectors" (builder mode)
 - "You vs 10 warlords" (survival mode)
 - "All bots are diplomats" (alliance game)
 - "100-turn blitz" (fast game)
