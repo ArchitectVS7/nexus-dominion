@@ -366,6 +366,150 @@ async function initializeGalaxyGeography(
   }
 }
 
+// =============================================================================
+// GALAXY DATA REGENERATION
+// =============================================================================
+
+/**
+ * Check if a game has galaxy data.
+ */
+export async function hasGalaxyData(gameId: string): Promise<boolean> {
+  const regions = await db.query.galaxyRegions.findMany({
+    where: eq(galaxyRegions.gameId, gameId),
+    limit: 1,
+  });
+
+  return regions.length > 0;
+}
+
+/**
+ * Regenerate galaxy data for an existing game.
+ * Use this to fix games created before galaxy generation was implemented.
+ *
+ * @param gameId - The game ID to regenerate galaxy data for
+ * @returns Success status and message
+ */
+export async function regenerateGalaxyData(
+  gameId: string
+): Promise<{ success: boolean; message: string }> {
+  // Check if game exists
+  const game = await db.query.games.findFirst({
+    where: eq(games.id, gameId),
+  });
+
+  if (!game) {
+    return { success: false, message: `Game not found: ${gameId}` };
+  }
+
+  // Get all empires for this game
+  const allEmpires = await db.query.empires.findMany({
+    where: eq(empires.gameId, gameId),
+  });
+
+  if (allEmpires.length === 0) {
+    return { success: false, message: "No empires found for this game" };
+  }
+
+  // Check if galaxy data already exists
+  const existingRegions = await db.query.galaxyRegions.findMany({
+    where: eq(galaxyRegions.gameId, gameId),
+  });
+
+  if (existingRegions.length > 0) {
+    return {
+      success: false,
+      message: `Galaxy data already exists for this game (${existingRegions.length} regions). Delete existing data first if you want to regenerate.`,
+    };
+  }
+
+  // Generate galaxy data
+  const empireData = allEmpires.map((e) => ({
+    id: e.id,
+    type: e.type as "player" | "bot",
+    botTier: e.botTier,
+    planetCount: e.planetCount,
+  }));
+
+  const seed = Date.now();
+  const galaxy = generateGalaxy(gameId, empireData, { seed });
+
+  // Insert regions and get their actual IDs
+  const insertedRegions = await db
+    .insert(galaxyRegions)
+    .values(galaxy.regions)
+    .returning();
+
+  // Create ID mapping (placeholder -> actual)
+  const regionIdMap = new Map<string, string>();
+  for (let i = 0; i < galaxy.regions.length; i++) {
+    regionIdMap.set(`region-${i}`, insertedRegions[i]!.id);
+  }
+
+  // Update connections with actual region IDs
+  const connectionsWithRealIds = galaxy.connections.map((conn) => ({
+    ...conn,
+    fromRegionId: regionIdMap.get(conn.fromRegionId) ?? conn.fromRegionId,
+    toRegionId: regionIdMap.get(conn.toRegionId) ?? conn.toRegionId,
+  }));
+
+  // Update wormholes with actual region IDs
+  const wormholesWithRealIds = galaxy.wormholes.map((wh) => ({
+    ...wh,
+    fromRegionId: regionIdMap.get(wh.fromRegionId) ?? wh.fromRegionId,
+    toRegionId: regionIdMap.get(wh.toRegionId) ?? wh.toRegionId,
+  }));
+
+  // Insert connections and wormholes
+  if (connectionsWithRealIds.length > 0) {
+    await db.insert(regionConnections).values(connectionsWithRealIds);
+  }
+  if (wormholesWithRealIds.length > 0) {
+    await db.insert(regionConnections).values(wormholesWithRealIds);
+  }
+
+  // Initialize border discovery turns (M6.2)
+  await initializeBorderDiscovery(gameId);
+
+  // Update empire assignments with actual region IDs
+  const influenceRecordsWithRealIds = galaxy.empireInfluenceRecords.map((record) => {
+    const realHomeRegionId = regionIdMap.get(record.homeRegionId) ?? record.homeRegionId;
+    const realPrimaryRegionId = regionIdMap.get(record.primaryRegionId) ?? record.primaryRegionId;
+    const controlledIds = JSON.parse(record.controlledRegionIds as string) as string[];
+    const realControlledIds = controlledIds.map((id) => regionIdMap.get(id) ?? id);
+
+    return {
+      ...record,
+      homeRegionId: realHomeRegionId,
+      primaryRegionId: realPrimaryRegionId,
+      controlledRegionIds: JSON.stringify(realControlledIds),
+    };
+  });
+
+  // Insert empire influence records
+  if (influenceRecordsWithRealIds.length > 0) {
+    await db.insert(empireInfluence).values(influenceRecordsWithRealIds);
+  }
+
+  // Update region empire counts
+  const regionCounts = new Map<string, number>();
+  for (const record of influenceRecordsWithRealIds) {
+    const regionId = record.homeRegionId;
+    regionCounts.set(regionId, (regionCounts.get(regionId) ?? 0) + 1);
+  }
+
+  for (const [regionId, count] of Array.from(regionCounts.entries())) {
+    await db
+      .update(galaxyRegions)
+      .set({ currentEmpireCount: count })
+      .where(eq(galaxyRegions.id, regionId));
+  }
+
+  return {
+    success: true,
+    message: `Generated ${insertedRegions.length} regions, ${connectionsWithRealIds.length} connections, ${wormholesWithRealIds.length} wormholes, and ${influenceRecordsWithRealIds.length} empire influence records.`,
+  };
+}
+
 /**
  * Get the full dashboard data for an empire.
  */
