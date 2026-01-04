@@ -20,6 +20,13 @@ import {
   SOLDIERS_PER_CARRIER,
 } from "@/lib/combat/phases";
 import { resolveUnifiedInvasion } from "@/lib/combat/unified-combat";
+import { resolveVolleyInvasion } from "@/lib/combat/volley-combat-v2";
+
+/**
+ * Feature flag for the new D20 volley combat system.
+ * Set to true to enable 3-volley D20 combat, false for legacy unified combat.
+ */
+const USE_VOLLEY_COMBAT_V2 = true;
 import {
   saveAttack,
   applyCombatResults,
@@ -286,8 +293,15 @@ export async function executeAttack(params: AttackParams): Promise<AttackResult>
       forces.soldiers,
       defenderForces
     );
+  } else if (USE_VOLLEY_COMBAT_V2) {
+    // New D20 3-volley combat system
+    result = resolveVolleyInvasion(
+      forces,
+      defenderForces,
+      defender.planetCount
+    );
   } else {
-    // Full invasion using unified combat resolution
+    // Legacy unified combat resolution
     // M4: Pass networth for feature-flagged underdog bonus
     result = resolveUnifiedInvasion(
       forces,

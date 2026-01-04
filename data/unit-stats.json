@@ -10,8 +10,18 @@
     "populationCost": 0.2,
     "attack": 1,
     "defense": 1,
-    "label": "Soldiers",
-    "description": "Ground combat infantry for planet capture"
+    "d20Stats": {
+      "TAR": 2,
+      "DEF": 10,
+      "HUL": 2,
+      "REA": 2,
+      "CMD": 3,
+      "DOC": 2,
+      "hullPer": 50
+    },
+    "theater": "ground",
+    "label": "Marines",
+    "description": "Ground combat infantry for sector capture"
   },
   "fighters": {
     "cost": {
@@ -24,7 +34,17 @@
     "populationCost": 0.4,
     "attack": 3,
     "defense": 2,
-    "label": "Fighters",
+    "d20Stats": {
+      "TAR": 5,
+      "DEF": 14,
+      "HUL": 2,
+      "REA": 3,
+      "CMD": 2,
+      "DOC": 1,
+      "hullPer": 10
+    },
+    "theater": "orbital",
+    "label": "Drone Fighters",
     "description": "Orbital combat craft for space superiority"
   },
   "stations": {
@@ -38,8 +58,19 @@
     "populationCost": 0.5,
     "attack": 50,
     "defense": 50,
-    "label": "Stations",
-    "description": "Defensive orbital platforms (2x on defense)"
+    "d20Stats": {
+      "TAR": 4,
+      "DEF": 18,
+      "HUL": 6,
+      "REA": 5,
+      "CMD": 3,
+      "DOC": 2,
+      "hullPer": 1
+    },
+    "theater": "orbital",
+    "canAttack": false,
+    "label": "Orbital Stations",
+    "description": "Defensive orbital platforms (defense only, +2 DEF shield bonus)"
   },
   "lightCruisers": {
     "cost": {
@@ -52,8 +83,18 @@
     "populationCost": 1.0,
     "attack": 5,
     "defense": 4,
+    "d20Stats": {
+      "TAR": 4,
+      "DEF": 15,
+      "HUL": 4,
+      "REA": 4,
+      "CMD": 3,
+      "DOC": 2,
+      "hullPer": 1
+    },
+    "theater": "space",
     "label": "Light Cruisers",
-    "description": "Fast space combat vessels"
+    "description": "Fast space combat vessels, fleet backbone"
   },
   "heavyCruisers": {
     "cost": {
@@ -66,8 +107,18 @@
     "populationCost": 2.0,
     "attack": 8,
     "defense": 6,
+    "d20Stats": {
+      "TAR": 5,
+      "DEF": 16,
+      "HUL": 6,
+      "REA": 5,
+      "CMD": 4,
+      "DOC": 3,
+      "hullPer": 1
+    },
+    "theater": "space",
     "label": "Heavy Cruisers",
-    "description": "Heavy space battleships"
+    "description": "Heavy space battleships for capital assault"
   },
   "carriers": {
     "cost": {
@@ -80,8 +131,19 @@
     "populationCost": 3.0,
     "attack": 12,
     "defense": 10,
+    "d20Stats": {
+      "TAR": 3,
+      "DEF": 14,
+      "HUL": 5,
+      "REA": 6,
+      "CMD": 4,
+      "DOC": 3,
+      "hullPer": 1
+    },
+    "theater": "space",
+    "marineCapacity": 100,
     "label": "Carriers",
-    "description": "Troop transports required for invasions"
+    "description": "Troop transports (100 marines each) + fighter bay support"
   },
   "covertAgents": {
     "cost": {
@@ -94,7 +156,17 @@
     "populationCost": 1.0,
     "attack": 0,
     "defense": 0,
+    "d20Stats": {
+      "TAR": 0,
+      "DEF": 0,
+      "HUL": 0,
+      "REA": 0,
+      "CMD": 0,
+      "DOC": 0,
+      "hullPer": 0
+    },
+    "theater": "none",
     "label": "Covert Agents",
-    "description": "Espionage specialists for covert operations"
+    "description": "Espionage specialists for covert operations (non-combat)"
   }
 }

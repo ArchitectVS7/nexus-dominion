@@ -62,6 +62,8 @@ import {
   // rollTellCheck - Used in bot-processor.ts via triggerThreatWarning
   // rollAdvanceWarning - Future: for multi-turn attack planning
 } from "./archetypes";
+// Combat stance selection
+import { getBotCombatStance } from "./research-preferences";
 
 // =============================================================================
 // BASE DECISION WEIGHTS
@@ -852,7 +854,10 @@ function generateAttackDecision(
     forces.soldiers = Math.min(10, empire.soldiers);
   }
 
-  return { type: "attack", targetId: target.id, forces };
+  // Select combat stance based on archetype
+  const stance = getBotCombatStance(archetype, random);
+
+  return { type: "attack", targetId: target.id, forces, stance };
 }
 
 /**

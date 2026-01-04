@@ -8,6 +8,7 @@
 import type { Empire, Planet } from "@/lib/db/schema";
 import type { CraftedResource } from "@/lib/game/constants/crafting";
 import type { ContractType } from "@/lib/game/constants/syndicate";
+import type { CombatStance } from "@/lib/combat/stances";
 
 // Re-export for convenience
 export type { Empire, Planet };
@@ -115,7 +116,7 @@ export type ResearchBranch =
 export type BotDecision =
   | { type: "build_units"; unitType: UnitType; quantity: number }
   | { type: "buy_planet"; planetType: PlanetType }
-  | { type: "attack"; targetId: string; forces: Forces }
+  | { type: "attack"; targetId: string; forces: Forces; stance?: CombatStance }
   | {
       type: "diplomacy";
       action: "propose_nap" | "propose_alliance";
