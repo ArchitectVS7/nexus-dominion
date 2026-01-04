@@ -22,7 +22,6 @@ import {
 } from "../formulas/army-effectiveness";
 import { isFeatureEnabled } from "@/lib/config/feature-flags";
 import {
-  getUnifiedConfig,
   getUnifiedDefenderBonus,
   getUnifiedPowerMultiplier,
   getUnderdogBonus as getUnderdogBonusConfig,

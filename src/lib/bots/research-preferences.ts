@@ -6,10 +6,11 @@
  */
 
 import type { BotArchetype } from "./types";
-import type {
-  ResearchDoctrine,
-  ResearchSpecialization,
-} from "@/lib/game/services/research-draft-service";
+import type { CombatStance } from "@/lib/combat/stances";
+
+// Inline types (normally from research-draft-service.ts which is not yet complete)
+export type ResearchDoctrine = "war_machine" | "fortress" | "commerce" | "shadow_network" | "tech_dominion";
+export type ResearchSpecialization = "shock_troops" | "siege_engines" | "shield_arrays" | "minefield_networks" | "trade_routes" | "economic_sanctions" | "espionage" | "sabotage" | "ai_cores" | "nano_swarms";
 
 // ============================================
 // ARCHETYPE RESEARCH PREFERENCES
@@ -185,6 +186,12 @@ function getDoctrineForSpecialization(spec: ResearchSpecialization): ResearchDoc
     case "trade_routes":
     case "economic_sanctions":
       return "commerce";
+    case "espionage":
+    case "sabotage":
+      return "shadow_network";
+    case "ai_cores":
+    case "nano_swarms":
+      return "tech_dominion";
   }
 }
 
@@ -201,6 +208,10 @@ function getSpecializationsForDoctrine(
       return ["shield_arrays", "minefield_networks"];
     case "commerce":
       return ["trade_routes", "economic_sanctions"];
+    case "shadow_network":
+      return ["espionage", "sabotage"];
+    case "tech_dominion":
+      return ["ai_cores", "nano_swarms"];
   }
 }
 
@@ -216,8 +227,6 @@ export function shouldBotDraftResearch(canDraft: boolean): boolean {
 // ============================================
 // COMBAT STANCE PREFERENCES
 // ============================================
-
-import type { CombatStance } from "@/lib/combat/stances";
 
 export interface ArchetypeCombatPreference {
   /** Preferred stance (70% probability) */

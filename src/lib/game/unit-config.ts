@@ -11,13 +11,6 @@
 import {
   getUnitStats,
   getAllUnitTypes,
-  getUnitCost,
-  getUnitMaintenance,
-  getUnitPopulationCost,
-  getUnitAttack,
-  getUnitDefense,
-  getUnitLabel,
-  getUnitDescription,
   type UnitType as LoaderUnitType,
 } from "./config/unit-loader";
 

@@ -127,23 +127,5 @@ export function getAllUnitTypes(): UnitType[] {
 // GAME-SPECIFIC OVERRIDES
 // =============================================================================
 
-/**
- * Get unit stats with game-specific overrides applied.
- *
- * @param gameId - Optional game ID to load overrides for
- * @returns Promise resolving to unit stats configuration
- *
- * @example
- * const stats = await getUnitStatsWithOverrides(gameId);
- * console.log(stats.soldiers.cost.credits); // May be overridden
- */
-export async function getUnitStatsWithOverrides(
-  gameId?: string
-): Promise<UnitStats> {
-  if (!gameId) {
-    return getUnitStats();
-  }
-
-  const { loadGameConfig } = await import("./game-config-service");
-  return loadGameConfig<UnitStats>(gameId, "units");
-}
+// NOTE: getUnitStatsWithOverrides has been moved to game-config-service.ts
+// to maintain proper server/client boundaries. Import from there for server-side usage.

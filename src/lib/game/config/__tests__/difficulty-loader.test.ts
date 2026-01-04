@@ -4,16 +4,10 @@
  * Tests for difficulty preset loading and application.
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   getDifficultyPresets,
   getDifficultyPreset,
-  applyDifficultyPreset,
-  getDifficultyModifiers,
-  getBotModifiers,
-  getPlayerModifiers,
-  hasCustomDifficultyModifiers,
-  clearCustomDifficultyModifiers,
 } from "../difficulty-loader";
 import type { Difficulty } from "@/lib/bots/types";
 

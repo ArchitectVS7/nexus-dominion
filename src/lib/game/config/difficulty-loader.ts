@@ -207,17 +207,16 @@ export async function getDifficultyModifiers(
   const preset = getDifficultyPreset(difficulty);
 
   if (economyConfig || combatConfig) {
+    const economyDifficulty = (economyConfig?.overrides as Record<string, unknown>)?.difficulty as Record<string, unknown> | undefined;
     return {
       ...preset,
       player: {
         ...preset.player,
-        ...(economyConfig?.overrides as Record<string, unknown>)?.difficulty
-          ?.player as PlayerModifiers | undefined,
+        ...(economyDifficulty?.player as PlayerModifiers | undefined),
       },
       bots: {
         ...preset.bots,
-        ...(economyConfig?.overrides as Record<string, unknown>)?.difficulty
-          ?.bots as BotModifiers | undefined,
+        ...(economyDifficulty?.bots as BotModifiers | undefined),
       },
       combat: {
         ...preset.combat,

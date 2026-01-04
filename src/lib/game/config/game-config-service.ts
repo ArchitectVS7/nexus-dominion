@@ -12,6 +12,7 @@
  * - victory: Victory conditions
  */
 
+import "server-only";
 import { db } from "@/lib/db";
 import { gameConfigs } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -250,7 +251,7 @@ function mergeConfig(
   for (const [key, value] of Object.entries(overrides)) {
     if (key in merged) {
       const defaultValue = (merged as Record<string, unknown>)[key];
-      
+
       if (
         typeof value === "object" &&
         value !== null &&
@@ -272,4 +273,26 @@ function mergeConfig(
   }
 
   return merged;
+}
+
+// =============================================================================
+// CONVENIENCE FUNCTIONS (Server-side only)
+// =============================================================================
+
+import type { UnitStats } from "./unit-loader";
+
+/**
+ * Get unit stats with game-specific overrides applied.
+ * Server-side only - use getUnitStats() for client-side.
+ *
+ * @param gameId - Optional game ID to load overrides for
+ * @returns Promise resolving to unit stats configuration
+ */
+export async function getUnitStatsWithOverrides(
+  gameId?: string
+): Promise<UnitStats> {
+  if (!gameId) {
+    return getUnitStats();
+  }
+  return loadGameConfig<UnitStats>(gameId, "units");
 }

@@ -43,7 +43,6 @@ describe("Game Config Service", () => {
   describe("loadGameConfig", () => {
     it("should load default combat config when no overrides exist", async () => {
       // Mock empty database response
-      const mockSelect = vi.fn().mockReturnThis();
       const mockFrom = vi.fn().mockReturnThis();
       const mockWhere = vi.fn().mockReturnThis();
       const mockLimit = vi.fn().mockResolvedValue([]);
@@ -71,7 +70,6 @@ describe("Game Config Service", () => {
       };
 
       // Mock database response with overrides
-      const mockSelect = vi.fn().mockReturnThis();
       const mockFrom = vi.fn().mockReturnThis();
       const mockWhere = vi.fn().mockReturnThis();
       const mockLimit = vi.fn().mockResolvedValue([

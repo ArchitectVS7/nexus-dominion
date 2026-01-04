@@ -188,7 +188,6 @@ function damageToUnitCasualties(
   stance: CombatStance
 ): Partial<Forces> {
   const casualties: Partial<Forces> = {};
-  const stanceMod = getStanceModifiers(stance);
 
   // Apply stance casualty modifier
   const adjustedDamage = applyCasualtyModifier(damage, stance);
@@ -468,7 +467,7 @@ export function resolveBattle(
   let totalAttackerCasualties: Partial<Forces> = {};
   let totalDefenderCasualties: Partial<Forces> = {};
   let battleDecided = false;
-  let rollIndex = 0;
+  const rollIndex = 0;
 
   // Resolve up to 3 volleys
   for (let v = 1; v <= 3 && !battleDecided; v++) {
