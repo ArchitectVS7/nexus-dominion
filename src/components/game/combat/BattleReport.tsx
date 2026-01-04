@@ -4,7 +4,7 @@
  * Displays a complete battle report showing all 3 combat phases:
  * 1. Space Combat - Cruisers vs Cruisers
  * 2. Orbital Combat - Fighters vs Stations
- * 3. Ground Combat - Soldiers capture planets
+ * 3. Ground Combat - Soldiers capture sectors
  *
  * Each phase shows power comparison, casualties, and outcome.
  */
@@ -57,7 +57,7 @@ const PHASE_CONFIG: Record<string, { icon: LucideIcon; label: string; descriptio
   ground: {
     icon: Swords,
     label: "Ground Combat",
-    description: "Soldiers fight to capture planets",
+    description: "Soldiers fight to capture sectors",
     color: "text-green-400",
     bgColor: "bg-green-900/30",
   },
@@ -229,7 +229,7 @@ export function BattleReport({
         <p className="text-gray-300">{outcomeConfig.description}</p>
         {result.planetsCaptured > 0 && (
           <p className="text-green-400 mt-2 font-semibold">
-            {result.planetsCaptured} planet{result.planetsCaptured !== 1 ? "s" : ""} captured!
+            {result.planetsCaptured} sector{result.planetsCaptured !== 1 ? "s" : ""} captured!
           </p>
         )}
       </div>

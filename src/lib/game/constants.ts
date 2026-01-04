@@ -216,3 +216,43 @@ export function validateTurnLimit(mode: GameMode, turnLimit: number): boolean {
   const preset = GAME_MODE_PRESETS[mode];
   return turnLimit >= preset.minTurns && turnLimit <= preset.maxTurns;
 }
+
+// =============================================================================
+// UI TERMINOLOGY LABELS
+// =============================================================================
+
+/**
+ * User-facing terminology mappings.
+ * "Planet" internally maps to "Sector" in UI for thematic consistency.
+ */
+export const UI_LABELS = {
+  // Sector terminology (replaces "planet" in UI)
+  sector: "Sector",
+  sectors: "Sectors",
+  sectorCount: "Sector Count",
+  colonizeSector: "Colonize Sector",
+  releaseSector: "Release Sector",
+  sectorType: "Sector Type",
+
+  // Sector type labels (use these instead of PLANET_TYPE_LABELS in UI)
+  sectorTypes: {
+    food: "Food Sector",
+    ore: "Ore Sector",
+    petroleum: "Petroleum Sector",
+    tourism: "Tourism Sector",
+    urban: "Urban Sector",
+    education: "Education Sector",
+    government: "Government Sector",
+    research: "Research Sector",
+    supply: "Supply Sector",
+    anti_pollution: "Environmental Sector",
+    industrial: "Industrial Sector",
+  } as Record<PlanetType, string>,
+} as const;
+
+/**
+ * Get display label for a sector type.
+ */
+export function getSectorTypeLabel(type: PlanetType): string {
+  return UI_LABELS.sectorTypes[type];
+}

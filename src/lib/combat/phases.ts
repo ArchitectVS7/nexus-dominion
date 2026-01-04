@@ -4,7 +4,7 @@
  * Three-phase combat system:
  * 1. Space Combat: Cruisers vs Cruisers (determines space superiority)
  * 2. Orbital Combat: Fighters vs Stations (determines orbital control)
- * 3. Ground Combat: Soldiers capture planets (requires carriers for transport)
+ * 3. Ground Combat: Soldiers capture sectors (requires carriers for transport)
  *
  * Each phase must be won to proceed to the next.
  * Attackers need to win all 3 phases for successful planet capture.
@@ -693,7 +693,7 @@ function generateCombatSummary(
 ): string {
   switch (outcome) {
     case "attacker_victory":
-      return `Invasion successful! ${planetsCaptured} planet${planetsCaptured !== 1 ? "s" : ""} captured after ${phases.length} combat phases.`;
+      return `Invasion successful! ${planetsCaptured} sector${planetsCaptured !== 1 ? "s" : ""} captured after ${phases.length} combat phases.`;
     case "defender_victory":
       const failedPhase = phases.find(p => p.winner === "defender");
       return `Invasion repelled during ${failedPhase?.phase ?? "combat"}. Defender holds their territory.`;

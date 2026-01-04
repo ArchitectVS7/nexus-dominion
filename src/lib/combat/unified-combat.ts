@@ -608,7 +608,7 @@ function generateCombatSummary(
 
   switch (outcome) {
     case "attacker_victory":
-      return `Invasion successful! ${planetsCaptured} planet${planetsCaptured !== 1 ? "s" : ""} captured. ${chanceStr}`;
+      return `Invasion successful! ${planetsCaptured} sector${planetsCaptured !== 1 ? "s" : ""} captured. ${chanceStr}`;
     case "defender_victory":
       return `Invasion repelled! Defender holds their territory. ${chanceStr}`;
     case "stalemate":

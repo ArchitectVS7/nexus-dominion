@@ -4,7 +4,7 @@ import {
   fetchDashboardDataAction,
   hasActiveGameAction,
 } from "@/app/actions/game-actions";
-import { PLANET_TYPE_LABELS } from "@/lib/game/constants";
+import { getSectorTypeLabel, UI_LABELS } from "@/lib/game/constants";
 import type { Planet } from "@/lib/db/schema";
 import { BuyPlanetPanel } from "@/components/game/planets/BuyPlanetPanel";
 import { PlanetsList } from "@/components/game/planets/PlanetsList";
@@ -51,7 +51,7 @@ async function PlanetsContent() {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {sortedTypes.map(([type, planets]) => {
-            const label = PLANET_TYPE_LABELS[type as keyof typeof PLANET_TYPE_LABELS] || type;
+            const label = getSectorTypeLabel(type as Parameters<typeof getSectorTypeLabel>[0]);
             const IconComponent = SectorIcons[type as keyof typeof SectorIcons];
             return (
               <div
@@ -100,7 +100,7 @@ export default function PlanetsPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-display text-lcars-amber mb-8">
-        Planets
+        {UI_LABELS.sectors}
       </h1>
       <Suspense fallback={<PlanetsSkeleton />}>
         <PlanetsContent />

@@ -275,7 +275,7 @@ describe("calculatePhaseEffectivePower", () => {
 describe("getPhaseRoleDescription", () => {
   describe("Soldiers", () => {
     it("should describe ground combat role", () => {
-      expect(getPhaseRoleDescription("soldiers", "ground")).toBe("Capture enemy planets");
+      expect(getPhaseRoleDescription("soldiers", "ground")).toBe("Capture enemy sectors");
     });
 
     it("should describe guerilla combat role", () => {

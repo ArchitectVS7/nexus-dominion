@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { buyPlanetAction, getAllPlanetPurchaseInfoAction } from "@/app/actions/planet-actions";
 import type { PlanetPurchaseInfo } from "@/lib/game/services/planet-service";
-import { PLANET_TYPE_LABELS } from "@/lib/game/constants";
+import { UI_LABELS, getSectorTypeLabel } from "@/lib/game/constants";
 
 const PLANET_TYPE_COLORS: Record<string, string> = {
   food: "text-green-400",
@@ -37,7 +37,7 @@ export function BuyPlanetPanel({ credits, onPurchase }: BuyPlanetPanelProps) {
       const info = await getAllPlanetPurchaseInfoAction();
       setPurchaseInfo(info);
     } catch {
-      setError("Failed to load planet prices");
+      setError("Failed to load sector prices");
     } finally {
       setIsLoading(false);
     }
@@ -50,12 +50,12 @@ export function BuyPlanetPanel({ credits, onPurchase }: BuyPlanetPanelProps) {
     startPurchase(async () => {
       const result = await buyPlanetAction(planetType as Parameters<typeof buyPlanetAction>[0]);
       if (result.success) {
-        setSuccess(`Purchased ${PLANET_TYPE_LABELS[planetType as keyof typeof PLANET_TYPE_LABELS]} planet for ${result.creditsDeducted?.toLocaleString()} credits`);
+        setSuccess(`Colonized ${getSectorTypeLabel(planetType as Parameters<typeof getSectorTypeLabel>[0])} for ${result.creditsDeducted?.toLocaleString()} credits`);
         // Refresh purchase info
         await loadPurchaseInfo();
         onPurchase?.();
       } else {
-        setError(result.error || "Failed to purchase planet");
+        setError(result.error || "Failed to colonize sector");
       }
     });
   };
@@ -64,14 +64,14 @@ export function BuyPlanetPanel({ credits, onPurchase }: BuyPlanetPanelProps) {
     return (
       <div className="lcars-panel" data-testid="buy-planet-panel">
         <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
-          Buy Planets
+          {UI_LABELS.colonizeSector}
         </h2>
         <button
           onClick={loadPurchaseInfo}
           disabled={isLoading}
           className="w-full py-2 px-4 bg-lcars-amber text-black font-semibold rounded hover:bg-lcars-amber/80 disabled:opacity-50"
         >
-          {isLoading ? "Loading..." : "View Planet Prices"}
+          {isLoading ? "Loading..." : "View Sector Prices"}
         </button>
       </div>
     );
@@ -81,7 +81,7 @@ export function BuyPlanetPanel({ credits, onPurchase }: BuyPlanetPanelProps) {
     <div className="lcars-panel" data-testid="buy-planet-panel">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-lcars-lavender">
-          Buy Planets
+          {UI_LABELS.colonizeSector}
         </h2>
         <span className="text-sm text-gray-400">
           Credits: <span className="text-lcars-amber font-mono">{credits.toLocaleString()}</span>
@@ -102,7 +102,7 @@ export function BuyPlanetPanel({ credits, onPurchase }: BuyPlanetPanelProps) {
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {purchaseInfo.map((info) => {
-          const label = PLANET_TYPE_LABELS[info.planetType as keyof typeof PLANET_TYPE_LABELS];
+          const label = getSectorTypeLabel(info.planetType as Parameters<typeof getSectorTypeLabel>[0]);
           const color = PLANET_TYPE_COLORS[info.planetType] || "text-gray-300";
           const canAfford = credits >= info.currentCost;
 

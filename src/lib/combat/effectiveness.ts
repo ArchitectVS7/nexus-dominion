@@ -217,7 +217,7 @@ export function getPhaseRoleDescription(
 
   switch (unitType) {
     case "soldiers":
-      if (phase === "ground") return "Capture enemy planets";
+      if (phase === "ground") return "Capture enemy sectors";
       if (phase === "guerilla") return "Conduct hit-and-run raids";
       break;
     case "fighters":
