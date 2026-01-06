@@ -25,6 +25,7 @@ import {
   getNuclearWeaponCost,
 } from "@/lib/combat/nuclear";
 import { getEmpireCoalition } from "@/lib/game/repositories/coalition-repository";
+import { verifyEmpireOwnership } from "@/lib/security/validation";
 
 // =============================================================================
 // SESSION MANAGEMENT
@@ -185,6 +186,12 @@ export async function purchaseNuclearWeaponAction() {
       return { success: false as const, error: "No active game session" };
     }
 
+    // Verify empire ownership
+    const ownership = await verifyEmpireOwnership(empireId, gameId);
+    if (!ownership.valid) {
+      return { success: false as const, error: ownership.error ?? "Authorization failed" };
+    }
+
     // Get game and empire
     const game = await db.query.games.findFirst({
       where: eq(games.id, gameId),
@@ -200,11 +207,6 @@ export async function purchaseNuclearWeaponAction() {
 
     if (!empire) {
       return { success: false as const, error: "Empire not found" };
-    }
-
-    // Verify empire belongs to current game (defense in depth)
-    if (empire.gameId !== gameId) {
-      return { success: false as const, error: "Empire not in this game" };
     }
 
     // Check if nuclear weapons are unlocked
@@ -274,6 +276,12 @@ export async function launchNuclearStrikeAction(targetEmpireId: string) {
       return { success: false as const, error: "No active game session" };
     }
 
+    // Verify empire ownership
+    const ownership = await verifyEmpireOwnership(empireId, gameId);
+    if (!ownership.valid) {
+      return { success: false as const, error: ownership.error ?? "Authorization failed" };
+    }
+
     // Get game
     const game = await db.query.games.findFirst({
       where: eq(games.id, gameId),
@@ -290,11 +298,6 @@ export async function launchNuclearStrikeAction(targetEmpireId: string) {
 
     if (!attacker) {
       return { success: false as const, error: "Empire not found" };
-    }
-
-    // Verify attacker belongs to current game (defense in depth)
-    if (attacker.gameId !== gameId) {
-      return { success: false as const, error: "Empire not in this game" };
     }
 
     // Get target

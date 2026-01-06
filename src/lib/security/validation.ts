@@ -244,3 +244,32 @@ export function isValidContractType(type: unknown): type is ContractType {
   if (typeof type !== "string") return false;
   return VALID_CONTRACT_TYPES.includes(type as ContractType);
 }
+
+// =============================================================================
+// STRING SANITIZATION
+// =============================================================================
+
+/**
+ * Sanitize user-provided text content.
+ * Removes potentially dangerous characters and normalizes whitespace.
+ *
+ * @param input - User-provided string
+ * @param maxLength - Maximum allowed length (default: 1000)
+ * @returns Sanitized string
+ */
+export function sanitizeText(input: unknown, maxLength: number = 1000): string {
+  if (typeof input !== "string") return "";
+
+  // Basic sanitization: remove control characters except newline/tab
+  let sanitized = input.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, "");
+
+  // Normalize whitespace
+  sanitized = sanitized.replace(/\s+/g, " ").trim();
+
+  // Truncate to max length
+  if (sanitized.length > maxLength) {
+    sanitized = sanitized.substring(0, maxLength);
+  }
+
+  return sanitized;
+}

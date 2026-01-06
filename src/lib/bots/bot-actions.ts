@@ -7,7 +7,7 @@
 
 import { db } from "@/lib/db";
 import { empires, buildQueue, planets, type NewPlanet, craftingQueue, syndicateContracts, resourceInventory } from "@/lib/db/schema";
-import { eq, sql, and, inArray } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 import type { BotDecision, BotDecisionContext, Forces, UnitType } from "./types";
 import { calculateUnitPurchaseCost } from "@/lib/game/unit-config";
 import { UNIT_BUILD_TIMES, toDbUnitType } from "@/lib/game/build-config";

@@ -23,6 +23,7 @@ import {
   type ContractOffer,
 } from "@/lib/game/services/syndicate-service";
 import { isFeatureUnlocked } from "@/lib/constants/unlocks";
+import { isValidUUID } from "@/lib/security/validation";
 import {
   TRUST_LEVELS,
   CONTRACT_CONFIGS,
@@ -292,6 +293,11 @@ export async function acceptContractAction(
 
     if (!gameId || !empireId) {
       return { success: false, error: "No active game session" };
+    }
+
+    // Validate target empire ID if provided
+    if (targetEmpireId && !isValidUUID(targetEmpireId)) {
+      return { success: false, error: "Invalid target empire ID format" };
     }
 
     // Get trust level

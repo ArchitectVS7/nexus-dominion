@@ -4,7 +4,37 @@
  * Simple in-memory rate limiting to prevent abuse.
  * Uses sliding window algorithm for smooth rate limiting.
  *
- * NOTE: In production with multiple server instances, use Redis-based rate limiting.
+ * SCALING LIMITATIONS:
+ *
+ * This in-memory implementation has the following limitations for production use:
+ *
+ * 1. **Single Server Only**: Rate limits are not shared across multiple server instances.
+ *    Each server process maintains its own independent rate limit state.
+ *
+ * 2. **Memory Consumption**: All rate limit data is stored in memory. For high-traffic
+ *    applications with many users, this can consume significant RAM.
+ *
+ * 3. **No Persistence**: Rate limit data is lost on server restart. Users could bypass
+ *    limits by triggering server restarts.
+ *
+ * 4. **Process Restart**: Node.js process restarts (deployments, crashes) reset all limits.
+ *
+ * PRODUCTION RECOMMENDATIONS:
+ *
+ * For production deployments with:
+ * - Multiple server instances (horizontal scaling)
+ * - High traffic volumes (>1000 requests/minute)
+ * - Strict rate limiting requirements
+ *
+ * Replace with a distributed rate limiter using:
+ * - **Redis** (recommended): Fast, distributed, persistent
+ * - **Memcached**: Similar to Redis, but less feature-rich
+ * - **Database**: Slower, but works for low-traffic apps
+ *
+ * Libraries to consider:
+ * - `rate-limiter-flexible` (supports Redis, Memcached, PostgreSQL)
+ * - `ioredis` + custom implementation
+ * - Cloudflare Rate Limiting (if using Cloudflare)
  */
 
 // =============================================================================

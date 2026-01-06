@@ -14,6 +14,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { games, empires } from "@/lib/db/schema";
 import { eq, and, ne } from "drizzle-orm";
+import { sanitizeText } from "@/lib/security/validation";
 import {
   createCoalition,
   inviteToCoalition,
@@ -239,9 +240,10 @@ export async function createCoalitionAction(name: string) {
       return { success: false as const, error: "No active game session" };
     }
 
-    // Validate name
+    // Sanitize and validate name
+    const sanitizedName = sanitizeText(name, 200);
     const nameSchema = z.string().min(1, "Name required").max(200, "Name too long");
-    const nameParsed = nameSchema.safeParse(name);
+    const nameParsed = nameSchema.safeParse(sanitizedName);
     if (!nameParsed.success) {
       return { success: false as const, error: nameParsed.error.issues[0]?.message ?? "Invalid name" };
     }
@@ -266,7 +268,7 @@ export async function createCoalitionAction(name: string) {
     const result = await createCoalition(
       gameId,
       empireId,
-      name,
+      sanitizedName,
       game.currentTurn
     );
 

@@ -15,9 +15,12 @@ import { games, empires, messages } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import type { TurnActionResult, TurnStatus, TurnEvent, ResourceDelta } from "@/lib/game/types/turn-types";
 import { GAME_SETTINGS } from "@/lib/game/constants";
+import { verifyEmpireOwnership } from "@/lib/security/validation";
+import { checkRateLimit } from "@/lib/security/rate-limiter";
 
 // Cookie names (must match game-actions.ts)
 const GAME_ID_COOKIE = "gameId";
+const EMPIRE_ID_COOKIE = "empireId";
 
 // =============================================================================
 // END TURN ACTION
@@ -33,14 +36,34 @@ const GAME_ID_COOKIE = "gameId";
  */
 export async function endTurnAction(): Promise<TurnActionResult> {
   try {
-    // Get current game ID from cookies
+    // Get current game ID and empire ID from cookies
     const cookieStore = await cookies();
     const gameId = cookieStore.get(GAME_ID_COOKIE)?.value;
+    const empireId = cookieStore.get(EMPIRE_ID_COOKIE)?.value;
 
-    if (!gameId) {
+    if (!gameId || !empireId) {
       return {
         success: false,
         error: "No active game found. Please start a new game.",
+      };
+    }
+
+    // Verify empire ownership
+    const ownership = await verifyEmpireOwnership(empireId, gameId);
+    if (!ownership.valid) {
+      return {
+        success: false,
+        error: ownership.error ?? "Authorization failed",
+      };
+    }
+
+    // Check rate limit
+    const rateLimit = checkRateLimit(empireId, "GAME_ACTION");
+    if (!rateLimit.allowed) {
+      const waitSeconds = Math.ceil((rateLimit.resetAt - Date.now()) / 1000);
+      return {
+        success: false,
+        error: `Rate limit exceeded. Please wait ${waitSeconds} seconds before ending turn again.`,
       };
     }
 
