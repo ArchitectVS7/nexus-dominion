@@ -79,17 +79,16 @@ describe("TurnOrderPanel", () => {
   });
 
   describe("Actions list", () => {
-    it("displays all action links", () => {
+    it("displays all action links when not in panel mode", () => {
       render(<TurnOrderPanel {...defaultProps} />);
 
-      // Use getAllByRole to find links with specific names
+      // When onOpenPanel is not provided, actions are rendered as links
       expect(screen.getByRole("link", { name: /Forces/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Sectors/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Combat/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Diplomacy/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Exchange/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Intel Ops/i })).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: /Manufacturing/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Research/i })).toBeInTheDocument();
       expect(screen.getByRole("link", { name: /Starmap/i })).toBeInTheDocument();
     });
@@ -223,14 +222,8 @@ describe("TurnOrderPanel", () => {
     });
   });
 
-  describe("Dashboard link", () => {
-    it("shows link back to dashboard", () => {
-      render(<TurnOrderPanel {...defaultProps} />);
-
-      const dashboardLink = screen.getByRole("link", { name: /Command Center/i });
-      expect(dashboardLink).toHaveAttribute("href", "/game");
-    });
-  });
+  // Dashboard link was removed in Phase 8 - TurnOrderPanel now uses panel triggers
+  // The dashboard link is handled by the header/logo instead
 
   describe("Suggestions panel", () => {
     it("shows food critical suggestion", () => {

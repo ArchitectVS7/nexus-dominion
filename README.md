@@ -316,3 +316,67 @@ The UI enhancement implementation has coding complete for Phases 1-7, but requir
 ## License
 
 GPL-2.0 - See [LICENSE.TXT](LICENSE.TXT)
+
+● Open Items by Priority
+
+  Critical Priority
+
+  Phase 8: Starmap-Centric Layout - ✅ JUST COMPLETED
+
+  ---
+  High Priority
+
+  Phase 9: Five-Step Tutorial System
+  - Add interactive overlays that point to specific UI elements
+  - Track completion of each step action
+  - Show completion celebration after step 5
+  - Guided Actions: Highlight specific buttons during tutorial steps
+
+  ---
+  Medium Priority (Assets Needed - Human Tasks)
+
+  Phase 2: Audio Files Needed
+  - /public/audio/sfx/click.mp3 - Button click chirp
+  - /public/audio/sfx/hover.mp3 - Subtle hover blip
+  - /public/audio/sfx/success.mp3 - Positive confirmation
+  - /public/audio/sfx/error.mp3 - Error/failure sound
+  - /public/audio/sfx/alert.mp3 - Attention notification
+  - /public/audio/sfx/turn-end.mp3 - Turn completion chime
+  - /public/audio/sfx/combat.mp3 - Combat initiated
+  - /public/audio/sfx/build.mp3 - Construction queued
+
+  Phase 4: Ambient Audio Needed
+  - /public/audio/ambient/space-ambient.mp3 - Calm space drone loop
+  - /public/audio/ambient/tension.mp3 - Combat tension loop
+
+  Phase 6: NASA Background Images Needed
+  - /public/images/backgrounds/nebula.jpg
+  - /public/images/backgrounds/starfield.jpg
+  - /public/images/backgrounds/deep-field.jpg
+
+  ---
+  Completed Phases
+
+  | Phase | Description                  | Status                       |
+  |-------|------------------------------|------------------------------|
+  | 1     | Animated Resource Counters   | ✅                           |
+  | 2     | Button Hover/Click Sounds    | ⚠️ Code done, no audio files |
+  | 3     | Panel Slide Transitions      | ✅                           |
+  | 4     | Ambient Starmap Music        | ⚠️ Code done, no audio files |
+  | 5     | Pulsing Alert Indicators     | ✅                           |
+  | 6     | NASA Nebula Backgrounds      | ⚠️ Code done, no images      |
+  | 7     | Starmap Visual Enhancements  | ✅                           |
+  | 8     | Starmap-Centric Panel System | ✅                           |
+
+  ---
+  Asset Sources (for human tasks)
+
+  - Freesound.org - "sci-fi UI", "interface beep", "space ambient"
+  - Pixabay - Both SFX and music
+  - Kenney.nl - UI Audio pack
+  - NASA Image Gallery - images.nasa.gov (Public Domain)
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────>  
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────  ⏵⏵ accept edits on (alt+m to cycle)
+
+
