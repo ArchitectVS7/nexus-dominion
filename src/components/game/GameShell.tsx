@@ -99,7 +99,51 @@ export function GameShell({ children, initialLayoutData }: GameShellProps) {
       refreshLayoutData();
     }
 
-    // Refresh every 30 seconds to catch external changes
+    /**
+     * POLLING STRATEGY (Current Implementation)
+     *
+     * Polls every 30 seconds to catch external changes (bot attacks, market prices, etc.)
+     * This ensures the UI stays in sync without requiring page refreshes.
+     *
+     * WHY 30 SECONDS:
+     * - Balance between freshness and server load
+     * - Most game changes happen on turn end (manual trigger)
+     * - External events (bot attacks) are relatively infrequent
+     * - Mobile/slow connections can handle 30s intervals
+     *
+     * LIMITATIONS:
+     * - Creates unnecessary load when game state hasn't changed
+     * - 30-second delay before showing external changes
+     * - Multiple tabs = multiple polling requests
+     * - Doesn't scale well with many concurrent players
+     *
+     * FUTURE: PUSH UPDATE STRATEGY
+     *
+     * For production deployments, consider replacing with server-sent events (SSE)
+     * or WebSockets for real-time updates:
+     *
+     * Option 1: Server-Sent Events (SSE) - Recommended for Next.js
+     * - Use Next.js Route Handlers with ReadableStream
+     * - Push updates only when game state changes
+     * - Lower latency, lower server load
+     * - Example: /api/game/[gameId]/stream
+     *
+     * Option 2: WebSockets via Socket.io
+     * - Requires custom server setup
+     * - Bidirectional communication
+     * - Best for real-time multiplayer features
+     * - More complex deployment (need WebSocket support)
+     *
+     * Option 3: Polling with ETag/Last-Modified headers
+     * - Interim solution: still polls but with 304 Not Modified
+     * - Reduces bandwidth, but still makes requests
+     * - Easy to implement with Next.js middleware
+     *
+     * Implementation Priority:
+     * 1. Add ETag support (quick win, reduces bandwidth)
+     * 2. Implement SSE for game state updates (production ready)
+     * 3. Consider WebSockets only if adding real-time multiplayer
+     */
     const interval = setInterval(refreshLayoutData, 30000);
     return () => clearInterval(interval);
   }, [initialLayoutData, refreshLayoutData]);

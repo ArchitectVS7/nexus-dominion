@@ -197,9 +197,14 @@ export function TurnSummaryModal({
 
         {/* Content - Scrollable */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {/* Victory/Defeat Alert */}
+          {/* Victory/Defeat Alert with ARIA live region for urgent announcements */}
           {victoryResult && (
-            <div className="p-4 bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border border-yellow-600/50 rounded-lg">
+            <div
+              className="p-4 bg-gradient-to-r from-yellow-900/30 to-amber-900/30 border border-yellow-600/50 rounded-lg"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
               <div className="flex items-center gap-3">
                 {victoryResult.type === "defeat" ? (
                   <Skull className="w-8 h-8 text-red-400" />

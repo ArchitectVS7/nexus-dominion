@@ -17,6 +17,8 @@ export { UnlockNotification, UpcomingUnlocks } from "./UnlockNotification";
 export { TurnOrderPanel } from "./TurnOrderPanel";
 export { TurnSummaryModal } from "./TurnSummaryModal";
 export { GameShell } from "./GameShell";
+export { ConfirmationModal } from "./ConfirmationModal";
+export { AriaAnnouncerProvider, useAriaAnnouncer } from "./AriaAnnouncer";
 
 // Session components
 export { SessionSummaryScreen } from "./session";

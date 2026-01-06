@@ -43,9 +43,14 @@ export function PhaseIndicator({ currentPhase, isProcessing }: PhaseIndicatorPro
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xs text-gray-500 uppercase tracking-wider">Turn Phase</h3>
           {isProcessing && (
-            <div className="flex items-center gap-2 text-xs text-lcars-amber">
+            <div
+              className="flex items-center gap-2 text-xs text-lcars-amber"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               <Clock className="w-3 h-3 animate-spin" />
-              <span>Processing...</span>
+              <span>Processing turn...</span>
             </div>
           )}
         </div>
@@ -106,9 +111,14 @@ export function PhaseIndicator({ currentPhase, isProcessing }: PhaseIndicatorPro
           })}
         </div>
 
-        {/* Current Phase Description */}
+        {/* Current Phase Description with ARIA live region */}
         {!isProcessing && (
-          <div className="mt-2 text-xs text-gray-400">
+          <div
+            className="mt-2 text-xs text-gray-400"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {PHASES[activePhaseIndex]?.description}
           </div>
         )}

@@ -391,13 +391,24 @@ export async function getGameLayoutDataAction(): Promise<GameLayoutData | null> 
       (playerEmpire.heavyCruisers ?? 0) * 25 +
       (playerEmpire.carriers ?? 0) * 12;
 
-    // Get bot empires for comparison
-    const botEmpires = await db.query.empires.findMany({
-      where: and(
-        eq(empires.gameId, gameId),
-        eq(empires.type, "bot")
-      ),
+    // PERFORMANCE: Get all empires once instead of separate queries for bots and rank calculation
+    const allEmpires = await db.query.empires.findMany({
+      where: eq(empires.gameId, gameId),
+      columns: {
+        id: true,
+        type: true,
+        networth: true,
+        soldiers: true,
+        fighters: true,
+        stations: true,
+        lightCruisers: true,
+        heavyCruisers: true,
+        carriers: true,
+      },
     });
+
+    // Filter bot empires for military comparison
+    const botEmpires = allEmpires.filter(e => e.type === "bot");
 
     // Calculate army strength relative to bots
     const avgBotPower = botEmpires.reduce((sum, bot) => {
@@ -437,11 +448,7 @@ export async function getGameLayoutDataAction(): Promise<GameLayoutData | null> 
       );
     const unreadMessages = Number(unreadCount[0]?.count ?? 0);
 
-    // Calculate rank (by networth)
-    const allEmpires = await db.query.empires.findMany({
-      where: eq(empires.gameId, gameId),
-      columns: { id: true, networth: true },
-    });
+    // Calculate rank (by networth) using the same empire data
     const sortedByNetworth = allEmpires.sort((a, b) => b.networth - a.networth);
     const rank = sortedByNetworth.findIndex(e => e.id === empireId) + 1;
 

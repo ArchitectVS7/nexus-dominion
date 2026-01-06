@@ -1098,43 +1098,59 @@ async function processCraftingQueueForEmpire(
   // Process the queue
   const result = processCraftingQueueItems(queueItems, currentTurn);
 
-  // Update database for completed items
-  for (const completed of result.completed) {
-    // Add completed resources to inventory
-    await updateResourceInventory(empireId, gameId, {
-      [completed.resourceType]: completed.quantity,
-    });
+  // PERFORMANCE: Batch all database updates instead of sequential awaits
+  const updates: Promise<unknown>[] = [];
 
-    // Find and update the queue item status
+  // Collect inventory updates for completed items
+  const inventoryUpdates: Partial<Record<CraftedResource, number>> = {};
+  for (const completed of result.completed) {
+    inventoryUpdates[completed.resourceType] =
+      (inventoryUpdates[completed.resourceType] ?? 0) + completed.quantity;
+  }
+
+  // Add inventory update if there are completed items
+  if (Object.keys(inventoryUpdates).length > 0) {
+    updates.push(updateResourceInventory(empireId, gameId, inventoryUpdates));
+  }
+
+  // Collect queue status updates for completed items
+  for (const completed of result.completed) {
     const queueItem = queue.find(
       (q: CraftingQueue) => q.resourceType === completed.resourceType && q.status !== "completed"
     );
     if (queueItem) {
-      await db
-        .update(craftingQueue)
-        .set({
-          status: "completed",
-          updatedAt: new Date(),
-        })
-        .where(eq(craftingQueue.id, queueItem.id));
+      updates.push(
+        db
+          .update(craftingQueue)
+          .set({
+            status: "completed",
+            updatedAt: new Date(),
+          })
+          .where(eq(craftingQueue.id, queueItem.id))
+      );
     }
   }
 
-  // Update in_progress status for next item
+  // Collect in_progress status updates
   for (const item of result.updatedQueue) {
     if (item.status === "in_progress") {
       const queueItem = queue.find((q: CraftingQueue) => q.id === item.id);
       if (queueItem && queueItem.status !== "in_progress") {
-        await db
-          .update(craftingQueue)
-          .set({
-            status: "in_progress",
-            updatedAt: new Date(),
-          })
-          .where(eq(craftingQueue.id, queueItem.id));
+        updates.push(
+          db
+            .update(craftingQueue)
+            .set({
+              status: "in_progress",
+              updatedAt: new Date(),
+            })
+            .where(eq(craftingQueue.id, queueItem.id))
+        );
       }
     }
   }
+
+  // Execute all updates in parallel
+  await Promise.all(updates);
 
   return { completed: result.completed };
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import type { EmpireMapData, TreatyConnection } from "./types";
 import type { GalaxyRegion } from "./GalaxyView";
@@ -89,6 +89,8 @@ export function SectorBox({
   // Suppress unused warning - reserved for future use
   void _treaties;
 
+  const focusRectRef = useRef<SVGRectElement>(null);
+
   const borderColor = getRegionBorderColor(region.regionType);
   const bgColor = getRegionBgColor(region.regionType);
 
@@ -108,6 +110,25 @@ export function SectorBox({
 
   // Calculate wealth indicator (1-5 bars)
   const wealthBars = Math.min(5, Math.max(1, Math.round(region.wealthModifier * 3)));
+
+  // Keyboard accessibility: Handle Enter and Space key to activate
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<SVGRectElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick?.();
+      }
+    },
+    [onClick]
+  );
+
+  // Generate accessible label for screen readers
+  const ariaLabel = useMemo(() => {
+    const empireCount = region.empires.filter((e) => !e.isEliminated).length;
+    const playerPresent = isPlayerRegion ? "Your sector. " : "";
+    const dangerWarning = region.dangerLevel > 70 ? "High danger level. " : "";
+    return `${playerPresent}${region.name} sector, ${region.regionType} region, ${empireCount} of ${region.maxEmpires} empires. ${dangerWarning}Click to view details.`;
+  }, [region, isPlayerRegion]);
 
   return (
     <g
@@ -129,6 +150,25 @@ export function SectorBox({
         strokeOpacity={isPlayerRegion ? 1 : 0.5}
         rx={4}
         className="transition-all hover:stroke-opacity-100"
+      />
+
+      {/* Keyboard-accessible overlay (invisible but focusable) */}
+      <rect
+        ref={focusRectRef}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill="transparent"
+        stroke="transparent"
+        strokeWidth={3}
+        rx={4}
+        tabIndex={0}
+        role="button"
+        aria-label={ariaLabel}
+        onKeyDown={handleKeyDown}
+        className="focus:outline-none focus:stroke-blue-400 focus:stroke-[3px]"
+        style={{ cursor: "pointer" }}
       />
 
       {/* Player region highlight */}

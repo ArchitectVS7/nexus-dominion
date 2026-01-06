@@ -17,7 +17,7 @@ import {
   researchProgress,
   unitUpgrades,
 } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, inArray } from "drizzle-orm";
 
 // =============================================================================
 // TYPES
@@ -310,73 +310,98 @@ export async function serializeGameState(
 
     if (!game) return null;
 
-    // Load additional data for each empire
-    const empireSnapshots: EmpireSnapshot[] = await Promise.all(
-      game.empires.map(async (empire) => {
-        // Load build queue
-        const queue = await db.query.buildQueue.findMany({
-          where: eq(buildQueue.empireId, empire.id),
-        });
+    // PERFORMANCE: Batch load additional data for all empires to avoid N+1 queries
+    // Collect all empire IDs
+    const empireIds = game.empires.map((e) => e.id);
 
-        // Load research progress
-        const research = await db.query.researchProgress.findFirst({
-          where: eq(researchProgress.empireId, empire.id),
-        });
+    // Batch query all build queues, research progress, and upgrades
+    const [allQueues, allResearch, allUpgrades] = await Promise.all([
+      db.query.buildQueue.findMany({
+        where: inArray(buildQueue.empireId, empireIds),
+      }),
+      db.query.researchProgress.findMany({
+        where: inArray(researchProgress.empireId, empireIds),
+      }),
+      db.query.unitUpgrades.findMany({
+        where: inArray(unitUpgrades.empireId, empireIds),
+      }),
+    ]);
 
-        // Load unit upgrades
-        const upgrades = await db.query.unitUpgrades.findMany({
-          where: eq(unitUpgrades.empireId, empire.id),
-        });
+    // Group results by empire ID for fast lookup
+    const queuesByEmpire = new Map<string, typeof allQueues>();
+    const researchByEmpire = new Map<string, typeof allResearch[number]>();
+    const upgradesByEmpire = new Map<string, typeof allUpgrades>();
 
-        const snapshot: EmpireSnapshot = {
-          id: empire.id,
-          name: empire.name,
-          type: empire.type,
-          credits: empire.credits,
-          food: empire.food,
-          ore: empire.ore,
-          petroleum: empire.petroleum,
-          researchPoints: empire.researchPoints,
-          population: empire.population,
-          populationCap: empire.populationCap,
-          soldiers: empire.soldiers,
-          fighters: empire.fighters,
-          stations: empire.stations,
-          lightCruisers: empire.lightCruisers,
-          heavyCruisers: empire.heavyCruisers,
-          carriers: empire.carriers,
-          covertAgents: empire.covertAgents,
-          covertPoints: empire.covertPoints,
-          civilStatus: empire.civilStatus,
-          networth: Number(empire.networth),
-          armyEffectiveness: Number(empire.armyEffectiveness),
-          planets: empire.planets.map((planet) => ({
-            id: planet.id,
-            name: planet.name ?? `Planet ${planet.id.slice(0, 8)}`,
-            type: planet.type,
-            productionRate: Number(planet.productionRate),
-            purchasePrice: planet.purchasePrice,
-          })),
-          buildQueue: queue.map((item) => ({
-            unitType: item.unitType,
-            quantity: item.quantity,
-            turnsRemaining: item.turnsRemaining,
-          })),
-          research: research
-            ? {
-                researchLevel: research.researchLevel,
-                currentInvestment: research.currentInvestment,
-                requiredInvestment: research.requiredInvestment,
-              }
-            : null,
-          upgrades: upgrades.map((upgrade) => ({
-            unitType: upgrade.unitType,
-            upgradeLevel: upgrade.upgradeLevel,
-          })),
-        };
-        return snapshot;
-      })
-    );
+    for (const queue of allQueues) {
+      const existing = queuesByEmpire.get(queue.empireId) ?? [];
+      existing.push(queue);
+      queuesByEmpire.set(queue.empireId, existing);
+    }
+
+    for (const research of allResearch) {
+      researchByEmpire.set(research.empireId, research);
+    }
+
+    for (const upgrade of allUpgrades) {
+      const existing = upgradesByEmpire.get(upgrade.empireId) ?? [];
+      existing.push(upgrade);
+      upgradesByEmpire.set(upgrade.empireId, existing);
+    }
+
+    // Map empires to snapshots using grouped data
+    const empireSnapshots: EmpireSnapshot[] = game.empires.map((empire) => {
+      const queue = queuesByEmpire.get(empire.id) ?? [];
+      const research = researchByEmpire.get(empire.id);
+      const upgrades = upgradesByEmpire.get(empire.id) ?? [];
+
+      const snapshot: EmpireSnapshot = {
+        id: empire.id,
+        name: empire.name,
+        type: empire.type,
+        credits: empire.credits,
+        food: empire.food,
+        ore: empire.ore,
+        petroleum: empire.petroleum,
+        researchPoints: empire.researchPoints,
+        population: empire.population,
+        populationCap: empire.populationCap,
+        soldiers: empire.soldiers,
+        fighters: empire.fighters,
+        stations: empire.stations,
+        lightCruisers: empire.lightCruisers,
+        heavyCruisers: empire.heavyCruisers,
+        carriers: empire.carriers,
+        covertAgents: empire.covertAgents,
+        covertPoints: empire.covertPoints,
+        civilStatus: empire.civilStatus,
+        networth: Number(empire.networth),
+        armyEffectiveness: Number(empire.armyEffectiveness),
+        planets: empire.planets.map((planet) => ({
+          id: planet.id,
+          name: planet.name ?? `Planet ${planet.id.slice(0, 8)}`,
+          type: planet.type,
+          productionRate: Number(planet.productionRate),
+          purchasePrice: planet.purchasePrice,
+        })),
+        buildQueue: queue.map((item) => ({
+          unitType: item.unitType,
+          quantity: item.quantity,
+          turnsRemaining: item.turnsRemaining,
+        })),
+        research: research
+          ? {
+              researchLevel: research.researchLevel,
+              currentInvestment: research.currentInvestment,
+              requiredInvestment: research.requiredInvestment,
+            }
+          : null,
+        upgrades: upgrades.map((upgrade) => ({
+          unitType: upgrade.unitType,
+          upgradeLevel: upgrade.upgradeLevel,
+        })),
+      };
+      return snapshot;
+    });
 
     return {
       version: SNAPSHOT_VERSION,
