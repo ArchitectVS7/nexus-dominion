@@ -2,8 +2,19 @@
 /**
  * Terminology Compliance Check Script
  *
+ * ⚠️ TEMPORARY SCRIPT - SCHEDULED FOR REMOVAL ⚠️
+ *
+ * Created: January 2026
+ * Remove After: March 2026 (or after 2 months of zero violations)
+ *
  * This script enforces the branding terminology rules for Nexus Dominion.
- * It MUST pass with zero violations before any work can be marked as "complete".
+ * It was created during the P0 terminology crisis to ensure consistent
+ * migration from "planet" to "sector" terminology.
+ *
+ * WHEN TO REMOVE:
+ * - After 2 consecutive months of zero violations
+ * - Once ESLint rules are proven effective (see .eslintrc.json)
+ * - After team is confident in new terminology habits
  *
  * FORBIDDEN TERMS:
  * - "planet" or "planets" (use "sector" or "sectors")
@@ -46,6 +57,8 @@ const EXCLUDED_PATHS = [
   "TERMINOLOGY-QA-AUDIT-WORKLIST.md",
   // CLAUDE.md documents forbidden terms as examples of what NOT to use
   "CLAUDE.md",
+  // CONTRIBUTING.md documents forbidden terms as examples of what NOT to use
+  "CONTRIBUTING.md",
   // Docs directory needs cleanup - excluded temporarily
   "docs",
   // Test files need separate cleanup pass

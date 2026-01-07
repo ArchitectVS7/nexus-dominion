@@ -50,6 +50,13 @@
       "when": 1736212800000,
       "tag": "0006_rename_planets_to_sectors",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1736288400000,
+      "tag": "0007_rename_planet_count_column",
+      "breakpoints": true
     }
   ]
 }

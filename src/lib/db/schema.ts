@@ -374,7 +374,7 @@ export const empires = pgTable(
 
     // Computed stats (updated each turn)
     networth: bigint("networth", { mode: "number" }).notNull().default(0),
-    sectorCount: integer("planet_count").notNull().default(5), // Reduced from 9 for faster eliminations
+    sectorCount: integer("sector_count").notNull().default(5), // Reduced from 9 for faster eliminations
 
     // M7: Diplomacy reputation (0-100, starts at 50 = neutral)
     reputation: integer("reputation").notNull().default(50),
