@@ -69,7 +69,7 @@ Covert operations against player empires.
 | **Intimidation** | Any player (insurgent aid) | 15,000 Credits | +30 |
 | **Economic Warfare** | Any player (bomb food) | 25,000 Credits | +40 |
 | **Military Probe** | Any player (guerilla attack) | 35,000 Credits | +50 |
-| **Hostile Takeover** | Capture 1 planet from anyone | 50,000 Credits | +75 |
+| **Hostile Takeover** | Capture 1 sector from anyone | 50,000 Credits | +75 |
 
 ### Tier 3: Targeted Contracts (Trust 4+)
 
