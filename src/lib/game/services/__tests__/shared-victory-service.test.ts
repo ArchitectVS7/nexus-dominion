@@ -6,7 +6,7 @@ import { describe, it, expect } from "vitest";
 import {
   calculateContributionPercentages,
   filterQualifiedMembers,
-  calculatePlanetAllocation,
+  calculateSectorAllocation,
   calculateCreditAllocation,
   calculateReputationGain,
   generateVictoryMessage,
@@ -115,14 +115,14 @@ describe("Shared Victory Service", () => {
     });
   });
 
-  describe("calculatePlanetAllocation", () => {
+  describe("calculateSectorAllocation", () => {
     it("should give all sectors to single member", () => {
-      expect(calculatePlanetAllocation(10, 1, 1)).toBe(10);
+      expect(calculateSectorAllocation(10, 1, 1)).toBe(10);
     });
 
     it("should split 60/40 for two members", () => {
-      expect(calculatePlanetAllocation(10, 2, 1)).toBe(6);
-      expect(calculatePlanetAllocation(10, 2, 2)).toBe(4);
+      expect(calculateSectorAllocation(10, 2, 1)).toBe(6);
+      expect(calculateSectorAllocation(10, 2, 2)).toBe(4);
     });
 
     it("should use tiered distribution for 3+ members", () => {
@@ -130,17 +130,17 @@ describe("Shared Victory Service", () => {
       // Rank 1: 40% = 4
       // Rank 2: 30% = 3
       // Rank 3: 20% = 2
-      expect(calculatePlanetAllocation(10, 3, 1)).toBe(4);
-      expect(calculatePlanetAllocation(10, 3, 2)).toBe(3);
-      expect(calculatePlanetAllocation(10, 3, 3)).toBe(2);
+      expect(calculateSectorAllocation(10, 3, 1)).toBe(4);
+      expect(calculateSectorAllocation(10, 3, 2)).toBe(3);
+      expect(calculateSectorAllocation(10, 3, 3)).toBe(2);
     });
 
     it("should handle zero sectors", () => {
-      expect(calculatePlanetAllocation(0, 3, 1)).toBe(0);
+      expect(calculateSectorAllocation(0, 3, 1)).toBe(0);
     });
 
     it("should handle invalid rank", () => {
-      expect(calculatePlanetAllocation(10, 3, 0)).toBe(0);
+      expect(calculateSectorAllocation(10, 3, 0)).toBe(0);
     });
   });
 
@@ -198,7 +198,7 @@ describe("Shared Victory Service", () => {
     const bossResult: BossDefeatResult = {
       bossEmpireId: "boss-1",
       bossName: "Dark Emperor",
-      planetsToDistribute: 10,
+      sectorsToDistribute: 10,
       creditsLooted: 100000,
       defeatTurn: 50,
     };
@@ -215,7 +215,7 @@ describe("Shared Victory Service", () => {
       expect(result.bossDefeated).toBe("Dark Emperor");
       expect(result.distributions).toHaveLength(3);
       expect(result.distributions[0]!.contributionRank).toBe(1);
-      expect(result.distributions[0]!.planetsAwarded).toBeGreaterThan(0);
+      expect(result.distributions[0]!.sectorsAwarded).toBeGreaterThan(0);
       expect(result.distributions[0]!.creditsAwarded).toBeGreaterThan(0);
     });
 
@@ -239,7 +239,7 @@ describe("Shared Victory Service", () => {
       const result = distributeRewards(contributions, bossResult);
 
       expect(result.distributions).toHaveLength(1);
-      expect(result.distributions[0]!.planetsAwarded).toBe(10);
+      expect(result.distributions[0]!.sectorsAwarded).toBe(10);
     });
 
     it("should handle no qualified contributors", () => {
@@ -248,7 +248,7 @@ describe("Shared Victory Service", () => {
       const result = distributeRewards(contributions, bossResult);
 
       expect(result.distributions).toHaveLength(0);
-      expect(result.totalPlanetsDistributed).toBe(0);
+      expect(result.totalSectorsDistributed).toBe(0);
     });
   });
 
@@ -299,7 +299,7 @@ describe("Shared Victory Service", () => {
         {
           bossEmpireId: "boss",
           bossName: "Dark Lord",
-          planetsToDistribute: 10,
+          sectorsToDistribute: 10,
           creditsLooted: 50000,
           defeatTurn: 50,
         }

@@ -72,8 +72,8 @@ export interface EmpireSnapshot {
   civilStatus: string;
   networth: number;
   armyEffectiveness: number;
-  /** Planets */
-  sectors: PlanetSnapshot[];
+  /** Sectors */
+  sectors: SectorSnapshot[];
   /** Build queue */
   buildQueue: BuildQueueSnapshot[];
   /** Research */
@@ -82,7 +82,7 @@ export interface EmpireSnapshot {
   upgrades: UpgradeSnapshot[];
 }
 
-export interface PlanetSnapshot {
+export interface SectorSnapshot {
   id: string;
   name: string;
   type: string;

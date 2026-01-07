@@ -16,7 +16,7 @@ import {
   calculateMaintenanceCost,
   calculateNetResourceDelta,
   processTurnResources,
-  PLANET_MAINTENANCE_COST,
+  SECTOR_MAINTENANCE_COST,
 } from "../resource-engine";
 import type { Sector } from "@/lib/db/schema";
 import type { ResourceDelta } from "../../types/turn-types";
@@ -269,7 +269,7 @@ describe("Resource Engine Service", () => {
       const maintenance = calculateMaintenanceCost(9);
 
       expect(maintenance.totalCost).toBe(1512); // 9 × 168
-      expect(maintenance.costPerPlanet).toBe(168);
+      expect(maintenance.costPerSector).toBe(168);
       expect(maintenance.sectorCount).toBe(9);
     });
 
@@ -286,8 +286,8 @@ describe("Resource Engine Service", () => {
       expect(maintenance.sectorCount).toBe(0);
     });
 
-    it("should use correct PLANET_MAINTENANCE_COST constant", () => {
-      expect(PLANET_MAINTENANCE_COST).toBe(168); // PRD specification
+    it("should use correct SECTOR_MAINTENANCE_COST constant", () => {
+      expect(SECTOR_MAINTENANCE_COST).toBe(168); // PRD specification
     });
   });
 
@@ -301,7 +301,7 @@ describe("Resource Engine Service", () => {
         researchPoints: 200,
       };
 
-      const maintenance = { totalCost: 1512, costPerPlanet: 168, sectorCount: 9 };
+      const maintenance = { totalCost: 1512, costPerSector: 168, sectorCount: 9 };
 
       const delta = calculateNetResourceDelta(production, maintenance);
 
@@ -321,7 +321,7 @@ describe("Resource Engine Service", () => {
         researchPoints: 0,
       };
 
-      const maintenance = { totalCost: 1512, costPerPlanet: 168, sectorCount: 9 };
+      const maintenance = { totalCost: 1512, costPerSector: 168, sectorCount: 9 };
 
       const delta = calculateNetResourceDelta(production, maintenance);
 

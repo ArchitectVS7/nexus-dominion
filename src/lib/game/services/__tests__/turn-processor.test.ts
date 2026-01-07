@@ -178,29 +178,29 @@ describe("Turn Processor - Civil Status Income Multipliers", () => {
 
 describe("Turn Processor - Maintenance Calculations", () => {
   it("should calculate correct maintenance costs", async () => {
-    const { calculateMaintenanceCost, PLANET_MAINTENANCE_COST } = await import("../resource-engine");
+    const { calculateMaintenanceCost, SECTOR_MAINTENANCE_COST } = await import("../resource-engine");
 
     // Single sector maintenance
     const single = calculateMaintenanceCost(1);
-    expect(single.totalCost).toBe(PLANET_MAINTENANCE_COST);
+    expect(single.totalCost).toBe(SECTOR_MAINTENANCE_COST);
 
     // Multiple sectors
     const nine = calculateMaintenanceCost(9);
-    expect(nine.totalCost).toBe(PLANET_MAINTENANCE_COST * 9);
+    expect(nine.totalCost).toBe(SECTOR_MAINTENANCE_COST * 9);
     expect(nine.sectorCount).toBe(9);
   });
 
   it("should have correct maintenance value per PRD", async () => {
-    const { PLANET_MAINTENANCE_COST } = await import("../resource-engine");
+    const { SECTOR_MAINTENANCE_COST } = await import("../resource-engine");
 
     // PRD 4.3: 168 credits/sector/turn
-    expect(PLANET_MAINTENANCE_COST).toBe(168);
+    expect(SECTOR_MAINTENANCE_COST).toBe(168);
   });
 });
 
 describe("Turn Processor - Resource Production", () => {
   it("should apply income multiplier to credits", async () => {
-    const { processTurnResources, PLANET_MAINTENANCE_COST } = await import("../resource-engine");
+    const { processTurnResources, SECTOR_MAINTENANCE_COST } = await import("../resource-engine");
     const { PLANET_PRODUCTION } = await import("../../constants");
 
     // Create mock tourism sector
@@ -222,14 +222,14 @@ describe("Turn Processor - Resource Production", () => {
     const result1 = processTurnResources(sectors, 1.0);
     // production is base amount, final has multiplier applied minus maintenance
     expect(result1.production.credits).toBe(PLANET_PRODUCTION.tourism);
-    expect(result1.final.credits).toBe(PLANET_PRODUCTION.tourism - PLANET_MAINTENANCE_COST);
+    expect(result1.final.credits).toBe(PLANET_PRODUCTION.tourism - SECTOR_MAINTENANCE_COST);
 
     // Test with ecstatic (4×) multiplier
     const result4 = processTurnResources(sectors, 4.0);
     // production is still base amount, multiplier only affects final credits
     expect(result4.production.credits).toBe(PLANET_PRODUCTION.tourism);
     // final = (base × multiplier) - maintenance
-    expect(result4.final.credits).toBe(PLANET_PRODUCTION.tourism * 4 - PLANET_MAINTENANCE_COST);
+    expect(result4.final.credits).toBe(PLANET_PRODUCTION.tourism * 4 - SECTOR_MAINTENANCE_COST);
   });
 
   it("should produce correct resource amounts per PRD", async () => {

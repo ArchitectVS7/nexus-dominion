@@ -532,8 +532,8 @@ export interface PirateMissionConfig {
   type: ContractType;
   incomeDebuffPercent?: number;
   incomeDebuffTurns?: number;
-  planetsDestroyedMin?: number;
-  planetsDestroyedMax?: number;
+  sectorsDestroyedMin?: number;
+  sectorsDestroyedMax?: number;
   militaryDestroyedPercent?: number;
   salvagePercent?: number; // Percentage of destroyed value given to contractor
 }
@@ -546,8 +546,8 @@ export const PIRATE_MISSION_EFFECTS: Partial<Record<ContractType, PirateMissionC
   },
   disruption: {
     type: "disruption",
-    planetsDestroyedMin: 1,
-    planetsDestroyedMax: 3,
+    sectorsDestroyedMin: 1,
+    sectorsDestroyedMax: 3,
   },
   salvage_op: {
     type: "salvage_op",

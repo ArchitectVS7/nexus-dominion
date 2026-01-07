@@ -25,7 +25,7 @@ export interface Tier1AutoProduction {
   resourceType: Tier1Resource;
   quantity: number;
   sourceType: string;
-  sourcePlanets: number;
+  sourceSectors: number;
 }
 
 export interface ResourceInventoryMap {
@@ -80,7 +80,7 @@ export interface ResourceCheckResult {
  * Urban sectors produce Labor Units (5% of population-related output)
  * Industrial sectors process Tier 0 → Tier 1 (configured separately)
  *
- * @param sectors - Planets owned by empire
+ * @param sectors - Sectors owned by empire
  * @param baseProduction - Base Tier 0 resource production this turn
  * @returns Tier 1 production breakdown
  */
@@ -100,7 +100,7 @@ export function calculateTier1AutoProduction(
     {} as Record<string, number>
   );
 
-  // Ore Planets → Refined Metals (10% of ore production)
+  // Ore Sectors → Refined Metals (10% of ore production)
   if (baseProduction.ore > 0 && planetCounts.ore) {
     const refinedMetals = Math.floor(baseProduction.ore * 0.1);
     if (refinedMetals > 0) {
@@ -108,13 +108,13 @@ export function calculateTier1AutoProduction(
         resourceType: "refined_metals",
         quantity: refinedMetals,
         sourceType: "ore",
-        sourcePlanets: planetCounts.ore,
+        sourceSectors: planetCounts.ore,
       });
       totalByResource.refined_metals = (totalByResource.refined_metals || 0) + refinedMetals;
     }
   }
 
-  // Petroleum Planets → Fuel Cells (10% of petroleum production)
+  // Petroleum Sectors → Fuel Cells (10% of petroleum production)
   if (baseProduction.petroleum > 0 && planetCounts.petroleum) {
     const fuelCells = Math.floor(baseProduction.petroleum * 0.1);
     if (fuelCells > 0) {
@@ -122,13 +122,13 @@ export function calculateTier1AutoProduction(
         resourceType: "fuel_cells",
         quantity: fuelCells,
         sourceType: "petroleum",
-        sourcePlanets: planetCounts.petroleum,
+        sourceSectors: planetCounts.petroleum,
       });
       totalByResource.fuel_cells = (totalByResource.fuel_cells || 0) + fuelCells;
     }
   }
 
-  // Food Planets → Processed Food (5% of food production)
+  // Food Sectors → Processed Food (5% of food production)
   if (baseProduction.food > 0 && planetCounts.food) {
     const processedFood = Math.floor(baseProduction.food * 0.05);
     if (processedFood > 0) {
@@ -136,13 +136,13 @@ export function calculateTier1AutoProduction(
         resourceType: "processed_food",
         quantity: processedFood,
         sourceType: "food",
-        sourcePlanets: planetCounts.food,
+        sourceSectors: planetCounts.food,
       });
       totalByResource.processed_food = (totalByResource.processed_food || 0) + processedFood;
     }
   }
 
-  // Urban Planets → Labor Units (5% based on urban credit production, converted to units)
+  // Urban Sectors → Labor Units (5% based on urban credit production, converted to units)
   // Approximation: 1 labor unit per 1000 credits of urban production
   if (planetCounts.urban) {
     const urbanProduction = planetCounts.urban * 1000; // 1000 credits per urban sector
@@ -152,7 +152,7 @@ export function calculateTier1AutoProduction(
         resourceType: "labor_units",
         quantity: laborUnits,
         sourceType: "urban",
-        sourcePlanets: planetCounts.urban,
+        sourceSectors: planetCounts.urban,
       });
       totalByResource.labor_units = (totalByResource.labor_units || 0) + laborUnits;
     }

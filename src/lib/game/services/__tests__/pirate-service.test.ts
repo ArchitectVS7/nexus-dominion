@@ -11,7 +11,7 @@ import {
   executeDisruptionMission,
   executeSalvageOpMission,
   executePirateMission,
-  selectPlanetsToDestroy,
+  selectSectorsToDestroy,
   checkContractCompletion,
   generateMissionResultMessage,
   type TargetEmpireState,
@@ -40,13 +40,13 @@ function createMockTargetState(overrides: Partial<TargetEmpireState> = {}): Targ
     dreadnoughts: 2,
     stealthCruisers: 1,
     sectorCount: 15,
-    foodPlanets: 4,
-    orePlanets: 3,
-    petroleumPlanets: 2,
-    researchPlanets: 2,
-    urbanPlanets: 2,
-    touristPlanets: 1,
-    industrialPlanets: 1,
+    foodSectors: 4,
+    oreSectors: 3,
+    petroleumSectors: 2,
+    researchSectors: 2,
+    urbanSectors: 2,
+    touristSectors: 1,
+    industrialSectors: 1,
     ...overrides,
   };
 }
@@ -107,8 +107,8 @@ describe("Pirate Mission Scheduling", () => {
 
       const disruption = getMissionEffects("disruption");
       expect(disruption).toBeDefined();
-      expect(disruption?.planetsDestroyedMin).toBe(1);
-      expect(disruption?.planetsDestroyedMax).toBe(3);
+      expect(disruption?.sectorsDestroyedMin).toBe(1);
+      expect(disruption?.sectorsDestroyedMax).toBe(3);
 
       const salvage = getMissionEffects("salvage_op");
       expect(salvage).toBeDefined();
@@ -151,8 +151,8 @@ describe("Pirate Mission Execution", () => {
 
       expect(result.success).toBe(true);
       expect(result.missionType).toBe("disruption");
-      expect(result.effects.planetsDestroyed).toBeGreaterThanOrEqual(1);
-      expect(result.effects.planetsDestroyed).toBeLessThanOrEqual(3);
+      expect(result.effects.sectorsDestroyed).toBeGreaterThanOrEqual(1);
+      expect(result.effects.sectorsDestroyed).toBeLessThanOrEqual(3);
     });
 
     it("should not destroy more sectors than target has", () => {
@@ -162,7 +162,7 @@ describe("Pirate Mission Execution", () => {
       const result = executeDisruptionMission(target, config);
 
       expect(result.success).toBe(true);
-      expect(result.effects.planetsDestroyed).toBe(1);
+      expect(result.effects.sectorsDestroyed).toBe(1);
     });
 
     it("should fail if target has no sectors", () => {
@@ -245,37 +245,37 @@ describe("Pirate Mission Execution", () => {
 });
 
 // =============================================================================
-// PLANET DESTRUCTION TESTS
+// SECTOR DESTRUCTION TESTS
 // =============================================================================
 
 describe("Sector Destruction", () => {
-  describe("selectPlanetsToDestroy", () => {
+  describe("selectSectorsToDestroy", () => {
     it("should select correct number of sectors", () => {
       const target = createMockTargetState({
-        foodPlanets: 5,
-        orePlanets: 3,
-        petroleumPlanets: 2,
+        foodSectors: 5,
+        oreSectors: 3,
+        petroleumSectors: 2,
         sectorCount: 10,
       });
 
-      const selected = selectPlanetsToDestroy(target, 3);
+      const selected = selectSectorsToDestroy(target, 3);
 
       expect(selected).toHaveLength(3);
     });
 
     it("should not select more than available", () => {
       const target = createMockTargetState({
-        foodPlanets: 1,
-        orePlanets: 1,
-        petroleumPlanets: 0,
-        researchPlanets: 0,
-        urbanPlanets: 0,
-        touristPlanets: 0,
-        industrialPlanets: 0,
+        foodSectors: 1,
+        oreSectors: 1,
+        petroleumSectors: 0,
+        researchSectors: 0,
+        urbanSectors: 0,
+        touristSectors: 0,
+        industrialSectors: 0,
         sectorCount: 2,
       });
 
-      const selected = selectPlanetsToDestroy(target, 10);
+      const selected = selectSectorsToDestroy(target, 10);
 
       expect(selected).toHaveLength(2);
     });
@@ -283,7 +283,7 @@ describe("Sector Destruction", () => {
     it("should include valid sector types", () => {
       const target = createMockTargetState();
 
-      const selected = selectPlanetsToDestroy(target, 5);
+      const selected = selectSectorsToDestroy(target, 5);
 
       const validTypes = ["food", "ore", "petroleum", "research", "urban", "tourist", "industrial"];
       for (const type of selected) {
@@ -356,8 +356,8 @@ describe("Contract Completion Detection", () => {
       const state = {
         contractType: "hostile_takeover" as const,
         targetEmpireId: "target-1",
-        initialState: { capturedPlanetsFrom: [] },
-        currentState: { capturedPlanetsFrom: ["target-1"] },
+        initialState: { capturedSectorsFrom: [] },
+        currentState: { capturedSectorsFrom: ["target-1"] },
       };
 
       const result = checkContractCompletion(state);
@@ -445,7 +445,7 @@ describe("Message Generation", () => {
         success: true,
         missionType: "disruption" as const,
         targetEmpireId: "target-1",
-        effects: { planetsDestroyed: 2 },
+        effects: { sectorsDestroyed: 2 },
       };
 
       const message = generateMissionResultMessage(result);

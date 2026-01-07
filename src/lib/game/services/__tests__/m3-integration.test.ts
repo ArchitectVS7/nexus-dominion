@@ -34,7 +34,7 @@ import { UPGRADE_COSTS, MAX_UPGRADE_LEVEL, getUpgradeBonuses } from "../../upgra
 import { calculateResearchCost } from "@/lib/formulas/research-costs";
 
 // =============================================================================
-// PLANET MANAGEMENT INTEGRATION TESTS
+// SECTOR MANAGEMENT INTEGRATION TESTS
 // =============================================================================
 
 describe("M3 Integration: Sector Management", () => {

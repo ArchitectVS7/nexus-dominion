@@ -49,7 +49,7 @@ export async function executeBotDecision(
       case "build_units":
         return await executeBuildUnits(decision, context);
       case "buy_planet":
-        return await executeBuyPlanet(decision, context);
+        return await executeBuySector(decision, context);
       case "attack":
         return await executeAttack(decision, context);
       case "diplomacy":
@@ -151,14 +151,14 @@ function getBuildTime(unitType: UnitType): number {
 }
 
 // =============================================================================
-// BUY PLANET EXECUTOR
+// BUY SECTOR EXECUTOR
 // =============================================================================
 
 /**
  * Execute a buy_planet decision.
  * Creates a new sector and deducts credits.
  */
-async function executeBuyPlanet(
+async function executeBuySector(
   decision: Extract<BotDecision, { type: "buy_planet" }>,
   context: BotDecisionContext
 ): Promise<ExecutionResult> {

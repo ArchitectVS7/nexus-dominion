@@ -80,7 +80,7 @@ export type MaintenanceCost = {
   /** Total maintenance cost */
   totalCost: number;
   /** Cost per sector (168 credits) */
-  costPerPlanet: number;
+  costPerSector: number;
   /** Number of sectors */
   sectorCount: number;
 };

@@ -24,7 +24,7 @@ import type { Sector, ResourceInventory } from "@/lib/db/schema";
 // HELPER: Create mock sector
 // =============================================================================
 
-function createMockPlanet(type: string, id = "sector-1"): Sector {
+function createMockSector(type: string, id = "sector-1"): Sector {
   return {
     id,
     empireId: "empire-1",
@@ -44,7 +44,7 @@ function createMockPlanet(type: string, id = "sector-1"): Sector {
 
 describe("calculateTier1AutoProduction", () => {
   it("should produce refined metals from ore sectors (10%)", () => {
-    const sectors = [createMockPlanet("ore")];
+    const sectors = [createMockSector("ore")];
     const baseProduction = { food: 0, ore: 1000, petroleum: 0 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -55,12 +55,12 @@ describe("calculateTier1AutoProduction", () => {
       resourceType: "refined_metals",
       quantity: 100,
       sourceType: "ore",
-      sourcePlanets: 1,
+      sourceSectors: 1,
     });
   });
 
   it("should produce fuel cells from petroleum sectors (10%)", () => {
-    const sectors = [createMockPlanet("petroleum")];
+    const sectors = [createMockSector("petroleum")];
     const baseProduction = { food: 0, ore: 0, petroleum: 500 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -69,7 +69,7 @@ describe("calculateTier1AutoProduction", () => {
   });
 
   it("should produce processed food from food sectors (5%)", () => {
-    const sectors = [createMockPlanet("food")];
+    const sectors = [createMockSector("food")];
     const baseProduction = { food: 2000, ore: 0, petroleum: 0 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -78,7 +78,7 @@ describe("calculateTier1AutoProduction", () => {
   });
 
   it("should produce labor units from urban sectors", () => {
-    const sectors = [createMockPlanet("urban")];
+    const sectors = [createMockSector("urban")];
     const baseProduction = { food: 0, ore: 0, petroleum: 0 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -89,23 +89,23 @@ describe("calculateTier1AutoProduction", () => {
 
   it("should handle multiple sectors of same type", () => {
     const sectors = [
-      createMockPlanet("ore", "p1"),
-      createMockPlanet("ore", "p2"),
-      createMockPlanet("ore", "p3"),
+      createMockSector("ore", "p1"),
+      createMockSector("ore", "p2"),
+      createMockSector("ore", "p3"),
     ];
     const baseProduction = { food: 0, ore: 3000, petroleum: 0 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
 
     expect(result.totalByResource.refined_metals).toBe(300); // 10% of 3000
-    expect(result.productions[0]?.sourcePlanets).toBe(3);
+    expect(result.productions[0]?.sourceSectors).toBe(3);
   });
 
   it("should handle mixed sector types", () => {
     const sectors = [
-      createMockPlanet("ore", "p1"),
-      createMockPlanet("petroleum", "p2"),
-      createMockPlanet("food", "p3"),
+      createMockSector("ore", "p1"),
+      createMockSector("petroleum", "p2"),
+      createMockSector("food", "p3"),
     ];
     const baseProduction = { food: 1000, ore: 1000, petroleum: 1000 };
 
@@ -118,7 +118,7 @@ describe("calculateTier1AutoProduction", () => {
   });
 
   it("should not produce if base production is zero", () => {
-    const sectors = [createMockPlanet("ore")];
+    const sectors = [createMockSector("ore")];
     const baseProduction = { food: 0, ore: 0, petroleum: 0 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -128,7 +128,7 @@ describe("calculateTier1AutoProduction", () => {
   });
 
   it("should not produce if no matching sectors", () => {
-    const sectors = [createMockPlanet("tourism")];
+    const sectors = [createMockSector("tourism")];
     const baseProduction = { food: 1000, ore: 1000, petroleum: 1000 };
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -137,7 +137,7 @@ describe("calculateTier1AutoProduction", () => {
   });
 
   it("should floor fractional production", () => {
-    const sectors = [createMockPlanet("ore")];
+    const sectors = [createMockSector("ore")];
     const baseProduction = { food: 0, ore: 55, petroleum: 0 }; // 10% = 5.5 → 5
 
     const result = calculateTier1AutoProduction(sectors, baseProduction);
@@ -147,7 +147,7 @@ describe("calculateTier1AutoProduction", () => {
 });
 
 // =============================================================================
-// INDUSTRIAL PLANET PRODUCTION TESTS
+// INDUSTRIAL SECTOR PRODUCTION TESTS
 // =============================================================================
 
 describe("calculateIndustrialProduction", () => {

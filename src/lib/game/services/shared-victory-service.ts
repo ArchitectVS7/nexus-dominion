@@ -35,7 +35,7 @@ export interface BossDefeatResult {
   bossEmpireId: string;
   bossName: string;
   /** Total sectors captured from the boss */
-  planetsToDistribute: number;
+  sectorsToDistribute: number;
   /** Total credits looted */
   creditsLooted: number;
   /** Turn when the boss was defeated */
@@ -47,8 +47,8 @@ export interface RewardDistribution {
   empireName: string;
   /** Percentage of total contribution (0-1) */
   contributionPercent: number;
-  /** Planets awarded */
-  planetsAwarded: number;
+  /** Sectors awarded */
+  sectorsAwarded: number;
   /** Credits awarded */
   creditsAwarded: number;
   /** Reputation gained */
@@ -59,7 +59,7 @@ export interface RewardDistribution {
 
 export interface SharedVictoryResult {
   bossDefeated: string;
-  totalPlanetsDistributed: number;
+  totalSectorsDistributed: number;
   totalCreditsDistributed: number;
   distributions: RewardDistribution[];
   /** Message describing the victory */
@@ -96,7 +96,7 @@ export const REPUTATION_GAIN_PER_RANK = 2;
 /**
  * Bonus credits per sector captured (base)
  */
-export const CREDITS_PER_PLANET = 5000;
+export const CREDITS_PER_SECTOR = 5000;
 
 // =============================================================================
 // PURE FUNCTIONS
@@ -148,7 +148,7 @@ export function filterQualifiedMembers(
  * @param rank - Member's contribution rank (1-indexed)
  * @returns Number of sectors for this member
  */
-export function calculatePlanetAllocation(
+export function calculateSectorAllocation(
   totalSectors: number,
   qualifiedCount: number,
   rank: number
@@ -179,11 +179,11 @@ export function calculatePlanetAllocation(
   }
 
   // Remaining members split the rest
-  const remainingPlanets = Math.floor(
+  const remainingSectors = Math.floor(
     totalSectors * DISTRIBUTION_TIERS.REMAINING_PERCENT
   );
   const remainingMembers = qualifiedCount - 3;
-  return Math.floor(remainingPlanets / remainingMembers);
+  return Math.floor(remainingSectors / remainingMembers);
 }
 
 /**
@@ -253,7 +253,7 @@ export function distributeRewards(
   if (qualified.length === 0) {
     return {
       bossDefeated: result.bossName,
-      totalPlanetsDistributed: 0,
+      totalSectorsDistributed: 0,
       totalCreditsDistributed: 0,
       distributions: [],
       victoryMessage: `${result.bossName} has fallen, but no empire contributed enough to claim the spoils.`,
@@ -263,8 +263,8 @@ export function distributeRewards(
   // Calculate distributions
   const distributions: RewardDistribution[] = qualified.map((member, index) => {
     const rank = index + 1;
-    const sectors = calculatePlanetAllocation(
-      result.planetsToDistribute,
+    const sectors = calculateSectorAllocation(
+      result.sectorsToDistribute,
       qualified.length,
       rank
     );
@@ -278,7 +278,7 @@ export function distributeRewards(
       empireId: member.empireId,
       empireName: member.empireName,
       contributionPercent: member.contributionPercent,
-      planetsAwarded: sectors,
+      sectorsAwarded: sectors,
       creditsAwarded: credits,
       reputationGain: reputation,
       contributionRank: rank,
@@ -286,12 +286,12 @@ export function distributeRewards(
   });
 
   // Calculate totals distributed
-  const totalSectors = distributions.reduce((sum, d) => sum + d.planetsAwarded, 0);
+  const totalSectors = distributions.reduce((sum, d) => sum + d.sectorsAwarded, 0);
   const totalCredits = distributions.reduce((sum, d) => sum + d.creditsAwarded, 0);
 
   return {
     bossDefeated: result.bossName,
-    totalPlanetsDistributed: totalSectors,
+    totalSectorsDistributed: totalSectors,
     totalCreditsDistributed: totalCredits,
     distributions,
     victoryMessage: generateVictoryMessage(result.bossName, qualified.length),
@@ -334,7 +334,7 @@ export function validateContributions(
 export function getDistributionSummary(result: SharedVictoryResult): string[] {
   const summary: string[] = [
     `Boss Defeated: ${result.bossDefeated}`,
-    `Total Planets Distributed: ${result.totalPlanetsDistributed}`,
+    `Total Sectors Distributed: ${result.totalSectorsDistributed}`,
     `Total Credits Distributed: ${result.totalCreditsDistributed.toLocaleString()}`,
     "",
     "Reward Distribution:",
@@ -343,7 +343,7 @@ export function getDistributionSummary(result: SharedVictoryResult): string[] {
   for (const d of result.distributions) {
     summary.push(
       `  ${d.contributionRank}. ${d.empireName}: ` +
-        `${d.planetsAwarded} sectors, ` +
+        `${d.sectorsAwarded} sectors, ` +
         `${d.creditsAwarded.toLocaleString()} credits, ` +
         `+${d.reputationGain} reputation ` +
         `(${(d.contributionPercent * 100).toFixed(1)}% contribution)`

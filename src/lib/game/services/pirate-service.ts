@@ -45,7 +45,7 @@ export interface PirateMissionResult {
 export interface PirateMissionEffects {
   incomeDebuffPercent?: number;
   incomeDebuffTurns?: number;
-  planetsDestroyed?: number;
+  sectorsDestroyed?: number;
   militaryDestroyedPercent?: number;
   creditsLooted?: number;
   foodLooted?: number;
@@ -68,13 +68,13 @@ export interface TargetEmpireState {
   dreadnoughts: number;
   stealthCruisers: number;
   sectorCount: number;
-  foodPlanets: number;
-  orePlanets: number;
-  petroleumPlanets: number;
-  researchPlanets: number;
-  urbanPlanets: number;
-  touristPlanets: number;
-  industrialPlanets: number;
+  foodSectors: number;
+  oreSectors: number;
+  petroleumSectors: number;
+  researchSectors: number;
+  urbanSectors: number;
+  touristSectors: number;
+  industrialSectors: number;
 }
 
 // =============================================================================
@@ -143,19 +143,19 @@ export function executeDisruptionMission(
   targetState: TargetEmpireState,
   config: PirateMissionConfig
 ): PirateMissionResult {
-  const minPlanets = config.planetsDestroyedMin ?? 1;
-  const maxPlanets = config.planetsDestroyedMax ?? 3;
+  const minSectors = config.sectorsDestroyedMin ?? 1;
+  const maxSectors = config.sectorsDestroyedMax ?? 3;
 
   // Don't destroy more sectors than target has
-  const maxDestroyable = Math.min(maxPlanets, targetState.sectorCount);
-  const minDestroyable = Math.min(minPlanets, maxDestroyable);
+  const maxDestroyable = Math.min(maxSectors, targetState.sectorCount);
+  const minDestroyable = Math.min(minSectors, maxDestroyable);
 
   // Random number between min and max
-  const planetsToDestroy = Math.floor(
+  const sectorsToDestroy = Math.floor(
     Math.random() * (maxDestroyable - minDestroyable + 1)
   ) + minDestroyable;
 
-  if (planetsToDestroy === 0) {
+  if (sectorsToDestroy === 0) {
     return {
       success: false,
       missionType: "disruption",
@@ -170,7 +170,7 @@ export function executeDisruptionMission(
     missionType: "disruption",
     targetEmpireId: targetState.id,
     effects: {
-      planetsDestroyed: planetsToDestroy,
+      sectorsDestroyed: sectorsToDestroy,
     },
   };
 }
@@ -274,10 +274,10 @@ export function executePirateMission(
 }
 
 // =============================================================================
-// PLANET DESTRUCTION HELPERS
+// SECTOR DESTRUCTION HELPERS
 // =============================================================================
 
-export type PlanetType =
+export type SectorType =
   | "food"
   | "ore"
   | "petroleum"
@@ -289,30 +289,30 @@ export type PlanetType =
 /**
  * Randomly select sectors to destroy based on target's holdings
  */
-export function selectPlanetsToDestroy(
+export function selectSectorsToDestroy(
   targetState: TargetEmpireState,
   count: number
-): PlanetType[] {
-  const planetCounts: Record<PlanetType, number> = {
-    food: targetState.foodPlanets,
-    ore: targetState.orePlanets,
-    petroleum: targetState.petroleumPlanets,
-    research: targetState.researchPlanets,
-    urban: targetState.urbanPlanets,
-    tourist: targetState.touristPlanets,
-    industrial: targetState.industrialPlanets,
+): SectorType[] {
+  const sectorCounts: Record<SectorType, number> = {
+    food: targetState.foodSectors,
+    ore: targetState.oreSectors,
+    petroleum: targetState.petroleumSectors,
+    research: targetState.researchSectors,
+    urban: targetState.urbanSectors,
+    tourist: targetState.touristSectors,
+    industrial: targetState.industrialSectors,
   };
 
   // Create weighted list of sector types
-  const planetPool: PlanetType[] = [];
-  for (const [type, cnt] of Object.entries(planetCounts)) {
+  const sectorPool: SectorType[] = [];
+  for (const [type, cnt] of Object.entries(sectorCounts)) {
     for (let i = 0; i < cnt; i++) {
-      planetPool.push(type as PlanetType);
+      sectorPool.push(type as SectorType);
     }
   }
 
   // Shuffle and pick
-  const shuffled = planetPool.sort(() => Math.random() - 0.5);
+  const shuffled = sectorPool.sort(() => Math.random() - 0.5);
   return shuffled.slice(0, Math.min(count, shuffled.length));
 }
 
@@ -329,7 +329,7 @@ export interface ContractCompletionState {
     networth?: number;
     rank?: number;
     tourismIncome?: number;
-    capturedPlanetsFrom?: string[];
+    capturedSectorsFrom?: string[];
     warDeclared?: boolean;
     wmdDeployed?: boolean;
   };
@@ -339,7 +339,7 @@ export interface ContractCompletionState {
     networth?: number;
     rank?: number;
     tourismIncome?: number;
-    capturedPlanetsFrom?: string[];
+    capturedSectorsFrom?: string[];
     warDeclared?: boolean;
     wmdDeployed?: boolean;
   };
@@ -396,8 +396,8 @@ export function checkContractCompletion(
     // Hostile Takeover: Capture 1 sector from target
     case "hostile_takeover":
       if (
-        currentState.capturedPlanetsFrom &&
-        currentState.capturedPlanetsFrom.includes(state.targetEmpireId)
+        currentState.capturedSectorsFrom &&
+        currentState.capturedSectorsFrom.includes(state.targetEmpireId)
       ) {
         return { completed: true, reason: "Sector captured from target" };
       }
@@ -484,7 +484,7 @@ export function generateMissionResultMessage(result: PirateMissionResult): strin
       return `Pirates disrupted supply lines! Trade income reduced by ${result.effects.incomeDebuffPercent}% for ${result.effects.incomeDebuffTurns} turns.`;
 
     case "disruption":
-      return `Pirates destroyed ${result.effects.planetsDestroyed} sector(s) in a devastating raid!`;
+      return `Pirates destroyed ${result.effects.sectorsDestroyed} sector(s) in a devastating raid!`;
 
     case "salvage_op":
       return `Pirates destroyed ${result.effects.militaryDestroyedPercent}% of the fleet. Salvage value: ${result.salvageValue?.toLocaleString()} credits.`;

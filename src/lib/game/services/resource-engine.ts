@@ -22,7 +22,7 @@ import type {
 // =============================================================================
 
 /** Sector maintenance cost per turn (PRD: 168 credits) */
-export const PLANET_MAINTENANCE_COST = 168;
+export const SECTOR_MAINTENANCE_COST = 168;
 
 // =============================================================================
 // RESOURCE PRODUCTION
@@ -142,12 +142,12 @@ export function applyIncomeMultiplier(
  * @returns MaintenanceCost breakdown
  *
  * @example
- * calculateMaintenanceCost(9) // => { totalCost: 1512, costPerPlanet: 168, sectorCount: 9 }
+ * calculateMaintenanceCost(9) // => { totalCost: 1512, costPerSector: 168, sectorCount: 9 }
  */
 export function calculateMaintenanceCost(sectorCount: number): MaintenanceCost {
   return {
-    totalCost: sectorCount * PLANET_MAINTENANCE_COST,
-    costPerPlanet: PLANET_MAINTENANCE_COST,
+    totalCost: sectorCount * SECTOR_MAINTENANCE_COST,
+    costPerSector: SECTOR_MAINTENANCE_COST,
     sectorCount,
   };
 }
@@ -165,7 +165,7 @@ export function calculateMaintenanceCost(sectorCount: number): MaintenanceCost {
  * @example
  * calculateNetResourceDelta(
  *   { credits: 16000, food: 320, ore: 224, petroleum: 92, researchPoints: 200 },
- *   { totalCost: 1512, costPerPlanet: 168, sectorCount: 9 }
+ *   { totalCost: 1512, costPerSector: 168, sectorCount: 9 }
  * )
  * // => { credits: 14488, food: 320, ore: 224, petroleum: 92, researchPoints: 200 }
  */
@@ -187,7 +187,7 @@ export function calculateNetResourceDelta(
  *
  * Helper function that combines all resource calculations.
  *
- * @param sectors - Planets owned by empire
+ * @param sectors - Sectors owned by empire
  * @param incomeMultiplier - Civil status income multiplier
  * @returns ResourceProduction with final resource changes
  *

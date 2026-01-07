@@ -593,7 +593,7 @@ async function processEmpireTurn(
     for (const prod of tier1Production.productions) {
       events.push({
         type: "other",
-        message: `Auto-produced ${prod.quantity} ${prod.resourceType.replace(/_/g, " ")} from ${prod.sourcePlanets} ${prod.sourceType} sector(s)`,
+        message: `Auto-produced ${prod.quantity} ${prod.resourceType.replace(/_/g, " ")} from ${prod.sourceSectors} ${prod.sourceType} sector(s)`,
         severity: "info",
         empireId: empire.id,
       });

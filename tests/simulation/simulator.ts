@@ -32,7 +32,7 @@ import {
   calculateStarvationLoss,
 } from "@/lib/formulas";
 import { PLANET_PRODUCTION } from "@/lib/game/constants";
-import { PLANET_MAINTENANCE_COST } from "@/lib/game/services/resource-engine";
+import { SECTOR_MAINTENANCE_COST } from "@/lib/game/services/resource-engine";
 import { UNIT_COSTS } from "@/lib/game/unit-config";
 import type { CivilStatusLevel } from "@/lib/game/constants";
 import { evaluateCivilStatus, type CivilStatusEvent } from "@/lib/game/services/civil-status";
@@ -288,7 +288,7 @@ function processCivilStatus(empire: SimulatedEmpire, coverage: SystemCoverage): 
   }
 
   // Check maintenance burden
-  const maintenanceCost = empire.planets.length * PLANET_MAINTENANCE_COST;
+  const maintenanceCost = empire.planets.length * SECTOR_MAINTENANCE_COST;
   const maintenanceRatio = maintenanceCost / Math.max(1, empire.credits);
   if (maintenanceRatio > 0.8) {
     events.push({ type: "high_maintenance", severity: maintenanceRatio });
@@ -308,7 +308,7 @@ function processCivilStatus(empire: SimulatedEmpire, coverage: SystemCoverage): 
 
 function processMaintenance(empire: SimulatedEmpire, coverage: SystemCoverage): void {
   // Planet maintenance
-  const planetCost = empire.planets.length * PLANET_MAINTENANCE_COST;
+  const planetCost = empire.planets.length * SECTOR_MAINTENANCE_COST;
 
   // Unit maintenance (simplified)
   const unitCost =
