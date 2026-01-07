@@ -17,10 +17,10 @@ import {
   STARTING_RESOURCES,
   STARTING_MILITARY,
   STARTING_POPULATION,
-  STARTING_PLANETS,
-  PLANET_PRODUCTION,
-  PLANET_COSTS,
-  TOTAL_STARTING_PLANETS,
+  STARTING_SECTORS,
+  SECTOR_PRODUCTION,
+  SECTOR_COSTS,
+  TOTAL_STARTING_SECTORS,
   getGameModePreset,
   type GameMode,
 } from "../constants";
@@ -87,7 +87,7 @@ export async function createPlayerEmpire(
 ): Promise<Empire> {
   // Calculate starting networth
   const networth = calculateNetworth({
-    sectorCount: TOTAL_STARTING_PLANETS,
+    sectorCount: TOTAL_STARTING_SECTORS,
     ...STARTING_MILITARY,
   });
 
@@ -101,7 +101,7 @@ export async function createPlayerEmpire(
     ...STARTING_MILITARY,
     ...STARTING_POPULATION,
     networth,
-    sectorCount: TOTAL_STARTING_PLANETS,
+    sectorCount: TOTAL_STARTING_SECTORS,
   };
 
   const [empire] = await db.insert(empires).values(empireData).returning();
@@ -128,14 +128,14 @@ async function createStartingPlanets(
 ): Promise<Sector[]> {
   const sectorValues: NewSector[] = [];
 
-  for (const { type, count } of STARTING_PLANETS) {
+  for (const { type, count } of STARTING_SECTORS) {
     for (let i = 0; i < count; i++) {
       sectorValues.push({
         empireId,
         gameId,
         type,
-        productionRate: String(PLANET_PRODUCTION[type]),
-        purchasePrice: PLANET_COSTS[type],
+        productionRate: String(SECTOR_PRODUCTION[type]),
+        purchasePrice: SECTOR_COSTS[type],
       });
     }
   }

@@ -11,7 +11,7 @@ import {
   calculateSectorCost,
   calculateReleaseRefund,
 } from "@/lib/formulas/sector-costs";
-import { PLANET_COSTS } from "../../constants";
+import { SECTOR_COSTS } from "../../constants";
 import { calculateNetworth } from "../../networth";
 
 // =============================================================================
@@ -22,7 +22,7 @@ describe("Sector Service Business Logic", () => {
   describe("Sector Purchase Cost Calculation", () => {
     it("should calculate correct cost for first sector at 9 owned", () => {
       // With 9 starting sectors, cost multiplier is 1.45
-      const baseCost = PLANET_COSTS.food; // 8,000
+      const baseCost = SECTOR_COSTS.food; // 8,000
       const currentOwned = 9;
       const cost = calculateSectorCost(baseCost, currentOwned);
 
@@ -31,7 +31,7 @@ describe("Sector Service Business Logic", () => {
     });
 
     it("should calculate escalating costs for sequential purchases", () => {
-      const baseCost = PLANET_COSTS.food; // 8,000
+      const baseCost = SECTOR_COSTS.food; // 8,000
 
       // 9 sectors → 10: 8,000 × 1.45 = 11,600
       expect(calculateSectorCost(baseCost, 9)).toBe(11_600);
@@ -46,15 +46,15 @@ describe("Sector Service Business Logic", () => {
     it("should use different base costs for different sector types", () => {
       const currentOwned = 9;
 
-      expect(calculateSectorCost(PLANET_COSTS.food, currentOwned)).toBe(11_600); // 8,000 × 1.45
-      expect(calculateSectorCost(PLANET_COSTS.ore, currentOwned)).toBe(8_700);   // 6,000 × 1.45
-      expect(calculateSectorCost(PLANET_COSTS.research, currentOwned)).toBe(33_350); // 23,000 × 1.45
+      expect(calculateSectorCost(SECTOR_COSTS.food, currentOwned)).toBe(11_600); // 8,000 × 1.45
+      expect(calculateSectorCost(SECTOR_COSTS.ore, currentOwned)).toBe(8_700);   // 6,000 × 1.45
+      expect(calculateSectorCost(SECTOR_COSTS.research, currentOwned)).toBe(33_350); // 23,000 × 1.45
     });
   });
 
   describe("Sector Release Refund Calculation", () => {
     it("should refund 50% of current price", () => {
-      const baseCost = PLANET_COSTS.food; // 8,000
+      const baseCost = SECTOR_COSTS.food; // 8,000
       const currentOwned = 9;
       const refund = calculateReleaseRefund(baseCost, currentOwned);
 
@@ -63,7 +63,7 @@ describe("Sector Service Business Logic", () => {
     });
 
     it("should refund based on current ownership count", () => {
-      const baseCost = PLANET_COSTS.food;
+      const baseCost = SECTOR_COSTS.food;
 
       // With 10 sectors: price = 12,000, refund = 6,000
       expect(calculateReleaseRefund(baseCost, 10)).toBe(6_000);
@@ -130,16 +130,16 @@ describe("Sector Service Business Logic", () => {
 
   describe("PRD Compliance - Sector Costs", () => {
     it("should have correct base costs for all sector types (PRD 5.2)", () => {
-      expect(PLANET_COSTS.food).toBe(8_000);
-      expect(PLANET_COSTS.ore).toBe(6_000);
-      expect(PLANET_COSTS.petroleum).toBe(11_500);
-      expect(PLANET_COSTS.tourism).toBe(8_000);
-      expect(PLANET_COSTS.urban).toBe(8_000);
-      expect(PLANET_COSTS.education).toBe(8_000);
-      expect(PLANET_COSTS.government).toBe(7_500);
-      expect(PLANET_COSTS.research).toBe(23_000);
-      expect(PLANET_COSTS.supply).toBe(11_500);
-      expect(PLANET_COSTS.anti_pollution).toBe(10_500);
+      expect(SECTOR_COSTS.food).toBe(8_000);
+      expect(SECTOR_COSTS.ore).toBe(6_000);
+      expect(SECTOR_COSTS.petroleum).toBe(11_500);
+      expect(SECTOR_COSTS.tourism).toBe(8_000);
+      expect(SECTOR_COSTS.urban).toBe(8_000);
+      expect(SECTOR_COSTS.education).toBe(8_000);
+      expect(SECTOR_COSTS.government).toBe(7_500);
+      expect(SECTOR_COSTS.research).toBe(23_000);
+      expect(SECTOR_COSTS.supply).toBe(11_500);
+      expect(SECTOR_COSTS.anti_pollution).toBe(10_500);
     });
 
     it("should apply 5% cost scaling per owned sector (PRD 5.3)", () => {
@@ -226,8 +226,8 @@ describe("Sector Service Validation Logic", () => {
       ];
 
       validTypes.forEach(type => {
-        expect(PLANET_COSTS[type as keyof typeof PLANET_COSTS]).toBeDefined();
-        expect(PLANET_COSTS[type as keyof typeof PLANET_COSTS]).toBeGreaterThan(0);
+        expect(SECTOR_COSTS[type as keyof typeof SECTOR_COSTS]).toBeDefined();
+        expect(SECTOR_COSTS[type as keyof typeof SECTOR_COSTS]).toBeGreaterThan(0);
       });
     });
   });
@@ -239,7 +239,7 @@ describe("Sector Service Validation Logic", () => {
 
 describe("Sector Service Edge Cases", () => {
   it("should handle very high sector counts", () => {
-    const baseCost = PLANET_COSTS.food;
+    const baseCost = SECTOR_COSTS.food;
     const ownedSectors = 100;
     const cost = calculateSectorCost(baseCost, ownedSectors);
 
@@ -262,7 +262,7 @@ describe("Sector Service Edge Cases", () => {
   });
 
   it("should handle bulk sector purchases calculation", () => {
-    const baseCost = PLANET_COSTS.food;
+    const baseCost = SECTOR_COSTS.food;
 
     // Calculate cost of buying 3 sectors starting at 9 owned
     const cost1 = calculateSectorCost(baseCost, 9);  // 11,600

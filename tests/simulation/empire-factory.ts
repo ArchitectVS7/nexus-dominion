@@ -7,7 +7,7 @@
 
 import type { SimulatedEmpire, SimulatedPlanet, SimulationConfig, BotTier } from "./types";
 import type { BotArchetype, PlanetType } from "@/lib/bots/types";
-import { PLANET_PRODUCTION, STARTING_RESOURCES, STARTING_POPULATION as STARTING_POP } from "@/lib/game/constants";
+import { SECTOR_PRODUCTION, STARTING_RESOURCES, STARTING_POPULATION as STARTING_POP } from "@/lib/game/constants";
 import { calculateNetworth } from "@/lib/game/networth";
 
 // =============================================================================
@@ -68,7 +68,7 @@ function createPlanet(type: PlanetType, index: number, empireId: string): Simula
   return {
     id: `${empireId}-planet-${index}`,
     type,
-    productionRate: PLANET_PRODUCTION[type] ?? 0,
+    productionRate: SECTOR_PRODUCTION[type] ?? 0,
   };
 }
 

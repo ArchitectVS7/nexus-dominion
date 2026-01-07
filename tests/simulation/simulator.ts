@@ -31,7 +31,7 @@ import {
   calculatePopulationGrowth,
   calculateStarvationLoss,
 } from "@/lib/formulas";
-import { PLANET_PRODUCTION } from "@/lib/game/constants";
+import { SECTOR_PRODUCTION } from "@/lib/game/constants";
 import { SECTOR_MAINTENANCE_COST } from "@/lib/game/services/resource-engine";
 import { UNIT_COSTS } from "@/lib/game/unit-config";
 import type { CivilStatusLevel } from "@/lib/game/constants";
@@ -493,7 +493,7 @@ function executeBuyPlanet(
   empire.planets.push({
     id: `${empire.id}-planet-${empire.planets.length}`,
     type: sectorType,
-    productionRate: PLANET_PRODUCTION[sectorType] ?? 0,
+    productionRate: SECTOR_PRODUCTION[sectorType] ?? 0,
   });
 
   coverage.buyPlanet.count++;

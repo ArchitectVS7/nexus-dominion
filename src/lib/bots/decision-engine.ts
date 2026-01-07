@@ -39,7 +39,7 @@ import {
   UNIT_COSTS,
   calculateAffordableUnits,
 } from "@/lib/game/unit-config";
-import { PLANET_COSTS } from "@/lib/game/constants";
+import { SECTOR_COSTS } from "@/lib/game/constants";
 import {
   ARCHETYPE_CRAFTING_PROFILES,
   getNextCraftingPriority,
@@ -757,7 +757,7 @@ function generateBuyPlanetDecision(
   // Filter to sector types the bot can afford
   // Note: Sector cost scaling isn't applied here for simplicity
   const affordableTypes = PURCHASABLE_PLANET_TYPES.filter((type) => {
-    const cost = PLANET_COSTS[type];
+    const cost = SECTOR_COSTS[type];
     return empire.credits >= cost;
   });
 

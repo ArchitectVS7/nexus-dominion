@@ -13,7 +13,7 @@
 import type { BotDecisionContext } from "@/lib/bots/types";
 import type { LlmMessage } from "../client";
 import { UNIT_COSTS } from "@/lib/game/unit-config";
-import { PLANET_COSTS } from "@/lib/game/constants";
+import { SECTOR_COSTS } from "@/lib/game/constants";
 import { EMOTIONAL_STATES } from "@/lib/bots/emotions/states";
 
 // ============================================
@@ -262,7 +262,7 @@ function buildAvailableActions(context: BotDecisionContext): string {
     .filter(([, cost]) => empire.credits >= cost)
     .map(([unit, cost]) => `${unit} (${cost} credits)`);
 
-  const sectorCost = PLANET_COSTS.food * (1 + empire.sectorCount * 0.05);
+  const sectorCost = SECTOR_COSTS.food * (1 + empire.sectorCount * 0.05);
   const canBuyPlanet = empire.credits >= sectorCost;
 
   return `AVAILABLE ACTIONS:

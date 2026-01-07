@@ -44,10 +44,10 @@ export const STARTING_POPULATION = {
 } as const;
 
 // =============================================================================
-// PLANET PRODUCTION RATES (PRD 5.2)
+// SECTOR PRODUCTION RATES (PRD 5.2)
 // =============================================================================
 
-export const PLANET_PRODUCTION = {
+export const SECTOR_PRODUCTION = {
   food: 160, // food units per turn
   ore: 112, // ore units per turn
   petroleum: 92, // petroleum units per turn
@@ -62,10 +62,10 @@ export const PLANET_PRODUCTION = {
 } as const;
 
 // =============================================================================
-// PLANET BASE COSTS (PRD 5.2)
+// SECTOR BASE COSTS (PRD 5.2)
 // =============================================================================
 
-export const PLANET_COSTS = {
+export const SECTOR_COSTS = {
   food: 8_000,
   ore: 6_000,
   petroleum: 11_500,
@@ -80,14 +80,14 @@ export const PLANET_COSTS = {
 } as const;
 
 // =============================================================================
-// STARTING PLANET DISTRIBUTION (PRD 5.1)
+// STARTING SECTOR DISTRIBUTION (PRD 5.1)
 // =============================================================================
 
 export type PlanetType = Sector["type"];
 
 // Reduced from 9 to 5 sectors for faster eliminations (see IMPLEMENTATION-PLAN.md M1.1)
 // Players must now purchase Research sectors - encourages strategic choices early game
-export const STARTING_PLANETS: Array<{ type: PlanetType; count: number }> = [
+export const STARTING_SECTORS: Array<{ type: PlanetType; count: number }> = [
   { type: "food", count: 1 },        // Reduced from 2
   { type: "ore", count: 1 },         // Reduced from 2
   { type: "petroleum", count: 1 },
@@ -95,16 +95,16 @@ export const STARTING_PLANETS: Array<{ type: PlanetType; count: number }> = [
   { type: "government", count: 1 },  // Keep for covert ops capacity
 ];
 
-export const TOTAL_STARTING_PLANETS = STARTING_PLANETS.reduce(
+export const TOTAL_STARTING_SECTORS = STARTING_SECTORS.reduce(
   (sum, p) => sum + p.count,
   0
 ); // Should be 5
 
 // =============================================================================
-// PLANET TYPE DISPLAY LABELS
+// SECTOR TYPE DISPLAY LABELS
 // =============================================================================
 
-export const PLANET_TYPE_LABELS: Record<PlanetType, string> = {
+export const SECTOR_TYPE_LABELS: Record<PlanetType, string> = {
   food: "Food",
   ore: "Ore",
   petroleum: "Petroleum",
@@ -234,7 +234,7 @@ export const UI_LABELS = {
   releaseSector: "Release Sector",
   sectorType: "Sector Type",
 
-  // Sector type labels (use these instead of PLANET_TYPE_LABELS in UI)
+  // Sector type labels (use these instead of SECTOR_TYPE_LABELS in UI)
   sectorTypes: {
     food: "Food Sector",
     ore: "Ore Sector",

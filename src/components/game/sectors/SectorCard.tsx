@@ -6,7 +6,7 @@
  * Displays a single sector with its production info and release option.
  */
 
-import { PLANET_TYPE_LABELS, PLANET_PRODUCTION } from "@/lib/game/constants";
+import { SECTOR_TYPE_LABELS, SECTOR_PRODUCTION } from "@/lib/game/constants";
 import type { Sector } from "@/lib/db/schema";
 import { ReleaseSectorButton } from "./ReleaseSectorButton";
 import { SectorIcons } from "@/lib/theme/icons";
@@ -34,8 +34,8 @@ interface SectorCardProps {
 export function SectorCard({ sector, sectorCount, onRelease }: SectorCardProps) {
   const borderColor = SECTOR_TYPE_COLORS[sector.type] || "border-gray-600";
   const IconComponent = SectorIcons[sector.type as keyof typeof SectorIcons] || Globe;
-  const label = PLANET_TYPE_LABELS[sector.type as keyof typeof PLANET_TYPE_LABELS] || sector.type;
-  const production = PLANET_PRODUCTION[sector.type as keyof typeof PLANET_PRODUCTION] || 0;
+  const label = SECTOR_TYPE_LABELS[sector.type as keyof typeof SECTOR_TYPE_LABELS] || sector.type;
+  const production = SECTOR_PRODUCTION[sector.type as keyof typeof SECTOR_PRODUCTION] || 0;
 
   const productionUnit = (() => {
     switch (sector.type) {

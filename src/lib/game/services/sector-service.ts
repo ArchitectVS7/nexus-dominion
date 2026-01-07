@@ -15,7 +15,7 @@ import {
   calculateReleaseRefund,
   calculateAffordableSectors,
 } from "@/lib/formulas/sector-costs";
-import { PLANET_COSTS, PLANET_PRODUCTION, type PlanetType } from "../constants";
+import { SECTOR_COSTS, SECTOR_PRODUCTION, type PlanetType } from "../constants";
 import { calculateNetworth } from "../networth";
 
 // =============================================================================
@@ -84,7 +84,7 @@ export async function colonizeSector(
   }
 
   // Get base cost for sector type
-  const baseCost = PLANET_COSTS[sectorType];
+  const baseCost = SECTOR_COSTS[sectorType];
   if (!baseCost) {
     return { success: false, error: `Invalid sector type: ${sectorType}` };
   }
@@ -122,7 +122,7 @@ export async function colonizeSector(
       empireId,
       gameId,
       type: sectorType,
-      productionRate: String(PLANET_PRODUCTION[sectorType]),
+      productionRate: String(SECTOR_PRODUCTION[sectorType]),
       purchasePrice: scaledCost,
       acquiredAtTurn: currentTurn,
     })
@@ -195,7 +195,7 @@ export async function releaseSector(
   }
 
   // Get base cost for sector type
-  const baseCost = PLANET_COSTS[sector.type as PlanetType];
+  const baseCost = SECTOR_COSTS[sector.type as PlanetType];
   if (!baseCost) {
     return { success: false, error: `Invalid sector type: ${sector.type}` };
   }
@@ -265,7 +265,7 @@ export async function getSectorPurchaseInfo(
   }
 
   // Get base cost for sector type
-  const baseCost = PLANET_COSTS[sectorType];
+  const baseCost = SECTOR_COSTS[sectorType];
   if (!baseCost) {
     return null;
   }
@@ -328,7 +328,7 @@ export async function getAllSectorPurchaseInfo(
   }
 
   return sectorTypes.map((sectorType) => {
-    const baseCost = PLANET_COSTS[sectorType];
+    const baseCost = SECTOR_COSTS[sectorType];
     const currentCost = calculateSectorCost(baseCost, empire.sectorCount);
     const costMultiplier = 1 + empire.sectorCount * 0.05;
     const affordableCount = calculateAffordableSectors(

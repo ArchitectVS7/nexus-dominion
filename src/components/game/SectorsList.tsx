@@ -1,5 +1,5 @@
 import type { Sector } from "@/lib/db/schema";
-import { PLANET_TYPE_LABELS } from "@/lib/game/constants";
+import { SECTOR_TYPE_LABELS } from "@/lib/game/constants";
 
 interface SectorsListProps {
   sectors: Sector[];
@@ -41,7 +41,7 @@ export function SectorsList({ sectors }: SectorsListProps) {
       </h2>
       <div className="space-y-1 text-gray-300">
         {sortedTypes.map(([type, count]) => {
-          const label = PLANET_TYPE_LABELS[type as keyof typeof PLANET_TYPE_LABELS] || type;
+          const label = SECTOR_TYPE_LABELS[type as keyof typeof SECTOR_TYPE_LABELS] || type;
           const color = SECTOR_TYPE_COLORS[type] || "text-gray-300";
 
           return (

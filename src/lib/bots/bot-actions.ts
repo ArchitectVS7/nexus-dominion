@@ -11,7 +11,7 @@ import { eq, sql, and } from "drizzle-orm";
 import type { BotDecision, BotDecisionContext, Forces, UnitType } from "./types";
 import { calculateUnitPurchaseCost } from "@/lib/game/unit-config";
 import { UNIT_BUILD_TIMES, toDbUnitType } from "@/lib/game/build-config";
-import { PLANET_COSTS, PLANET_PRODUCTION } from "@/lib/game/constants";
+import { SECTOR_COSTS, SECTOR_PRODUCTION } from "@/lib/game/constants";
 import { calculateSectorCost } from "@/lib/formulas/sector-costs";
 import { TIER_1_RECIPES, TIER_2_RECIPES, TIER_3_RECIPES, RESOURCE_TIERS } from "@/lib/game/constants/crafting";
 import type { CraftedResource, Tier1Resource, Tier2Resource, Tier3Resource } from "@/lib/game/constants/crafting";
@@ -166,7 +166,7 @@ async function executeBuySector(
   const { sectorType } = decision;
 
   // Calculate sector cost with scaling
-  const baseCost = PLANET_COSTS[sectorType];
+  const baseCost = SECTOR_COSTS[sectorType];
   const totalCost = calculateSectorCost(baseCost, empire.sectorCount);
 
   // Check if bot can afford it
@@ -178,7 +178,7 @@ async function executeBuySector(
   }
 
   // Get production rate for this sector type
-  const productionRate = PLANET_PRODUCTION[sectorType];
+  const productionRate = SECTOR_PRODUCTION[sectorType];
 
   // Create the sector
   const sectorData: NewSector = {

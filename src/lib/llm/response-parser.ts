@@ -10,7 +10,7 @@
 import { z } from "zod";
 import type { BotDecision, BotDecisionContext } from "@/lib/bots/types";
 import { UNIT_COSTS } from "@/lib/game/unit-config";
-import { PLANET_COSTS } from "@/lib/game/constants";
+import { SECTOR_COSTS } from "@/lib/game/constants";
 
 // ============================================
 // ZOD SCHEMAS
@@ -303,7 +303,7 @@ function validateDecisionLegality(
     }
 
     case "buy_planet": {
-      const cost = PLANET_COSTS[decision.sectorType] * (1 + empire.sectorCount * 0.05);
+      const cost = SECTOR_COSTS[decision.sectorType] * (1 + empire.sectorCount * 0.05);
       if (empire.credits < cost) {
         return {
           legal: false,

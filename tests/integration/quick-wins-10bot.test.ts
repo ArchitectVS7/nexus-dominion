@@ -14,7 +14,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { runSimulation } from "../simulation/simulator";
 import { createSimulatedEmpire } from "../simulation/empire-factory";
 import type { SimulationConfig, SimulationResult, SimulatedEmpire } from "../simulation/types";
-import { STARTING_PLANETS } from "@/lib/game/constants";
+import { STARTING_SECTORS } from "@/lib/game/constants";
 import { isFeatureEnabled, FEATURE_FLAGS } from "@/lib/config/feature-flags";
 import {
   calculateNetworthUnderdogBonus,
@@ -30,7 +30,7 @@ import {
 describe("M1.1: Starting Planets Reduced to 5", () => {
   it("should have exactly 5 starting planets defined", () => {
     // Count total starting planets
-    const totalPlanets = STARTING_PLANETS.reduce((sum, p) => sum + p.count, 0);
+    const totalPlanets = STARTING_SECTORS.reduce((sum, p) => sum + p.count, 0);
     expect(totalPlanets).toBe(5);
   });
 

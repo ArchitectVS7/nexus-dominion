@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { UNIT_BUILD_TIMES } from "@/lib/game/build-config";
-import { PLANET_COSTS, PLANET_PRODUCTION } from "@/lib/game/constants";
+import { SECTOR_COSTS, SECTOR_PRODUCTION } from "@/lib/game/constants";
 
 describe("Bot Actions", () => {
   describe("Build Units configuration", () => {
@@ -24,19 +24,19 @@ describe("Bot Actions", () => {
     it("should have costs for all purchasable sector types", () => {
       const purchasableTypes = ["food", "ore", "petroleum", "tourism", "urban", "government", "research"];
       purchasableTypes.forEach((type) => {
-        expect(PLANET_COSTS[type as keyof typeof PLANET_COSTS]).toBeDefined();
+        expect(SECTOR_COSTS[type as keyof typeof SECTOR_COSTS]).toBeDefined();
       });
     });
 
     it("should have production rates for all sector types", () => {
       const purchasableTypes = ["food", "ore", "petroleum", "tourism", "urban", "government", "research"];
       purchasableTypes.forEach((type) => {
-        expect(PLANET_PRODUCTION[type as keyof typeof PLANET_PRODUCTION]).toBeDefined();
+        expect(SECTOR_PRODUCTION[type as keyof typeof SECTOR_PRODUCTION]).toBeDefined();
       });
     });
 
     it("should have positive sector costs", () => {
-      Object.values(PLANET_COSTS).forEach((cost) => {
+      Object.values(SECTOR_COSTS).forEach((cost) => {
         expect(cost).toBeGreaterThan(0);
       });
     });
