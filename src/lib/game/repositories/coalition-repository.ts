@@ -123,14 +123,14 @@ export async function updateCoalitionStats(
   const coalition = await getCoalitionById(coalitionId);
   if (!coalition) return;
 
-  const [totalPlanetsResult] = await db
+  const [totalSectorsResult] = await db
     .select({ count: sql<number>`count(*)` })
     .from(sectors)
     .where(eq(sectors.gameId, coalition.gameId));
 
-  const memberPlanets = members.reduce((sum, m) => sum + m.empire.sectorCount, 0);
-  const totalSectors = Number(totalPlanetsResult?.count ?? 0);
-  const territoryPercent = totalSectors > 0 ? (memberPlanets / totalSectors) * 100 : 0;
+  const memberSectors = members.reduce((sum, m) => sum + m.empire.sectorCount, 0);
+  const totalSectors = Number(totalSectorsResult?.count ?? 0);
+  const territoryPercent = totalSectors > 0 ? (memberSectors / totalSectors) * 100 : 0;
 
   await db
     .update(coalitions)
@@ -283,7 +283,7 @@ export async function isEmpireInCoalition(
 /**
  * Get the count of total sectors in a game.
  */
-export async function getTotalPlanetCount(gameId: string): Promise<number> {
+export async function getTotalSectorCount(gameId: string): Promise<number> {
   const [result] = await db
     .select({ count: sql<number>`count(*)` })
     .from(sectors)

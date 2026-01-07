@@ -430,12 +430,12 @@ export async function recordBattleMemory(
   );
 }
 
-export async function recordPlanetCapturedMemory(
+export async function recordSectorCapturedMemory(
   empireId: string,
   targetEmpireId: string,
   turn: number,
   gameId: string,
-  planetName?: string
+  sectorName?: string
 ): Promise<BotMemory> {
   return recordMemory(
     empireId,
@@ -443,7 +443,7 @@ export async function recordPlanetCapturedMemory(
     "sector_captured",
     turn,
     gameId,
-    planetName ? { planetName } : undefined
+    sectorName ? { sectorName } : undefined
   );
 }
 

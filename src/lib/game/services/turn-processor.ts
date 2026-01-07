@@ -539,8 +539,8 @@ async function processEmpireTurn(
     covertAgents: empire.covertAgents,
   };
   const unitMaintenance = calculateUnitMaintenance(unitCounts);
-  const planetMaintenance = calculateMaintenanceCost(sectors.length);
-  const totalMaintenance = planetMaintenance.totalCost + unitMaintenance.totalCost;
+  const sectorMaintenance = calculateMaintenanceCost(sectors.length);
+  const totalMaintenance = sectorMaintenance.totalCost + unitMaintenance.totalCost;
 
   // Calculate new resource totals (deduct unit maintenance from credits)
   const creditsAfterMaintenance = resourceProduction.final.credits - unitMaintenance.totalCost;
@@ -561,7 +561,7 @@ async function processEmpireTurn(
   // Add maintenance event (combined sector + unit)
   events.push({
     type: "maintenance",
-    message: `Paid ${totalMaintenance.toLocaleString()} credits in maintenance (${planetMaintenance.totalCost.toLocaleString()} sectors, ${unitMaintenance.totalCost.toLocaleString()} units)`,
+    message: `Paid ${totalMaintenance.toLocaleString()} credits in maintenance (${sectorMaintenance.totalCost.toLocaleString()} sectors, ${unitMaintenance.totalCost.toLocaleString()} units)`,
     severity: "info",
     empireId: empire.id,
   });
@@ -686,9 +686,9 @@ async function processEmpireTurn(
   // ==========================================================================
 
   // Generate research points from research sectors (100 RP/sector/turn)
-  const researchPlanets = sectors.filter(p => p.type === "research");
-  if (researchPlanets.length > 0) {
-    const researchResult = await processResearchProduction(empire.id, researchPlanets.length);
+  const researchSectors = sectors.filter(p => p.type === "research");
+  if (researchSectors.length > 0) {
+    const researchResult = await processResearchProduction(empire.id, researchSectors.length);
     if (researchResult.leveledUp) {
       events.push({
         type: "other",

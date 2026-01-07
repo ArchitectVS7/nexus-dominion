@@ -36,7 +36,7 @@ export const RESOURCE_ICONS = {
 } as const;
 
 // =============================================================================
-// SECTORS (formerly Planets)
+// SECTORS
 // =============================================================================
 
 export const SECTOR_TERM = "Sector"; // Generic term for "sector"

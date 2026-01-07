@@ -146,7 +146,7 @@ describe("Bot Decision Weights", () => {
 
   it("BASE_WEIGHTS should include all 12 decision types", () => {
     expect(BASE_WEIGHTS).toHaveProperty("build_units");
-    expect(BASE_WEIGHTS).toHaveProperty("buy_planet");
+    expect(BASE_WEIGHTS).toHaveProperty("buy_sector");
     expect(BASE_WEIGHTS).toHaveProperty("attack");
     expect(BASE_WEIGHTS).toHaveProperty("diplomacy");
     expect(BASE_WEIGHTS).toHaveProperty("trade");
@@ -173,7 +173,7 @@ describe("Bot Decision Weights", () => {
       it(`${archetype} should include all 12 decision types`, () => {
         const weights = ARCHETYPE_WEIGHTS[archetype];
         expect(weights).toHaveProperty("build_units");
-        expect(weights).toHaveProperty("buy_planet");
+        expect(weights).toHaveProperty("buy_sector");
         expect(weights).toHaveProperty("attack");
         expect(weights).toHaveProperty("diplomacy");
         expect(weights).toHaveProperty("trade");
@@ -254,7 +254,7 @@ describe("Bot Game System Coverage", () => {
    */
   const allDecisionTypes = [
     "build_units",      // Military system
-    "buy_planet",       // Sector/expansion system
+    "buy_sector",       // Sector/expansion system
     "attack",           // Combat system
     "diplomacy",        // Diplomacy system
     "trade",            // Market system
@@ -280,7 +280,7 @@ describe("Bot Game System Coverage", () => {
   describe("Game System Mapping", () => {
     const systemMapping = {
       military: ["build_units", "upgrade_units"],
-      sectors: ["buy_planet"],
+      sectors: ["buy_sector"],
       combat: ["attack"],
       diplomacy: ["diplomacy"],
       market: ["trade"],

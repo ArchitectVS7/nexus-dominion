@@ -279,7 +279,7 @@ export function printCoverageReport(results: SimulationResult[]): void {
   let totalBuyPlanet = 0;
   let totalAttacks = 0;
   const allUnitTypes = new Set<string>();
-  const allPlanetTypes = new Set<string>();
+  const allSectorTypes = new Set<string>();
 
   let combatResolved = 0;
   let researchAdvanced = 0;
@@ -296,7 +296,7 @@ export function printCoverageReport(results: SimulationResult[]): void {
     totalAttacks += c.attacks.count;
 
     c.buildUnits.unitTypes.forEach((t) => allUnitTypes.add(t));
-    c.buyPlanet.sectorTypes.forEach((t) => allPlanetTypes.add(t));
+    c.buyPlanet.sectorTypes.forEach((t) => allSectorTypes.add(t));
 
     if (c.combatResolved) combatResolved++;
     if (c.researchAdvanced) researchAdvanced++;
@@ -315,7 +315,7 @@ export function printCoverageReport(results: SimulationResult[]): void {
   console.log(`  Build units: ${totalBuildUnits} total`);
   console.log(`    Unit types used: ${Array.from(allUnitTypes).join(", ")}`);
   console.log(`  Buy planets: ${totalBuyPlanet} total`);
-  console.log(`    Planet types used: ${Array.from(allPlanetTypes).join(", ")}`);
+  console.log(`    Planet types used: ${Array.from(allSectorTypes).join(", ")}`);
   console.log(`  Attacks: ${totalAttacks} total`);
 
   console.log();
@@ -358,7 +358,7 @@ export function printCoverageReport(results: SimulationResult[]): void {
     "government",
     "research",
   ];
-  const missingPlanets = allExpectedPlanets.filter((p) => !allPlanetTypes.has(p));
+  const missingPlanets = allExpectedPlanets.filter((p) => !allSectorTypes.has(p));
   if (missingPlanets.length > 0) {
     console.log(`  Missing planet types: ${missingPlanets.join(", ")}`);
   } else {

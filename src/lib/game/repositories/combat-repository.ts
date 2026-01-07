@@ -33,7 +33,7 @@ export interface SaveAttackParams {
   gameId: string;
   attackerId: string;
   defenderId: string;
-  targetPlanetId?: string;
+  targetSectorId?: string;
   turn: number;
   attackType: AttackType;
   attackerForces: Forces;
@@ -92,7 +92,7 @@ export async function saveAttack(params: SaveAttackParams): Promise<Attack> {
     gameId,
     attackerId,
     defenderId,
-    targetPlanetId,
+    targetSectorId,
     turn,
     attackType,
     attackerForces,
@@ -104,7 +104,7 @@ export async function saveAttack(params: SaveAttackParams): Promise<Attack> {
   if (!isValidUUID(gameId) || !isValidUUID(attackerId) || !isValidUUID(defenderId)) {
     throw new Error("Invalid ID format");
   }
-  if (targetPlanetId && !isValidUUID(targetPlanetId)) {
+  if (targetSectorId && !isValidUUID(targetSectorId)) {
     throw new Error("Invalid target sector ID format");
   }
   if (!validateForces(attackerForces) || !validateForces(defenderForces)) {
@@ -133,7 +133,7 @@ export async function saveAttack(params: SaveAttackParams): Promise<Attack> {
         gameId,
         attackerId,
         defenderId,
-        targetPlanetId: targetPlanetId ?? null,
+        targetSectorId: targetSectorId ?? null,
         turn,
         attackType,
         // Attacker forces
@@ -297,7 +297,7 @@ export async function applyCombatResults(
 
     // Handle sector captures if applicable - within same transaction
     if (result.sectorsCaptured > 0) {
-      await transferPlanetsInTransaction(tx, defenderId, attackerId, result.sectorsCaptured);
+      await transferSectorsInTransaction(tx, defenderId, attackerId, result.sectorsCaptured);
     }
   });
 }
@@ -306,7 +306,7 @@ export async function applyCombatResults(
  * Transfer sectors from defender to attacker within a transaction.
  * Prevents race conditions by operating within the transaction context.
  */
-async function transferPlanetsInTransaction(
+async function transferSectorsInTransaction(
   tx: Parameters<Parameters<Database["transaction"]>[0]>[0],
   fromEmpireId: string,
   toEmpireId: string,
@@ -318,27 +318,27 @@ async function transferPlanetsInTransaction(
   }
 
   // Get defender's sectors within transaction
-  const defenderPlanets = await tx.query.sectors.findMany({
+  const defenderSectors = await tx.query.sectors.findMany({
     where: eq(sectors.empireId, fromEmpireId),
   });
 
-  if (defenderPlanets.length === 0) return;
+  if (defenderSectors.length === 0) return;
 
   // Don't transfer all sectors - leave at least 1 (prevents elimination via combat alone)
-  const transferCount = Math.min(count, defenderPlanets.length - 1);
+  const transferCount = Math.min(count, defenderSectors.length - 1);
   if (transferCount <= 0) return;
 
   // Select random sectors to transfer (use crypto for better randomness if available)
-  const shuffled = [...defenderPlanets].sort(() => Math.random() - 0.5);
-  const planetsToTransfer = shuffled.slice(0, transferCount);
-  const planetIds = planetsToTransfer.map(p => p.id);
+  const shuffled = [...defenderSectors].sort(() => Math.random() - 0.5);
+  const sectorsToTransfer = shuffled.slice(0, transferCount);
+  const sectorIds = sectorsToTransfer.map(p => p.id);
 
   // Batch update sector ownership for efficiency
-  if (planetIds.length > 0) {
+  if (sectorIds.length > 0) {
     await tx
       .update(sectors)
       .set({ empireId: toEmpireId })
-      .where(sql`${sectors.id} IN (${sql.join(planetIds.map(id => sql`${id}`), sql`, `)})`);
+      .where(sql`${sectors.id} IN (${sql.join(sectorIds.map(id => sql`${id}`), sql`, `)})`);
   }
 
   // Update sector counts atomically within transaction

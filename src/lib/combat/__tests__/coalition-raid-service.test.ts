@@ -308,7 +308,7 @@ describe("Raid Territory Distribution (M9.3)", () => {
 
       // Each participant should have at least 1 sector
       for (const d of distribution) {
-        expect(d.planetsAwarded).toBeGreaterThanOrEqual(1);
+        expect(d.sectorsAwarded).toBeGreaterThanOrEqual(1);
       }
     });
 
@@ -333,11 +333,11 @@ describe("Raid Territory Distribution (M9.3)", () => {
       const distribution = calculateRaidDistribution(raid, attacks, 10);
 
       // Sort by sectors awarded
-      distribution.sort((a, b) => b.planetsAwarded - a.planetsAwarded);
+      distribution.sort((a, b) => b.sectorsAwarded - a.sectorsAwarded);
 
       // Empire 3 should have the most sectors
       expect(distribution[0]?.empireId).toBe("emp-3");
-      expect(distribution[0]?.planetsAwarded).toBeGreaterThan(distribution[2]?.planetsAwarded ?? 0);
+      expect(distribution[0]?.sectorsAwarded).toBeGreaterThan(distribution[2]?.sectorsAwarded ?? 0);
     });
 
     it("should distribute all sectors (no remainder)", () => {
@@ -358,7 +358,7 @@ describe("Raid Territory Distribution (M9.3)", () => {
       ];
 
       const distribution = calculateRaidDistribution(raid, attacks, 10);
-      const totalDistributed = distribution.reduce((sum, d) => sum + d.planetsAwarded, 0);
+      const totalDistributed = distribution.reduce((sum, d) => sum + d.sectorsAwarded, 0);
 
       expect(totalDistributed).toBe(10);
     });
@@ -406,12 +406,12 @@ describe("Raid Territory Distribution (M9.3)", () => {
       ];
 
       const distribution = calculateRaidDistribution(raid, attacks, 9);
-      const totalDistributed = distribution.reduce((sum, d) => sum + d.planetsAwarded, 0);
+      const totalDistributed = distribution.reduce((sum, d) => sum + d.sectorsAwarded, 0);
 
       expect(totalDistributed).toBe(9);
       // Should distribute evenly when no damage dealt
       for (const d of distribution) {
-        expect(d.planetsAwarded).toBe(3);
+        expect(d.sectorsAwarded).toBe(3);
       }
     });
 
@@ -435,11 +435,11 @@ describe("Raid Territory Distribution (M9.3)", () => {
       ];
 
       const distribution = calculateRaidDistribution(raid, attacks, 3);
-      const totalDistributed = distribution.reduce((sum, d) => sum + d.planetsAwarded, 0);
+      const totalDistributed = distribution.reduce((sum, d) => sum + d.sectorsAwarded, 0);
 
       expect(totalDistributed).toBe(3);
       // Top 3 by damage should get sectors
-      const withPlanets = distribution.filter((d) => d.planetsAwarded > 0);
+      const withPlanets = distribution.filter((d) => d.sectorsAwarded > 0);
       expect(withPlanets.length).toBe(3);
     });
   });
@@ -541,9 +541,9 @@ describe("Raid Rewards", () => {
       };
 
       const distributions = [
-        { empireId: "emp-1", empireName: "Alpha", planetsAwarded: 4, damagePercentage: 0.33, eliminationCredit: 0.33 },
-        { empireId: "emp-2", empireName: "Beta", planetsAwarded: 3, damagePercentage: 0.33, eliminationCredit: 0.33 },
-        { empireId: "emp-3", empireName: "Gamma", planetsAwarded: 3, damagePercentage: 0.34, eliminationCredit: 0.34 },
+        { empireId: "emp-1", empireName: "Alpha", sectorsAwarded: 4, damagePercentage: 0.33, eliminationCredit: 0.33 },
+        { empireId: "emp-2", empireName: "Beta", sectorsAwarded: 3, damagePercentage: 0.33, eliminationCredit: 0.33 },
+        { empireId: "emp-3", empireName: "Gamma", sectorsAwarded: 3, damagePercentage: 0.34, eliminationCredit: 0.34 },
       ];
 
       const message = generateRaidVictoryMessage(raid, distributions);

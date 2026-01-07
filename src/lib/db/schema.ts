@@ -46,7 +46,7 @@ export const botArchetypeEnum = pgEnum("bot_archetype", [
   "opportunist",
 ]);
 
-export const sectorTypeEnum = pgEnum("planet_type", [
+export const sectorTypeEnum = pgEnum("sector_type", [
   "food",
   "ore",
   "petroleum",
@@ -671,7 +671,7 @@ export const attacks = pgTable(
     defenderId: uuid("defender_id")
       .notNull()
       .references(() => empires.id, { onDelete: "cascade" }),
-    targetPlanetId: uuid("target_planet_id").references(() => sectors.id, {
+    targetSectorId: uuid("target_sector_id").references(() => sectors.id, {
       onDelete: "set null",
     }),
 
@@ -922,8 +922,8 @@ export const attacksRelations = relations(attacks, ({ one, many }) => ({
     references: [empires.id],
     relationName: "defender",
   }),
-  targetPlanet: one(sectors, {
-    fields: [attacks.targetPlanetId],
+  targetSector: one(sectors, {
+    fields: [attacks.targetSectorId],
     references: [sectors.id],
   }),
   combatLogs: many(combatLogs),

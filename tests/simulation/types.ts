@@ -6,7 +6,7 @@
  * all game systems and collect balance statistics.
  */
 
-import type { BotArchetype, BotDecision, Forces, PlanetType, UnitType } from "@/lib/bots/types";
+import type { BotArchetype, BotDecision, Forces, SectorType, UnitType } from "@/lib/bots/types";
 import type { CivilStatusLevel } from "@/lib/game/constants";
 
 // =============================================================================
@@ -55,7 +55,7 @@ export interface SimulatedEmpire {
 
 export interface SimulatedPlanet {
   id: string;
-  type: PlanetType;
+  type: SectorType;
   productionRate: number;
 }
 
@@ -125,7 +125,7 @@ export interface CombatOutcomeRecord {
 export interface SystemCoverage {
   // Actions taken
   buildUnits: { count: number; unitTypes: Set<UnitType> };
-  buyPlanet: { count: number; sectorTypes: Set<PlanetType> };
+  buyPlanet: { count: number; sectorTypes: Set<SectorType> };
   attacks: { count: number; invasions: number; guerilla: number };
   diplomacy: { count: number; naps: number; alliances: number };
   trades: { count: number; buys: number; sells: number };

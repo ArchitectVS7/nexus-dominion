@@ -79,7 +79,7 @@ describe("determineTellType", () => {
   });
 
   it("should return economic_preparation for sector purchases", () => {
-    const decision: BotDecision = { type: "buy_planet", sectorType: "food" };
+    const decision: BotDecision = { type: "buy_sector", sectorType: "food" };
     expect(determineTellType(decision)).toBe("economic_preparation");
   });
 
@@ -373,13 +373,13 @@ describe("generateTellsForTurn", () => {
     // Force tell checks to pass (0.05 < 0.70 warlord tell rate)
     // But bluff checks to fail (0.50 > 0.10 warlord bluff rate)
     vi.mocked(Math.random)
-      .mockReturnValueOnce(0.05) // buy_planet tell check - passes
-      .mockReturnValueOnce(0.50) // buy_planet bluff check - fails (no bluff)
+      .mockReturnValueOnce(0.05) // buy_sector tell check - passes
+      .mockReturnValueOnce(0.50) // buy_sector bluff check - fails (no bluff)
       .mockReturnValueOnce(0.05) // attack tell check - passes
       .mockReturnValueOnce(0.50); // attack bluff check - fails (no bluff)
 
     const decisions: BotDecision[] = [
-      { type: "buy_planet", sectorType: "food" }, // economic_preparation (priority 3)
+      { type: "buy_sector", sectorType: "food" }, // economic_preparation (priority 3)
       { type: "attack", targetId: "t1", forces: { soldiers: 100, fighters: 0, stations: 0, lightCruisers: 0, heavyCruisers: 0, carriers: 0 } }, // aggression_spike (priority 10)
     ];
 
@@ -400,7 +400,7 @@ describe("generateTellsForTurn", () => {
     vi.mocked(Math.random).mockReturnValue(0.9);
 
     const decisions: BotDecision[] = [
-      { type: "buy_planet", sectorType: "food" },
+      { type: "buy_sector", sectorType: "food" },
     ];
 
     const results = generateTellsForTurn(decisions, "empire-1", "game-1", context);

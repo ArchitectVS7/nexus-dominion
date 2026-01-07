@@ -59,7 +59,7 @@ describe("Decision Engine", () => {
   describe("BASE_WEIGHTS", () => {
     it("should have all decision types", () => {
       expect(BASE_WEIGHTS.build_units).toBeDefined();
-      expect(BASE_WEIGHTS.buy_planet).toBeDefined();
+      expect(BASE_WEIGHTS.buy_sector).toBeDefined();
       expect(BASE_WEIGHTS.attack).toBeDefined();
       expect(BASE_WEIGHTS.diplomacy).toBeDefined();
       expect(BASE_WEIGHTS.trade).toBeDefined();
@@ -78,7 +78,7 @@ describe("Decision Engine", () => {
     it("should have correct weights with crafting integration", () => {
       // Updated weights with crafting system and additional game systems
       expect(BASE_WEIGHTS.build_units).toBe(0.25);
-      expect(BASE_WEIGHTS.buy_planet).toBe(0.12);
+      expect(BASE_WEIGHTS.buy_sector).toBe(0.12);
       expect(BASE_WEIGHTS.attack).toBe(0.10);
       expect(BASE_WEIGHTS.diplomacy).toBe(0.08);
       expect(BASE_WEIGHTS.trade).toBe(0.08);
@@ -132,7 +132,7 @@ describe("Decision Engine", () => {
   describe("selectDecisionType", () => {
     // Updated cumulative ranges with all game systems:
     // 0-0.25: build_units
-    // 0.25-0.37: buy_planet
+    // 0.25-0.37: buy_sector
     // 0.37-0.47: attack
     // 0.47-0.55: diplomacy
     // 0.55-0.63: trade
@@ -149,9 +149,9 @@ describe("Decision Engine", () => {
       expect(selectDecisionType(BASE_WEIGHTS, 0.24)).toBe("build_units");
     });
 
-    it("should return buy_planet for mid-low random value", () => {
-      expect(selectDecisionType(BASE_WEIGHTS, 0.26)).toBe("buy_planet");
-      expect(selectDecisionType(BASE_WEIGHTS, 0.36)).toBe("buy_planet");
+    it("should return buy_sector for mid-low random value", () => {
+      expect(selectDecisionType(BASE_WEIGHTS, 0.26)).toBe("buy_sector");
+      expect(selectDecisionType(BASE_WEIGHTS, 0.36)).toBe("buy_sector");
     });
 
     it("should return attack for mid random value", () => {
@@ -220,9 +220,9 @@ describe("Decision Engine", () => {
       }
     });
 
-    it("should return buy_planet decision with valid data", () => {
-      const decision = generateBotDecision(mockContext, 0.35); // buy_planet range
-      if (decision.type === "buy_planet") {
+    it("should return buy_sector decision with valid data", () => {
+      const decision = generateBotDecision(mockContext, 0.35); // buy_sector range
+      if (decision.type === "buy_sector") {
         expect(decision.sectorType).toBeDefined();
       }
     });
@@ -520,7 +520,7 @@ describe("Decision Engine", () => {
         ...mockContext,
         empire: { ...mockEmpire, credits: 0 },
       };
-      const decision = generateBotDecision(poorContext, 0.35); // buy_planet range
+      const decision = generateBotDecision(poorContext, 0.35); // buy_sector range
       expect(decision.type).toBe("do_nothing");
     });
 

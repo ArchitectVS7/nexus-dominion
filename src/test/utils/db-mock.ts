@@ -84,7 +84,7 @@ export function createMockEmpire(overrides?: Partial<MockEmpire>): MockEmpire {
   };
 }
 
-export function createMockPlanet(overrides?: Partial<MockPlanet>): MockPlanet {
+export function createMockSector(overrides?: Partial<MockSector>): MockSector {
   return {
     id: "sector-123",
     empireId: "empire-123",
@@ -99,14 +99,14 @@ export function createMockPlanet(overrides?: Partial<MockPlanet>): MockPlanet {
   };
 }
 
-export function createStartingPlanets(empireId: string, gameId: string): MockPlanet[] {
-  const sectors: MockPlanet[] = [];
-  let planetNum = 1;
+export function createStartingSectors(empireId: string, gameId: string): MockSector[] {
+  const sectors: MockSector[] = [];
+  let sectorNum = 1;
 
   // 2 Food sectors
   for (let i = 0; i < 2; i++) {
-    sectors.push(createMockPlanet({
-      id: `sector-${planetNum++}`,
+    sectors.push(createMockSector({
+      id: `sector-${sectorNum++}`,
       empireId,
       gameId,
       type: "food",
@@ -117,8 +117,8 @@ export function createStartingPlanets(empireId: string, gameId: string): MockPla
 
   // 2 Ore sectors
   for (let i = 0; i < 2; i++) {
-    sectors.push(createMockPlanet({
-      id: `sector-${planetNum++}`,
+    sectors.push(createMockSector({
+      id: `sector-${sectorNum++}`,
       empireId,
       gameId,
       type: "ore",
@@ -128,8 +128,8 @@ export function createStartingPlanets(empireId: string, gameId: string): MockPla
   }
 
   // 1 Petroleum sector
-  sectors.push(createMockPlanet({
-    id: `sector-${planetNum++}`,
+  sectors.push(createMockSector({
+    id: `sector-${sectorNum++}`,
     empireId,
     gameId,
     type: "petroleum",
@@ -138,8 +138,8 @@ export function createStartingPlanets(empireId: string, gameId: string): MockPla
   }));
 
   // 1 Tourism sector
-  sectors.push(createMockPlanet({
-    id: `sector-${planetNum++}`,
+  sectors.push(createMockSector({
+    id: `sector-${sectorNum++}`,
     empireId,
     gameId,
     type: "tourism",
@@ -148,8 +148,8 @@ export function createStartingPlanets(empireId: string, gameId: string): MockPla
   }));
 
   // 1 Urban sector
-  sectors.push(createMockPlanet({
-    id: `sector-${planetNum++}`,
+  sectors.push(createMockSector({
+    id: `sector-${sectorNum++}`,
     empireId,
     gameId,
     type: "urban",
@@ -158,8 +158,8 @@ export function createStartingPlanets(empireId: string, gameId: string): MockPla
   }));
 
   // 1 Government sector
-  sectors.push(createMockPlanet({
-    id: `sector-${planetNum++}`,
+  sectors.push(createMockSector({
+    id: `sector-${sectorNum++}`,
     empireId,
     gameId,
     type: "government",
@@ -168,8 +168,8 @@ export function createStartingPlanets(empireId: string, gameId: string): MockPla
   }));
 
   // 1 Research sector
-  sectors.push(createMockPlanet({
-    id: `sector-${planetNum++}`,
+  sectors.push(createMockSector({
+    id: `sector-${sectorNum++}`,
     empireId,
     gameId,
     type: "research",
@@ -231,7 +231,7 @@ interface MockEmpire {
   updatedAt: Date;
 }
 
-interface MockPlanet {
+interface MockSector {
   id: string;
   empireId: string;
   gameId: string;

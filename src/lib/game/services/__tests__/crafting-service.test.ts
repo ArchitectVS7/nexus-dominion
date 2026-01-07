@@ -603,7 +603,7 @@ describe("executeCraftingOrder", () => {
       queue: [] as QueuedItem[],
       currentTurn: 1,
       economyInvestment: 20,
-      industrialPlanets: 5,
+      industrialSectors: 5,
     };
 
     const result = executeCraftingOrder(order, state);

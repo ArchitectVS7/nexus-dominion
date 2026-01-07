@@ -92,7 +92,7 @@ export function calculateTier1AutoProduction(
   const totalByResource: Partial<Record<Tier1Resource, number>> = {};
 
   // Count sectors by type for Industrial sector processing
-  const planetCounts = sectors.reduce(
+  const sectorCounts = sectors.reduce(
     (acc, sector) => {
       acc[sector.type] = (acc[sector.type] || 0) + 1;
       return acc;
@@ -101,42 +101,42 @@ export function calculateTier1AutoProduction(
   );
 
   // Ore Sectors → Refined Metals (10% of ore production)
-  if (baseProduction.ore > 0 && planetCounts.ore) {
+  if (baseProduction.ore > 0 && sectorCounts.ore) {
     const refinedMetals = Math.floor(baseProduction.ore * 0.1);
     if (refinedMetals > 0) {
       productions.push({
         resourceType: "refined_metals",
         quantity: refinedMetals,
         sourceType: "ore",
-        sourceSectors: planetCounts.ore,
+        sourceSectors: sectorCounts.ore,
       });
       totalByResource.refined_metals = (totalByResource.refined_metals || 0) + refinedMetals;
     }
   }
 
   // Petroleum Sectors → Fuel Cells (10% of petroleum production)
-  if (baseProduction.petroleum > 0 && planetCounts.petroleum) {
+  if (baseProduction.petroleum > 0 && sectorCounts.petroleum) {
     const fuelCells = Math.floor(baseProduction.petroleum * 0.1);
     if (fuelCells > 0) {
       productions.push({
         resourceType: "fuel_cells",
         quantity: fuelCells,
         sourceType: "petroleum",
-        sourceSectors: planetCounts.petroleum,
+        sourceSectors: sectorCounts.petroleum,
       });
       totalByResource.fuel_cells = (totalByResource.fuel_cells || 0) + fuelCells;
     }
   }
 
   // Food Sectors → Processed Food (5% of food production)
-  if (baseProduction.food > 0 && planetCounts.food) {
+  if (baseProduction.food > 0 && sectorCounts.food) {
     const processedFood = Math.floor(baseProduction.food * 0.05);
     if (processedFood > 0) {
       productions.push({
         resourceType: "processed_food",
         quantity: processedFood,
         sourceType: "food",
-        sourceSectors: planetCounts.food,
+        sourceSectors: sectorCounts.food,
       });
       totalByResource.processed_food = (totalByResource.processed_food || 0) + processedFood;
     }
@@ -144,15 +144,15 @@ export function calculateTier1AutoProduction(
 
   // Urban Sectors → Labor Units (5% based on urban credit production, converted to units)
   // Approximation: 1 labor unit per 1000 credits of urban production
-  if (planetCounts.urban) {
-    const urbanProduction = planetCounts.urban * 1000; // 1000 credits per urban sector
+  if (sectorCounts.urban) {
+    const urbanProduction = sectorCounts.urban * 1000; // 1000 credits per urban sector
     const laborUnits = Math.floor((urbanProduction * 0.05) / 50); // 50 credits per labor unit
     if (laborUnits > 0) {
       productions.push({
         resourceType: "labor_units",
         quantity: laborUnits,
         sourceType: "urban",
-        sourceSectors: planetCounts.urban,
+        sourceSectors: sectorCounts.urban,
       });
       totalByResource.labor_units = (totalByResource.labor_units || 0) + laborUnits;
     }
@@ -172,20 +172,20 @@ export function calculateTier1AutoProduction(
  * and support for all Tier 1 resources will be added in a future phase.
  * See docs/crafting-system.md for full specification.
  *
- * @param industrialPlanetCount - Number of industrial sectors
+ * @param industrialSectorCount - Number of industrial sectors
  * @param researchLevel - Empire's research level (affects efficiency)
  * @param tier0Resources - Available Tier 0 resources to process
  * @returns Tier 1 resources produced and Tier 0 resources consumed
  */
 export function calculateIndustrialProduction(
-  industrialPlanetCount: number,
+  industrialSectorCount: number,
   researchLevel: number,
   tier0Resources: { ore: number; petroleum: number; food: number }
 ): {
   produced: Partial<Record<Tier1Resource, number>>;
   consumed: { ore: number; petroleum: number; food: number };
 } {
-  if (industrialPlanetCount === 0) {
+  if (industrialSectorCount === 0) {
     return {
       produced: {},
       consumed: { ore: 0, petroleum: 0, food: 0 },
@@ -196,8 +196,8 @@ export function calculateIndustrialProduction(
   // Research level adds 5% efficiency per level
   const baseProduction = 10;
   const efficiencyBonus = 1 + researchLevel * 0.05;
-  const productionPerPlanet = Math.floor(baseProduction * efficiencyBonus);
-  const totalCapacity = productionPerPlanet * industrialPlanetCount;
+  const productionPerSector = Math.floor(baseProduction * efficiencyBonus);
+  const totalCapacity = productionPerSector * industrialSectorCount;
 
   // Priority: Polymers (need both petroleum and ore), then Refined Metals, then Fuel Cells
   const produced: Partial<Record<Tier1Resource, number>> = {};

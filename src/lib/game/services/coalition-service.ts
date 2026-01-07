@@ -27,7 +27,7 @@ import {
   getCoalitionMember,
   isEmpireInCoalition,
   getEmpireCoalition,
-  getTotalPlanetCount,
+  getTotalSectorCount,
   getCoalitionEmpires,
   type CoalitionWithMembers,
 } from "../repositories/coalition-repository";
@@ -517,17 +517,17 @@ export async function checkDiplomaticVictory(
   }
 
   // Get total sectors in the game
-  const totalSectors = await getTotalPlanetCount(coalition.gameId);
+  const totalSectors = await getTotalSectorCount(coalition.gameId);
   if (totalSectors === 0) {
     return null;
   }
 
   // Calculate coalition territory
-  const coalitionPlanets = coalition.members.reduce(
+  const coalitionSectors = coalition.members.reduce(
     (sum, m) => sum + m.empire.sectorCount,
     0
   );
-  const territoryPercent = coalitionPlanets / totalSectors;
+  const territoryPercent = coalitionSectors / totalSectors;
 
   const achieved = territoryPercent >= COALITION_VICTORY_THRESHOLD;
 

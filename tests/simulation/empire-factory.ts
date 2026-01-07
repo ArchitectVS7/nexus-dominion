@@ -6,7 +6,7 @@
  */
 
 import type { SimulatedEmpire, SimulatedPlanet, SimulationConfig, BotTier } from "./types";
-import type { BotArchetype, PlanetType } from "@/lib/bots/types";
+import type { BotArchetype, SectorType } from "@/lib/bots/types";
 import { SECTOR_PRODUCTION, STARTING_RESOURCES, STARTING_POPULATION as STARTING_POP } from "@/lib/game/constants";
 import { calculateNetworth } from "@/lib/game/networth";
 
@@ -53,7 +53,7 @@ const ARCHETYPES: BotArchetype[] = [
 
 // Starting planet configuration - reduced to 5 for faster eliminations (see IMPLEMENTATION-PLAN.md M1.1)
 // Players must purchase Research planets, encouraging strategic choices early game
-const STARTING_PLANETS: PlanetType[] = [
+const STARTING_PLANETS: SectorType[] = [
   "food",                   // 1 Food planet (reduced from 2)
   "ore",                    // 1 Ore planet (reduced from 2)
   "petroleum",              // 1 Petroleum planet
@@ -64,7 +64,7 @@ const STARTING_PLANETS: PlanetType[] = [
 /**
  * Create a simulated planet
  */
-function createPlanet(type: PlanetType, index: number, empireId: string): SimulatedPlanet {
+function createPlanet(type: SectorType, index: number, empireId: string): SimulatedPlanet {
   return {
     id: `${empireId}-planet-${index}`,
     type,

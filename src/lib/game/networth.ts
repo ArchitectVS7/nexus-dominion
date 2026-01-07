@@ -2,7 +2,7 @@
  * Networth Calculation (PRD 4.5)
  *
  * Formula:
- * Networth = (Planets × 10)
+ * Networth = (Sectors × 10)
  *          + (Soldiers × 0.0005)
  *          + (Fighters × 0.001)
  *          + (Stations × 0.002)

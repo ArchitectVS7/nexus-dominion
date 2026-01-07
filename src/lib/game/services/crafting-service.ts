@@ -238,14 +238,14 @@ export function validateCraftingOrder(
  * @param baseCraftingTime - Base crafting time from recipe
  * @param researchLevel - Empire's research level
  * @param economyInvestment - RP invested in economy branch
- * @param industrialPlanets - Number of industrial sectors
+ * @param industrialSectors - Number of industrial sectors
  * @returns Adjusted crafting time in turns
  */
 export function calculateCraftingTime(
   baseCraftingTime: number,
   researchLevel: number,
   economyInvestment: number = 0,
-  industrialPlanets: number = 0
+  industrialSectors: number = 0
 ): number {
   let time = baseCraftingTime;
 
@@ -259,7 +259,7 @@ export function calculateCraftingTime(
   time *= 1 - economyBonus;
 
   // Industrial sectors: 2% faster per sector, max 20%
-  const industrialBonus = Math.min(industrialPlanets * 0.02, 0.2);
+  const industrialBonus = Math.min(industrialSectors * 0.02, 0.2);
   time *= 1 - industrialBonus;
 
   // Minimum 1 turn
@@ -447,7 +447,7 @@ export function executeCraftingOrder(
     queue: QueuedItem[];
     currentTurn: number;
     economyInvestment?: number;
-    industrialPlanets?: number;
+    industrialSectors?: number;
     syndicateTrustLevel?: number;
   }
 ): {
@@ -478,7 +478,7 @@ export function executeCraftingOrder(
     validation.craftingTime,
     state.researchLevel,
     state.economyInvestment,
-    state.industrialPlanets
+    state.industrialSectors
   );
 
   // Deduct resources

@@ -412,7 +412,7 @@ function executeDecision(
     case "build_units":
       return executeBuildUnits(empire, decision, coverage);
 
-    case "buy_planet":
+    case "buy_sector":
       return executeBuyPlanet(empire, decision, coverage);
 
     case "attack":
@@ -476,7 +476,7 @@ function executeBuildUnits(
 
 function executeBuyPlanet(
   empire: SimulatedEmpire,
-  decision: Extract<BotDecision, { type: "buy_planet" }>,
+  decision: Extract<BotDecision, { type: "buy_sector" }>,
   coverage: SystemCoverage
 ): ActionOutcome {
   const { sectorType } = decision;

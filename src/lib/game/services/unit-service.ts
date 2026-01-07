@@ -194,20 +194,20 @@ export function calculateUnitMaintenance(units: UnitCounts): UnitMaintenanceBrea
  *
  * @param sectorCount - Number of sectors owned
  * @param units - Unit counts
- * @param planetMaintenanceCost - Cost per sector (default 168)
+ * @param sectorMaintenanceCost - Cost per sector (default 168)
  * @returns Combined maintenance breakdown
  */
 export function calculateTotalMaintenance(
   sectorCount: number,
   units: UnitCounts,
-  planetMaintenanceCost: number = 168
+  sectorMaintenanceCost: number = 168
 ): {
   sectorCost: number;
   unitCost: number;
   totalCost: number;
   unitBreakdown: UnitMaintenanceBreakdown;
 } {
-  const sectorCost = sectorCount * planetMaintenanceCost;
+  const sectorCost = sectorCount * sectorMaintenanceCost;
   const unitBreakdown = calculateUnitMaintenance(units);
 
   return {

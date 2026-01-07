@@ -15,7 +15,7 @@ import { getScaledModifiers, type EmotionalStateName } from "../emotions";
 describe("applyEmotionalModifiers", () => {
   const baseWeights: BotDecisionWeights = {
     build_units: 0.25,
-    buy_planet: 0.12,
+    buy_sector: 0.12,
     attack: 0.10,
     diplomacy: 0.08,
     trade: 0.08,

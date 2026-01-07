@@ -98,13 +98,13 @@ export function calculateInfluenceRadius(
   const base = INFLUENCE_CONSTANTS.BASE_NEIGHBOR_COUNT;
 
   // Bonus from sector count: +1 radius per 5 sectors beyond starting 6
-  const planetBonus = Math.floor(Math.max(0, sectorCount - 6) / 5);
+  const sectorBonus = Math.floor(Math.max(0, sectorCount - 6) / 5);
 
   // Bonus from research (propulsion branch could add this)
   const researchBonus = Math.floor(researchLevel / 10);
 
   // Tech bonuses (from upgrades, etc.)
-  const bonus = planetBonus + researchBonus + techBonuses;
+  const bonus = sectorBonus + researchBonus + techBonuses;
 
   return {
     base,

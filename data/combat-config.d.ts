@@ -17,7 +17,7 @@ declare module '@data/combat-config.json' {
         threshold: number;
         maxBonus: number;
       };
-      planetCapture: {
+      sectorCapture: {
         minPercent: number;
         maxPercent: number;
       };
