@@ -48,7 +48,7 @@ interface CovertStatus {
   maxCovertPoints: number;
   agents: number;
   agentCapacity: number;
-  governmentPlanets: number;
+  governmentSectors: number;
 }
 
 export default function CovertPage() {

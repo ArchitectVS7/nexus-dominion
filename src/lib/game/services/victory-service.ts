@@ -53,7 +53,7 @@ export interface DefeatResult {
 export interface RevoltConsequence {
   consecutiveTurns: number;
   productionPenalty: number; // Percentage reduction (0.1 = 10%)
-  planetsLost: number;
+  sectorsLost: number;
   unitsLost: number;
   isDefeated: boolean;
   message: string;
@@ -72,7 +72,7 @@ export interface EmpireStanding {
 export interface GameStats {
   totalTurns: number;
   totalSectors: number;
-  winnerPlanets: number;
+  winnerSectors: number;
   winnerNetworth: number;
   empiresRemaining: number;
   empiresDefeated: number;
@@ -100,19 +100,19 @@ export const STALEMATE_WARNING_TURN = 180;
 export const REVOLT_CONSEQUENCES = {
   1: {
     productionPenalty: 0.1, // -10% production
-    planetLossChance: 0.1, // 10% chance per sector to defect
+    sectorLossChance: 0.1, // 10% chance per sector to defect
     unitLossRate: 0,
     message: "Civil unrest grows! Production reduced by 10%, some sectors may defect.",
   },
   2: {
     productionPenalty: 0.25, // -25% production
-    planetLossChance: 0.15, // 15% chance per sector to defect
+    sectorLossChance: 0.15, // 15% chance per sector to defect
     unitLossRate: 0.1, // 10% military desertion
     message: "Riots spread! Production down 25%, military deserting, sectors rebelling!",
   },
   3: {
     productionPenalty: 1.0, // 100% - complete collapse
-    planetLossChance: 1.0,
+    sectorLossChance: 1.0,
     unitLossRate: 1.0,
     message: "CIVIL WAR! Your empire has collapsed!",
   },
@@ -248,7 +248,7 @@ function checkSurvivalVictory(
     type: "survival",
     winnerId: leader.id,
     winnerName: leader.name,
-    message: `${leader.name} survived 200 turns with the highest networth of ${leader.networth.toLocaleString()}!`,
+    message: `${leader.name} survived to the end of the game with the highest networth of ${leader.networth.toLocaleString()}!`,
     stats: buildGameStats(game, leader),
   };
 }
@@ -364,7 +364,7 @@ export function calculateRevoltConsequences(
     return {
       consecutiveTurns: 0,
       productionPenalty: 0,
-      planetsLost: 0,
+      sectorsLost: 0,
       unitsLost: 0,
       isDefeated: false,
       message: "Civil status stable",
@@ -376,10 +376,10 @@ export function calculateRevoltConsequences(
   const consequence = REVOLT_CONSEQUENCES[level];
 
   // Calculate sector losses (random chance per sector)
-  let planetsLost = 0;
-  if (consequence.planetLossChance > 0 && level < 3) {
+  let sectorsLost = 0;
+  if (consequence.sectorLossChance > 0 && level < 3) {
     // In actual implementation, use deterministic random based on turn/empire
-    planetsLost = Math.floor(sectorCount * consequence.planetLossChance * Math.random());
+    sectorsLost = Math.floor(sectorCount * consequence.sectorLossChance * Math.random());
   }
 
   // Calculate unit losses (percentage of total military)
@@ -397,7 +397,7 @@ export function calculateRevoltConsequences(
   return {
     consecutiveTurns,
     productionPenalty: consequence.productionPenalty,
-    planetsLost,
+    sectorsLost,
     unitsLost,
     isDefeated: level >= 3,
     message: consequence.message,
@@ -594,7 +594,7 @@ function buildGameStats(
   return {
     totalTurns: game.currentTurn,
     totalSectors,
-    winnerPlanets: winner.sectorCount,
+    winnerSectors: winner.sectorCount,
     winnerNetworth: winner.networth,
     empiresRemaining: aliveCount,
     empiresDefeated: game.empires.length - aliveCount,

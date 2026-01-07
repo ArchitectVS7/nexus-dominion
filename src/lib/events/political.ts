@@ -208,7 +208,7 @@ export const POLITICAL_EVENTS: GalacticEvent[] = [
     name: "Separatist Movement",
     category: "political",
     scope: "random_empire",
-    description: "Planets demand independence",
+    description: "Sectors demand independence",
     narrative:
       "Outer colonies have declared their intention to secede. " +
       "The empire must choose: negotiate or crush the rebellion.",

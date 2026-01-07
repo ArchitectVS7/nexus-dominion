@@ -37,7 +37,7 @@ export interface CovertTargetState {
   /** Current agent count */
   agents: number;
   /** Number of government sectors */
-  governmentPlanets: number;
+  governmentSectors: number;
   /** Current credits */
   credits: number;
   /** Current food */
@@ -79,7 +79,7 @@ export interface OperationEffect {
     | "credits_gained"
     | "carriers_destroyed"
     | "messages_intercepted"
-    | "planets_lost";
+    | "sectors_lost";
   /** Magnitude of the effect */
   value: number;
   /** Duration in turns (if temporary) */
@@ -148,7 +148,7 @@ const SPY_INTEL_DURATION = 5;
 const INTERCEPT_DURATION = 10;
 
 /** Sector loss percentage for setup_coup */
-const COUP_PLANET_LOSS = 0.3;
+const COUP_SECTOR_LOSS = 0.3;
 
 // =============================================================================
 // SUCCESS CALCULATION
@@ -162,32 +162,32 @@ const COUP_PLANET_LOSS = 0.3;
  * - Your agent count vs target's agent count
  * - Target's Government sector count
  * - Operation difficulty (risk level)
- * - Random variance (±20%)
+ * - Random variance (+-20%)
  *
  * @param attackerAgents - Number of agents the attacker has
  * @param defenderAgents - Number of agents the defender has
- * @param defenderGovPlanets - Number of government sectors the defender has
+ * @param defenderGovSectors - Number of government sectors the defender has
  * @param operation - The covert operation to calculate for
  * @returns Success calculation result
  */
 export function calculateCovertSuccess(
   attackerAgents: number,
   defenderAgents: number,
-  defenderGovPlanets: number,
+  defenderGovSectors: number,
   operation: CovertOperation
 ): SuccessResult {
   const factors = calculateSuccessRateFactors(
     operation.id,
     attackerAgents,
     defenderAgents,
-    defenderGovPlanets
+    defenderGovSectors
   );
 
   const preview = previewOperation(
     operation.id,
     attackerAgents,
     defenderAgents,
-    defenderGovPlanets
+    defenderGovSectors
   );
 
   return {
@@ -310,11 +310,11 @@ function generateEffects(
       break;
 
     case "setup_coup":
-      const planetsLost = Math.floor(target.sectorCount * COUP_PLANET_LOSS);
+      const sectorsLost = Math.floor(target.sectorCount * COUP_SECTOR_LOSS);
       effects.push({
-        type: "planets_lost",
-        value: planetsLost,
-        description: `Coup succeeded! ${target.id} lost ${planetsLost} sectors (${Math.round(COUP_PLANET_LOSS * 100)}%)`,
+        type: "sectors_lost",
+        value: sectorsLost,
+        description: `Coup succeeded! ${target.id} lost ${sectorsLost} sectors (${Math.round(COUP_SECTOR_LOSS * 100)}%)`,
       });
       break;
   }
@@ -361,7 +361,7 @@ export function executeCovertOp(
         operation.id,
         attacker.agents,
         defender.agents,
-        defender.governmentPlanets
+        defender.governmentSectors
       ),
       message: `Insufficient covert points (need ${operation.cost}, have ${attacker.covertPoints})`,
     };
@@ -378,7 +378,7 @@ export function executeCovertOp(
         operation.id,
         attacker.agents,
         defender.agents,
-        defender.governmentPlanets
+        defender.governmentSectors
       ),
       message: `Insufficient agents (need ${operation.minAgents}, have ${attacker.agents})`,
     };
@@ -389,7 +389,7 @@ export function executeCovertOp(
     operation.id,
     attacker.agents,
     defender.agents,
-    defender.governmentPlanets,
+    defender.governmentSectors,
     successRoll,
     detectionRoll
   );
@@ -398,7 +398,7 @@ export function executeCovertOp(
     operation.id,
     attacker.agents,
     defender.agents,
-    defender.governmentPlanets
+    defender.governmentSectors
   );
 
   // Generate effects if successful
@@ -472,7 +472,7 @@ export function previewCovertOp(
     operationType,
     attacker.agents,
     defender.agents,
-    defender.governmentPlanets
+    defender.governmentSectors
   );
 
   // Generate potential effect descriptions
@@ -512,7 +512,7 @@ export function previewCovertOp(
       potentialEffects.push(`Intercept messages for ${INTERCEPT_DURATION} turns`);
       break;
     case "setup_coup":
-      potentialEffects.push(`Target loses ${Math.round(COUP_PLANET_LOSS * 100)}% of sectors`);
+      potentialEffects.push(`Target loses ${Math.round(COUP_SECTOR_LOSS * 100)}% of sectors`);
       break;
   }
 

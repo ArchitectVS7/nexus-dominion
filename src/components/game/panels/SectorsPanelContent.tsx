@@ -20,7 +20,7 @@ interface SectorsPanelContentProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function SectorsPanelContent({ onClose }: SectorsPanelContentProps) {
-  const [sectors, setPlanets] = useState<Sector[]>([]);
+  const [sectors, setSectors] = useState<Sector[]>([]);
   const [credits, setCredits] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"holdings" | "colonize">("holdings");
@@ -28,7 +28,7 @@ export function SectorsPanelContent({ onClose }: SectorsPanelContentProps) {
   const loadData = useCallback(async () => {
     const data = await fetchDashboardDataAction();
     if (data) {
-      setPlanets(data.sectors);
+      setSectors(data.sectors);
       setCredits(data.resources.credits);
     }
     setIsLoading(false);

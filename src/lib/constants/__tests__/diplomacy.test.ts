@@ -72,8 +72,8 @@ describe("Diplomacy Constants", () => {
       expect(REPUTATION_EVENTS.treaty_honored.change).toBeGreaterThan(0);
     });
 
-    it("should have captured_planet as permanent with high penalty", () => {
-      const event = REPUTATION_EVENTS.captured_planet;
+    it("should have captured_sector as permanent with high penalty", () => {
+      const event = REPUTATION_EVENTS.captured_sector;
       expect(event.isPermanent).toBe(true);
       expect(event.change).toBeLessThan(-50);
     });
@@ -233,7 +233,7 @@ describe("Diplomacy Constants", () => {
   describe("isEventPermanent", () => {
     it("should return true for permanent events", () => {
       expect(isEventPermanent("treaty_broken")).toBe(true);
-      expect(isEventPermanent("captured_planet")).toBe(true);
+      expect(isEventPermanent("captured_sector")).toBe(true);
       expect(isEventPermanent("trade_cheated")).toBe(true);
     });
 
@@ -247,7 +247,7 @@ describe("Diplomacy Constants", () => {
   describe("calculateDecayedReputation", () => {
     it("should not decay permanent events", () => {
       expect(calculateDecayedReputation("treaty_broken", 100)).toBe(-100);
-      expect(calculateDecayedReputation("captured_planet", 50)).toBe(-80);
+      expect(calculateDecayedReputation("captured_sector", 50)).toBe(-80);
     });
 
     it("should decay non-permanent events over time", () => {
@@ -300,7 +300,7 @@ describe("Diplomacy Constants", () => {
     it("should contain all expected events", () => {
       expect(ALL_REPUTATION_EVENTS).toContain("treaty_broken");
       expect(ALL_REPUTATION_EVENTS).toContain("treaty_honored");
-      expect(ALL_REPUTATION_EVENTS).toContain("captured_planet");
+      expect(ALL_REPUTATION_EVENTS).toContain("captured_sector");
       expect(ALL_REPUTATION_EVENTS).toContain("saved_from_destruction");
       expect(ALL_REPUTATION_EVENTS.length).toBeGreaterThan(10);
     });

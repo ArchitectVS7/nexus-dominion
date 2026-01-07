@@ -27,7 +27,7 @@ import type {
   BotDecisionType,
   BotDecisionWeights,
   Forces,
-  PlanetType,
+  SectorType,
   UnitType,
 } from "./types";
 import {
@@ -71,7 +71,7 @@ import { getBotCombatStance } from "./research-preferences";
 
 export const BASE_WEIGHTS: BotDecisionWeights = {
   build_units: 0.25,
-  buy_planet: 0.12,
+  buy_sector: 0.12,
   attack: 0.10,
   diplomacy: 0.08,
   trade: 0.08,
@@ -105,7 +105,7 @@ export const BASE_WEIGHTS: BotDecisionWeights = {
 export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   warlord: {
     build_units: 0.22,
-    buy_planet: 0.06,
+    buy_sector: 0.06,
     attack: 0.28,      // Highly aggressive
     diplomacy: 0.03,
     trade: 0.03,
@@ -120,7 +120,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   diplomat: {
     build_units: 0.18,
-    buy_planet: 0.18,
+    buy_sector: 0.18,
     attack: 0.03,      // Very peaceful
     diplomacy: 0.18,   // High diplomacy
     trade: 0.10,
@@ -135,7 +135,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   merchant: {
     build_units: 0.12,
-    buy_planet: 0.22,  // Economy expansion
+    buy_sector: 0.22,  // Economy expansion
     attack: 0.06,
     diplomacy: 0.06,
     trade: 0.12,       // High trade
@@ -150,7 +150,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   schemer: {
     build_units: 0.16,
-    buy_planet: 0.08,
+    buy_sector: 0.08,
     attack: 0.18,      // Opportunistic strikes
     diplomacy: 0.05,
     trade: 0.05,
@@ -165,7 +165,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   turtle: {
     build_units: 0.28, // Heavy defense building (stations)
-    buy_planet: 0.16,
+    buy_sector: 0.16,
     attack: 0.03,      // Very defensive
     diplomacy: 0.06,
     trade: 0.06,
@@ -180,7 +180,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   blitzkrieg: {
     build_units: 0.16,
-    buy_planet: 0.06,
+    buy_sector: 0.06,
     attack: 0.32,      // Maximum aggression
     diplomacy: 0.03,
     trade: 0.03,
@@ -195,7 +195,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   tech_rush: {
     build_units: 0.14,
-    buy_planet: 0.20,  // Research sectors
+    buy_sector: 0.20,  // Research sectors
     attack: 0.06,
     diplomacy: 0.06,
     trade: 0.08,
@@ -210,7 +210,7 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
   },
   opportunist: {
     build_units: 0.16,
-    buy_planet: 0.12,
+    buy_sector: 0.12,
     attack: 0.22,      // Attacks when advantage
     diplomacy: 0.06,
     trade: 0.03,
@@ -279,7 +279,7 @@ export function applyEmotionalModifiers(
   // Calculate modified weights
   const newWeights: BotDecisionWeights = {
     build_units: weights.build_units,
-    buy_planet: weights.buy_planet,
+    buy_sector: weights.buy_sector,
     attack: Math.max(0, weights.attack * attackMultiplier),
     diplomacy: Math.max(0, weights.diplomacy * diplomacyMultiplier),
     trade: Math.max(0, weights.trade * tradeMultiplier),
@@ -461,7 +461,7 @@ export function getTellStyle(archetype: BotArchetype | null): string {
 }
 
 // Sector types that bots can purchase (excludes special types)
-const PURCHASABLE_PLANET_TYPES: PlanetType[] = [
+const PURCHASABLE_SECTOR_TYPES: SectorType[] = [
   "food",
   "ore",
   "petroleum",
@@ -511,7 +511,7 @@ export function getAdjustedWeights(
     const attackWeight = weights.attack;
     const otherWeightSum =
       weights.build_units +
-      weights.buy_planet +
+      weights.buy_sector +
       weights.diplomacy +
       weights.trade +
       weights.do_nothing +
@@ -527,7 +527,7 @@ export function getAdjustedWeights(
 
     weights = {
       build_units: weights.build_units * redistributionFactor,
-      buy_planet: weights.buy_planet * redistributionFactor,
+      buy_sector: weights.buy_sector * redistributionFactor,
       attack: 0, // No attacks during protection
       diplomacy: weights.diplomacy * redistributionFactor,
       trade: weights.trade * redistributionFactor,
@@ -595,7 +595,7 @@ export function selectDecisionType(
 
   const entries: [BotDecisionType, number][] = [
     ["build_units", weights.build_units],
-    ["buy_planet", weights.buy_planet],
+    ["buy_sector", weights.buy_sector],
     ["attack", weights.attack],
     ["diplomacy", weights.diplomacy],
     ["trade", weights.trade],
@@ -647,7 +647,7 @@ export function generateBotDecision(
     // Make a less optimal choice by choosing a random decision type
     const allTypes: BotDecisionType[] = [
       "build_units",
-      "buy_planet",
+      "buy_sector",
       "attack",
       "diplomacy",
       "trade",
@@ -675,8 +675,8 @@ export function generateBotDecision(
   switch (decisionType) {
     case "build_units":
       return generateBuildUnitsDecision(context, randomDecision);
-    case "buy_planet":
-      return generateBuyPlanetDecision(context, randomDecision);
+    case "buy_sector":
+      return generateBuySectorDecision(context, randomDecision);
     case "attack":
       return generateAttackDecision(context, randomDecision);
     case "diplomacy":
@@ -745,10 +745,10 @@ function generateBuildUnitsDecision(
 }
 
 /**
- * Generate a buy_planet decision.
+ * Generate a buy_sector decision.
  * Randomly selects an affordable sector type.
  */
-function generateBuyPlanetDecision(
+function generateBuySectorDecision(
   context: BotDecisionContext,
   random?: number
 ): BotDecision {
@@ -756,7 +756,7 @@ function generateBuyPlanetDecision(
 
   // Filter to sector types the bot can afford
   // Note: Sector cost scaling isn't applied here for simplicity
-  const affordableTypes = PURCHASABLE_PLANET_TYPES.filter((type) => {
+  const affordableTypes = PURCHASABLE_SECTOR_TYPES.filter((type) => {
     const cost = SECTOR_COSTS[type];
     return empire.credits >= cost;
   });
@@ -772,7 +772,7 @@ function generateBuyPlanetDecision(
     return { type: "do_nothing" };
   }
 
-  return { type: "buy_planet", sectorType };
+  return { type: "buy_sector", sectorType };
 }
 
 /**
@@ -1172,7 +1172,7 @@ function generatePurchaseBlackMarketDecision(
 export function getWeightSum(weights: BotDecisionWeights): number {
   return (
     weights.build_units +
-    weights.buy_planet +
+    weights.buy_sector +
     weights.attack +
     weights.diplomacy +
     weights.trade +

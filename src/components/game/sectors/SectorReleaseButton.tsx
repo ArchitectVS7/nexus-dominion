@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { releaseSectorAction } from "@/app/actions/sector-actions";
 import type { Sector } from "@/lib/db/schema";
-import { SECTOR_TYPE_LABELS, SECTOR_COSTS, type PlanetType } from "@/lib/game/constants";
+import { SECTOR_TYPE_LABELS, SECTOR_COSTS, type SectorType } from "@/lib/game/constants";
 import { calculateReleaseRefund } from "@/lib/formulas/sector-costs";
 
 interface SectorReleaseButtonProps {
@@ -18,7 +18,7 @@ export function SectorReleaseButton({ sector, totalSectors, onRelease }: SectorR
   const [error, setError] = useState<string | null>(null);
 
   const sectorLabel = SECTOR_TYPE_LABELS[sector.type as keyof typeof SECTOR_TYPE_LABELS];
-  const baseCost = SECTOR_COSTS[sector.type as PlanetType];
+  const baseCost = SECTOR_COSTS[sector.type as SectorType];
   const refundAmount = calculateReleaseRefund(baseCost, totalSectors);
   const canRelease = totalSectors > 1;
 

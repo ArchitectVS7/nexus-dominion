@@ -22,8 +22,8 @@ export {
   calculateSpacePhasePower,
   calculateOrbitalPhasePower,
   calculateGroundPhasePower,
-  PLANET_CAPTURE_MIN_PERCENT,
-  PLANET_CAPTURE_MAX_PERCENT,
+  SECTOR_CAPTURE_MIN_PERCENT,
+  SECTOR_CAPTURE_MAX_PERCENT,
   SOLDIERS_PER_CARRIER,
 } from "./phases";
 

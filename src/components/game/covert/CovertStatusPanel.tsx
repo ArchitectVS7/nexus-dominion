@@ -17,7 +17,7 @@ interface CovertStatus {
   maxCovertPoints: number;
   agents: number;
   agentCapacity: number;
-  governmentPlanets: number;
+  governmentSectors: number;
 }
 
 export function CovertStatusPanel() {
@@ -96,7 +96,7 @@ export function CovertStatusPanel() {
             ></div>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            Capacity: {status.governmentPlanets} Government sectors x 300
+            Capacity: {status.governmentSectors} Government sectors x 300
           </p>
         </div>
       </div>

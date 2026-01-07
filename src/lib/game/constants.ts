@@ -83,11 +83,11 @@ export const SECTOR_COSTS = {
 // STARTING SECTOR DISTRIBUTION (PRD 5.1)
 // =============================================================================
 
-export type PlanetType = Sector["type"];
+export type SectorType = Sector["type"];
 
 // Reduced from 9 to 5 sectors for faster eliminations (see IMPLEMENTATION-PLAN.md M1.1)
 // Players must now purchase Research sectors - encourages strategic choices early game
-export const STARTING_SECTORS: Array<{ type: PlanetType; count: number }> = [
+export const STARTING_SECTORS: Array<{ type: SectorType; count: number }> = [
   { type: "food", count: 1 },        // Reduced from 2
   { type: "ore", count: 1 },         // Reduced from 2
   { type: "petroleum", count: 1 },
@@ -104,7 +104,7 @@ export const TOTAL_STARTING_SECTORS = STARTING_SECTORS.reduce(
 // SECTOR TYPE DISPLAY LABELS
 // =============================================================================
 
-export const SECTOR_TYPE_LABELS: Record<PlanetType, string> = {
+export const SECTOR_TYPE_LABELS: Record<SectorType, string> = {
   food: "Food",
   ore: "Ore",
   petroleum: "Petroleum",
@@ -247,12 +247,12 @@ export const UI_LABELS = {
     supply: "Supply Sector",
     anti_pollution: "Environmental Sector",
     industrial: "Industrial Sector",
-  } as Record<PlanetType, string>,
+  } as Record<SectorType, string>,
 } as const;
 
 /**
  * Get display label for a sector type.
  */
-export function getSectorTypeLabel(type: PlanetType): string {
+export function getSectorTypeLabel(type: SectorType): string {
   return UI_LABELS.sectorTypes[type];
 }

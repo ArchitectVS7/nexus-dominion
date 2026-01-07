@@ -60,7 +60,7 @@ export interface RaidDistribution {
   empireId: string;
   empireName: string;
   /** Number of sectors awarded */
-  planetsAwarded: number;
+  sectorsAwarded: number;
   /** Percentage of damage dealt (0-1) */
   damagePercentage: number;
   /** Fraction of elimination credit (0-1) */
@@ -71,7 +71,7 @@ export interface RaidResult {
   raid: CoalitionRaid;
   participants: RaidParticipant[];
   distributions: RaidDistribution[];
-  totalPlanetsDistributed: number;
+  totalSectorsDistributed: number;
   bossEliminated: boolean;
 }
 
@@ -245,15 +245,15 @@ export function getRaidBonusDescription(raid: CoalitionRaid): string {
  *
  * @param raid - The coalition raid
  * @param attacks - All attacks from the raid
- * @param totalPlanetsCaptured - Total sectors captured from the boss
+ * @param totalSectorsCaptured - Total sectors captured from the boss
  * @returns Distribution of sectors for each participant
  */
 export function calculateRaidDistribution(
   raid: CoalitionRaid,
   attacks: PendingAttack[],
-  totalPlanetsCaptured: number
+  totalSectorsCaptured: number
 ): RaidDistribution[] {
-  if (!raid.isValidRaid || totalPlanetsCaptured === 0) {
+  if (!raid.isValidRaid || totalSectorsCaptured === 0) {
     return [];
   }
 
@@ -283,13 +283,13 @@ export function calculateRaidDistribution(
   // Handle case where no damage was dealt
   if (totalDamage === 0) {
     // Distribute evenly
-    const planetsEach = Math.floor(totalPlanetsCaptured / raid.attackerIds.length);
-    let remainingPlanets = totalPlanetsCaptured - planetsEach * raid.attackerIds.length;
+    const sectorsEach = Math.floor(totalSectorsCaptured / raid.attackerIds.length);
+    let remainingSectors = totalSectorsCaptured - sectorsEach * raid.attackerIds.length;
 
     return raid.attackerIds.map((empireId, index) => ({
       empireId,
       empireName: raid.attackerNames[index] ?? "Unknown",
-      planetsAwarded: planetsEach + (remainingPlanets-- > 0 ? 1 : 0),
+      sectorsAwarded: sectorsEach + (remainingSectors-- > 0 ? 1 : 0),
       damagePercentage: 1 / raid.attackerIds.length,
       eliminationCredit: 1 / raid.attackerIds.length,
     }));
@@ -299,8 +299,8 @@ export function calculateRaidDistribution(
   const equalCredit = 1 / participantCount;
 
   // Step 1: Each participant gets minimum 1 sector (if available)
-  const minimumPlanets = Math.min(participantCount, totalPlanetsCaptured);
-  let remainingPlanets = totalPlanetsCaptured - minimumPlanets;
+  const minimumSectors = Math.min(participantCount, totalSectorsCaptured);
+  let remainingSectors = totalSectorsCaptured - minimumSectors;
 
   // Initialize distribution
   const distribution: RaidDistribution[] = raid.attackerIds.map((empireId, index) => {
@@ -311,22 +311,22 @@ export function calculateRaidDistribution(
     return {
       empireId,
       empireName: raid.attackerNames[index] ?? attackerData?.name ?? "Unknown",
-      planetsAwarded: minimumPlanets > index ? 1 : 0, // Give 1 sector to first N participants
+      sectorsAwarded: minimumSectors > index ? 1 : 0, // Give 1 sector to first N participants
       damagePercentage,
       eliminationCredit: equalCredit,
     };
   });
 
   // Step 2: Distribute remaining sectors by damage percentage
-  while (remainingPlanets > 0) {
+  while (remainingSectors > 0) {
     // Find participant who is most "under-allocated" based on damage %
     let maxDeficit = -Infinity;
     let maxDeficitIndex = 0;
 
     for (let i = 0; i < distribution.length; i++) {
       const d = distribution[i]!;
-      const expectedPlanets = totalPlanetsCaptured * d.damagePercentage;
-      const deficit = expectedPlanets - d.planetsAwarded;
+      const expectedSectors = totalSectorsCaptured * d.damagePercentage;
+      const deficit = expectedSectors - d.sectorsAwarded;
 
       if (deficit > maxDeficit) {
         maxDeficit = deficit;
@@ -334,8 +334,8 @@ export function calculateRaidDistribution(
       }
     }
 
-    distribution[maxDeficitIndex]!.planetsAwarded++;
-    remainingPlanets--;
+    distribution[maxDeficitIndex]!.sectorsAwarded++;
+    remainingSectors--;
   }
 
   return distribution;
@@ -439,7 +439,7 @@ export function generateRaidVictoryMessage(
   const participantText =
     moreCount > 0 ? `${participantNames}, and ${moreCount} others` : participantNames;
 
-  const totalSectors = distributions.reduce((sum, d) => sum + d.planetsAwarded, 0);
+  const totalSectors = distributions.reduce((sum, d) => sum + d.sectorsAwarded, 0);
 
   return `Coalition Victory! ${raid.attackerIds.length} empires (${participantText}) have successfully defeated the dominant power ${raid.targetEmpireName}. ${totalSectors} sectors have been distributed among the victors.`;
 }

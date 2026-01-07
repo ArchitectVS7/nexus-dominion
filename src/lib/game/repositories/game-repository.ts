@@ -110,7 +110,7 @@ export async function createPlayerEmpire(
   }
 
   // Create starting sectors
-  await createStartingPlanets(empire.id, gameId);
+  await createStartingSectors(empire.id, gameId);
 
   // Initialize M3 systems (research & upgrades)
   await initializeResearch(empire.id, gameId);
@@ -122,7 +122,7 @@ export async function createPlayerEmpire(
 /**
  * Create the 9 starting sectors for an empire.
  */
-async function createStartingPlanets(
+async function createStartingSectors(
   empireId: string,
   gameId: string
 ): Promise<Sector[]> {
@@ -140,8 +140,8 @@ async function createStartingPlanets(
     }
   }
 
-  const createdPlanets = await db.insert(sectors).values(sectorValues).returning();
-  return createdPlanets;
+  const createdSectors = await db.insert(sectors).values(sectorValues).returning();
+  return createdSectors;
 }
 
 /**
@@ -156,7 +156,7 @@ export async function getEmpireById(empireId: string): Promise<Empire | undefine
 /**
  * Get an empire with all its sectors.
  */
-export async function getEmpireWithPlanets(empireId: string) {
+export async function getEmpireWithSectors(empireId: string) {
   return db.query.empires.findFirst({
     where: eq(empires.id, empireId),
     with: {
@@ -184,7 +184,7 @@ export async function getPlayerEmpire(gameId: string) {
 /**
  * Get all sectors for an empire.
  */
-export async function getPlanetsByEmpireId(empireId: string): Promise<Sector[]> {
+export async function getSectorsByEmpireId(empireId: string): Promise<Sector[]> {
   return db.query.sectors.findMany({
     where: eq(sectors.empireId, empireId),
   });
@@ -193,12 +193,12 @@ export async function getPlanetsByEmpireId(empireId: string): Promise<Sector[]> 
 /**
  * Get sector counts by type for an empire.
  */
-export async function getPlanetCountsByType(
+export async function getSectorCountsByType(
   empireId: string
 ): Promise<Record<string, number>> {
-  const empirePlanets = await getPlanetsByEmpireId(empireId);
+  const empireSectors = await getSectorsByEmpireId(empireId);
 
-  return empirePlanets.reduce(
+  return empireSectors.reduce(
     (acc, sector) => {
       acc[sector.type] = (acc[sector.type] || 0) + 1;
       return acc;
@@ -547,43 +547,43 @@ export interface DashboardData {
 export async function getDashboardData(
   empireId: string
 ): Promise<DashboardData | null> {
-  const empireWithPlanets = await getEmpireWithPlanets(empireId);
+  const empireWithSectors = await getEmpireWithSectors(empireId);
 
-  if (!empireWithPlanets) {
+  if (!empireWithSectors) {
     return null;
   }
 
   // Fetch game data for turn info
-  const game = await getGameById(empireWithPlanets.gameId);
+  const game = await getGameById(empireWithSectors.gameId);
 
   if (!game) {
     return null;
   }
 
   return {
-    empire: empireWithPlanets,
-    sectors: empireWithPlanets.sectors,
+    empire: empireWithSectors,
+    sectors: empireWithSectors.sectors,
     resources: {
-      credits: empireWithPlanets.credits,
-      food: empireWithPlanets.food,
-      ore: empireWithPlanets.ore,
-      petroleum: empireWithPlanets.petroleum,
-      researchPoints: empireWithPlanets.researchPoints,
+      credits: empireWithSectors.credits,
+      food: empireWithSectors.food,
+      ore: empireWithSectors.ore,
+      petroleum: empireWithSectors.petroleum,
+      researchPoints: empireWithSectors.researchPoints,
     },
     military: {
-      soldiers: empireWithPlanets.soldiers,
-      fighters: empireWithPlanets.fighters,
-      stations: empireWithPlanets.stations,
-      lightCruisers: empireWithPlanets.lightCruisers,
-      heavyCruisers: empireWithPlanets.heavyCruisers,
-      carriers: empireWithPlanets.carriers,
-      covertAgents: empireWithPlanets.covertAgents,
+      soldiers: empireWithSectors.soldiers,
+      fighters: empireWithSectors.fighters,
+      stations: empireWithSectors.stations,
+      lightCruisers: empireWithSectors.lightCruisers,
+      heavyCruisers: empireWithSectors.heavyCruisers,
+      carriers: empireWithSectors.carriers,
+      covertAgents: empireWithSectors.covertAgents,
     },
     stats: {
-      networth: empireWithPlanets.networth,
-      sectorCount: empireWithPlanets.sectorCount,
-      population: empireWithPlanets.population,
-      civilStatus: empireWithPlanets.civilStatus,
+      networth: empireWithSectors.networth,
+      sectorCount: empireWithSectors.sectorCount,
+      population: empireWithSectors.population,
+      civilStatus: empireWithSectors.civilStatus,
     },
     turn: {
       currentTurn: game.currentTurn,

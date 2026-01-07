@@ -7,7 +7,7 @@ import {
   COVERT_OPERATIONS,
   COVERT_POINTS_PER_TURN,
   MAX_COVERT_POINTS,
-  AGENT_CAPACITY_PER_GOV_PLANET,
+  AGENT_CAPACITY_PER_GOV_SECTOR,
   LOW_RISK_OPERATIONS,
   MEDIUM_RISK_OPERATIONS,
   HIGH_RISK_OPERATIONS,
@@ -37,8 +37,8 @@ describe("Covert System Constants (PRD 6.8)", () => {
   });
 
   it("should have correct agent capacity per government sector", () => {
-    // PRD: Agent capacity = Government sectors × 300
-    expect(AGENT_CAPACITY_PER_GOV_PLANET).toBe(300);
+    // PRD: Agent capacity = Government sectors x 300
+    expect(AGENT_CAPACITY_PER_GOV_SECTOR).toBe(300);
   });
 });
 

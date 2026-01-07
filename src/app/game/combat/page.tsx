@@ -165,7 +165,7 @@ export default function CombatPage() {
                   >
                     <div className="font-semibold">{target.name}</div>
                     <div className="text-sm text-gray-400">
-                      Networth: {target.networth.toLocaleString()} | Planets: {target.sectorCount}
+                      Networth: {target.networth.toLocaleString()} | Sectors: {target.sectorCount}
                     </div>
                   </button>
                 ))}

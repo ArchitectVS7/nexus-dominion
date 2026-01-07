@@ -234,8 +234,8 @@ export async function getTurnOrderPanelDataAction(): Promise<TurnOrderPanelData 
     if (!playerEmpire) return null;
 
     // Calculate food status
-    const foodPlanets = playerEmpire.sectors.filter(p => p.type === "food").length;
-    const foodProduction = foodPlanets * 160; // PLANET_PRODUCTION.food
+    const foodSectors = playerEmpire.sectors.filter(p => p.type === "food").length;
+    const foodProduction = foodSectors * 160; // SECTOR_PRODUCTION.food
     const foodConsumption = playerEmpire.population * 0.05;
     const foodBalance = foodProduction - foodConsumption;
 
@@ -370,8 +370,8 @@ export async function getGameLayoutDataAction(): Promise<GameLayoutData | null> 
     if (!playerEmpire) return null;
 
     // Calculate food status
-    const foodPlanets = playerEmpire.sectors.filter(p => p.type === "food").length;
-    const foodProduction = foodPlanets * 160;
+    const foodSectors = playerEmpire.sectors.filter(p => p.type === "food").length;
+    const foodProduction = foodSectors * 160;
     const foodConsumption = playerEmpire.population * 0.05;
     const foodBalance = foodProduction - foodConsumption;
 

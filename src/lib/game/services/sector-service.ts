@@ -15,7 +15,7 @@ import {
   calculateReleaseRefund,
   calculateAffordableSectors,
 } from "@/lib/formulas/sector-costs";
-import { SECTOR_COSTS, SECTOR_PRODUCTION, type PlanetType } from "../constants";
+import { SECTOR_COSTS, SECTOR_PRODUCTION, type SectorType } from "../constants";
 import { calculateNetworth } from "../networth";
 
 // =============================================================================
@@ -40,7 +40,7 @@ export interface ReleaseSectorResult {
 }
 
 export interface SectorPurchaseInfo {
-  sectorType: PlanetType;
+  sectorType: SectorType;
   baseCost: number;
   currentCost: number;
   costMultiplier: number;
@@ -67,7 +67,7 @@ export interface SectorPurchaseInfo {
  */
 export async function colonizeSector(
   empireId: string,
-  sectorType: PlanetType,
+  sectorType: SectorType,
   gameId: string,
   currentTurn: number
 ): Promise<ColonizeSectorResult> {
@@ -195,7 +195,7 @@ export async function releaseSector(
   }
 
   // Get base cost for sector type
-  const baseCost = SECTOR_COSTS[sector.type as PlanetType];
+  const baseCost = SECTOR_COSTS[sector.type as SectorType];
   if (!baseCost) {
     return { success: false, error: `Invalid sector type: ${sector.type}` };
   }
@@ -250,7 +250,7 @@ export async function releaseSector(
  */
 export async function getSectorPurchaseInfo(
   empireId: string,
-  sectorType: PlanetType
+  sectorType: SectorType
 ): Promise<SectorPurchaseInfo | null> {
   // Fetch current empire state
   const empire = await db.query.empires.findFirst({
@@ -302,7 +302,7 @@ export async function getSectorPurchaseInfo(
 export async function getAllSectorPurchaseInfo(
   empireId: string
 ): Promise<SectorPurchaseInfo[] | null> {
-  const sectorTypes: PlanetType[] = [
+  const sectorTypes: SectorType[] = [
     "food",
     "ore",
     "petroleum",

@@ -10,7 +10,7 @@ import {
   calculateTurnsToLevel,
   getNextUnlock,
   initializeResearch,
-  RESEARCH_POINTS_PER_PLANET,
+  RESEARCH_POINTS_PER_SECTOR,
   MAX_RESEARCH_LEVEL,
   type ResearchStatus,
   type ResearchResult,
@@ -75,7 +75,7 @@ export async function getResearchStatusAction(): Promise<ResearchStatus | null> 
  */
 export async function getResearchInfoAction(): Promise<{
   status: ResearchStatus;
-  researchPlanetCount: number;
+  researchSectorCount: number;
   pointsPerTurn: number;
   turnsToNextLevel: number;
   nextUnlock: { unlock: string; level: number } | null;
@@ -100,27 +100,27 @@ export async function getResearchInfoAction(): Promise<{
     }
 
     // Count research sectors
-    const researchPlanets = await db.query.sectors.findMany({
+    const researchSectors = await db.query.sectors.findMany({
       where: and(
         eq(sectors.empireId, empireId),
         eq(sectors.type, "research")
       ),
     });
 
-    const researchPlanetCount = researchPlanets.length;
-    const pointsPerTurn = researchPlanetCount * RESEARCH_POINTS_PER_PLANET;
+    const researchSectorCount = researchSectors.length;
+    const pointsPerTurn = researchSectorCount * RESEARCH_POINTS_PER_SECTOR;
 
     // Calculate turns to next level
     const turnsToNextLevel = status.isMaxLevel
       ? 0
-      : await calculateTurnsToLevel(empireId, researchPlanetCount, status.level + 1);
+      : await calculateTurnsToLevel(empireId, researchSectorCount, status.level + 1);
 
     // Get next unlock
     const nextUnlock = getNextUnlock(status.level);
 
     return {
       status,
-      researchPlanetCount,
+      researchSectorCount,
       pointsPerTurn,
       turnsToNextLevel: turnsToNextLevel === Infinity ? -1 : turnsToNextLevel,
       nextUnlock,
@@ -222,17 +222,17 @@ export async function getResearchProjectionAction(
     }
 
     // Count research sectors
-    const researchPlanets = await db.query.sectors.findMany({
+    const researchSectors = await db.query.sectors.findMany({
       where: and(
         eq(sectors.empireId, empireId),
         eq(sectors.type, "research")
       ),
     });
 
-    const researchPlanetCount = researchPlanets.length;
+    const researchSectorCount = researchSectors.length;
     const turnsNeeded = await calculateTurnsToLevel(
       empireId,
-      researchPlanetCount,
+      researchSectorCount,
       safeLevel
     );
 
@@ -247,7 +247,7 @@ export async function getResearchProjectionAction(
       targetLevel: safeLevel,
       turnsNeeded: turnsNeeded === Infinity ? -1 : turnsNeeded,
       pointsNeeded,
-      achievable: researchPlanetCount > 0,
+      achievable: researchSectorCount > 0,
     };
   } catch (error) {
     console.error("Failed to get research projection:", error);
@@ -258,5 +258,5 @@ export async function getResearchProjectionAction(
 // =============================================================================
 // NOTE: Do NOT export non-async values from "use server" files.
 // Import constants directly from research-service if needed:
-// import { MAX_RESEARCH_LEVEL, RESEARCH_POINTS_PER_PLANET } from "@/lib/game/services/research-service";
+// import { MAX_RESEARCH_LEVEL, RESEARCH_POINTS_PER_SECTOR } from "@/lib/game/services/research-service";
 // =============================================================================

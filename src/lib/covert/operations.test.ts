@@ -31,7 +31,7 @@ function createDefender(overrides?: Partial<CovertTargetState>): CovertTargetSta
   return {
     id: "defender-456",
     agents: 30,
-    governmentPlanets: 1,
+    governmentSectors: 1,
     credits: 100000,
     food: 5000,
     ore: 3000,
@@ -223,7 +223,7 @@ describe("executeCovertOp", () => {
       const result = executeCovertOp(operation, attacker, defender, 0.01, 0.99);
 
       expect(result.success).toBe(true);
-      expect(result.effects[0]?.type).toBe("planets_lost");
+      expect(result.effects[0]?.type).toBe("sectors_lost");
       expect(result.effects[0]?.value).toBe(6); // 30% of 20
     });
   });
@@ -232,7 +232,7 @@ describe("executeCovertOp", () => {
     it("should fail operation when roll is high and conditions are unfavorable", () => {
       // Use unfavorable conditions: defender has more agents and government sectors
       const weakAttacker = createAttacker({ agents: 10 });
-      const strongDefender = createDefender({ agents: 100, governmentPlanets: 5 });
+      const strongDefender = createDefender({ agents: 100, governmentSectors: 5 });
       const operation = COVERT_OPERATIONS.send_spy;
       const result = executeCovertOp(operation, weakAttacker, strongDefender, 0.99, 0.99);
 
@@ -251,7 +251,7 @@ describe("executeCovertOp", () => {
     it("should return appropriate message for failed operation with caught agent", () => {
       // Use unfavorable conditions to ensure failure
       const weakAttacker = createAttacker({ agents: 10 });
-      const strongDefender = createDefender({ agents: 100, governmentPlanets: 5 });
+      const strongDefender = createDefender({ agents: 100, governmentSectors: 5 });
       const operation = COVERT_OPERATIONS.send_spy;
       const result = executeCovertOp(operation, weakAttacker, strongDefender, 0.99, 0.01);
 
@@ -485,12 +485,12 @@ describe("Edge Cases", () => {
 
   it("should handle very high agent counts", () => {
     const attacker = createAttacker({ agents: 10000, covertPoints: 500 });
-    const defender = createDefender({ agents: 100, governmentPlanets: 1 });
+    const defender = createDefender({ agents: 100, governmentSectors: 1 });
 
     const result = calculateCovertSuccess(
       attacker.agents,
       defender.agents,
-      defender.governmentPlanets,
+      defender.governmentSectors,
       COVERT_OPERATIONS.send_spy
     );
 

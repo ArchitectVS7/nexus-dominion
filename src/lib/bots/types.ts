@@ -62,7 +62,7 @@ export type UnitType =
   | "carriers"
   | "covertAgents";
 
-export type PlanetType =
+export type SectorType =
   | "food"
   | "ore"
   | "petroleum"
@@ -115,7 +115,7 @@ export type ResearchBranch =
 
 export type BotDecision =
   | { type: "build_units"; unitType: UnitType; quantity: number }
-  | { type: "buy_planet"; sectorType: PlanetType }
+  | { type: "buy_sector"; sectorType: SectorType }
   | { type: "attack"; targetId: string; forces: Forces; stance?: CombatStance }
   | {
       type: "diplomacy";
@@ -142,7 +142,7 @@ export type BotDecision =
 
 export type BotDecisionType =
   | "build_units"
-  | "buy_planet"
+  | "buy_sector"
   | "attack"
   | "diplomacy"
   | "trade"
@@ -162,7 +162,7 @@ export type BotDecisionType =
 
 export interface BotDecisionWeights {
   build_units: number; // 25%
-  buy_planet: number; // 12%
+  buy_sector: number; // 12%
   attack: number; // 10% (0% before protection ends)
   diplomacy: number; // 8%
   trade: number; // 8%
@@ -189,7 +189,7 @@ export interface BotDecisionWeights {
  * and militaryPower for all empires. This should be replaced with:
  * - estimatedNetworth: Based on leaderboard position (with uncertainty)
  * - estimatedPower: Based on covert ops intelligence (spy missions)
- * - visiblePlanets: Only sectors revealed through espionage
+ * - visibleSectors: Only sectors revealed through espionage
  * - publicInfo: Major battles, official rankings, treaty announcements
  *
  * Bots should only get accurate info through:

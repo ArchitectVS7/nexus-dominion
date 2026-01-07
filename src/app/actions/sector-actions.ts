@@ -11,9 +11,9 @@ import {
   type SectorPurchaseInfo,
 } from "@/lib/game/services/sector-service";
 import { getGameById } from "@/lib/game/repositories/game-repository";
-import type { PlanetType } from "@/lib/game/constants";
+import type { SectorType } from "@/lib/game/constants";
 import {
-  isValidPlanetType,
+  isValidSectorType,
   isValidUUID,
   verifyEmpireOwnership,
 } from "@/lib/security/validation";
@@ -46,10 +46,10 @@ async function getGameCookies(): Promise<{
  * SECURITY: Validates sector type at runtime and verifies empire ownership.
  */
 export async function colonizeSectorAction(
-  sectorType: PlanetType
+  sectorType: SectorType
 ): Promise<ColonizeSectorResult> {
   // Validate sector type at runtime (TypeScript types are compile-time only)
-  if (!isValidPlanetType(sectorType)) {
+  if (!isValidSectorType(sectorType)) {
     return { success: false, error: "Invalid sector type" };
   }
 
@@ -124,10 +124,10 @@ export async function releaseSectorAction(
  * SECURITY: Validates sector type at runtime.
  */
 export async function getSectorPurchaseInfoAction(
-  sectorType: PlanetType
+  sectorType: SectorType
 ): Promise<SectorPurchaseInfo | null> {
   // Validate sector type at runtime
-  if (!isValidPlanetType(sectorType)) {
+  if (!isValidSectorType(sectorType)) {
     return null;
   }
 

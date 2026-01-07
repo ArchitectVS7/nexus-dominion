@@ -30,7 +30,7 @@ interface GameResult {
 interface VictoryStats {
   totalTurns: number;
   totalSectors: number;
-  winnerPlanets: number;
+  winnerSectors: number;
   winnerNetworth: number;
   empiresRemaining: number;
   empiresDefeated: number;
@@ -61,7 +61,7 @@ export default function GameResultPage() {
         setStats({
           totalTurns: resultData.result.turn,
           totalSectors: dashboardData.stats.sectorCount * 26, // Estimate total sectors
-          winnerPlanets: dashboardData.stats.sectorCount,
+          winnerSectors: dashboardData.stats.sectorCount,
           winnerNetworth: dashboardData.stats.networth,
           empiresRemaining: 26, // Will be updated when we have game-wide stats
           empiresDefeated: 0,
@@ -239,7 +239,7 @@ function getVictoryMessage(victoryType: string, empireName: string): string {
     case "economic":
       return `${empireName} has achieved total economic dominance with 1.5x the networth of the second place empire!`;
     case "survival":
-      return `${empireName} has survived 200 turns and emerged as the most powerful empire in the galaxy!`;
+      return `${empireName} has survived to the end of the game and emerged as the most powerful empire in the galaxy!`;
     default:
       return `${empireName} has achieved victory!`;
   }
@@ -262,7 +262,7 @@ function getDefaultStats(turn: number): VictoryStats {
   return {
     totalTurns: turn,
     totalSectors: 0,
-    winnerPlanets: 0,
+    winnerSectors: 0,
     winnerNetworth: 0,
     empiresRemaining: 0,
     empiresDefeated: 0,

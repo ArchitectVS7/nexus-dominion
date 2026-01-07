@@ -230,7 +230,7 @@ export async function getDatabaseStatsAction(): Promise<{
     const gameStats = getGameStats(gameStatsResult as unknown as DbQueryResult<GameStatsRow>);
 
     const empireStatsResult = await db.execute(sql`SELECT COUNT(*)::int as total FROM empires`) as unknown as DbQueryResult<CountRow>;
-    const planetStatsResult = await db.execute(sql`SELECT COUNT(*)::int as total FROM sectors`) as unknown as DbQueryResult<CountRow>;
+    const sectorStatsResult = await db.execute(sql`SELECT COUNT(*)::int as total FROM sectors`) as unknown as DbQueryResult<CountRow>;
     const memoryStatsResult = await db.execute(sql`SELECT COUNT(*)::int as total FROM bot_memories`) as unknown as DbQueryResult<CountRow>;
     const messageStatsResult = await db.execute(sql`SELECT COUNT(*)::int as total FROM messages`) as unknown as DbQueryResult<CountRow>;
     const attackStatsResult = await db.execute(sql`SELECT COUNT(*)::int as total FROM attacks`) as unknown as DbQueryResult<CountRow>;
@@ -243,7 +243,7 @@ export async function getDatabaseStatsAction(): Promise<{
         empireCount: getCount(empireStatsResult),
         activeGames: Number(gameStats?.active ?? 0),
         completedGames: Number(gameStats?.completed ?? 0),
-        sectorCount: getCount(planetStatsResult),
+        sectorCount: getCount(sectorStatsResult),
         memoryCount: getCount(memoryStatsResult),
         messageCount: getCount(messageStatsResult),
         attackCount: getCount(attackStatsResult),

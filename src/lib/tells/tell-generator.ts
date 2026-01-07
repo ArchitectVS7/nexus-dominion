@@ -107,7 +107,7 @@ export function determineTellType(decision: BotDecision): TellType | null {
     case "upgrade_units":
       return "military_buildup";
 
-    case "buy_planet":
+    case "buy_sector":
       return "economic_preparation";
 
     case "do_nothing":

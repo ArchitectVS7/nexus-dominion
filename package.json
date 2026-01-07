@@ -32,7 +32,8 @@
     "db:studio": "drizzle-kit studio",
     "db:clean": "tsx scripts/clear-db.ts",
     "db:stats": "tsx scripts/db-stats.ts",
-    "db:fix-galaxy": "tsx scripts/regenerate-galaxy.ts"
+    "db:fix-galaxy": "tsx scripts/regenerate-galaxy.ts",
+    "compliance:check": "tsx scripts/compliance-check.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

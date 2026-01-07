@@ -224,7 +224,7 @@ export default function AdminPage() {
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-500">Planets:</span>
+                  <span className="text-gray-500">Sectors:</span>
                   <span className="ml-2 font-mono text-lcars-mint">
                     {stats.sectorCount.toLocaleString()}
                   </span>

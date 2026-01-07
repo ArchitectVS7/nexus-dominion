@@ -53,9 +53,9 @@ export const COVERT_POINTS_PER_TURN = 5;
 export const MAX_COVERT_POINTS = 50;
 
 /** Agent capacity per Government sector */
-export const AGENT_CAPACITY_PER_GOV_PLANET = 300;
+export const AGENT_CAPACITY_PER_GOV_SECTOR = 300;
 
-/** Base variance for success rate calculations (±20% as per PRD) */
+/** Base variance for success rate calculations (+-20% as per PRD) */
 export const SUCCESS_RATE_VARIANCE = 0.2;
 
 // =============================================================================
@@ -285,8 +285,8 @@ export function hasEnoughAgents(
 /**
  * Calculate agent capacity from government sector count.
  */
-export function calculateAgentCapacity(governmentPlanets: number): number {
-  return governmentPlanets * AGENT_CAPACITY_PER_GOV_PLANET;
+export function calculateAgentCapacity(governmentSectors: number): number {
+  return governmentSectors * AGENT_CAPACITY_PER_GOV_SECTOR;
 }
 
 /**

@@ -72,7 +72,7 @@ export function TargetSelector({
           </h3>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div>
-              <span className="text-gray-500">Planets:</span>{" "}
+              <span className="text-gray-500">Sectors:</span>{" "}
               <span className="text-gray-300">{selectedTarget.sectorCount}</span>
             </div>
             <div>

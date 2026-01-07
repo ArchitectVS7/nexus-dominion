@@ -12,7 +12,7 @@ interface ResearchPanelProps {
 export function ResearchPanel({ refreshTrigger }: ResearchPanelProps) {
   const [info, setInfo] = useState<{
     status: ResearchStatus;
-    researchPlanetCount: number;
+    researchSectorCount: number;
     pointsPerTurn: number;
     turnsToNextLevel: number;
     nextUnlock: { unlock: string; level: number } | null;
@@ -70,7 +70,7 @@ export function ResearchPanel({ refreshTrigger }: ResearchPanelProps) {
     );
   }
 
-  const { status, researchPlanetCount, pointsPerTurn, turnsToNextLevel, nextUnlock } = info;
+  const { status, researchSectorCount, pointsPerTurn, turnsToNextLevel, nextUnlock } = info;
 
   return (
     <div className="lcars-panel" data-testid="research-panel">
@@ -112,9 +112,9 @@ export function ResearchPanel({ refreshTrigger }: ResearchPanelProps) {
       {/* Stats grid */}
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div className="bg-black/30 p-3 rounded">
-          <div className="text-gray-500 text-xs">Research Planets</div>
+          <div className="text-gray-500 text-xs">Research Sectors</div>
           <div className="font-mono text-purple-400 text-lg">
-            {researchPlanetCount}
+            {researchSectorCount}
           </div>
         </div>
         <div className="bg-black/30 p-3 rounded">

@@ -27,7 +27,7 @@ import {
 // =============================================================================
 
 /** Research points generated per research sector per turn */
-export const RESEARCH_POINTS_PER_PLANET = 100;
+export const RESEARCH_POINTS_PER_SECTOR = 100;
 
 /** Maximum research level (0-7 = 8 levels) */
 export const MAX_RESEARCH_LEVEL = 7;
@@ -180,14 +180,14 @@ export async function getResearchProgress(
  * Process research point generation for an empire during turn processing.
  *
  * @param empireId - The empire to process
- * @param researchPlanetCount - Number of research sectors owned
+ * @param researchSectorCount - Number of research sectors owned
  * @returns Result with points generated and level-up status
  */
 export async function processResearchProduction(
   empireId: string,
-  researchPlanetCount: number
+  researchSectorCount: number
 ): Promise<ResearchProductionResult> {
-  const pointsGenerated = researchPlanetCount * RESEARCH_POINTS_PER_PLANET;
+  const pointsGenerated = researchSectorCount * RESEARCH_POINTS_PER_SECTOR;
 
   if (pointsGenerated === 0) {
     // No research sectors, no production
@@ -345,16 +345,16 @@ export async function investResearchPoints(
  * Calculate how many turns until a target research level is reached.
  *
  * @param empireId - The empire to calculate for
- * @param researchPlanetCount - Number of research sectors
+ * @param researchSectorCount - Number of research sectors
  * @param targetLevel - Target research level
  * @returns Number of turns, or Infinity if no research sectors
  */
 export async function calculateTurnsToLevel(
   empireId: string,
-  researchPlanetCount: number,
+  researchSectorCount: number,
   targetLevel: number
 ): Promise<number> {
-  if (researchPlanetCount <= 0) {
+  if (researchSectorCount <= 0) {
     return Infinity;
   }
 
@@ -373,7 +373,7 @@ export async function calculateTurnsToLevel(
     totalPointsNeeded += calculateResearchCost(level);
   }
 
-  const pointsPerTurn = researchPlanetCount * RESEARCH_POINTS_PER_PLANET;
+  const pointsPerTurn = researchSectorCount * RESEARCH_POINTS_PER_SECTOR;
   return Math.ceil(totalPointsNeeded / pointsPerTurn);
 }
 

@@ -16,7 +16,7 @@ import {
   COVERT_OPERATIONS,
   COVERT_POINTS_PER_TURN,
   MAX_COVERT_POINTS,
-  AGENT_CAPACITY_PER_GOV_PLANET,
+  AGENT_CAPACITY_PER_GOV_SECTOR,
 } from "@/lib/covert/constants";
 import {
   executeCovertOp,
@@ -40,10 +40,10 @@ export interface CovertStatus {
   maxCovertPoints: number;
   /** Current agent count */
   agents: number;
-  /** Maximum agent capacity (gov sectors × 300) */
+  /** Maximum agent capacity (gov sectors x 300) */
   agentCapacity: number;
   /** Number of government sectors */
-  governmentPlanets: number;
+  governmentSectors: number;
 }
 
 export interface CovertTarget {
@@ -92,7 +92,7 @@ export async function getCovertStatus(
 
   if (!empire) return null;
 
-  const governmentPlanets = empire.sectors.filter(
+  const governmentSectors = empire.sectors.filter(
     (p) => p.type === "government"
   ).length;
 
@@ -100,8 +100,8 @@ export async function getCovertStatus(
     covertPoints: empire.covertPoints,
     maxCovertPoints: MAX_COVERT_POINTS,
     agents: empire.covertAgents,
-    agentCapacity: governmentPlanets * AGENT_CAPACITY_PER_GOV_PLANET,
-    governmentPlanets,
+    agentCapacity: governmentSectors * AGENT_CAPACITY_PER_GOV_SECTOR,
+    governmentSectors,
   };
 }
 
@@ -109,12 +109,12 @@ export async function getCovertStatus(
  * Get agent capacity for an empire.
  */
 export async function getAgentCapacity(empireId: string): Promise<number> {
-  const govPlanets = await db.query.sectors.findMany({
+  const govSectors = await db.query.sectors.findMany({
     where: and(eq(sectors.empireId, empireId), eq(sectors.type, "government")),
     columns: { id: true },
   });
 
-  return govPlanets.length * AGENT_CAPACITY_PER_GOV_PLANET;
+  return govSectors.length * AGENT_CAPACITY_PER_GOV_SECTOR;
 }
 
 // =============================================================================
@@ -366,7 +366,7 @@ export async function previewCovertOperation(
 function buildTargetState(
   empire: Empire & { sectors: { type: string }[] }
 ): CovertTargetState {
-  const governmentPlanets = empire.sectors.filter(
+  const governmentSectors = empire.sectors.filter(
     (p) => p.type === "government"
   ).length;
 
@@ -378,7 +378,7 @@ function buildTargetState(
   return {
     id: empire.id,
     agents: empire.covertAgents,
-    governmentPlanets,
+    governmentSectors,
     credits: empire.credits,
     food: empire.food,
     ore: empire.ore,
@@ -455,7 +455,7 @@ async function applyEffectsToDefender(
         appliedEffects.push(effect.description);
         break;
 
-      case "planets_lost":
+      case "sectors_lost":
         // Major effect - would need to transfer sectors
         // For now, just log it
         appliedEffects.push(effect.description);

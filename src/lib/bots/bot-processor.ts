@@ -311,7 +311,7 @@ interface ProcessingContext {
  */
 async function generateBotDecisionWithContext(
   empire: Empire,
-  empirePlanets: Sector[],
+  empireSectors: Sector[],
   context: ProcessingContext
 ): Promise<{
   bot: Empire;
@@ -339,7 +339,7 @@ async function generateBotDecisionWithContext(
   // Build decision context
   const decisionContext: BotDecisionContext = {
     empire,
-    sectors: empirePlanets,
+    sectors: empireSectors,
     gameId: context.gameId,
     currentTurn: context.currentTurn,
     protectionTurns: context.protectionTurns,
@@ -363,7 +363,7 @@ async function generateBotDecisionWithContext(
 
   return {
     bot: empire,
-    sectors: empirePlanets,
+    sectors: empireSectors,
     decision,
     context: decisionContext,
   };
@@ -458,7 +458,7 @@ async function processEmotionalOutcome(
       }
       break;
 
-    case "buy_planet":
+    case "buy_sector":
       if (success) {
         // Economic expansion gives slight confidence boost
         event = "economic_boom";

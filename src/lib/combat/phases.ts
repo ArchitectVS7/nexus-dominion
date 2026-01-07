@@ -93,8 +93,8 @@ export type AttackType = "invasion" | "guerilla";
 // =============================================================================
 
 /** Percentage of defender sectors captured on successful invasion */
-export const PLANET_CAPTURE_MIN_PERCENT = 0.05;
-export const PLANET_CAPTURE_MAX_PERCENT = 0.15;
+export const SECTOR_CAPTURE_MIN_PERCENT = 0.05;
+export const SECTOR_CAPTURE_MAX_PERCENT = 0.15;
 
 /** Minimum carriers required per soldier for invasions */
 export const SOLDIERS_PER_CARRIER = 100;
@@ -448,14 +448,14 @@ export function resolveGroundCombat(
  *
  * @param attackerForces - Attacking forces
  * @param defenderForces - Defending forces
- * @param defenderPlanetCount - Number of sectors defender owns
+ * @param defenderSectorCount - Number of sectors defender owns
  * @param randomValue - Optional random value for deterministic testing
  * @returns Complete combat result
  */
 export function resolveInvasion(
   attackerForces: Forces,
   defenderForces: Forces,
-  defenderPlanetCount: number,
+  defenderSectorCount: number,
   randomValue?: number
 ): CombatResult {
   const phases: PhaseResult[] = [];
@@ -502,9 +502,9 @@ export function resolveInvasion(
   if (groundResult.winner === "attacker") {
     outcome = "attacker_victory";
     // Calculate sectors captured (5-15% of defender's sectors)
-    const capturePercent = PLANET_CAPTURE_MIN_PERCENT +
-      (randomValue ?? Math.random()) * (PLANET_CAPTURE_MAX_PERCENT - PLANET_CAPTURE_MIN_PERCENT);
-    sectorsCaptured = Math.max(1, Math.floor(defenderPlanetCount * capturePercent));
+    const capturePercent = SECTOR_CAPTURE_MIN_PERCENT +
+      (randomValue ?? Math.random()) * (SECTOR_CAPTURE_MAX_PERCENT - SECTOR_CAPTURE_MIN_PERCENT);
+    sectorsCaptured = Math.max(1, Math.floor(defenderSectorCount * capturePercent));
   } else if (groundResult.winner === "defender") {
     outcome = "defender_victory";
   } else {

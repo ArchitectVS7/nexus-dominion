@@ -262,7 +262,7 @@ export async function createBotEmpire(
   }
 
   // Create starting sectors (same as player)
-  await createBotStartingPlanets(empire.id, gameId);
+  await createBotStartingSectors(empire.id, gameId);
 
   // Initialize M3 systems (research & upgrades)
   await initializeResearch(empire.id, gameId);
@@ -275,7 +275,7 @@ export async function createBotEmpire(
  * Create the 9 starting sectors for a bot empire.
  * Same distribution as player: 2 Food, 2 Ore, 1 Petroleum, 1 Tourism, 1 Urban, 1 Government, 1 Research
  */
-async function createBotStartingPlanets(
+async function createBotStartingSectors(
   empireId: string,
   gameId: string
 ): Promise<void> {

@@ -515,9 +515,9 @@ export async function getGameResultAction(): Promise<{
             (sum, e) => sum + e.sectors.length,
             0
           );
-          const winnerPlanets = winner.sectors.length;
+          const winnerSectors = winner.sectors.length;
 
-          if (winnerPlanets / totalSectors >= 0.6) {
+          if (winnerSectors / totalSectors >= 0.6) {
             victoryType = "conquest";
           } else if (game.currentTurn >= 200) {
             victoryType = "survival";

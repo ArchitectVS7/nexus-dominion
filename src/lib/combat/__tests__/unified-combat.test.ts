@@ -351,7 +351,7 @@ describe("Combat Balance Verification", () => {
       console.log(`  Attacker Win Rate: ${(results.attackerWinRate * 100).toFixed(1)}%`);
       console.log(`  Defender Win Rate: ${((results.defenderWins / 200) * 100).toFixed(1)}%`);
       console.log(`  Draws: ${results.draws}`);
-      console.log(`  Avg Planets Captured: ${results.averagePlanetsCaptured.toFixed(2)}`);
+      console.log(`  Avg Sectors Captured: ${results.averageSectorsCaptured.toFixed(2)}`);
       console.log("");
     }
 

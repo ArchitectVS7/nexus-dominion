@@ -191,11 +191,11 @@ export function checkDiplomaticVictory(
 
   const memberEmpireIds = new Set(coalition.memberEmpireIds);
   // Only count active (non-eliminated) coalition members
-  const coalitionPlanets = empires
+  const coalitionSectors = empires
     .filter((e) => memberEmpireIds.has(e.id) && !e.isEliminated)
     .reduce((sum, e) => sum + e.sectorCount, 0);
 
-  return coalitionPlanets / totalSectors >= DIPLOMATIC_THRESHOLD;
+  return coalitionSectors / totalSectors >= DIPLOMATIC_THRESHOLD;
 }
 
 /**
@@ -536,7 +536,7 @@ export function analyzeVictoryProgress(
   const empireCoalition = coalitions.find((c) =>
     c.memberEmpireIds.includes(empire.id)
   );
-  const coalitionPlanets = empireCoalition
+  const coalitionSectors = empireCoalition
     ? activeEmpires
         .filter((e) => empireCoalition.memberEmpireIds.includes(e.id))
         .reduce((sum, e) => sum + e.sectorCount, 0)
@@ -575,16 +575,16 @@ export function analyzeVictoryProgress(
     // Diplomatic
     {
       type: "diplomatic",
-      currentValue: coalitionPlanets,
+      currentValue: coalitionSectors,
       targetValue: Math.ceil(totalSectors * DIPLOMATIC_THRESHOLD),
       percentage:
         totalSectors > 0
           ? Math.min(
               100,
-              (coalitionPlanets / (totalSectors * DIPLOMATIC_THRESHOLD)) * 100
+              (coalitionSectors / (totalSectors * DIPLOMATIC_THRESHOLD)) * 100
             )
           : 0,
-      feasible: coalitionPlanets > 0,
+      feasible: coalitionSectors > 0,
     },
 
     // Research

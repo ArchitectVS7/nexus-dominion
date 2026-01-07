@@ -20,7 +20,7 @@ export default function ResearchPage() {
         </h2>
         <div className="text-sm text-gray-400 space-y-2">
           <p>
-            <span className="text-cyan-400">Research Planets</span> generate{" "}
+            <span className="text-cyan-400">Research Sectors</span> generate{" "}
             <span className="text-white font-mono">100 RP</span> per turn.
           </p>
           <p>

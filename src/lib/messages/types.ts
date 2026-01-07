@@ -78,7 +78,7 @@ export interface MessageContext {
   /** Resources involved */
   resources?: string;
   /** Sector name (for combat) */
-  planet_name?: string;
+  sector_name?: string;
   /** Custom values */
   [key: string]: string | number | undefined;
 }

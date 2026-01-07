@@ -13,7 +13,7 @@
       "threshold": 0.5,
       "maxBonus": 1.25
     },
-    "planetCapture": {
+    "sectorCapture": {
       "minPercent": 0.05,
       "maxPercent": 0.15
     },

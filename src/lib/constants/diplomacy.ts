@@ -135,7 +135,7 @@ export const REPUTATION_EVENTS = {
   },
 
   // Combat-related events (PRD 7.9)
-  captured_planet: {
+  captured_sector: {
     name: "Sector Captured",
     change: -80,
     isPermanent: true,

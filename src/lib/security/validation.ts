@@ -16,7 +16,7 @@ import type { ContractType } from "@/lib/game/constants/syndicate";
 // SECTOR TYPES (from database schema)
 // =============================================================================
 
-export const VALID_PLANET_TYPES = [
+export const VALID_SECTOR_TYPES = [
   "food",
   "ore",
   "petroleum",
@@ -30,7 +30,7 @@ export const VALID_PLANET_TYPES = [
   "industrial",
 ] as const;
 
-export type ValidPlanetType = (typeof VALID_PLANET_TYPES)[number];
+export type ValidSectorType = (typeof VALID_SECTOR_TYPES)[number];
 
 // =============================================================================
 // UUID VALIDATION
@@ -53,9 +53,9 @@ export function isValidUUID(id: unknown): id is string {
 /**
  * Validate that a value is a valid sector type.
  */
-export function isValidPlanetType(type: unknown): type is ValidPlanetType {
+export function isValidSectorType(type: unknown): type is ValidSectorType {
   if (typeof type !== "string") return false;
-  return VALID_PLANET_TYPES.includes(type as ValidPlanetType);
+  return VALID_SECTOR_TYPES.includes(type as ValidSectorType);
 }
 
 /**

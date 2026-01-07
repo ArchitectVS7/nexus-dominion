@@ -40,7 +40,7 @@ const BotDecisionSchema = z.discriminatedUnion("type", [
     quantity: z.number().int().positive(),
   }),
   z.object({
-    type: z.literal("buy_planet"),
+    type: z.literal("buy_sector"),
     sectorType: z.enum([
       "food",
       "ore",
@@ -302,7 +302,7 @@ function validateDecisionLegality(
       break;
     }
 
-    case "buy_planet": {
+    case "buy_sector": {
       const cost = SECTOR_COSTS[decision.sectorType] * (1 + empire.sectorCount * 0.05);
       if (empire.credits < cost) {
         return {

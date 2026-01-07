@@ -64,8 +64,8 @@ export function getUnderdogBonus() {
  * Get the sector capture configuration.
  * @returns Object with minPercent and maxPercent
  */
-export function getPlanetCaptureConfig() {
-  return combatConfigJson.unified.planetCapture;
+export function getSectorCaptureConfig() {
+  return combatConfigJson.unified.sectorCapture;
 }
 
 /**

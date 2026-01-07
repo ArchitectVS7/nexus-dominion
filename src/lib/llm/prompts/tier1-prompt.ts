@@ -162,7 +162,7 @@ export function buildUserPrompt(context: BotDecisionContext): string {
 
   const resourceSummary = buildResourceSummary(empire);
   const militarySummary = buildMilitarySummary(empire);
-  const planetSummary = buildPlanetSummary(sectors);
+  const sectorSummary = buildSectorSummary(sectors);
   const targetsSummary = buildTargetsSummary(availableTargets, permanentGrudges);
   const actionsSummary = buildAvailableActions(context);
 
@@ -172,7 +172,7 @@ ${resourceSummary}
 
 ${militarySummary}
 
-${planetSummary}
+${sectorSummary}
 
 ${targetsSummary}
 
@@ -214,17 +214,17 @@ function buildMilitarySummary(empire: { soldiers: number | null; fighters: numbe
 - Army Effectiveness: ${empire.armyEffectiveness ?? 100}%`;
 }
 
-function buildPlanetSummary(sectors: { type: string }[]): string {
-  const planetCounts: Record<string, number> = {};
+function buildSectorSummary(sectors: { type: string }[]): string {
+  const sectorCounts: Record<string, number> = {};
   for (const sector of sectors) {
-    planetCounts[sector.type] = (planetCounts[sector.type] ?? 0) + 1;
+    sectorCounts[sector.type] = (sectorCounts[sector.type] ?? 0) + 1;
   }
 
-  const breakdown = Object.entries(planetCounts)
+  const breakdown = Object.entries(sectorCounts)
     .map(([type, count]) => `${count} ${type}`)
     .join(", ");
 
-  return `PLANETS (${sectors.length} total): ${breakdown}`;
+  return `SECTORS (${sectors.length} total): ${breakdown}`;
 }
 
 function buildTargetsSummary(
@@ -235,8 +235,8 @@ function buildTargetsSummary(
   const top5 = sorted.slice(0, 5);
 
   const lines = top5.map((target) => {
-    const grudgeMarker = permanentGrudges?.includes(target.id) ? " ⚔️ GRUDGE" : "";
-    const treatyMarker = target.hasTreaty ? " 🤝 TREATY" : "";
+    const grudgeMarker = permanentGrudges?.includes(target.id) ? " [GRUDGE]" : "";
+    const treatyMarker = target.hasTreaty ? " [TREATY]" : "";
     const powerRatio = target.militaryPower
       ? ` (${(target.militaryPower / 1000).toFixed(1)}K power)`
       : "";
@@ -246,7 +246,7 @@ function buildTargetsSummary(
 
   const grudgeNote =
     permanentGrudges && permanentGrudges.length > 0
-      ? `\n\n⚔️ You have PERMANENT GRUDGES against ${permanentGrudges.length} empire(s). Revenge is a priority!`
+      ? `\n\n[GRUDGE] You have PERMANENT GRUDGES against ${permanentGrudges.length} empire(s). Revenge is a priority!`
       : "";
 
   return `AVAILABLE TARGETS (${targets.length} empires, showing top 5):\n${lines.join("\n")}${grudgeNote}`;
@@ -263,15 +263,15 @@ function buildAvailableActions(context: BotDecisionContext): string {
     .map(([unit, cost]) => `${unit} (${cost} credits)`);
 
   const sectorCost = SECTOR_COSTS.food * (1 + empire.sectorCount * 0.05);
-  const canBuyPlanet = empire.credits >= sectorCost;
+  const canBuySector = empire.credits >= sectorCost;
 
   return `AVAILABLE ACTIONS:
 
 1. build_units: Build military units
    - Affordable: ${affordableUnits.length > 0 ? affordableUnits.join(", ") : "none (insufficient credits)"}
 
-2. buy_planet: Expand territory
-   - Cost: ~${Math.round(sectorCost)} credits${canBuyPlanet ? "" : " (cannot afford)"}
+2. buy_sector: Expand territory
+   - Cost: ~${Math.round(sectorCost)} credits${canBuySector ? "" : " (cannot afford)"}
    - Types: food, ore, petroleum, tourism, urban, education, government, research
 
 3. attack: Launch invasion

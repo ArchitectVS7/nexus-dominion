@@ -18,7 +18,7 @@ function getApproximateSize(sectorCount: number): string {
 }
 
 // Get sector count range for moderate intel
-function getPlanetRange(sectorCount: number): string {
+function getSectorRange(sectorCount: number): string {
   if (sectorCount <= 2) return "1-2";
   if (sectorCount <= 4) return "3-4";
   if (sectorCount <= 6) return "5-6";
@@ -237,8 +237,8 @@ export function EmpireTooltip({ empire, isProtected, x, y }: EmpireTooltipProps)
           {effectiveIntel === "moderate" && (
             <>
               <div className="flex justify-between">
-                <span>Planets:</span>
-                <span className="font-mono">{getPlanetRange(empire.sectorCount)}</span>
+                <span>Sectors:</span>
+                <span className="font-mono">{getSectorRange(empire.sectorCount)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Networth:</span>
@@ -285,7 +285,7 @@ export function EmpireTooltip({ empire, isProtected, x, y }: EmpireTooltipProps)
           {effectiveIntel === "full" && (
             <>
               <div className="flex justify-between">
-                <span>Planets:</span>
+                <span>Sectors:</span>
                 <span className="font-mono">{empire.sectorCount}</span>
               </div>
               <div className="flex justify-between">

@@ -86,7 +86,7 @@ export const NARRATIVE_EVENTS: GalacticEvent[] = [
     unique: false,
   },
   {
-    id: "library_planet",
+    id: "library_sector",
     name: "Lost Library Sector Found",
     category: "narrative",
     scope: "random_empire",

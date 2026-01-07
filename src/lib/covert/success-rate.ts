@@ -6,7 +6,7 @@
  * - Your agent count vs target's agent count
  * - Target's Government sector count
  * - Operation difficulty (risk level)
- * - Random variance (±20%)
+ * - Random variance (+-20%)
  */
 
 import {
@@ -15,7 +15,7 @@ import {
   RISK_SUCCESS_MODIFIER,
   RISK_DETECTION_MULTIPLIER,
   SUCCESS_RATE_VARIANCE,
-  AGENT_CAPACITY_PER_GOV_PLANET,
+  AGENT_CAPACITY_PER_GOV_SECTOR,
 } from "./constants";
 
 // =============================================================================
@@ -81,10 +81,10 @@ export function calculateAgentRatioModifier(
  * Calculate the government sector modifier.
  * More government sectors = better counter-intelligence = lower success.
  *
- * Formula: 1.0 - (govPlanets * 0.05), min 0.5
+ * Formula: 1.0 - (govSectors * 0.05), min 0.5
  */
-export function calculateGovernmentModifier(governmentPlanets: number): number {
-  const penalty = governmentPlanets * 0.05;
+export function calculateGovernmentModifier(governmentSectors: number): number {
+  const penalty = governmentSectors * 0.05;
   return Math.max(0.5, 1.0 - penalty);
 }
 
@@ -95,13 +95,13 @@ export function calculateSuccessRateFactors(
   operationId: OperationType,
   yourAgents: number,
   theirAgents: number,
-  theirGovernmentPlanets: number
+  theirGovernmentSectors: number
 ): SuccessRateFactors {
   const operation = COVERT_OPERATIONS[operationId];
 
   const baseRate = operation.baseSuccessRate;
   const agentRatioModifier = calculateAgentRatioModifier(yourAgents, theirAgents);
-  const governmentModifier = calculateGovernmentModifier(theirGovernmentPlanets);
+  const governmentModifier = calculateGovernmentModifier(theirGovernmentSectors);
   const riskModifier = RISK_SUCCESS_MODIFIER[operation.risk];
 
   // Calculate final rate (capped at 0.95 max, 0.05 min)
@@ -146,13 +146,13 @@ export function applyVariance(
 export function calculateDetectionRate(
   operationId: OperationType,
   theirAgents: number,
-  theirGovernmentPlanets: number
+  theirGovernmentSectors: number
 ): number {
   const operation = COVERT_OPERATIONS[operationId];
   const baseDetection = RISK_DETECTION_MULTIPLIER[operation.risk];
 
   // Target's counter-intelligence improves detection
-  const agentCapacity = theirGovernmentPlanets * AGENT_CAPACITY_PER_GOV_PLANET;
+  const agentCapacity = theirGovernmentSectors * AGENT_CAPACITY_PER_GOV_SECTOR;
   const counterIntelBonus = theirAgents > 0 ? Math.min(0.3, theirAgents / agentCapacity) : 0;
 
   return Math.min(0.9, baseDetection + counterIntelBonus);
@@ -168,7 +168,7 @@ export function calculateDetectionRate(
  * @param operationId - The operation to execute
  * @param yourAgents - Your agent count
  * @param theirAgents - Target's agent count
- * @param theirGovernmentPlanets - Target's government sector count
+ * @param theirGovernmentSectors - Target's government sector count
  * @param successRoll - Optional fixed roll for success (0-1)
  * @param detectionRoll - Optional fixed roll for detection (0-1)
  * @returns Operation outcome
@@ -177,7 +177,7 @@ export function executeOperation(
   operationId: OperationType,
   yourAgents: number,
   theirAgents: number,
-  theirGovernmentPlanets: number,
+  theirGovernmentSectors: number,
   successRoll?: number,
   detectionRoll?: number
 ): OperationOutcome {
@@ -186,7 +186,7 @@ export function executeOperation(
     operationId,
     yourAgents,
     theirAgents,
-    theirGovernmentPlanets
+    theirGovernmentSectors
   );
   const effectiveRate = applyVariance(factors, successRoll);
 
@@ -194,7 +194,7 @@ export function executeOperation(
   const detectionRate = calculateDetectionRate(
     operationId,
     theirAgents,
-    theirGovernmentPlanets
+    theirGovernmentSectors
   );
 
   // Roll for success
@@ -230,7 +230,7 @@ export function previewOperation(
   operationId: OperationType,
   yourAgents: number,
   theirAgents: number,
-  theirGovernmentPlanets: number
+  theirGovernmentSectors: number
 ): {
   successChance: number;
   catchChance: number;
@@ -240,13 +240,13 @@ export function previewOperation(
     operationId,
     yourAgents,
     theirAgents,
-    theirGovernmentPlanets
+    theirGovernmentSectors
   );
 
   const detectionRate = calculateDetectionRate(
     operationId,
     theirAgents,
-    theirGovernmentPlanets
+    theirGovernmentSectors
   );
 
   // Weighted catch chance: higher on failure, low on success
