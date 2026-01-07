@@ -13,7 +13,7 @@ import type { CraftedResource } from "@/lib/game/constants/crafting";
 import type { ContractType } from "@/lib/game/constants/syndicate";
 
 // =============================================================================
-// PLANET TYPES (from database schema)
+// SECTOR TYPES (from database schema)
 // =============================================================================
 
 export const VALID_PLANET_TYPES = [

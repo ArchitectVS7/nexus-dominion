@@ -44,7 +44,7 @@ The component automatically fetches session data via the `getSessionDataAction` 
 
 2. **Empire Rankings**:
    - Top 10 empires by networth
-   - Planet counts
+   - Sector counts
    - Player/bot designation
    - Elimination status
 
