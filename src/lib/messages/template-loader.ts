@@ -25,7 +25,7 @@ import { TRIGGER_TO_TEMPLATE_KEY } from "./types";
 // CONFIGURATION
 // =============================================================================
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = path.join(process.cwd(), "src", "data");
 const PERSONAS_FILE = path.join(DATA_DIR, "personas.json");
 const TEMPLATES_DIR = path.join(DATA_DIR, "templates");
 

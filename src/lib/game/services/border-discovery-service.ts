@@ -144,10 +144,9 @@ export async function processBorderDiscovery(
 
   // Find borders that should be discovered this turn
   // Look for connections where:
-  // 1. discoveredAtTurn is set (we're using this field for border discovery)
-  // 2. discoveredAtTurn <= currentTurn
-  // 3. wormholeStatus is null (not a wormhole) - wormholes use different discovery
-  // 4. isDiscovered flag is false (using custom field we'll add)
+  // 1. discoveredAtTurn matches the current turn exactly (process once per turn)
+  // 2. wormholeStatus is null (not a wormhole) - wormholes use different discovery
+  // Note: We use exact turn match instead of <= to avoid needing a "processed" flag
 
   const bordersToDiscover = await db
     .select()
@@ -155,10 +154,8 @@ export async function processBorderDiscovery(
     .where(
       and(
         eq(regionConnections.gameId, gameId),
-        sql`${regionConnections.discoveredAtTurn} IS NOT NULL`,
-        sql`${regionConnections.discoveredAtTurn} <= ${currentTurn}`,
-        sql`${regionConnections.wormholeStatus} IS NULL`,
-        sql`${regionConnections.discoveredByEmpireId} IS NULL` // Using this as "not yet discovered" flag
+        sql`${regionConnections.discoveredAtTurn} = ${currentTurn}`,
+        sql`${regionConnections.wormholeStatus} IS NULL`
       )
     );
 
@@ -166,19 +163,16 @@ export async function processBorderDiscovery(
     return [];
   }
 
-  // Mark as discovered by setting discoveredByEmpireId to a sentinel value
-  // We'll use a special "system" marker to indicate game-wide discovery
+  // Build updates list - no need to set a sentinel value
+  // Discovery is tracked by discoveredAtTurn field itself
+  // (discoveredAtTurn <= currentTurn means discovered)
   const updates: BorderDiscoveryUpdate[] = [];
 
   for (const border of bordersToDiscover) {
-    // Update the connection to mark as discovered
-    // Using discoveredAtTurn as the target turn, and set a flag when discovered
+    // Just update the timestamp to record when processing occurred
     await db
       .update(regionConnections)
       .set({
-        // We'll use a convention: when discoveredByEmpireId is set to gameId,
-        // it means "system discovered" (game-wide, not empire-specific)
-        discoveredByEmpireId: sql`${gameId}::uuid`,
         updatedAt: new Date(),
       })
       .where(eq(regionConnections.id, border.id));
@@ -222,7 +216,10 @@ export async function getRegionBorders(
 
   return connections.map((conn) => {
     const discoveryTurn = conn.discoveredAtTurn;
-    const isDiscovered = conn.discoveredByEmpireId !== null;
+    // Border is discovered if discoveredAtTurn has passed or if empire-specific discovery
+    const isDiscovered =
+      conn.discoveredByEmpireId !== null ||
+      (discoveryTurn !== null && discoveryTurn <= currentTurn);
 
     let turnsUntilDiscovery: number | null = null;
     if (!isDiscovered && discoveryTurn !== null) {
@@ -300,9 +297,12 @@ export async function canAttackViaBorder(
 
   // Check border discovery
   const discoveryTurn = conn.discoveredAtTurn;
-  const isDiscovered = conn.discoveredByEmpireId !== null;
+  // Border is discovered if discoveredAtTurn has passed or if empire-specific discovery
+  const isDiscovered =
+    conn.discoveredByEmpireId !== null ||
+    (discoveryTurn !== null && discoveryTurn <= currentTurn);
 
-  if (!isDiscovered && discoveryTurn !== null && currentTurn < discoveryTurn) {
+  if (!isDiscovered && discoveryTurn !== null) {
     return {
       canAttack: false,
       forceMultiplier: 1.0,
@@ -366,10 +366,12 @@ export async function initializeBorderDiscovery(
  * Get border discovery status for UI display.
  *
  * @param gameId - Game ID
+ * @param currentTurn - Current turn for discovery calculation
  * @returns Summary of border discovery status
  */
 export async function getBorderDiscoveryStatus(
-  gameId: string
+  gameId: string,
+  currentTurn: number = 0
 ): Promise<{
   totalBorders: number;
   discoveredBorders: number;
@@ -392,12 +394,18 @@ export async function getBorderDiscoveryStatus(
   let nextTurn: number | null = null;
 
   for (const conn of connections) {
-    if (conn.discoveredByEmpireId !== null) {
+    const discoveryTurn = conn.discoveredAtTurn;
+    // Border is discovered if discoveredAtTurn has passed or if empire-specific discovery
+    const isDiscovered =
+      conn.discoveredByEmpireId !== null ||
+      (discoveryTurn !== null && discoveryTurn <= currentTurn);
+
+    if (isDiscovered) {
       discoveredCount++;
-    } else if (conn.discoveredAtTurn !== null) {
+    } else if (discoveryTurn !== null) {
       pendingCount++;
-      if (nextTurn === null || conn.discoveredAtTurn < nextTurn) {
-        nextTurn = conn.discoveredAtTurn;
+      if (nextTurn === null || discoveryTurn < nextTurn) {
+        nextTurn = discoveryTurn;
       }
     }
   }

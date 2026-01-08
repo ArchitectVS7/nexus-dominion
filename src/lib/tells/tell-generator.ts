@@ -131,6 +131,11 @@ export function determineTellType(decision: BotDecision): TellType | null {
  */
 export function rollForTell(archetype: ArchetypeName): boolean {
   const behavior = getArchetypeBehavior(archetype);
+  // Handle missing or undefined tell behavior gracefully
+  if (!behavior?.tell?.tellRate) {
+    // Default to 50% tell rate if not configured
+    return Math.random() < 0.5;
+  }
   const tellRate = behavior.tell.tellRate;
   return Math.random() < tellRate;
 }
@@ -204,7 +209,9 @@ export function calculateTellConfidence(
   // Archetype-based adjustment
   const behavior = getArchetypeBehavior(context.archetype);
   // Higher tell rate = higher confidence (more obvious tells)
-  confidence += (behavior.tell.tellRate - 0.5) * 0.3;
+  // Handle missing tell behavior gracefully
+  const tellRate = behavior?.tell?.tellRate ?? 0.5;
+  confidence += (tellRate - 0.5) * 0.3;
 
   // Emotional state adjustment
   if (context.emotionalState) {
@@ -232,7 +239,9 @@ export function calculateTellConfidence(
  */
 export function calculateTellDuration(archetype: ArchetypeName): number {
   const behavior = getArchetypeBehavior(archetype);
-  const { min, max } = behavior.tell.advanceWarning;
+  // Handle missing tell behavior gracefully
+  const advanceWarning = behavior?.tell?.advanceWarning ?? { min: 1, max: 3 };
+  const { min, max } = advanceWarning;
 
   // Duration is based on advance warning range
   const baseDuration = Math.floor((min + max) / 2) + BASE_TELL_DURATION;

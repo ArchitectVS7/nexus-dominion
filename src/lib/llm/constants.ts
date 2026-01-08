@@ -83,8 +83,8 @@ export const PROVIDER_CONFIGS: Record<LlmProvider, ProviderConfig> = {
   groq: {
     id: "groq",
     displayName: "Groq",
-    defaultModel: "llama-3.1-70b-versatile",
-    fallbackModels: ["llama-3.1-8b-instant", "mixtral-8x7b-32768"],
+    defaultModel: "llama-3.3-70b-versatile",
+    fallbackModels: ["llama3-70b-8192", "llama-3.1-8b-instant", "mixtral-8x7b-32768"],
     baseUrl: "https://api.groq.com/openai/v1",
     apiKeyEnvVar: "GROQ_API_KEY",
     priority: 1, // Primary provider (fastest, cheapest)

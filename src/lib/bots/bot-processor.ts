@@ -136,36 +136,41 @@ export async function processBotTurn(
     for (const result of decisionResults) {
       if (!result.bot.botArchetype) continue;
 
-      const tellContext: TellGenerationContext = {
-        archetype: result.bot.botArchetype as ArchetypeName,
-        currentTurn,
-        emotionalState: result.context.emotionalState,
-      };
+      try {
+        const tellContext: TellGenerationContext = {
+          archetype: result.bot.botArchetype as ArchetypeName,
+          currentTurn,
+          emotionalState: result.context.emotionalState,
+        };
 
-      // Generate tells for this bot's decision
-      const tellResults = generateTellsForTurn(
-        [result.decision],
-        result.bot.id,
-        gameId,
-        tellContext
-      );
+        // Generate tells for this bot's decision
+        const tellResults = generateTellsForTurn(
+          [result.decision],
+          result.bot.id,
+          gameId,
+          tellContext
+        );
 
-      // Collect tells for batch insert
-      for (const tellResult of tellResults) {
-        if (tellResult.generated && tellResult.tell) {
-          const tell = tellResult.tell;
-          tellInserts.push({
-            gameId: tell.gameId,
-            empireId: tell.empireId,
-            targetEmpireId: tell.targetEmpireId ?? null,
-            tellType: tell.tellType,
-            isBluff: tell.isBluff,
-            trueIntention: tell.trueIntention ?? null,
-            confidence: tell.confidence.toFixed(2),
-            createdAtTurn: tell.createdAtTurn,
-            expiresAtTurn: tell.expiresAtTurn,
-          });
+        // Collect tells for batch insert
+        for (const tellResult of tellResults) {
+          if (tellResult.generated && tellResult.tell) {
+            const tell = tellResult.tell;
+            tellInserts.push({
+              gameId: tell.gameId,
+              empireId: tell.empireId,
+              targetEmpireId: tell.targetEmpireId ?? null,
+              tellType: tell.tellType,
+              isBluff: tell.isBluff,
+              trueIntention: tell.trueIntention ?? null,
+              confidence: tell.confidence.toFixed(2),
+              createdAtTurn: tell.createdAtTurn,
+              expiresAtTurn: tell.expiresAtTurn,
+            });
+          }
         }
+      } catch (error) {
+        // Tell generation failure shouldn't break bot processing
+        console.error(`Failed to generate tells for bot ${result.bot.name}:`, error);
       }
     }
 
@@ -352,12 +357,16 @@ async function generateBotDecisionWithContext(
   // Generate decision (M12: Route Tier 1 LLM bots to LLM decision engine)
   let decision: BotDecision;
 
-  if (empire.botTier === "tier1_llm" && empire.llmEnabled) {
+  // Check if LLM should be used (can be disabled via environment variable for testing)
+  const llmDisabled = process.env.DISABLE_LLM_BOTS === "true";
+  const shouldUseLlm = empire.botTier === "tier1_llm" && empire.llmEnabled && !llmDisabled;
+
+  if (shouldUseLlm) {
     // Tier 1: Use LLM-powered decision (with cache + fallback)
     // Uses static import (moved to top of file for performance)
     decision = await generateTier1Decision(decisionContext);
   } else {
-    // Tier 2-4: Use scripted decision
+    // Tier 2-4 or LLM disabled: Use scripted decision
     decision = generateBotDecision(decisionContext);
   }
 
