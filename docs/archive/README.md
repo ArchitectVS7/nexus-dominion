@@ -12,7 +12,9 @@
 | [research-redesign-spec.md](research-redesign-spec.md) | Jan 2026 | 3-tier research system spec (implemented) |
 | [crafting-status-assessment.md](crafting-status-assessment.md) | Dec 2025 | Crafting system implementation audit |
 | [game-config-implementation.md](game-config-implementation.md) | Jan 2026 | Per-game config override system |
-| [terminology-crisis-audit.md](terminology-crisis-audit.md) | Jan 2026 | Terminology violations audit (fixed) |
+| [terminology-crisis-audit.md](terminology-crisis-audit.md) | Jan 2026 | Full terminology audit (historical context) |
+
+> **Note:** Active remediation tasks moved to [../TERMINOLOGY-REMEDIATION.md](../TERMINOLOGY-REMEDIATION.md)
 
 ---
 

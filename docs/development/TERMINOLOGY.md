@@ -54,5 +54,5 @@ The CI pipeline runs `npm run compliance:check` to detect terminology violations
 
 ## Related Documents
 
-- [Terminology Audit](../reference/TERMINOLOGY-AUDIT.md) - Full audit of violations and remediation status
+- [Terminology Remediation](../TERMINOLOGY-REMEDIATION.md) - Active remediation plan (Phases 2-4 pending)
 - [Game Design](../core/GAME-DESIGN.md) - Authoritative design reference

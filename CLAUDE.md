@@ -191,7 +191,7 @@ describe("calculateCombatPower", () => {
 ## Development Notes
 
 - **Milestone-based development**: See `README.md` Project Status section for implementation roadmap
-- **PRD reference**: `docs/PRD.md` contains game design specifications
+- **Game Design reference**: `docs/core/GAME-DESIGN.md` contains game design specifications
 - **Bot personas**: 100 unique personas in `data/personas.json`
 - **TypeScript strict mode** with `noUncheckedIndexedAccess`, `noImplicitReturns`
 - **Coverage threshold**: 80% for branches, functions, lines, statements

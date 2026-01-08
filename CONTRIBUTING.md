@@ -255,7 +255,7 @@ Include:
 
 - **Terminology questions**: See `docs/development/TERMINOLOGY.md`
 - **Architecture questions**: See `docs/core/*.md`
-- **Game design questions**: See `docs/PRD.md`
+- **Game design questions**: See `docs/core/GAME-DESIGN.md`
 
 ---
 

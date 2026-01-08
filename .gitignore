@@ -45,3 +45,15 @@ drizzle/meta/
 # IDE
 .idea/
 .vscode/
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Documentation build output
+docs/_site/
+docs/.docusaurus/
+
+# Debug/session files
+**/debug-log.md

@@ -4,6 +4,11 @@
 **Last Updated:** December 30, 2024
 **Source Documents:** game-evolution-plan.md, crafting-integration-plan.md, crafting-system-implementation.md
 
+> **Status Definitions:**
+> - **Complete** = Schema and backend code exist; UI may be pending or disabled
+> - These features are **disabled by default** in base game v1.0
+> - See [expansion/README.md](README.md) for what's included in the base game release
+
 ---
 
 ## Overview

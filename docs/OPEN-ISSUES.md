@@ -200,6 +200,72 @@
 
 ---
 
+## Design Tasks
+
+### D20 Combat Narrative UI (Priority: HIGH)
+
+**Status:** Engine complete, UI does not surface roll details
+**Location:** `src/components/game/combat/BattleReport.tsx`
+
+**Problem:** The D20 engine tracks roll data (`roll`, `modifier`, `total`, `targetDEF`, `critical`, `fumble`) but `convertToLegacyCombatResult()` discards this detail, sending only power numbers to UI.
+
+**Required Work:**
+1. Extend `CombatResult` or create `DetailedCombatResult` to include roll data
+2. Update `BattleReport.tsx` to show per-volley roll breakdowns
+3. Add collapsible "Roll Details" section per volley
+
+### Starmap Bot Personality Tells (Priority: HIGH)
+
+**Status:** Not implemented
+**Location:** `src/components/game/starmap/GalaxyView.tsx`, `SectorBox.tsx`
+
+**Required Work:**
+1. Add `militaryPercent` and `researchDoctrine` to `EmpireMapData` type
+2. Update `SectorBox.tsx` to render visual indicators
+3. Gate indicators behind intel level (need moderate+ to see)
+
+---
+
+## Asset Requirements
+
+### Audio Files (Phase 2 - UI Sounds)
+
+**Status:** Code complete, missing audio files
+
+| File | Description |
+|------|-------------|
+| `/public/audio/sfx/click.mp3` | Button click chirp |
+| `/public/audio/sfx/hover.mp3` | Subtle hover blip |
+| `/public/audio/sfx/success.mp3` | Positive confirmation |
+| `/public/audio/sfx/error.mp3` | Error/failure sound |
+| `/public/audio/sfx/alert.mp3` | Attention notification |
+| `/public/audio/sfx/turn-end.mp3` | Turn completion chime |
+| `/public/audio/sfx/combat.mp3` | Combat initiated |
+| `/public/audio/sfx/build.mp3` | Construction queued |
+
+**Sources:** Freesound.org, Pixabay SFX, Kenney.nl
+
+### Ambient Audio (Phase 4)
+
+| File | Description |
+|------|-------------|
+| `/public/audio/ambient/space-ambient.mp3` | Calm space drone loop |
+| `/public/audio/ambient/tension.mp3` | Combat tension loop |
+
+### NASA Background Images (Phase 6)
+
+**Status:** Code complete, missing images
+
+| File | Description |
+|------|-------------|
+| `/public/images/backgrounds/nebula.jpg` | Carina Nebula (JWST) |
+| `/public/images/backgrounds/starfield.jpg` | Star field pattern |
+| `/public/images/backgrounds/deep-field.jpg` | Hubble/JWST deep field |
+
+**Source:** [NASA Image Gallery](https://images.nasa.gov/) (Public Domain)
+
+---
+
 ## Changelog
 
 | Date | Action |
