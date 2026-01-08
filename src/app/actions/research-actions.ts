@@ -14,7 +14,7 @@ import {
   MAX_RESEARCH_LEVEL,
   type ResearchStatus,
   type ResearchResult,
-} from "@/lib/game/services/research-service";
+} from "@/lib/game/services/research";
 import { initializeUnitUpgrades } from "@/lib/game/services/upgrade-service";
 import {
   sanitizeQuantity,

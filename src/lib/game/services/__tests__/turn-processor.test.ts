@@ -9,8 +9,8 @@ import { describe, it, expect } from "vitest";
 import {
   processPhase2_Population,
   processPhase3_CivilStatus,
-} from "../turn-processor";
-import type { CivilStatusEvent } from "../civil-status";
+} from "../core/turn-processor";
+import type { CivilStatusEvent } from "../population/civil-status";
 
 describe("Turn Processor - Phase 2: Population", () => {
   describe("processPhase2_Population", () => {

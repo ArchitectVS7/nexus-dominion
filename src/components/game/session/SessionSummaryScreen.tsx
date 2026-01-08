@@ -7,7 +7,7 @@ import {
   type SessionData,
   type EmpireRanking,
 } from "@/app/actions/session-actions";
-import { type SessionEvent } from "@/lib/game/services/session-service";
+import { type SessionEvent } from "@/lib/game/services/core";
 
 // =============================================================================
 // TYPES

@@ -8,7 +8,7 @@ import {
   isBossQualified,
   calculateBossStatus,
   BOSS_CONSTANTS,
-} from "../boss-detection-service";
+} from "../combat/boss-detection-service";
 
 // =============================================================================
 // AVERAGE NETWORTH TESTS

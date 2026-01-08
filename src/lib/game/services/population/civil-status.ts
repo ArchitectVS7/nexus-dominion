@@ -16,8 +16,8 @@ import {
   CIVIL_STATUS_LEVELS,
   CIVIL_STATUS_INCOME_MULTIPLIERS,
   type CivilStatusLevel,
-} from "../constants";
-import type { CivilStatusUpdate } from "../types/turn-types";
+} from "../../constants";
+import type { CivilStatusUpdate } from "../../types/turn-types";
 
 // =============================================================================
 // CIVIL STATUS EVALUATION EVENTS

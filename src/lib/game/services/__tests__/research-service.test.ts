@@ -15,7 +15,7 @@ import {
   MAX_RESEARCH_LEVEL,
   getResearchUnlocks,
   getNextUnlock,
-} from "../research-service";
+} from "../research/research-service";
 
 // =============================================================================
 // CONSTANTS TESTS

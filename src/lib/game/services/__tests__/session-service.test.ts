@@ -3,7 +3,7 @@ import {
   startSession,
   endSession,
   getSessionSummary,
-} from "../session-service";
+} from "../core/session-service";
 import type { GameSession } from "@/lib/db/schema";
 
 // Mock database

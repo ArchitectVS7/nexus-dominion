@@ -20,7 +20,7 @@ import {
   type AttackParams,
   type AttackResult,
   type AttackValidation,
-} from "@/lib/game/services/combat-service";
+} from "@/lib/game/services/combat";
 import {
   getAttackHistory,
   getAttackWithLogs,

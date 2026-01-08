@@ -9,7 +9,7 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { processTurn } from "@/lib/game/services/turn-processor";
+import { processTurn } from "@/lib/game/services/core";
 import { db } from "@/lib/db";
 import { games, empires, messages } from "@/lib/db/schema";
 import { eq, and, sql } from "drizzle-orm";

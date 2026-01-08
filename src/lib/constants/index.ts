@@ -1,9 +1,15 @@
 /**
- * Constants Module
+ * Core Constants Module
  *
- * Exports all game constants including:
- * - Diplomacy constants (PRD 8.x)
- * - Progressive unlock definitions (PRD 11.1)
+ * This module contains CORE GAME MECHANICS constants that apply globally.
+ *
+ * Directory Structure:
+ * - `@/lib/constants/` (this directory): Core mechanics (diplomacy, unlocks)
+ * - `@/lib/game/constants/`: Feature-specific constants (crafting, syndicate, nuclear)
+ *
+ * Exports:
+ * - Diplomacy constants (PRD 8.x) - Treaties, reputation, coalitions
+ * - Progressive unlock definitions (PRD 11.1) - Turn-based feature unlocking
  */
 
 // Diplomacy constants

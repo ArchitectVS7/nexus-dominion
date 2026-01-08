@@ -7,8 +7,7 @@ import {
   getDashboardData,
   type DashboardData,
 } from "@/lib/game/repositories/game-repository";
-import { getResumableGames, getLatestSave } from "@/lib/game/services/save-service";
-import { startSession, endSession } from "@/lib/game/services/session-service";
+import { getResumableGames, getLatestSave, startSession, endSession } from "@/lib/game/services/core";
 import { db } from "@/lib/db";
 import type { Difficulty } from "@/lib/bots/types";
 import { triggerGreetings, type TriggerContext } from "@/lib/messages";

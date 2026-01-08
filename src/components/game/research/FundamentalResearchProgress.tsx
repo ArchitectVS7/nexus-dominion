@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getResearchStatusAction } from "@/app/actions/research-actions";
-import type { ResearchStatus } from "@/lib/game/services/research-service";
+import type { ResearchStatus } from "@/lib/game/services/research";
 
 interface FundamentalResearchProgressProps {
   refreshTrigger?: number;

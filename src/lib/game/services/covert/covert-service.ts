@@ -26,8 +26,8 @@ import {
   type CovertAttackerState,
   type CovertTargetState,
 } from "@/lib/covert/operations";
-import type { CivilStatusLevel } from "../constants";
-import { CIVIL_STATUS_LEVELS } from "../constants";
+import type { CivilStatusLevel } from "../../constants";
+import { CIVIL_STATUS_LEVELS } from "../../constants";
 
 // =============================================================================
 // TYPES

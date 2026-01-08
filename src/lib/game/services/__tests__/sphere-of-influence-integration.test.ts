@@ -19,7 +19,7 @@ import { attemptWormholeDiscovery } from "../wormhole-service";
 import {
   validateAttackWithInfluence,
   getAttackTargetsWithInfo,
-} from "../attack-validation-service";
+} from "../combat/attack-validation-service";
 import type { EmpireInfluence, RegionConnection } from "@/lib/db/schema";
 
 describe("Sphere of Influence Integration", () => {

@@ -25,7 +25,7 @@ import {
   type GameMode,
 } from "../constants";
 import { calculateNetworth } from "../networth";
-import { initializeResearch } from "../services/research-service";
+import { initializeResearch } from "../services/research";
 import { initializeUnitUpgrades } from "../services/upgrade-service";
 import { createBotEmpires } from "@/lib/bots/bot-generator";
 import type { Difficulty } from "@/lib/bots/types";

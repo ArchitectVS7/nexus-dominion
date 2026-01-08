@@ -8,7 +8,7 @@ import {
   getCurrentSession,
   getSessionSummary,
   type SessionSummary,
-} from "@/lib/game/services/session-service";
+} from "@/lib/game/services/core";
 
 // =============================================================================
 // TYPES

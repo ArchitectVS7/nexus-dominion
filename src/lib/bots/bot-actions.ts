@@ -17,7 +17,7 @@ import { TIER_1_RECIPES, TIER_2_RECIPES, TIER_3_RECIPES, RESOURCE_TIERS } from "
 import type { CraftedResource, Tier1Resource, Tier2Resource, Tier3Resource } from "@/lib/game/constants/crafting";
 import { CONTRACT_CONFIGS } from "@/lib/game/constants/syndicate";
 import { TIER_TO_ENUM } from "@/lib/game/services/resource-tier-service";
-import { executeAttack as executeCombatAttack } from "@/lib/game/services/combat-service";
+import { executeAttack as executeCombatAttack } from "@/lib/game/services/combat";
 import type { Forces as CombatForces } from "@/lib/combat/phases";
 import { proposeTreaty, type TreatyType } from "@/lib/diplomacy";
 import { executeBuyOrder, executeSellOrder, type TradableResource } from "@/lib/market";

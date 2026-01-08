@@ -1,6 +1,16 @@
 /**
  * Unified Combat Resolution (Fix for 1.2% attacker win rate)
  *
+ * @deprecated This module is DEPRECATED in favor of volley-combat-v2.ts.
+ * The unified system was replaced by D20-based 3-volley combat which provides
+ * better tactical depth while maintaining balanced win rates.
+ *
+ * This file is kept as a FALLBACK system (feature-flagged OFF by default).
+ * Only enable via USE_VOLLEY_COMBAT_V2 = false in combat-service.ts if needed.
+ *
+ * DO NOT use resolveUnifiedInvasion() - use resolveBattle() from volley-combat-v2.ts instead.
+ *
+ * Original design (kept for reference):
  * PROBLEM: Sequential 3-phase combat requires attacker to win ALL phases.
  * - Each phase: ~45% attacker win (with defender bonus)
  * - All 3: 0.45³ = 9.1% (actually worse: ~1.2% observed)

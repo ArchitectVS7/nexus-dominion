@@ -8,7 +8,7 @@ import { skipTutorialViaLocalStorage, dismissTutorialOverlays } from "./fixtures
  * 1. All user control surfaces are functional
  * 2. Complete 50-turn playthrough
  * 3. Building units (soldiers, fighters, cruisers)
- * 4. Buying/managing planets
+ * 4. Buying/managing sectors
  * 5. Research progression
  * 6. Market trading (buy/sell resources)
  * 7. Combat operations (after protection ends at turn 20)
@@ -32,7 +32,7 @@ interface TestState {
   food: number;
   soldiers: number;
   fighters: number;
-  planetCount: number;
+  sectorCount: number;
   eliminated: string[];
   combatWins: number;
   combatLosses: number;
@@ -46,7 +46,7 @@ const state: TestState = {
   food: 0,
   soldiers: 0,
   fighters: 0,
-  planetCount: 0,
+  sectorCount: 0,
   eliminated: [],
   combatWins: 0,
   combatLosses: 0,
@@ -178,11 +178,11 @@ async function testBuyPlanets(page: Page): Promise<void> {
   log("Testing sector colonization...");
 
   if (!await navigateTo(page, "sectors")) {
-    logWarning("Could not access planets page");
+    logWarning("Could not access sectors page");
     return;
   }
 
-  // Try to buy an agricultural planet (cheapest, produces food)
+  // Try to buy an agricultural sector (cheapest, produces food)
   const buyAgri = page.locator('[data-testid="buy-agricultural"]').first();
   if (await buyAgri.isVisible({ timeout: 1000 }).catch(() => false)) {
     await buyAgri.click();
@@ -539,7 +539,7 @@ test.describe("Full 50-Turn Game Simulation", () => {
 
           case 2:
           case 7:
-            // Buy planets
+            // Buy sectors
             await testBuyPlanets(page);
             break;
 

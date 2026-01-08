@@ -20,7 +20,7 @@ import {
   regionTypeToSectorTrait,
   SECTOR_TRAIT_BONUSES,
   type SectorTrait,
-} from "../sector-traits-service";
+} from "../research/sector-traits-service";
 
 describe("Sector Traits Service", () => {
   describe("getSectorBonus", () => {

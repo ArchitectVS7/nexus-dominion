@@ -15,7 +15,7 @@ import {
   shouldUpgradeStatus,
   evaluateCivilStatus,
   type CivilStatusEvent,
-} from "../civil-status";
+} from "../population/civil-status";
 import type { CivilStatusLevel } from "../../constants";
 
 describe("Civil Status Service", () => {

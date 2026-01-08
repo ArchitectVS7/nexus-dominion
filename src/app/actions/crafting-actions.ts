@@ -15,7 +15,7 @@ import {
   getAvailableRecipes,
   type CraftingOrder,
   type QueuedItem,
-} from "@/lib/game/services/crafting-service";
+} from "@/lib/game/services/crafting";
 import {
   CRAFTED_RESOURCE_LABELS,
   RESOURCE_TIERS,

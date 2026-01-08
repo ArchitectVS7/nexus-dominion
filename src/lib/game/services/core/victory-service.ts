@@ -25,7 +25,7 @@ import {
   type Game,
 } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
-import { calculateNetworth, type NetworthInput } from "../networth";
+import { calculateNetworth, type NetworthInput } from "../../networth";
 
 // =============================================================================
 // TYPES

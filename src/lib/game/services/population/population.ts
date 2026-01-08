@@ -10,7 +10,7 @@
  * - Starvation causes 5% population loss per turn
  */
 
-import type { PopulationUpdate, PopulationStatus } from "../types/turn-types";
+import type { PopulationUpdate, PopulationStatus } from "../../types/turn-types";
 
 // =============================================================================
 // CONSTANTS

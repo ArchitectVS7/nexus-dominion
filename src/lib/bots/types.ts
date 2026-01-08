@@ -80,14 +80,11 @@ export type ResourceType = "credits" | "food" | "ore" | "petroleum";
 // FORCES (for attacks)
 // =============================================================================
 
-export interface Forces {
-  soldiers: number;
-  fighters: number;
-  stations: number;
-  lightCruisers: number;
-  heavyCruisers: number;
-  carriers: number;
-}
+// Import Forces from canonical source
+import type { Forces as ForcesType } from "@/lib/game/types/forces";
+
+// Re-export Forces for backward compatibility
+export type Forces = ForcesType;
 
 // =============================================================================
 // BOT DECISIONS

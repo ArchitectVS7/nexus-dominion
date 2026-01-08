@@ -1,6 +1,15 @@
 /**
  * Combat Phase Resolution (PRD 6.7)
  *
+ * @deprecated This module is DEPRECATED in favor of volley-combat-v2.ts.
+ * The 3-phase sequential system has been replaced by D20-based volley combat.
+ * This file is kept for:
+ * - Type exports (Forces, CombatResult, PhaseResult)
+ * - Historical reference
+ *
+ * DO NOT use resolveCombat() from this module - use resolveBattle() from volley-combat-v2.ts instead.
+ *
+ * Original design (kept for reference):
  * Three-phase combat system:
  * 1. Space Combat: Cruisers vs Cruisers (determines space superiority)
  * 2. Orbital Combat: Fighters vs Stations (determines orbital control)
@@ -8,6 +17,8 @@
  *
  * Each phase must be won to proceed to the next.
  * Attackers need to win all 3 phases for successful sector capture.
+ *
+ * Problem: ~1.2% attacker win rate due to 0.45³ cascade effect.
  */
 
 // Note: FleetComposition and calculateFleetPower are available from combat-power
@@ -33,14 +44,11 @@ import {
 // TYPES
 // =============================================================================
 
-export interface Forces {
-  soldiers: number;
-  fighters: number;
-  stations: number;
-  lightCruisers: number;
-  heavyCruisers: number;
-  carriers: number;
-}
+// Import Forces from canonical source
+import type { Forces as ForcesType } from "@/lib/game/types/forces";
+
+// Re-export Forces for backward compatibility
+export type Forces = ForcesType;
 
 export interface PhaseResult {
   phase: CombatPhase;

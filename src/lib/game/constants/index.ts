@@ -1,7 +1,16 @@
 /**
- * Game Constants Index
+ * Feature-Specific Constants Module
  *
- * Re-exports all game constants from modular files.
+ * This module contains FEATURE-SPECIFIC constants for individual game systems.
+ *
+ * Directory Structure:
+ * - `@/lib/constants/`: Core mechanics (diplomacy, unlocks)
+ * - `@/lib/game/constants/` (this directory): Feature-specific systems
+ *
+ * Exports:
+ * - Crafting system constants - Recipes, components, timers
+ * - Syndicate/Black Market constants - Trust levels, contracts
+ * - Nuclear warfare constants - WMD mechanics, fallout
  */
 
 // Crafting System

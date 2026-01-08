@@ -49,14 +49,14 @@ import type {
   TurnEvent,
   ResourceDelta,
   CivilStatusUpdate,
-} from "../types/turn-types";
-import type { CivilStatusLevel } from "../constants";
-import { getIncomeMultiplier, evaluateCivilStatus, logStatusChange, type CivilStatusEvent } from "./civil-status";
-import { processPopulation } from "./population";
-import { processTurnResources, calculateMaintenanceCost } from "./resource-engine";
-import { processBuildQueue } from "./build-queue-service";
-import { calculateUnitMaintenance, type UnitCounts } from "./unit-service";
-import { processResearchProduction } from "./research-service";
+} from "../../types/turn-types";
+import type { CivilStatusLevel } from "../../constants";
+import { getIncomeMultiplier, evaluateCivilStatus, logStatusChange, type CivilStatusEvent } from "../population";
+import { processPopulation } from "../population";
+import { processTurnResources, calculateMaintenanceCost } from "../resource-engine";
+import { processBuildQueue } from "../build-queue-service";
+import { calculateUnitMaintenance, type UnitCounts } from "../unit-service";
+import { processResearchProduction } from "../research";
 import { perfLogger } from "@/lib/performance/logger";
 import { processBotTurn, applyBotNightmareBonus } from "@/lib/bots";
 import { applyEmotionalDecay } from "@/lib/game/repositories/bot-emotional-state-repository";
@@ -71,36 +71,36 @@ import {
   checkStalemateWarning,
 } from "./victory-service";
 import { createAutoSave } from "./save-service";
-import { processCovertPointGeneration } from "./covert-service";
+import { processCovertPointGeneration } from "../covert";
 import { updateMarketPrices } from "@/lib/market";
 import {
   calculateTier1AutoProduction,
   TIER_TO_ENUM,
-} from "./resource-tier-service";
+} from "../resource-tier-service";
 import {
   processCraftingQueue as processCraftingQueueItems,
   type CompletedCrafting,
-} from "./crafting-service";
-import { RESOURCE_TIERS, type CraftedResource } from "../constants/crafting";
+} from "../crafting";
+import { RESOURCE_TIERS, type CraftedResource } from "../../constants/crafting";
 import {
   triggerCasualMessages,
   triggerRandomBroadcast,
   triggerEndgame,
   type TriggerContext,
 } from "@/lib/messages";
-import { processGalacticEvents, applyGalacticEvent } from "./event-service";
+import { processGalacticEvents, applyGalacticEvent } from "../event-service";
 import {
   evaluateAllianceCheckpoint,
   generateCheckpointNotification,
   isCheckpointTurn,
-} from "./checkpoint-service";
+} from "../checkpoint-service";
 import {
   processWormholesTurn,
   attemptWormholeDiscovery,
-} from "./wormhole-service";
-import { processBorderDiscovery } from "./border-discovery-service";
-import { processWormholeConstruction } from "./wormhole-construction-service";
-import { detectBosses } from "./boss-detection-service";
+} from "../wormhole-service";
+import { processBorderDiscovery } from "../border-discovery-service";
+import { processWormholeConstruction } from "../wormhole-construction-service";
+import { detectBosses } from "../combat";
 
 // =============================================================================
 // TURN PROCESSOR
@@ -1048,8 +1048,9 @@ async function updateResourceInventory(
   // Batch update existing resources with a single SQL query using CASE
   if (toUpdate.length > 0) {
     const ids = toUpdate.map((u) => u.id);
+    // Build CASE statement with explicit integer casting to avoid text/integer type mismatch
     const quantityCases = toUpdate
-      .map((u) => sql`WHEN ${resourceInventory.id} = ${u.id} THEN ${u.newQuantity}`)
+      .map((u) => sql`WHEN ${resourceInventory.id} = ${u.id} THEN ${u.newQuantity}::integer`)
       .reduce((acc, curr) => sql`${acc} ${curr}`, sql``);
 
     updates.push(

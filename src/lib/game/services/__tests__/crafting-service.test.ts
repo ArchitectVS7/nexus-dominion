@@ -17,7 +17,7 @@ import {
   getAvailableRecipes,
   type CraftingOrder,
   type QueuedItem,
-} from "../crafting-service";
+} from "../crafting/crafting-service";
 import { createEmptyInventory } from "../resource-tier-service";
 
 // =============================================================================

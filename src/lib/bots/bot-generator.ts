@@ -20,7 +20,7 @@ import {
   TOTAL_STARTING_SECTORS,
 } from "@/lib/game/constants";
 import { calculateNetworth } from "@/lib/game/networth";
-import { initializeResearch } from "@/lib/game/services/research-service";
+import { initializeResearch } from "@/lib/game/services/research";
 import { initializeUnitUpgrades } from "@/lib/game/services/upgrade-service";
 import { getBotEmpireName, getBotEmperorName } from "./bot-names";
 import type { BotArchetype, BotTier } from "./types";

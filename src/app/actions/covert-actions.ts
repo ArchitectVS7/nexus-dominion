@@ -20,7 +20,7 @@ import {
   type CovertStatus,
   type CovertTarget,
   type CovertOperationResult,
-} from "@/lib/game/services/covert-service";
+} from "@/lib/game/services/covert";
 import {
   type OperationType,
   COVERT_OPERATIONS,

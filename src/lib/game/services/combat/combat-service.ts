@@ -38,7 +38,7 @@ import {
   getEmpireForces,
   getAvailableTargets,
   type SaveAttackParams,
-} from "../repositories/combat-repository";
+} from "../../repositories/combat-repository";
 import { db } from "@/lib/db";
 import { empires, games } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";

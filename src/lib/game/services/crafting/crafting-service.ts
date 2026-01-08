@@ -18,12 +18,12 @@ import {
   type Tier2Resource,
   type Tier3Resource,
   type CraftedResource,
-} from "../constants/crafting";
+} from "../../constants/crafting";
 import {
   type ResourceInventoryMap,
   deductResources,
   getResourceTier,
-} from "./resource-tier-service";
+} from "../resource-tier-service";
 
 // =============================================================================
 // TYPES
