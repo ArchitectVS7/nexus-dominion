@@ -12,7 +12,7 @@ import {
   estimateWinProbability,
 } from "@/lib/combat";
 import { UIIcons } from "@/lib/theme/icons";
-import { Swords, Target, Shield, Percent } from "lucide-react";
+import { Swords, Target, Percent } from "lucide-react";
 
 // =============================================================================
 // TYPES

@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useCallback, useRef, useMemo } from "react";
-import { Users, X, Swords, Handshake, Coins, Eye, Shield, Zap, FlaskConical, Target, Crown } from "lucide-react";
+import { X, Swords, Handshake, Coins, Eye, Shield, Zap, FlaskConical, Target, Crown } from "lucide-react";
 
 export interface BotInfo {
   id: string;

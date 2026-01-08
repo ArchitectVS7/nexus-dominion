@@ -708,7 +708,6 @@ describe("getAttackTargetsWithInfo", () => {
     totalInfluenceRadius: 3,
     baseInfluenceRadius: 3,
     bonusInfluenceRadius: 0,
-    lastCalculatedAtTurn: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
