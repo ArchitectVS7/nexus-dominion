@@ -30,7 +30,7 @@ test.describe("Crafting System", () => {
       await page.locator('[data-testid="start-game-button"]').click();
       await page.waitForLoadState("networkidle");
     }
-    await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
+    await expect(page.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible({
       timeout: 20000,
     });
   }
@@ -251,7 +251,7 @@ test.describe("Syndicate System", () => {
       await page.locator('[data-testid="start-game-button"]').click();
       await page.waitForLoadState("networkidle");
     }
-    await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
+    await expect(page.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible({
       timeout: 20000,
     });
   }

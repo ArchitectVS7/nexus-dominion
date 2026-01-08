@@ -189,7 +189,7 @@ test.describe("M1: Static Empire View", () => {
 
       await gamePage.click('a[href="/game"]');
       await gamePage.waitForLoadState("networkidle");
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible({ timeout: 10000 });
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible({ timeout: 10000 });
     });
   });
 });
@@ -561,7 +561,7 @@ test.describe("M4: Combat System", () => {
         { href: "/game/sectors", selector: '[data-testid="sectors-page"]' },
         { href: "/game/military", selector: "h1" },
         { href: "/game/research", selector: "h1" },
-        { href: "/game", selector: '[data-testid="dashboard"]' },
+        { href: "/game", selector: '[data-testid="starmap-page"], [data-testid="game-header"]' },
       ];
 
       for (const pageConfig of pages) {

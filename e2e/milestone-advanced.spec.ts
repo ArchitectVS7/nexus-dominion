@@ -36,9 +36,10 @@ async function startNewGameWithDifficulty(page: Page, difficulty: string = "norm
     }
 
     await page.locator('[data-testid="start-game-button"]').click();
-    await page.waitForLoadState("networkidle");
+    // Wait for redirect to starmap (game creation redirects there)
+    await page.waitForURL(/\/game\/starmap/, { timeout: 15000 });
   }
-  await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
+  await expect(page.locator('[data-testid="starmap-page"]')).toBeVisible({
     timeout: 15000,
   });
 }
@@ -157,7 +158,7 @@ test.describe("M5: Random Bots", () => {
         await gamePage.waitForTimeout(2000);
       }
 
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
   });
 
@@ -179,7 +180,7 @@ test.describe("M5: Random Bots", () => {
 
       await gamePage.click('a[href="/game"]');
       await gamePage.waitForLoadState("networkidle");
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
   });
 });
@@ -206,7 +207,7 @@ test.describe("M6: Victory & Persistence", () => {
       await gamePage.reload();
       await gamePage.waitForLoadState("networkidle");
 
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible({
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible({
         timeout: 15000,
       });
 
@@ -226,7 +227,7 @@ test.describe("M6: Victory & Persistence", () => {
       await gamePage.click('a[href="/game"]');
       await gamePage.waitForLoadState("networkidle");
 
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
   });
 
@@ -428,7 +429,7 @@ test.describe("M6.5: Covert Operations", () => {
 
       await gamePage.click('a[href="/game"]');
       await gamePage.waitForLoadState("networkidle");
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
   });
 });

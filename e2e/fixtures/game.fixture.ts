@@ -389,6 +389,7 @@ export async function dismissTutorialOverlays(page: Page): Promise<void> {
 /**
  * Ensure a game exists, creating one if needed.
  * This is a more robust version that waits for all elements.
+ * Note: Game starts on starmap page after creation - this is the "game ready" state.
  */
 export async function ensureGameExists(
   page: Page,
@@ -406,44 +407,29 @@ export async function ensureGameExists(
     // Click the start game button
     await page.locator('[data-testid="start-game-button"]').click();
 
-    // Wait for navigation to complete (redirects to starmap)
-    await page.waitForURL(/\/game\/(starmap)?/, { timeout: 15000 });
-    await page.waitForLoadState("networkidle");
+    // Wait for navigation to starmap (game creation redirects there)
+    await page.waitForURL(/\/game\/starmap/, { timeout: 15000 });
   }
 
   // Dismiss any post-game-creation tutorials
   await dismissTutorialOverlays(page);
 
-  // Wait for either dashboard or starmap (game may start on starmap)
-  const dashboardOrGamePage = page.locator('[data-testid="dashboard"], [data-testid="starmap-page"]');
-  await expect(dashboardOrGamePage.first()).toBeVisible({ timeout: 15000 });
+  // Wait for starmap page to be visible (indicates game is ready)
+  await expect(page.locator('[data-testid="starmap-page"]')).toBeVisible({ timeout: 15000 });
 
   // Dismiss tutorials again after page loads
   await dismissTutorialOverlays(page);
 
-  // If not on dashboard, navigate there
-  const dashboard = page.locator('[data-testid="dashboard"]');
-  if (!await dashboard.isVisible({ timeout: 1000 }).catch(() => false)) {
-    // Navigate to dashboard
-    await page.goto("/game");
-    await page.waitForLoadState("networkidle");
-    await dismissTutorialOverlays(page);
-  }
-
-  // Wait for dashboard to be visible
-  await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
-    timeout: 10000,
-  });
+  // Wait for game header to be visible (contains turn counter and resources)
+  await expect(page.locator('[data-testid="game-header"]')).toBeVisible({ timeout: 10000 });
 
   // Dismiss any remaining tutorials
   await dismissTutorialOverlays(page);
-
-  // Wait for resources to be loaded
-  await expect(page.locator('[data-testid="credits"]')).toBeVisible();
 }
 
 /**
  * Create a new game with a specific difficulty.
+ * Note: Game starts on starmap page after creation.
  */
 export async function startNewGameWithDifficulty(
   page: Page,
@@ -465,22 +451,15 @@ export async function startNewGameWithDifficulty(
 
     await page.locator('[data-testid="start-game-button"]').click();
 
-    // Wait for navigation to complete
-    await page.waitForURL(/\/game\/(starmap)?/, { timeout: 15000 });
-    await page.waitForLoadState("networkidle");
+    // Wait for navigation to starmap (game creation redirects there)
+    await page.waitForURL(/\/game\/starmap/, { timeout: 15000 });
   }
 
   await dismissTutorialOverlays(page);
 
-  // Navigate to dashboard if on starmap
-  const dashboard = page.locator('[data-testid="dashboard"]');
-  if (!await dashboard.isVisible({ timeout: 1000 }).catch(() => false)) {
-    await page.goto("/game");
-    await page.waitForLoadState("networkidle");
-    await dismissTutorialOverlays(page);
-  }
-
-  await expect(dashboard).toBeVisible({ timeout: 10000 });
+  // Wait for starmap page and game header to be visible
+  await expect(page.locator('[data-testid="starmap-page"]')).toBeVisible({ timeout: 15000 });
+  await expect(page.locator('[data-testid="game-header"]')).toBeVisible({ timeout: 10000 });
   await dismissTutorialOverlays(page);
 }
 

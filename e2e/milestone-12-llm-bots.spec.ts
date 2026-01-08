@@ -32,7 +32,7 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       await page.locator('[data-testid="start-game-button"]').click();
       await page.waitForLoadState("networkidle");
     }
-    await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({
+    await expect(page.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible({
       timeout: 20000,
     });
   }
@@ -145,7 +145,7 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       expect(newTurn).toBe(initialTurn + 1);
 
       // Dashboard should still be visible (no crashes)
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
 
     test("LLM decisions are logged to database", async ({ gamePage }) => {
@@ -244,7 +244,7 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       console.log(`Turn processing time: ${turnTime}ms`);
 
       // Verify turn still works correctly
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
   });
 
@@ -345,7 +345,7 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       }
 
       // Game should still be playable
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
 
       // Turn counter should have advanced
       const turnCounter = gamePage.locator('[data-testid="turn-counter"]');
@@ -409,7 +409,7 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       expect(turn).toBe(11);
 
       // Dashboard should still be functional
-      await expect(gamePage.locator('[data-testid="dashboard"]')).toBeVisible();
+      await expect(gamePage.locator('[data-testid="starmap-page"], [data-testid="game-header"]')).toBeVisible();
     });
   });
 

@@ -32,39 +32,29 @@ test.describe("Smoke Test", () => {
     await page.goto("/game");
     await dismissTutorialOverlays(page);
 
-    // Step 2: Create game with minimal config
+    // Step 2: Create game with minimal config (if setup form is shown)
     const empireNameInput = page.locator('[data-testid="empire-name-input"]');
     if (await empireNameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
       await empireNameInput.fill("Smoke Test Empire");
       await dismissTutorialOverlays(page);
 
-      // Start game (uses smallest bot count by default)
+      // Start game - this redirects to /game/starmap on success
       await page.locator('[data-testid="start-game-button"]').click();
-      await page.waitForURL(/\/game/, { timeout: 10000 });
-      await page.waitForLoadState("networkidle");
+
+      // Wait for redirect to starmap (successful game creation)
+      await page.waitForURL(/\/game\/starmap/, { timeout: 15000 });
     }
 
     await dismissTutorialOverlays(page);
 
-    // Step 3: Navigate to dashboard if on starmap
-    const dashboard = page.locator('[data-testid="dashboard"]');
-    if (!await dashboard.isVisible({ timeout: 1000 }).catch(() => false)) {
-      await page.goto("/game");
-      await page.waitForLoadState("networkidle");
-      await dismissTutorialOverlays(page);
-    }
+    // Step 3: Verify we're on starmap page (game is active)
+    await expect(page.locator('[data-testid="starmap-page"]')).toBeVisible({ timeout: 5000 });
 
-    // Step 4: Verify game is active - dashboard visible with resources
-    await expect(page.locator('[data-testid="dashboard"]')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('[data-testid="credits"]')).toBeVisible();
-    await expect(page.locator('[data-testid="food"]')).toBeVisible();
+    // Step 4: Verify game shell elements are present (header with turn counter)
+    await expect(page.getByTestId('game-header')).toBeVisible();
 
-    // Step 5: Verify turn counter exists and shows Turn 1
-    const turnCounter = page.locator('[data-testid="turn-counter"]');
-    await expect(turnCounter).toBeVisible();
-
-    // Step 6: Verify end turn button exists
-    const endTurnBtn = page.locator('[data-testid="end-turn-button"]');
+    // Step 5: Verify end turn button exists in game shell
+    const endTurnBtn = page.locator('button:has-text("NEXT CYCLE")').first();
     await expect(endTurnBtn).toBeVisible();
   });
 
@@ -83,9 +73,10 @@ test.describe("Smoke Test", () => {
     await page.waitForLoadState("networkidle");
     await dismissTutorialOverlays(page);
 
-    // Game setup should have create button or dashboard (if game exists)
-    const createButton = page.locator('[data-testid="start-game-button"]');
-    const dashboard = page.locator('[data-testid="dashboard"]');
-    await expect(createButton.or(dashboard)).toBeVisible();
+    // Game setup should have either:
+    // - Create button (if no game exists)
+    // - Game header (if active game exists)
+    const gameReady = page.locator('[data-testid="start-game-button"], [data-testid="game-header"]').first();
+    await expect(gameReady).toBeVisible();
   });
 });
