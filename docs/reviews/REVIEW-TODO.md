@@ -140,7 +140,7 @@ This document consolidates all action items, marking completed items with eviden
 
 | ID | Source | Task | Effort | Dependencies | Status |
 |----|--------|------|--------|--------------|--------|
-| TODO-001 | architect-review | Complete service domain organization (add more subdirectories) | 8-16h | None (start first) | Pending |
+| ~~TODO-001~~ | architect-review | ~~Complete service domain organization (add more subdirectories)~~ | ~~8-16h~~ | ~~None~~ | **DONE** (commit 8cc2d7e) |
 | ~~TODO-002~~ | architect-review | ~~Consolidate constants into single directory structure~~ | ~~2-4h~~ | ~~None~~ | **DONE** (deprecation notice added) |
 | ~~TODO-003~~ | product-review | ~~Add "Tutorial Mode" toggle to game settings~~ | ~~2-3h~~ | ~~None~~ | **DONE** (via QuickReferenceModal) |
 | TODO-004 | product-review | Implement progressive UI disclosure system | 12-16h | TODO-003 (soft) | Pending |
@@ -149,10 +149,10 @@ This document consolidates all action items, marking completed items with eviden
 
 | ID | Source | Task | Effort | Dependencies | Status |
 |----|--------|------|--------|--------------|--------|
-| TODO-005 | architect-review | Complete barrel exports (`index.ts`) for remaining service domains | 2-4h | **TODO-001** (hard) | Pending |
+| ~~TODO-005~~ | architect-review | ~~Complete barrel exports (`index.ts`) for remaining service domains~~ | ~~2-4h~~ | ~~TODO-001~~ | **DONE** (commit 8cc2d7e) |
 | TODO-006 | architect-review | Complete combat system consolidation (remove deprecated code after validation) | 4-8h | **TODO-009** (do first) | Pending |
 | ~~TODO-007~~ | documentation-review | ~~Move terminology-crisis-audit.md from archive to active docs~~ | ~~15m~~ | ~~None~~ | **DONE** |
-| TODO-008 | documentation-review | Add link checking to CI pipeline | 4h | Best after TODO-001, TODO-002 | Pending |
+| TODO-008 | documentation-review | Add link checking to CI pipeline | 4h | Best after TODO-001, TODO-005 | Pending |
 | TODO-009 | qa-review | Add combat edge case E2E tests | 3-4h | None (do before TODO-006) | Pending |
 | ~~TODO-010~~ | qa-review | ~~Configure Playwright trace-on-all for debugging~~ | ~~2-3h~~ | ~~None~~ | **DONE** (env vars added) |
 | ~~TODO-011~~ | qa-review | ~~Implement flaky test tagging and tracking~~ | ~~2-3h~~ | ~~None~~ | **DONE** (analyzer + tracking file) |
@@ -223,11 +223,10 @@ All Phase 1 tasks completed:
 - ~~TODO-003~~ - Tutorial toggle (via QuickReferenceModal) **DONE**
 - ~~TODO-010~~ + ~~TODO-011~~ - Testing infrastructure **DONE**
 
-### Phase 2: Architecture Chain
-Execute sequentially:
-1. **TODO-001** (8-16h) - Service domain organization
-2. **TODO-005** (2-4h) - Barrel exports (requires TODO-001)
-3. **TODO-008** (4h) - Link checking CI (best after reorganization)
+### Phase 2: Architecture Chain - PARTIALLY COMPLETE 2026-01-08
+- ~~TODO-001~~ - Service domain organization (commit 8cc2d7e) **DONE**
+- ~~TODO-005~~ - Barrel exports (commit 8cc2d7e) **DONE**
+- **TODO-008** (4h) - Link checking CI (best after reorganization) **PENDING**
 
 ### Phase 3: Combat/Testing Chain
 Execute sequentially:
@@ -360,15 +359,15 @@ Old milestone files are staged for deletion.
 
 | Category | Completed | Remaining | Completion % |
 |----------|-----------|-----------|--------------|
-| Architect | 5 | 4 | 56% |
+| Architect | 7 | 2 | 78% |
 | Documentation | 6 | 4 | 60% |
 | Product | 7 | 3 | 70% |
 | QA | 10 | 1 | 91% |
-| **Total** | **28** | **12** | **70%** |
+| **Total** | **30** | **10** | **75%** |
 
-**Completed 2026-01-08:** TODO-002, TODO-003, TODO-007, TODO-010, TODO-011
+**Completed 2026-01-08:** TODO-001, TODO-002, TODO-003, TODO-005, TODO-007, TODO-010, TODO-011
 
-Remaining by source: Architect (TODO-001,005,006,012), Documentation (TODO-008,015,016,017), Product (TODO-004,013,014), QA (TODO-009).
+Remaining by source: Architect (TODO-006,012), Documentation (TODO-008,015,016,017), Product (TODO-004,013,014), QA (TODO-009).
 
 ---
 
