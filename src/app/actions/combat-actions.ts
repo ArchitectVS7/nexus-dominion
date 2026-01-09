@@ -8,6 +8,15 @@
  * - Input validation at the boundary
  * - Rate limiting for abuse prevention
  * - Proper error handling and logging
+ *
+ * ERROR HANDLING PATTERN:
+ * All action functions use consistent error handling:
+ * - Return type: { success: boolean; error?: string; ...data }
+ * - Errors are caught and returned, never thrown to callers
+ * - Error messages are safe for display (no internal details leaked)
+ *
+ * EXCEPTION: validateAttackAction returns { valid: boolean; errors: string[] }
+ * because validation can produce multiple error messages at once.
  */
 
 import { revalidatePath } from "next/cache";

@@ -17,6 +17,7 @@ import { GAME_SETTINGS, SECTOR_PRODUCTION } from "@/lib/game/constants";
 import { verifyEmpireOwnership } from "@/lib/security/validation";
 import { checkRateLimit } from "@/lib/security/rate-limiter";
 import { getGameSession } from "@/lib/session";
+import { calculateMilitaryStrength } from "@/lib/formulas";
 
 // Cookie names (must match game-actions.ts)
 
@@ -239,14 +240,8 @@ export async function getTurnOrderPanelDataAction(): Promise<TurnOrderPanelData 
       foodStatus = foodBalance < -foodConsumption * 0.5 ? "critical" : "deficit";
     }
 
-    // Calculate army strength (simplified - based on total military power)
-    const totalMilitary =
-      playerEmpire.soldiers +
-      playerEmpire.fighters * 3 +
-      (playerEmpire.stations ?? 0) * 50 +
-      (playerEmpire.lightCruisers ?? 0) * 10 +
-      (playerEmpire.heavyCruisers ?? 0) * 25 +
-      (playerEmpire.carriers ?? 0) * 12;
+    // Calculate army strength using shared formula
+    const totalMilitary = calculateMilitaryStrength(playerEmpire);
 
     // Get average bot military power for comparison
     const botEmpires = await db.query.empires.findMany({
@@ -257,11 +252,7 @@ export async function getTurnOrderPanelDataAction(): Promise<TurnOrderPanelData 
     });
 
     const avgBotPower = botEmpires.reduce((sum, bot) => {
-      return sum + bot.soldiers + bot.fighters * 3 +
-        (bot.stations ?? 0) * 50 +
-        (bot.lightCruisers ?? 0) * 10 +
-        (bot.heavyCruisers ?? 0) * 25 +
-        (bot.carriers ?? 0) * 12;
+      return sum + calculateMilitaryStrength(bot);
     }, 0) / (botEmpires.length || 1);
 
     let armyStrength: ArmyStrength = "moderate";
@@ -273,12 +264,7 @@ export async function getTurnOrderPanelDataAction(): Promise<TurnOrderPanelData 
 
     // Count threats (bots stronger than player)
     const threatCount = botEmpires.filter(bot => {
-      const botPower = bot.soldiers + bot.fighters * 3 +
-        (bot.stations ?? 0) * 50 +
-        (bot.lightCruisers ?? 0) * 10 +
-        (bot.heavyCruisers ?? 0) * 25 +
-        (bot.carriers ?? 0) * 12;
-      return botPower > totalMilitary * 1.2;
+      return calculateMilitaryStrength(bot) > totalMilitary * 1.2;
     }).length;
 
     // Count unread messages
@@ -376,14 +362,8 @@ export async function getGameLayoutDataAction(): Promise<GameLayoutData | null> 
       foodStatus = foodBalance < -foodConsumption * 0.5 ? "critical" : "deficit";
     }
 
-    // Calculate military power
-    const militaryPower =
-      playerEmpire.soldiers +
-      playerEmpire.fighters * 3 +
-      (playerEmpire.stations ?? 0) * 50 +
-      (playerEmpire.lightCruisers ?? 0) * 10 +
-      (playerEmpire.heavyCruisers ?? 0) * 25 +
-      (playerEmpire.carriers ?? 0) * 12;
+    // Calculate military power using shared formula
+    const militaryPower = calculateMilitaryStrength(playerEmpire);
 
     // PERFORMANCE: Get all empires once instead of separate queries for bots and rank calculation
     const allEmpires = await db.query.empires.findMany({
@@ -404,13 +384,9 @@ export async function getGameLayoutDataAction(): Promise<GameLayoutData | null> 
     // Filter bot empires for military comparison
     const botEmpires = allEmpires.filter(e => e.type === "bot");
 
-    // Calculate army strength relative to bots
+    // Calculate army strength relative to bots using shared formula
     const avgBotPower = botEmpires.reduce((sum, bot) => {
-      return sum + bot.soldiers + bot.fighters * 3 +
-        (bot.stations ?? 0) * 50 +
-        (bot.lightCruisers ?? 0) * 10 +
-        (bot.heavyCruisers ?? 0) * 25 +
-        (bot.carriers ?? 0) * 12;
+      return sum + calculateMilitaryStrength(bot);
     }, 0) / (botEmpires.length || 1);
 
     let armyStrength: ArmyStrength = "moderate";
@@ -420,14 +396,9 @@ export async function getGameLayoutDataAction(): Promise<GameLayoutData | null> 
       armyStrength = militaryPower < avgBotPower * 0.25 ? "critical" : "weak";
     }
 
-    // Count threats
+    // Count threats using shared formula
     const threatCount = botEmpires.filter(bot => {
-      const botPower = bot.soldiers + bot.fighters * 3 +
-        (bot.stations ?? 0) * 50 +
-        (bot.lightCruisers ?? 0) * 10 +
-        (bot.heavyCruisers ?? 0) * 25 +
-        (bot.carriers ?? 0) * 12;
-      return botPower > militaryPower * 1.2;
+      return calculateMilitaryStrength(bot) > militaryPower * 1.2;
     }).length;
 
     // Count unread messages

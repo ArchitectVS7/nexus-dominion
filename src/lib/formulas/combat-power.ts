@@ -170,3 +170,53 @@ export function calculatePowerRatio(
 
   return attackPower / defensePower;
 }
+
+// =============================================================================
+// MILITARY STRENGTH (for UI comparisons)
+// =============================================================================
+
+/**
+ * Unit counts with optional fields for flexibility.
+ * Allows passing partial empire objects.
+ */
+export interface MilitaryUnits {
+  soldiers: number;
+  fighters: number;
+  stations?: number | null;
+  lightCruisers?: number | null;
+  heavyCruisers?: number | null;
+  carriers?: number | null;
+}
+
+/**
+ * Simplified military strength weights for UI comparisons.
+ * These are fixed values for consistent relative strength display,
+ * separate from the configurable combat power system.
+ */
+const MILITARY_STRENGTH_WEIGHTS = {
+  soldiers: 1,
+  fighters: 3,
+  stations: 50,
+  lightCruisers: 10,
+  heavyCruisers: 25,
+  carriers: 12,
+} as const;
+
+/**
+ * Calculate simplified military strength for UI comparisons.
+ * This is a fixed formula for displaying relative army strength,
+ * NOT the dynamic combat power used in actual battles.
+ *
+ * @param units - Object with unit counts (partial allowed)
+ * @returns Total military strength score
+ */
+export function calculateMilitaryStrength(units: MilitaryUnits): number {
+  return (
+    units.soldiers * MILITARY_STRENGTH_WEIGHTS.soldiers +
+    units.fighters * MILITARY_STRENGTH_WEIGHTS.fighters +
+    (units.stations ?? 0) * MILITARY_STRENGTH_WEIGHTS.stations +
+    (units.lightCruisers ?? 0) * MILITARY_STRENGTH_WEIGHTS.lightCruisers +
+    (units.heavyCruisers ?? 0) * MILITARY_STRENGTH_WEIGHTS.heavyCruisers +
+    (units.carriers ?? 0) * MILITARY_STRENGTH_WEIGHTS.carriers
+  );
+}

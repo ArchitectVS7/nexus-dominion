@@ -252,14 +252,28 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
     // Apply emotional decay to all bots at end of turn
     // This gradually reduces emotional intensity over time
     const botEmpires = game.empires.filter((e) => e.type === "bot" && !e.isEliminated);
-    await Promise.all(
-      botEmpires.map((bot) =>
-        applyEmotionalDecay(bot.id, gameId, nextTurn).catch((err) => {
-          // Don't fail the turn if emotional decay fails for a bot
-          console.warn(`Emotional decay failed for bot ${bot.id}:`, err);
-        })
-      )
+    const emotionalDecayResults = await Promise.allSettled(
+      botEmpires.map((bot) => applyEmotionalDecay(bot.id, gameId, nextTurn))
     );
+
+    // Track and report emotional decay failures (non-blocking)
+    const decayFailures = emotionalDecayResults
+      .map((result, index) => ({ result, botId: botEmpires[index]?.id }))
+      .filter((item): item is { result: PromiseRejectedResult; botId: string } =>
+        item.result.status === "rejected"
+      );
+
+    if (decayFailures.length > 0) {
+      console.warn(
+        `Emotional decay failed for ${decayFailures.length}/${botEmpires.length} bots:`,
+        decayFailures.map((f) => ({ botId: f.botId, error: f.result.reason }))
+      );
+      globalEvents.push({
+        type: "other",
+        message: `Emotional decay failed for ${decayFailures.length} bots`,
+        severity: "warning",
+      });
+    }
 
     // ==========================================================================
     // PHASE 5.6: MEMORY CLEANUP (every 5 turns)

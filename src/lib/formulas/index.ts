@@ -10,6 +10,7 @@ export {
   calculateFleetPower,
   calculateDiversityBonus,
   calculatePowerRatio,
+  calculateMilitaryStrength,
   countUnitTypes,
   hasDiversityBonus,
   POWER_MULTIPLIERS,
@@ -18,6 +19,7 @@ export {
   DEFENDER_ADVANTAGE,
   STATION_DEFENSE_MULTIPLIER,
   type FleetComposition,
+  type MilitaryUnits,
 } from "./combat-power";
 
 // Casualty Calculations (PRD 6.2)
