@@ -48,7 +48,13 @@ export const EFFECTIVENESS_LEVELS = {
  * | Stations      | —        | Medium | Medium  | —     | —              |
  * | Light Cruisers| —        | —      | High    | High  | Low            |
  * | Heavy Cruisers| —        | —      | Medium  | High  | Low            |
- * | Carriers      | —        | —      | —       | —     | —              |
+ * | Carriers      | —        | —      | Medium  | Low   | Low            |
+ *
+ * Carriers Rationale (cost: 2500 credits):
+ * - Space (LOW): Support role providing fighter deployment coordination
+ * - Orbital (MEDIUM): Deploy fighters to contest orbital control
+ * - Pirate Defense (LOW): Patrol capability with embarked fighters
+ * - No ground/guerilla capability (fleet vessels)
  */
 export const UNIT_EFFECTIVENESS: Record<CombatUnitType, Record<CombatPhase, number>> = {
   soldiers: {
@@ -87,21 +93,21 @@ export const UNIT_EFFECTIVENESS: Record<CombatUnitType, Record<CombatPhase, numb
     pirate_defense: EFFECTIVENESS_LEVELS.LOW,
   },
   carriers: {
-    guerilla: EFFECTIVENESS_LEVELS.NONE,
-    ground: EFFECTIVENESS_LEVELS.NONE,
-    orbital: EFFECTIVENESS_LEVELS.NONE,
-    space: EFFECTIVENESS_LEVELS.NONE,
-    pirate_defense: EFFECTIVENESS_LEVELS.NONE,
+    guerilla: EFFECTIVENESS_LEVELS.NONE,     // Cannot conduct ground operations
+    ground: EFFECTIVENESS_LEVELS.NONE,       // No ground assault capability
+    orbital: EFFECTIVENESS_LEVELS.MEDIUM,    // Deploy fighters to contest orbit
+    space: EFFECTIVENESS_LEVELS.LOW,         // Support role in fleet engagements
+    pirate_defense: EFFECTIVENESS_LEVELS.LOW, // Patrol capability with embarked craft
   },
 } as const;
 
 /** Units that primarily participate in each phase */
 export const PHASE_PRIMARY_UNITS: Record<CombatPhase, CombatUnitType[]> = {
-  space: ["lightCruisers", "heavyCruisers"],
-  orbital: ["fighters", "stations", "lightCruisers"],
+  space: ["lightCruisers", "heavyCruisers", "carriers"],
+  orbital: ["fighters", "stations", "lightCruisers", "carriers"],
   ground: ["soldiers"],
   guerilla: ["soldiers"],
-  pirate_defense: ["soldiers", "fighters", "lightCruisers", "heavyCruisers"],
+  pirate_defense: ["soldiers", "fighters", "lightCruisers", "heavyCruisers", "carriers"],
 };
 
 // =============================================================================
@@ -234,7 +240,10 @@ export function getPhaseRoleDescription(
       if (phase === "space") return "Heavy capital ship combat";
       break;
     case "carriers":
-      return "Transport troops for invasions";
+      if (phase === "orbital") return "Deploy fighters to contest orbit";
+      if (phase === "space") return "Coordinate fleet fighter operations";
+      if (phase === "pirate_defense") return "Patrol with embarked fighters";
+      break;
   }
 
   if (effectiveness === 0) {

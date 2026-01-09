@@ -109,12 +109,24 @@ describe("Unit Effectiveness Matrix (PRD 6.7)", () => {
   });
 
   describe("Carriers", () => {
-    it("should have NO effectiveness in any combat phase", () => {
-      expect(getUnitEffectiveness("carriers", "space")).toBe(EFFECTIVENESS_LEVELS.NONE);
-      expect(getUnitEffectiveness("carriers", "orbital")).toBe(EFFECTIVENESS_LEVELS.NONE);
+    it("should have MEDIUM effectiveness in orbital (deploy fighters)", () => {
+      expect(getUnitEffectiveness("carriers", "orbital")).toBe(EFFECTIVENESS_LEVELS.MEDIUM);
+    });
+
+    it("should have LOW effectiveness in space (fleet support role)", () => {
+      expect(getUnitEffectiveness("carriers", "space")).toBe(EFFECTIVENESS_LEVELS.LOW);
+    });
+
+    it("should have LOW effectiveness in pirate defense (patrol capability)", () => {
+      expect(getUnitEffectiveness("carriers", "pirate_defense")).toBe(EFFECTIVENESS_LEVELS.LOW);
+    });
+
+    it("should have NO effectiveness in ground combat", () => {
       expect(getUnitEffectiveness("carriers", "ground")).toBe(EFFECTIVENESS_LEVELS.NONE);
+    });
+
+    it("should have NO effectiveness in guerilla combat", () => {
       expect(getUnitEffectiveness("carriers", "guerilla")).toBe(EFFECTIVENESS_LEVELS.NONE);
-      expect(getUnitEffectiveness("carriers", "pirate_defense")).toBe(EFFECTIVENESS_LEVELS.NONE);
     });
   });
 });
@@ -136,29 +148,35 @@ describe("canParticipate", () => {
     expect(canParticipate("lightCruisers", "space")).toBe(true);
   });
 
-  it("should return false for carriers in any combat", () => {
-    expect(canParticipate("carriers", "space")).toBe(false);
-    expect(canParticipate("carriers", "orbital")).toBe(false);
+  it("should return true for carriers in space and orbital combat", () => {
+    expect(canParticipate("carriers", "space")).toBe(true);
+    expect(canParticipate("carriers", "orbital")).toBe(true);
+    expect(canParticipate("carriers", "pirate_defense")).toBe(true);
+  });
+
+  it("should return false for carriers in ground and guerilla combat", () => {
     expect(canParticipate("carriers", "ground")).toBe(false);
+    expect(canParticipate("carriers", "guerilla")).toBe(false);
   });
 });
 
 describe("getParticipatingUnits", () => {
-  it("should return cruisers for space phase", () => {
+  it("should return cruisers and carriers for space phase", () => {
     const units = getParticipatingUnits("space");
     expect(units).toContain("lightCruisers");
     expect(units).toContain("heavyCruisers");
     expect(units).toContain("fighters"); // Low but non-zero
+    expect(units).toContain("carriers"); // Low but non-zero
     expect(units).not.toContain("soldiers");
-    expect(units).not.toContain("carriers");
   });
 
-  it("should return fighters and stations for orbital phase", () => {
+  it("should return fighters, stations, cruisers and carriers for orbital phase", () => {
     const units = getParticipatingUnits("orbital");
     expect(units).toContain("fighters");
     expect(units).toContain("stations");
     expect(units).toContain("lightCruisers");
     expect(units).toContain("heavyCruisers");
+    expect(units).toContain("carriers");
   });
 
   it("should return soldiers for ground phase", () => {
@@ -167,6 +185,7 @@ describe("getParticipatingUnits", () => {
     expect(units).toContain("fighters"); // Low support
     expect(units).toContain("stations"); // Medium support
     expect(units).not.toContain("lightCruisers");
+    expect(units).not.toContain("carriers"); // No ground capability
   });
 });
 
@@ -195,8 +214,8 @@ describe("getPrimaryPhase", () => {
     expect(getPrimaryPhase("heavyCruisers")).toBe("space");
   });
 
-  it("should return null for carriers (no effective phase)", () => {
-    expect(getPrimaryPhase("carriers")).toBeNull();
+  it("should return orbital for carriers (highest effectiveness)", () => {
+    expect(getPrimaryPhase("carriers")).toBe("orbital");
   });
 });
 
@@ -266,6 +285,18 @@ describe("calculatePhaseEffectivePower", () => {
     const defenderPower = calculatePhaseEffectivePower("fighters", 50, 5, "orbital", true);
     expect(defenderPower).toBe(attackerPower);
   });
+
+  it("should calculate carrier power in orbital combat", () => {
+    // Carriers have MEDIUM (0.5) effectiveness in orbital
+    const power = calculatePhaseEffectivePower("carriers", 5, 200, "orbital");
+    expect(power).toBe(5 * 200 * 0.5); // 500
+  });
+
+  it("should calculate carrier power in space combat", () => {
+    // Carriers have LOW (0.25) effectiveness in space
+    const power = calculatePhaseEffectivePower("carriers", 5, 200, "space");
+    expect(power).toBe(5 * 200 * 0.25); // 250
+  });
 });
 
 // =============================================================================
@@ -332,10 +363,24 @@ describe("getPhaseRoleDescription", () => {
   });
 
   describe("Carriers", () => {
-    it("should always describe transport role regardless of phase", () => {
-      expect(getPhaseRoleDescription("carriers", "space")).toBe("Transport troops for invasions");
-      expect(getPhaseRoleDescription("carriers", "orbital")).toBe("Transport troops for invasions");
-      expect(getPhaseRoleDescription("carriers", "ground")).toBe("Transport troops for invasions");
+    it("should describe orbital combat role", () => {
+      expect(getPhaseRoleDescription("carriers", "orbital")).toBe("Deploy fighters to contest orbit");
+    });
+
+    it("should describe space combat role", () => {
+      expect(getPhaseRoleDescription("carriers", "space")).toBe("Coordinate fleet fighter operations");
+    });
+
+    it("should describe pirate defense role", () => {
+      expect(getPhaseRoleDescription("carriers", "pirate_defense")).toBe("Patrol with embarked fighters");
+    });
+
+    it("should return cannot participate for ground", () => {
+      expect(getPhaseRoleDescription("carriers", "ground")).toBe("Cannot participate in this phase");
+    });
+
+    it("should return cannot participate for guerilla", () => {
+      expect(getPhaseRoleDescription("carriers", "guerilla")).toBe("Cannot participate in this phase");
     });
   });
 });

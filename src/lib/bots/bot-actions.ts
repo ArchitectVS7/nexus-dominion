@@ -7,16 +7,17 @@
 
 import { db } from "@/lib/db";
 import { empires, buildQueue, sectors, type NewSector, craftingQueue, syndicateContracts, resourceInventory } from "@/lib/db/schema";
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, max } from "drizzle-orm";
 import type { BotDecision, BotDecisionContext, Forces, UnitType } from "./types";
 import { calculateUnitPurchaseCost } from "@/lib/game/unit-config";
 import { UNIT_BUILD_TIMES, toDbUnitType } from "@/lib/game/build-config";
 import { SECTOR_COSTS, SECTOR_PRODUCTION } from "@/lib/game/constants";
 import { calculateSectorCost } from "@/lib/formulas/sector-costs";
-import { TIER_1_RECIPES, TIER_2_RECIPES, TIER_3_RECIPES, RESOURCE_TIERS } from "@/lib/game/constants/crafting";
-import type { CraftedResource, Tier1Resource, Tier2Resource, Tier3Resource } from "@/lib/game/constants/crafting";
+import { RESOURCE_TIERS } from "@/lib/game/constants/crafting";
+import type { CraftedResource, Tier0Resource } from "@/lib/game/constants/crafting";
 import { CONTRACT_CONFIGS } from "@/lib/game/constants/syndicate";
 import { TIER_TO_ENUM } from "@/lib/game/services/economy/resource-tier-service";
+import { getRecipe } from "@/lib/game/services/crafting/crafting-service";
 import { executeAttack as executeCombatAttack } from "@/lib/game/services/combat";
 import type { Forces as CombatForces } from "@/lib/combat/phases";
 import { proposeTreaty, type TreatyType } from "@/lib/diplomacy";
@@ -373,8 +374,24 @@ async function executeTrade(
 // =============================================================================
 
 /**
+ * Mapping from recipe resource keys (snake_case) to Empire property names (camelCase).
+ * Drizzle ORM maps DB columns (snake_case) to TypeScript properties (camelCase).
+ */
+const TIER0_RECIPE_TO_EMPIRE_PROP: Record<string, keyof typeof empires.$inferSelect> = {
+  credits: "credits",
+  food: "food",
+  ore: "ore",
+  petroleum: "petroleum",
+  population: "population",
+  research_points: "researchPoints",
+};
+
+/**
  * Execute a craft_component decision.
- * Adds a crafting order to the queue.
+ * Validates resources, deducts inputs, and adds a crafting order to the queue.
+ *
+ * CRITICAL: All database operations are wrapped in a transaction to ensure
+ * atomicity. If any step fails, all changes are rolled back automatically.
  */
 async function executeCraftComponent(
   decision: Extract<BotDecision, { type: "craft_component" }>,
@@ -394,42 +411,159 @@ async function executeCraftComponent(
     return { success: false, error: `Unknown resource type: ${resourceType}` };
   }
 
-  // Get recipe from appropriate tier
-  let craftingTime = 1;
-  if (tier === 1 && resourceType in TIER_1_RECIPES) {
-    craftingTime = TIER_1_RECIPES[resourceType as Tier1Resource].craftingTime;
-  } else if (tier === 2 && resourceType in TIER_2_RECIPES) {
-    craftingTime = TIER_2_RECIPES[resourceType as Tier2Resource].craftingTime;
-  } else if (tier === 3 && resourceType in TIER_3_RECIPES) {
-    craftingTime = TIER_3_RECIPES[resourceType as Tier3Resource].craftingTime;
+  // Get the recipe for this resource
+  const recipe = getRecipe(resourceType);
+  if (!recipe) {
+    return { success: false, error: `No recipe found for: ${resourceType}` };
   }
 
-  // Calculate total crafting time
+  // Calculate total required inputs for the requested quantity
+  const requiredInputs: Record<string, number> = {};
+  for (const [resource, amount] of Object.entries(recipe.inputs)) {
+    requiredInputs[resource] = amount * quantity;
+  }
+
+  // Separate Tier 0 resources (credits, food, ore, petroleum, population, research_points) from crafted resources
+  // Note: Recipe keys use snake_case (e.g., "research_points")
+  const tier0ResourceKeys = ["credits", "food", "ore", "petroleum", "population", "research_points"];
+  const tier0Requirements: Partial<Record<Tier0Resource, number>> = {};
+  const craftedRequirements: Partial<Record<CraftedResource, number>> = {};
+
+  for (const [resource, amount] of Object.entries(requiredInputs)) {
+    if (tier0ResourceKeys.includes(resource)) {
+      tier0Requirements[resource as Tier0Resource] = amount;
+    } else {
+      craftedRequirements[resource as CraftedResource] = amount;
+    }
+  }
+
+  // Validate Tier 0 resources on empire (fast-fail before transaction)
+  // Use mapping to convert recipe keys (snake_case) to Empire property names (camelCase)
+  for (const [recipeKey, required] of Object.entries(tier0Requirements)) {
+    const empireProp = TIER0_RECIPE_TO_EMPIRE_PROP[recipeKey];
+    if (!empireProp) {
+      return {
+        success: false,
+        error: `Unknown Tier 0 resource: ${recipeKey}`,
+      };
+    }
+    const available = empire[empireProp] as number | undefined;
+    if (available === undefined || available < required) {
+      return {
+        success: false,
+        error: `Insufficient ${recipeKey} (need ${required}, have ${available ?? 0})`,
+      };
+    }
+  }
+
+  // Calculate crafting time
+  const craftingTime = recipe.craftingTime;
+  // Apply quantity multiplier (each additional item adds time)
   const totalTime = craftingTime * quantity;
 
-  // Get current queue size for position
-  const currentQueue = await db.query.craftingQueue.findMany({
-    where: eq(craftingQueue.empireId, empire.id),
-  });
-  const queuePosition = currentQueue.length + 1;
+  // Execute all database operations within a transaction for atomicity
+  // If any step fails, all changes are rolled back automatically
+  return await db.transaction(async (tx) => {
+    // Validate and deduct crafted resources from inventory
+    if (Object.keys(craftedRequirements).length > 0) {
+      const inventoryRecords = await tx.query.resourceInventory.findMany({
+        where: and(
+          eq(resourceInventory.empireId, empire.id),
+          eq(resourceInventory.gameId, gameId)
+        ),
+      });
 
-  // Add to crafting queue
-  await db.insert(craftingQueue).values({
-    empireId: empire.id,
-    gameId,
-    resourceType,
-    quantity,
-    status: "queued",
-    componentsReserved: {}, // TODO: Calculate and reserve actual components
-    startTurn: currentTurn,
-    completionTurn: currentTurn + totalTime,
-    queuePosition,
-  });
+      const inventoryMap: Record<string, number> = {};
+      for (const record of inventoryRecords) {
+        inventoryMap[record.resourceType] = record.quantity;
+      }
 
-  return {
-    success: true,
-    details: `Queued ${quantity}x ${resourceType} (${totalTime} turns)`,
-  };
+      // Validate crafted resource availability within transaction
+      for (const [resource, required] of Object.entries(craftedRequirements)) {
+        const available = inventoryMap[resource] ?? 0;
+        if (available < required) {
+          throw new Error(`Insufficient ${resource} (need ${required}, have ${available})`);
+        }
+      }
+
+      // Deduct crafted resources from inventory
+      for (const [resource, required] of Object.entries(craftedRequirements)) {
+        const existingRecord = inventoryRecords.find((r) => r.resourceType === resource);
+        if (existingRecord) {
+          await tx
+            .update(resourceInventory)
+            .set({
+              quantity: existingRecord.quantity - required,
+              updatedAt: new Date(),
+            })
+            .where(eq(resourceInventory.id, existingRecord.id));
+        }
+      }
+    }
+
+    // Deduct Tier 0 resources from empire
+    const tier0Updates: Record<string, unknown> = { updatedAt: new Date() };
+    if (tier0Requirements.credits) {
+      tier0Updates.credits = sql`${empires.credits} - ${tier0Requirements.credits}`;
+    }
+    if (tier0Requirements.food) {
+      tier0Updates.food = sql`${empires.food} - ${tier0Requirements.food}`;
+    }
+    if (tier0Requirements.ore) {
+      tier0Updates.ore = sql`${empires.ore} - ${tier0Requirements.ore}`;
+    }
+    if (tier0Requirements.petroleum) {
+      tier0Updates.petroleum = sql`${empires.petroleum} - ${tier0Requirements.petroleum}`;
+    }
+    if (tier0Requirements.population) {
+      tier0Updates.population = sql`${empires.population} - ${tier0Requirements.population}`;
+    }
+    // Handle research_points -> researchPoints mapping for DB update
+    if (tier0Requirements.research_points) {
+      tier0Updates.researchPoints = sql`${empires.researchPoints} - ${tier0Requirements.research_points}`;
+    }
+
+    if (Object.keys(tier0Updates).length > 1) {
+      await tx
+        .update(empires)
+        .set(tier0Updates)
+        .where(eq(empires.id, empire.id));
+    }
+
+    // Calculate queue position atomically using MAX(queuePosition) + 1
+    // This prevents race conditions when multiple crafting requests happen concurrently
+    const maxPositionResult = await tx
+      .select({ maxPos: max(craftingQueue.queuePosition) })
+      .from(craftingQueue)
+      .where(eq(craftingQueue.empireId, empire.id));
+
+    const currentMaxPosition = maxPositionResult[0]?.maxPos ?? 0;
+    const queuePosition = currentMaxPosition + 1;
+
+    // Add to crafting queue with properly calculated componentsReserved
+    await tx.insert(craftingQueue).values({
+      empireId: empire.id,
+      gameId,
+      resourceType,
+      quantity,
+      status: "queued",
+      componentsReserved: requiredInputs, // Store the actual components that were reserved/deducted
+      startTurn: currentTurn,
+      completionTurn: currentTurn + totalTime,
+      queuePosition,
+    });
+
+    return {
+      success: true,
+      details: `Queued ${quantity}x ${resourceType} (${totalTime} turns)`,
+    };
+  }).catch((error) => {
+    // Transaction was rolled back, return error
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Crafting failed",
+    };
+  });
 }
 
 /**

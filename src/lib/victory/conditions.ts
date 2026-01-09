@@ -89,6 +89,12 @@ export const DEFAULT_TURN_LIMIT = 200;
 export const STALEMATE_CHECK_TURN = 180;
 
 /**
+ * Civil collapse threshold: Number of consecutive turns in "revolting" status
+ * before an empire collapses. This provides a grace period for recovery.
+ */
+export const CIVIL_COLLAPSE_THRESHOLD = 3;
+
+/**
  * Victory priority order (PRD 10.2).
  * When multiple victory conditions are met simultaneously,
  * the one with higher priority wins.
@@ -310,13 +316,40 @@ export function checkElimination(empire: Empire): boolean {
 
 /**
  * Check if an empire has collapsed due to civil unrest.
- * Civil collapse occurs when civil status reaches "revolting".
+ * Civil collapse occurs after CIVIL_COLLAPSE_THRESHOLD (3) consecutive turns
+ * of "revolting" status. This gives the player a grace period to recover.
  *
  * @param empire - The empire to check
- * @returns True if empire has collapsed
+ * @param consecutiveRevoltingTurns - Number of consecutive turns in revolting status.
+ *   If not provided, defaults to checking only the current status (for backwards compatibility).
+ * @returns True if empire has collapsed (revolting for 3+ consecutive turns)
  */
-export function checkCivilCollapse(empire: Empire): boolean {
-  return empire.civilStatus === "revolting";
+export function checkCivilCollapse(
+  empire: Empire,
+  consecutiveRevoltingTurns?: number
+): boolean {
+  // If not currently revolting, no collapse possible
+  if (empire.civilStatus !== "revolting") {
+    return false;
+  }
+
+  // Warn in development if consecutiveRevoltingTurns is missing for a revolting empire
+  if (consecutiveRevoltingTurns === undefined) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(
+        "[conditions] checkCivilCollapse called without consecutiveRevoltingTurns for revolting empire. " +
+          "Civil collapse detection may be incomplete."
+      );
+    }
+    // Backwards compatibility: if no consecutive turns provided,
+    // assume this is the first turn of revolting (no collapse yet).
+    // The turn processor should always provide consecutiveRevoltingTurns
+    // for accurate collapse detection.
+    return false;
+  }
+
+  // If consecutive turns provided, use grace period logic
+  return consecutiveRevoltingTurns >= CIVIL_COLLAPSE_THRESHOLD;
 }
 
 /**
@@ -324,11 +357,13 @@ export function checkCivilCollapse(empire: Empire): boolean {
  *
  * @param empire - The empire to check
  * @param maintenanceCost - Total maintenance cost this turn
+ * @param consecutiveRevoltingTurns - Number of consecutive turns in revolting status (optional)
  * @returns DefeatResult with reason if defeated
  */
 export function checkDefeatConditions(
   empire: Empire,
-  maintenanceCost: number
+  maintenanceCost: number,
+  consecutiveRevoltingTurns?: number
 ): DefeatResult {
   if (checkElimination(empire)) {
     return {
@@ -338,11 +373,11 @@ export function checkDefeatConditions(
     };
   }
 
-  if (checkCivilCollapse(empire)) {
+  if (checkCivilCollapse(empire, consecutiveRevoltingTurns)) {
     return {
       defeated: true,
       reason: "civil_collapse",
-      details: `${empire.name} has collapsed due to civil unrest and revolution.`,
+      details: `${empire.name} has collapsed due to ${consecutiveRevoltingTurns} consecutive turns of civil unrest and revolution.`,
     };
   }
 

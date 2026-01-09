@@ -75,10 +75,9 @@ export interface TradeResult {
 export async function initializeMarketPrices(gameId: string): Promise<void> {
   const resources: TradableResource[] = ["food", "ore", "petroleum"];
 
-  for (const resourceType of resources) {
+  const priceRecords = resources.map((resourceType) => {
     const basePrice = MARKET_BASE_PRICES[resourceType];
-
-    await db.insert(marketPrices).values({
+    return {
       gameId,
       resourceType,
       basePrice,
@@ -87,8 +86,10 @@ export async function initializeMarketPrices(gameId: string): Promise<void> {
       totalSupply: 0,
       totalDemand: 0,
       turnUpdated: 1,
-    });
-  }
+    };
+  });
+
+  await db.insert(marketPrices).values(priceRecords);
 }
 
 // =============================================================================

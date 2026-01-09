@@ -13,6 +13,7 @@ import {
   DIPLOMATIC_THRESHOLD,
   RESEARCH_MAX_LEVEL,
   MILITARY_MULTIPLIER,
+  CIVIL_COLLAPSE_THRESHOLD,
   VICTORY_PRIORITY,
   // Victory Checks
   checkConquestVictory,
@@ -83,6 +84,10 @@ describe("Victory Constants", () => {
 
   it("should have correct military multiplier (2x)", () => {
     expect(MILITARY_MULTIPLIER).toBe(2.0);
+  });
+
+  it("should have correct civil collapse threshold (3 turns)", () => {
+    expect(CIVIL_COLLAPSE_THRESHOLD).toBe(3);
   });
 
   it("should have victory priority in correct order", () => {
@@ -308,7 +313,7 @@ describe("checkMilitaryVictory", () => {
       createTestEmpire({ id: "e2", soldiers: 2000 }),
       createTestEmpire({ id: "e3", soldiers: 3000 }),
     ];
-    // Empire: 10000, Others: 5000, need 2x = 10000 ✓
+    // Empire: 10000, Others: 5000, need 2x = 10000
     expect(checkMilitaryVictory(empire, allEmpires)).toBe(true);
   });
 
@@ -338,7 +343,7 @@ describe("checkMilitaryVictory", () => {
       createTestEmpire({ id: "e2", soldiers: 3000 }),
       createTestEmpire({ id: "e3", soldiers: 10000, isEliminated: true }),
     ];
-    // Others active: 3000, need 2x = 6000 ✓
+    // Others active: 3000, need 2x = 6000
     expect(checkMilitaryVictory(empire, allEmpires)).toBe(true);
   });
 });
@@ -348,8 +353,8 @@ describe("checkMilitaryVictory", () => {
 // =============================================================================
 
 describe("checkSurvivalVictory", () => {
-  it("should return true at turn limit with 1.5× networth of second place", () => {
-    // Must meet economic threshold (1.5×) to win by survival
+  it("should return true at turn limit with 1.5x networth of second place", () => {
+    // Must meet economic threshold (1.5x) to win by survival
     const empire = createTestEmpire({ id: "e1", networth: 600 });
     const allEmpires = [
       empire,
@@ -361,7 +366,7 @@ describe("checkSurvivalVictory", () => {
   });
 
   it("should return false at turn limit without economic threshold", () => {
-    // Highest networth but doesn't meet 1.5× threshold
+    // Highest networth but doesn't meet 1.5x threshold
     const empire = createTestEmpire({ id: "e1", networth: 500 });
     const allEmpires = [
       empire,
@@ -396,7 +401,7 @@ describe("checkSurvivalVictory", () => {
   });
 
   it("should return false when tied - neither meets threshold", () => {
-    // Equal networth means neither has 1.5× advantage
+    // Equal networth means neither has 1.5x advantage
     const empireA = createTestEmpire({ id: "e1", name: "Alpha Empire", networth: 500 });
     const empireZ = createTestEmpire({ id: "e2", name: "Zeta Empire", networth: 500 });
     const allEmpires = [empireA, empireZ];
@@ -451,12 +456,7 @@ describe("checkElimination", () => {
 });
 
 describe("checkCivilCollapse", () => {
-  it("should return true when civil status is revolting", () => {
-    const empire = createTestEmpire({ civilStatus: "revolting" });
-    expect(checkCivilCollapse(empire)).toBe(true);
-  });
-
-  it("should return false for other civil statuses", () => {
+  it("should return false when civil status is not revolting", () => {
     const statuses = [
       "ecstatic",
       "happy",
@@ -468,35 +468,74 @@ describe("checkCivilCollapse", () => {
     ];
     for (const status of statuses) {
       const empire = createTestEmpire({ civilStatus: status });
-      expect(checkCivilCollapse(empire)).toBe(false);
+      expect(checkCivilCollapse(empire, 5)).toBe(false);
     }
+  });
+
+  it("should return false when revolting but no consecutive turns provided (backwards compatibility)", () => {
+    const empire = createTestEmpire({ civilStatus: "revolting" });
+    expect(checkCivilCollapse(empire)).toBe(false);
+  });
+
+  it("should return false when revolting for less than 3 turns", () => {
+    const empire = createTestEmpire({ civilStatus: "revolting" });
+    expect(checkCivilCollapse(empire, 1)).toBe(false);
+    expect(checkCivilCollapse(empire, 2)).toBe(false);
+  });
+
+  it("should return true when revolting for exactly 3 turns", () => {
+    const empire = createTestEmpire({ civilStatus: "revolting" });
+    expect(checkCivilCollapse(empire, 3)).toBe(true);
+  });
+
+  it("should return true when revolting for more than 3 turns", () => {
+    const empire = createTestEmpire({ civilStatus: "revolting" });
+    expect(checkCivilCollapse(empire, 4)).toBe(true);
+    expect(checkCivilCollapse(empire, 10)).toBe(true);
+  });
+
+  it("should return false when not revolting even with high consecutive count", () => {
+    const empire = createTestEmpire({ civilStatus: "rioting" });
+    expect(checkCivilCollapse(empire, 5)).toBe(false);
   });
 });
 
 describe("checkDefeatConditions", () => {
-  it("should detect elimination first", () => {
+  it("should detect elimination first (highest priority)", () => {
     const empire = createTestEmpire({
       sectorCount: 0,
       credits: -1000,
       civilStatus: "revolting",
     });
-    const result = checkDefeatConditions(empire, 100);
+    // Even with revolting + bankruptcy, elimination takes priority
+    const result = checkDefeatConditions(empire, 100, 5);
     expect(result.defeated).toBe(true);
     expect(result.reason).toBe("elimination");
   });
 
-  it("should detect civil collapse second", () => {
+  it("should detect civil collapse when revolting for 3+ turns", () => {
     const empire = createTestEmpire({
       sectorCount: 5,
       credits: -1000,
       civilStatus: "revolting",
     });
-    const result = checkDefeatConditions(empire, 100);
+    const result = checkDefeatConditions(empire, 100, 3);
     expect(result.defeated).toBe(true);
     expect(result.reason).toBe("civil_collapse");
+    expect(result.details).toContain("3 consecutive turns");
   });
 
-  it("should detect bankruptcy third", () => {
+  it("should NOT detect civil collapse when revolting for less than 3 turns", () => {
+    const empire = createTestEmpire({
+      sectorCount: 5,
+      credits: 1000, // Not bankrupt
+      civilStatus: "revolting",
+    });
+    const result = checkDefeatConditions(empire, 100, 2);
+    expect(result.defeated).toBe(false);
+  });
+
+  it("should detect bankruptcy when not eliminated and not collapsed", () => {
     const empire = createTestEmpire({
       sectorCount: 5,
       credits: -1000,
@@ -516,6 +555,27 @@ describe("checkDefeatConditions", () => {
     const result = checkDefeatConditions(empire, 100);
     expect(result.defeated).toBe(false);
     expect(result.reason).toBeUndefined();
+  });
+
+  it("should prioritize civil collapse over bankruptcy when both conditions met", () => {
+    const empire = createTestEmpire({
+      sectorCount: 5,
+      credits: -1000, // Bankrupt
+      civilStatus: "revolting",
+    });
+    const result = checkDefeatConditions(empire, 100, 3);
+    expect(result.defeated).toBe(true);
+    expect(result.reason).toBe("civil_collapse");
+  });
+
+  it("should not trigger civil collapse when consecutiveRevoltingTurns is 0", () => {
+    const empire = createTestEmpire({
+      sectorCount: 5,
+      credits: 1000,
+      civilStatus: "revolting",
+    });
+    const result = checkDefeatConditions(empire, 100, 0);
+    expect(result.defeated).toBe(false);
   });
 });
 

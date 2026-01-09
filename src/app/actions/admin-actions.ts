@@ -3,10 +3,43 @@
 import { db } from "@/lib/db";
 import {
   games,
-  botMemories,
+  empires,
+  sectors,
+  attacks,
+  combatLogs,
+  messages,
+  treaties,
+  buildQueue,
+  reputationLog,
+  unitUpgrades,
+  researchBranchAllocations,
+  resourceInventory,
+  craftingQueue,
+  researchProgress,
+  marketOrders,
+  marketPrices,
+  galacticEvents,
+  coalitions,
+  coalitionMembers,
+  syndicateContracts,
+  syndicateTrust,
+  pirateMissions,
   performanceLogs,
+  botMemories,
+  botEmotionalStates,
+  botTells,
+  civilStatusHistory,
+  gameSaves,
+  gameSessions,
+  gameConfigs,
+  galaxyRegions,
+  regionConnections,
+  empireInfluence,
+  llmUsageLogs,
+  llmDecisionCache,
 } from "@/lib/db/schema";
-import { eq, lt, and, or, sql } from "drizzle-orm";
+import { eq, lt, and, or, sql, type SQL } from "drizzle-orm";
+import type { PgTable } from "drizzle-orm/pg-core";
 
 // =============================================================================
 // SECURITY: Admin Authentication
@@ -67,6 +100,114 @@ interface CountRow {
 
 // Database query result can be either an array or an object with rows property
 type DbQueryResult<T = unknown> = T[] | { rows: T[] };
+
+// =============================================================================
+// SECURITY: Table Name Allowlist for Truncation
+// =============================================================================
+
+/**
+ * Type-safe mapping of allowed table names to their Drizzle schema objects.
+ * This ensures only these specific tables can be truncated, preventing
+ * any SQL injection even if this code is modified in the future.
+ *
+ * SECURITY: This is a compile-time constant. Adding new tables requires
+ * explicit code changes and review.
+ */
+const ALLOWED_TRUNCATE_TABLES = {
+  // Child tables first (have foreign keys to other tables)
+  bot_memories: botMemories,
+  bot_emotional_states: botEmotionalStates,
+  bot_tells: botTells,
+  attacks: attacks,
+  combat_logs: combatLogs,
+  messages: messages,
+  treaties: treaties,
+  build_queue: buildQueue,
+  reputation_log: reputationLog,
+  unit_upgrades: unitUpgrades,
+  research_branch_allocations: researchBranchAllocations,
+  resource_inventory: resourceInventory,
+  crafting_queue: craftingQueue,
+  research_progress: researchProgress,
+  market_orders: marketOrders,
+  sectors: sectors,
+  civil_status_history: civilStatusHistory,
+  game_saves: gameSaves,
+  game_sessions: gameSessions,
+  game_configs: gameConfigs,
+  galaxy_regions: galaxyRegions,
+  region_connections: regionConnections,
+  empire_influence: empireInfluence,
+  llm_usage_logs: llmUsageLogs,
+  llm_decision_cache: llmDecisionCache,
+  syndicate_trust: syndicateTrust,
+  syndicate_contracts: syndicateContracts,
+  pirate_missions: pirateMissions,
+  coalition_members: coalitionMembers,
+  // Then parent tables
+  empires: empires,
+  market_prices: marketPrices,
+  galactic_events: galacticEvents,
+  coalitions: coalitions,
+  performance_logs: performanceLogs,
+  games: games, // Games last since everything references it
+} as const;
+
+type AllowedTableName = keyof typeof ALLOWED_TRUNCATE_TABLES;
+
+/**
+ * Validates that a table name is in the allowlist and returns the Drizzle table object.
+ * Returns null if the table name is not allowed.
+ */
+function getValidatedTable(tableName: string): PgTable | null {
+  if (tableName in ALLOWED_TRUNCATE_TABLES) {
+    return ALLOWED_TRUNCATE_TABLES[tableName as AllowedTableName];
+  }
+  return null;
+}
+
+/**
+ * Creates a safe SQL identifier for table names using Drizzle's sql.identifier().
+ * This is an additional safety layer even though we validate against the allowlist.
+ */
+function safeTruncateTable(tableName: AllowedTableName): SQL {
+  // Double-safety: validate again even though caller should have validated
+  if (!(tableName in ALLOWED_TRUNCATE_TABLES)) {
+    throw new Error(`Table "${tableName}" is not in the allowed truncate list`);
+  }
+  // Use sql.identifier() for proper escaping of the table name
+  return sql`TRUNCATE TABLE ${sql.identifier(tableName)} CASCADE`;
+}
+
+/**
+ * Creates a safe DELETE statement using the Drizzle table object directly.
+ * This uses schema-based approach instead of raw SQL.
+ */
+async function safeDeleteFromTable(tableName: AllowedTableName): Promise<void> {
+  const table = ALLOWED_TRUNCATE_TABLES[tableName];
+  if (!table) {
+    throw new Error(`Table "${tableName}" is not in the allowed truncate list`);
+  }
+  // Use Drizzle's schema-based delete which is completely safe
+  await db.delete(table);
+}
+
+/**
+ * Safely counts rows in a table using the Drizzle table object.
+ */
+async function safeCountTable(tableName: AllowedTableName): Promise<number> {
+  const table = ALLOWED_TRUNCATE_TABLES[tableName];
+  if (!table) {
+    throw new Error(`Table "${tableName}" is not in the allowed truncate list`);
+  }
+  // Use Drizzle's schema-based select which is completely safe
+  const result = await db.select({ count: sql<number>`count(*)` }).from(table);
+  return Number(result[0]?.count ?? 0);
+}
+
+// =============================================================================
+// ADMIN ACTIONS
+// =============================================================================
 
 /**
  * Check which tables actually exist in the database.
@@ -332,12 +473,11 @@ export async function deleteAllGamesAction(adminSecret: string): Promise<{
  * Nuclear option: TRUNCATE all major tables individually.
  * Use this if CASCADE isn't working as expected.
  *
- * SECURITY NOTE: This function uses sql.raw() for table names, which is safe because:
- * 1. Table names come from the hardcoded `tablesToTruncate` array below (NOT user input)
- * 2. No external input is interpolated into the SQL query
- * 3. This is an admin-only function for database maintenance
- *
- * Do NOT modify this pattern to accept dynamic table names from user input.
+ * SECURITY: This function uses a strict allowlist of table names.
+ * - Table names are validated against ALLOWED_TRUNCATE_TABLES constant
+ * - sql.identifier() is used for safe SQL construction
+ * - Drizzle schema-based operations are used where possible
+ * - No user input is ever interpolated into SQL queries
  */
 export async function truncateAllTablesAction(adminSecret: string): Promise<{
   success: boolean;
@@ -351,11 +491,12 @@ export async function truncateAllTablesAction(adminSecret: string): Promise<{
 
   try {
     // Order matters! Truncate child tables before parents to avoid FK constraint issues
-    // SECURITY: These are hardcoded table names - NOT user input
-    const tablesToTruncate = [
+    // SECURITY: These are validated against ALLOWED_TRUNCATE_TABLES constant
+    const tablesToTruncate: AllowedTableName[] = [
       // Child tables first (have foreign keys to other tables)
       "bot_memories",
       "bot_emotional_states",
+      "bot_tells",
       "attacks",
       "combat_logs",
       "messages",
@@ -366,16 +507,27 @@ export async function truncateAllTablesAction(adminSecret: string): Promise<{
       "research_branch_allocations",
       "resource_inventory",
       "crafting_queue",
-      "covert_operations",
       "research_progress",
       "market_orders",
       "sectors",
+      "civil_status_history",
+      "game_saves",
+      "game_sessions",
+      "game_configs",
+      "galaxy_regions",
+      "region_connections",
+      "empire_influence",
+      "llm_usage_logs",
+      "llm_decision_cache",
+      "syndicate_trust",
+      "syndicate_contracts",
+      "pirate_missions",
+      "coalition_members",
       // Then parent tables
       "empires",
       "market_prices",
       "galactic_events",
       "coalitions",
-      "syndicate_contracts",
       "performance_logs",
       "games", // Games last since everything references it
     ];
@@ -385,35 +537,40 @@ export async function truncateAllTablesAction(adminSecret: string): Promise<{
 
     console.log("Starting nuclear cleanup - truncating all tables...");
 
-    for (const table of tablesToTruncate) {
-      try {
-        console.log(`Truncating ${table}...`);
+    for (const tableName of tablesToTruncate) {
+      // Validate table name against allowlist (compile-time type check + runtime validation)
+      const table = getValidatedTable(tableName);
+      if (!table) {
+        console.error(`SECURITY: Table "${tableName}" rejected - not in allowlist`);
+        failed.push(tableName);
+        continue;
+      }
 
-        // Try TRUNCATE first
+      try {
+        console.log(`Truncating ${tableName}...`);
+
+        // Try TRUNCATE first using safe SQL construction
         try {
-          await db.execute(sql.raw(`TRUNCATE TABLE ${table} CASCADE`));
+          await db.execute(safeTruncateTable(tableName));
         } catch (truncateErr) {
-          console.warn(`TRUNCATE failed for ${table}, trying DELETE...`, truncateErr);
-          // If TRUNCATE fails, use DELETE (slower but more reliable)
-          await db.execute(sql.raw(`DELETE FROM ${table}`));
+          console.warn(`TRUNCATE failed for ${tableName}, trying DELETE...`, truncateErr);
+          // If TRUNCATE fails, use schema-based DELETE (completely safe)
+          await safeDeleteFromTable(tableName);
         }
 
-        // Verify it worked
-        const countResult = await db.execute(sql.raw(`SELECT COUNT(*) as count FROM ${table}`)) as unknown as DbQueryResult<CountRow>;
-        const count = Array.isArray(countResult)
-          ? Number((countResult[0])?.count ?? 0)
-          : Number((countResult.rows[0])?.count ?? 0);
+        // Verify it worked using schema-based count (completely safe)
+        const count = await safeCountTable(tableName);
 
         if (count === 0) {
-          console.log(`✓ ${table} cleared`);
-          succeeded.push(table);
+          console.log(`[OK] ${tableName} cleared`);
+          succeeded.push(tableName);
         } else {
-          console.warn(`✗ ${table} still has ${count} rows after cleanup`);
-          failed.push(table);
+          console.warn(`[WARN] ${tableName} still has ${count} rows after cleanup`);
+          failed.push(tableName);
         }
       } catch (err) {
-        console.error(`Failed to clear ${table}:`, err);
-        failed.push(table);
+        console.error(`Failed to clear ${tableName}:`, err);
+        failed.push(tableName);
       }
     }
 
@@ -425,7 +582,7 @@ export async function truncateAllTablesAction(adminSecret: string): Promise<{
       };
     }
 
-    console.log(`✓ Successfully cleared all ${succeeded.length} tables`);
+    console.log(`[OK] Successfully cleared all ${succeeded.length} tables`);
     return {
       success: true,
       tablesCleared: succeeded,

@@ -104,38 +104,38 @@ Update unit test "planet" terminology (6 files)
 
 ### Security (7 Missing Items)
 
-| # | Issue | Source | File:Line | Severity |
-|---|-------|--------|-----------|----------|
-| SEC-M1 | Empire cookie manipulation - `resumeCampaignAction()` allows resuming ANY campaign | security.md | game-actions.ts:324-367 | High |
-| SEC-M2 | `getAvailableContractsAction()` lacks explicit authorization | security.md | syndicate-actions.ts:147-220 | Medium |
-| SEC-M3 | Quantity limit inconsistency (100, 1000, 1M across actions) | security.md | Multiple Actions | Medium |
-| SEC-M4 | Error message leakage passes raw error.message to client | security.md | combat-actions.ts:182-186 | Medium |
-| SEC-M5 | SSE endpoint doesn't validate request origin header | security.md | api/game/stream/route.ts:33-176 | Medium |
-| SEC-M6 | Raw SQL with `sql.raw()` pattern is dangerous | security.md | admin-actions.ts:386 | Critical |
-| SEC-M7 | Hardcoded cookie names duplicated across 15+ files | security.md | Multiple Files | Low |
+| # | Issue | Source | File:Line | Severity | Status |
+|---|-------|--------|-----------|----------|--------|
+| SEC-M1 | Empire cookie manipulation - `resumeCampaignAction()` allows resuming ANY campaign | security.md | game-actions.ts:324-367 | High | |
+| SEC-M2 | `getAvailableContractsAction()` lacks explicit authorization | security.md | syndicate-actions.ts:147-220 | Medium | |
+| SEC-M3 | Quantity limit inconsistency (100, 1000, 1M across actions) | security.md | Multiple Actions | Medium | |
+| SEC-M4 | Error message leakage passes raw error.message to client | security.md | combat-actions.ts:182-186 | Medium | |
+| SEC-M5 | SSE endpoint doesn't validate request origin header | security.md | api/game/stream/route.ts:33-176 | Medium | |
+| SEC-M6 | Raw SQL with `sql.raw()` pattern is dangerous | security.md | admin-actions.ts:386 | Critical | [COMPLETED 2026-01-09] |
+| SEC-M7 | Hardcoded cookie names duplicated across 15+ files | security.md | Multiple Files | Low | |
 
 ### Code Quality (8 Missing Items)
 
-| # | Issue | Source | File:Line | Severity |
-|---|-------|--------|-----------|----------|
-| CQ-M1 | **Incomplete TODO `componentsReserved: {}`** - crafting may not reserve components | code-quality.md | bot-actions.ts:423 | Critical |
-| CQ-M2 | TODO comments for unimplemented features (covert ops, research, upgrades) | code-quality.md | decision-engine.ts:55,701-709 | High |
-| CQ-M3 | Emotional decay failures silently skip processing for bots | code-quality.md | turn-processor.ts:203-208 | High |
-| CQ-M4 | Excessive type assertions reduce type safety | code-quality.md | Multiple files | High |
-| CQ-M5 | `processEmpireTurn` is 377 lines - should be split | code-quality.md | turn-processor.ts:496-873 | Medium |
-| CQ-M6 | Inconsistent error handling (throw vs return { success: false }) | code-quality.md | combat-actions.ts | Medium |
-| CQ-M7 | Missing JSDoc on public API constants | code-quality.md | effectiveness.ts | Medium |
-| CQ-M8 | Complex switch in executeBotDecision could use strategy pattern | code-quality.md | bot-actions.ts:48-77 | Medium |
+| # | Issue | Source | File:Line | Severity | Status |
+|---|-------|--------|-----------|----------|--------|
+| CQ-M1 | **Incomplete TODO `componentsReserved: {}`** - crafting may not reserve components | code-quality.md | bot-actions.ts:423 | Critical | [COMPLETED 2026-01-09] |
+| CQ-M2 | TODO comments for unimplemented features (covert ops, research, upgrades) | code-quality.md | decision-engine.ts:55,701-709 | High | |
+| CQ-M3 | Emotional decay failures silently skip processing for bots | code-quality.md | turn-processor.ts:203-208 | High | |
+| CQ-M4 | Excessive type assertions reduce type safety | code-quality.md | Multiple files | High | |
+| CQ-M5 | `processEmpireTurn` is 377 lines - should be split | code-quality.md | turn-processor.ts:496-873 | Medium | |
+| CQ-M6 | Inconsistent error handling (throw vs return { success: false }) | code-quality.md | combat-actions.ts | Medium | |
+| CQ-M7 | Missing JSDoc on public API constants | code-quality.md | effectiveness.ts | Medium | |
+| CQ-M8 | Complex switch in executeBotDecision could use strategy pattern | code-quality.md | bot-actions.ts:48-77 | Medium | |
 
 ### Performance (5 Missing Items)
 
-| # | Issue | Source | File:Line | Severity |
-|---|-------|--------|-----------|----------|
-| PERF-M1 | **Sequential DB inserts in loop** - initializeMarketPrices | performance.md | market-service.ts:78-91 | Critical |
-| PERF-M2 | Sequential DB queries should use Promise.all | performance.md | treaty-service.ts:199-205 | High |
-| PERF-M3 | 4 sequential DB queries could be parallelized | performance.md | starmap-actions.ts:346-378 | High |
-| PERF-M4 | Sequential awaits in loop for memory cleanup | architecture.md | bot-memory-repository.ts:401-403 | High |
-| PERF-M5 | react-window installed but not used for large lists | performance.md | package.json:55 | Low |
+| # | Issue | Source | File:Line | Severity | Status |
+|---|-------|--------|-----------|----------|--------|
+| PERF-M1 | **Sequential DB inserts in loop** - initializeMarketPrices | performance.md | market-service.ts:78-91 | Critical | [COMPLETED 2026-01-09] |
+| PERF-M2 | Sequential DB queries should use Promise.all | performance.md | treaty-service.ts:199-205 | High | |
+| PERF-M3 | 4 sequential DB queries could be parallelized | performance.md | starmap-actions.ts:346-378 | High | |
+| PERF-M4 | Sequential awaits in loop for memory cleanup | architecture.md | bot-memory-repository.ts:401-403 | High | |
+| PERF-M5 | react-window installed but not used for large lists | performance.md | package.json:55 | Low | |
 
 ### Architecture (5 Missing Items)
 
@@ -149,32 +149,32 @@ Update unit test "planet" terminology (6 files)
 
 ### Game Balance (10 Missing Items - MAJOR GAP)
 
-| # | Issue | Source | File:Line | Severity |
-|---|-------|--------|-----------|----------|
-| BAL-M1 | **Research cost scaling too steep** - RESEARCH_GROWTH_RATE = 2.0 means level 10 costs 1,024,000 RP | game-balance.md | research-costs.ts:17 | Critical |
-| BAL-M2 | **Carrier combat effectiveness is ZERO** - 2500 credit units contribute nothing | game-balance.md | effectiveness.ts:89-95 | Critical |
-| BAL-M3 | **Civil status "revolting" = instant defeat** - no recovery mechanism | game-balance.md | conditions.ts:318-319 | Critical |
-| BAL-M4 | **Nuclear weapon cost 500M** vs starting 100K - effectively unobtainable | game-balance.md | nuclear.ts:19 | Critical |
-| BAL-M5 | Sector cost scaling creates prohibitive late-game costs (3.5x at 50 sectors) | game-balance.md | sector-costs.ts:14 | High |
-| BAL-M6 | **Food consumption > production at start** - new players begin in deficit | game-balance.md | population.ts:15-18 | High |
-| BAL-M7 | Military victory threshold 2x ALL empires combined - nearly impossible | game-balance.md | conditions.ts:83 | High |
-| BAL-M8 | Station power inconsistency (30 vs 50) between systems | game-balance.md | combat-config.json:3-9, 29-36 | High |
-| BAL-M9 | Underdog bonus threshold may be too generous | game-balance.md | combat-config.json:10-13 | High |
-| BAL-M10 | Fundamental research victory requires 10,000 research sectors | game-economy.md | research.ts:57-60 | Medium |
+| # | Issue | Source | File:Line | Severity | Status |
+|---|-------|--------|-----------|----------|--------|
+| BAL-M1 | **Research cost scaling too steep** - RESEARCH_GROWTH_RATE = 2.0 means level 10 costs 1,024,000 RP | game-balance.md | research-costs.ts:17 | Critical | |
+| BAL-M2 | **Carrier combat effectiveness is ZERO** - 2500 credit units contribute nothing | game-balance.md | effectiveness.ts:89-95 | Critical | [COMPLETED 2026-01-09] |
+| BAL-M3 | **Civil status "revolting" = instant defeat** - no recovery mechanism | game-balance.md | conditions.ts:318-319 | Critical | [COMPLETED 2026-01-09] |
+| BAL-M4 | **Nuclear weapon cost 500M** vs starting 100K - effectively unobtainable | game-balance.md | nuclear.ts:19 | Critical | |
+| BAL-M5 | Sector cost scaling creates prohibitive late-game costs (3.5x at 50 sectors) | game-balance.md | sector-costs.ts:14 | High | |
+| BAL-M6 | **Food consumption > production at start** - new players begin in deficit | game-balance.md | population.ts:15-18 | High | |
+| BAL-M7 | Military victory threshold 2x ALL empires combined - nearly impossible | game-balance.md | conditions.ts:83 | High | |
+| BAL-M8 | Station power inconsistency (30 vs 50) between systems | game-balance.md | combat-config.json:3-9, 29-36 | High | |
+| BAL-M9 | Underdog bonus threshold may be too generous | game-balance.md | combat-config.json:10-13 | High | |
+| BAL-M10 | Fundamental research victory requires 10,000 research sectors | game-economy.md | research.ts:57-60 | Medium | |
 
 ### Player Journey (9 Missing Items - MAJOR GAP)
 
-| # | Issue | Source | File:Line | Severity |
-|---|-------|--------|-----------|----------|
-| PJ-M1 | **Tutorial and Welcome Modal conflict on Turn 1** - competing UI elements | player-journey.md | GameShell.tsx:181-216 | Critical |
-| PJ-M2 | **Onboarding hints obscure gameplay** - 3+ overlapping tutorial elements | player-journey.md | OnboardingManager.tsx:36-141 | Critical |
-| PJ-M3 | **No guided first action** - tutorial describes but doesn't guide player to DO | player-journey.md | TutorialOverlay.tsx:85-139 | Critical |
-| PJ-M4 | **Victory conditions inconsistency** - landing page shows 3, tutorial shows 6 | player-journey.md | page.tsx:86-93 vs TutorialOverlay | Critical |
-| PJ-M5 | Screenshot placeholders on landing page ("Add image to /public/screenshots/") | player-journey.md | page.tsx:164-224 | High |
-| PJ-M6 | New game form lacks context - no recommended settings for beginners | player-journey.md | game/page.tsx:86-140 | High |
-| PJ-M7 | Quick Reference Modal not discoverable (only via ? key) | player-journey.md | QuickReferenceModal.tsx | High |
-| PJ-M8 | Mobile onboarding incomplete - desktop tutorial may not render on mobile | player-journey.md | MobileBottomBar.tsx | High |
-| PJ-M9 | No first-turn guided checklist - 8+ actions with no priority indication | player-journey.md | TurnOrderPanel.tsx:169-230 | High |
+| # | Issue | Source | File:Line | Severity | Status |
+|---|-------|--------|-----------|----------|--------|
+| PJ-M1 | **Tutorial and Welcome Modal conflict on Turn 1** - competing UI elements | player-journey.md | GameShell.tsx:181-216 | Critical | [COMPLETED 2026-01-09] (Already fixed in P2-16) |
+| PJ-M2 | **Onboarding hints obscure gameplay** - 3+ overlapping tutorial elements | player-journey.md | OnboardingManager.tsx:36-141 | Critical | |
+| PJ-M3 | **No guided first action** - tutorial describes but doesn't guide player to DO | player-journey.md | TutorialOverlay.tsx:85-139 | Critical | |
+| PJ-M4 | **Victory conditions inconsistency** - landing page shows 3, tutorial shows 6 | player-journey.md | page.tsx:86-93 vs TutorialOverlay | Critical | |
+| PJ-M5 | Screenshot placeholders on landing page ("Add image to /public/screenshots/") | player-journey.md | page.tsx:164-224 | High | |
+| PJ-M6 | New game form lacks context - no recommended settings for beginners | player-journey.md | game/page.tsx:86-140 | High | |
+| PJ-M7 | Quick Reference Modal not discoverable (only via ? key) | player-journey.md | QuickReferenceModal.tsx | High | |
+| PJ-M8 | Mobile onboarding incomplete - desktop tutorial may not render on mobile | player-journey.md | MobileBottomBar.tsx | High | |
+| PJ-M9 | No first-turn guided checklist - 8+ actions with no priority indication | player-journey.md | TurnOrderPanel.tsx:169-230 | High | |
 
 ### UX/Accessibility (9 Missing Critical/High Items)
 
@@ -275,8 +275,8 @@ Original plan mentions UI components but not these 6 test files:
 ### New Sprint: Game Balance Sprint (Missing from original)
 
 - [ ] Reduce research cost growth rate (2.0 → 1.5)
-- [ ] Give carriers combat effectiveness (at least 0.5 in space phase)
-- [ ] Add civil status recovery mechanism (prevent instant defeat cascade)
+- [x] Give carriers combat effectiveness (at least 0.5 in space phase) [COMPLETED 2026-01-09]
+- [x] Add civil status recovery mechanism (prevent instant defeat cascade) [COMPLETED 2026-01-09]
 - [ ] Scale nuclear weapon cost to game economy (500M → 50M or progressive unlock)
 - [ ] Fix starting food deficit (add 1 food sector or reduce FOOD_PER_CITIZEN)
 - [ ] Reduce military victory threshold (2.0x → 1.5x)
@@ -285,7 +285,7 @@ Original plan mentions UI components but not these 6 test files:
 
 ### New Sprint: Player Onboarding Sprint (Missing from original)
 
-- [ ] Resolve Turn 1 modal conflict (sequence or merge Tutorial + Welcome)
+- [x] Resolve Turn 1 modal conflict (sequence or merge Tutorial + Welcome) [COMPLETED 2026-01-09]
 - [ ] Add guided first actions to tutorial (not just describe - DO)
 - [ ] Synchronize victory conditions (landing page vs tutorial)
 - [ ] Add screenshots to landing page carousel
