@@ -227,13 +227,11 @@ export async function proposeTreaty(
   treatyType: TreatyType,
   turn: number
 ): Promise<TreatyResult> {
-  // Validate empires exist
-  const proposer = await db.query.empires.findFirst({
-    where: eq(empires.id, proposerId),
-  });
-  const recipient = await db.query.empires.findFirst({
-    where: eq(empires.id, recipientId),
-  });
+  // Validate empires exist (parallel fetch for performance)
+  const [proposer, recipient] = await Promise.all([
+    db.query.empires.findFirst({ where: eq(empires.id, proposerId) }),
+    db.query.empires.findFirst({ where: eq(empires.id, recipientId) }),
+  ]);
 
   if (!proposer || !recipient) {
     return { success: false, error: "Empire not found" };

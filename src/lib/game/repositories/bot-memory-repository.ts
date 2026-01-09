@@ -15,7 +15,7 @@
 
 import { db } from "@/lib/db";
 import { botMemories, type BotMemory, type NewBotMemory } from "@/lib/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray } from "drizzle-orm";
 import {
   MEMORY_WEIGHTS,
   calculateMemoryDecay,
@@ -398,10 +398,9 @@ export async function pruneDecayedMemories(
     return 0;
   }
 
-  // Delete in batches
-  for (const memory of toDelete) {
-    await db.delete(botMemories).where(eq(botMemories.id, memory.id));
-  }
+  // Batch delete using IN clause for performance
+  const idsToDelete = toDelete.map((m) => m.id);
+  await db.delete(botMemories).where(inArray(botMemories.id, idsToDelete));
 
   return toDelete.length;
 }

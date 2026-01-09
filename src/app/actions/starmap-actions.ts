@@ -344,24 +344,22 @@ export async function getWormholesAction(): Promise<WormholeData | null> {
       return null;
     }
 
-    // Fetch all wormholes in the game
-    const allConnections = await db.query.regionConnections.findMany({
-      where: and(
-        eq(regionConnections.gameId, gameId),
-        eq(regionConnections.connectionType, "wormhole")
-      ),
-    });
-
-    // Fetch all regions for names
-    const regions = await db.query.galaxyRegions.findMany({
-      where: eq(galaxyRegions.gameId, gameId),
-    });
+    // Fetch wormholes, regions, and empires in parallel for performance
+    const [allConnections, regions, allEmpires] = await Promise.all([
+      db.query.regionConnections.findMany({
+        where: and(
+          eq(regionConnections.gameId, gameId),
+          eq(regionConnections.connectionType, "wormhole")
+        ),
+      }),
+      db.query.galaxyRegions.findMany({
+        where: eq(galaxyRegions.gameId, gameId),
+      }),
+      db.query.empires.findMany({
+        where: eq(empires.gameId, gameId),
+      }),
+    ]);
     const regionMap = new Map(regions.map((r) => [r.id, r]));
-
-    // Fetch all empires for discoverer names
-    const allEmpires = await db.query.empires.findMany({
-      where: eq(empires.gameId, gameId),
-    });
     const empireMap = new Map(allEmpires.map((e) => [e.id, e]));
 
     // Map wormholes with additional info
