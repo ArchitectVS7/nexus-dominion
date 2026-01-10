@@ -60,10 +60,8 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
 
       // Get gameId to query database
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Query database for bot tier distribution
       const allEmpires = await db.query.empires.findMany({
@@ -95,10 +93,8 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       await startNewGameWithBots(gamePage);
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       const allEmpires = await db.query.empires.findMany({
         where: eq(empires.gameId, gameId),
@@ -156,10 +152,8 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       await startNewGameWithBots(gamePage);
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Process one turn
       await gamePage.click('[data-testid="end-turn-button"]');
@@ -195,10 +189,8 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       await startNewGameWithBots(gamePage);
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Process turn 1 -> 2 (this will trigger pre-compute for turn 3)
       await gamePage.click('[data-testid="end-turn-button"]');
@@ -245,10 +237,8 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       await startNewGameWithBots(gamePage);
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Process turn 1 -> 2 (pre-computes for turn 3)
       await gamePage.click('[data-testid="end-turn-button"]');
@@ -331,10 +321,8 @@ test.describe("Milestone 12: LLM-Powered Tier 1 Bots", () => {
       await startNewGameWithBots(gamePage);
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Process a few turns to generate LLM calls
       const turnCounter = gamePage.locator('[data-testid="turn-counter"]');

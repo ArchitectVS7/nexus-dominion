@@ -100,6 +100,17 @@ const createMockEvent = (overrides: Partial<GalacticEvent> = {}): GalacticEvent 
 // TESTS
 // =============================================================================
 
+// Cache the dynamic import to avoid slow re-imports in each test
+// This significantly improves test performance and prevents timeout flakiness
+let eventServiceModule: typeof import("../events/event-service") | null = null;
+
+async function getEventService() {
+  if (!eventServiceModule) {
+    eventServiceModule = await import("../events/event-service");
+  }
+  return eventServiceModule;
+}
+
 describe("Event Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -111,8 +122,7 @@ describe("Event Service", () => {
 
   describe("selectAffectedEmpires (via applyGalacticEvent)", () => {
     it("should select all empires for global scope", async () => {
-      // Import the function dynamically to allow mocking
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", name: "Empire 1" }),
@@ -132,7 +142,7 @@ describe("Event Service", () => {
     });
 
     it("should select single empire for random_empire scope", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", name: "Empire 1" }),
@@ -152,7 +162,7 @@ describe("Event Service", () => {
     });
 
     it("should select top empires by networth for top_empires scope", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", name: "Empire 1", networth: 50000 }),
@@ -176,7 +186,7 @@ describe("Event Service", () => {
     });
 
     it("should select bottom empires by networth for bottom_empires scope", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", name: "Empire 1", networth: 50000 }),
@@ -200,7 +210,7 @@ describe("Event Service", () => {
     });
 
     it("should exclude eliminated empires", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", name: "Empire 1", isEliminated: false }),
@@ -223,7 +233,7 @@ describe("Event Service", () => {
 
   describe("Effect Application", () => {
     it("should apply resource_multiplier effect to credits", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", credits: 100000 }),
@@ -248,7 +258,7 @@ describe("Event Service", () => {
     });
 
     it("should apply civil_status effect", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", civilStatus: "content" }),
@@ -272,7 +282,7 @@ describe("Event Service", () => {
     });
 
     it("should apply military damage effect", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", soldiers: 100, fighters: 50 }),
@@ -297,7 +307,7 @@ describe("Event Service", () => {
     });
 
     it("should apply population effect", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", population: 10000 }),
@@ -321,7 +331,7 @@ describe("Event Service", () => {
     });
 
     it("should apply research effect", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1", researchPoints: 500 }),
@@ -346,7 +356,7 @@ describe("Event Service", () => {
     });
 
     it("should apply multiple effects from one event", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [createMockEmpire({ id: "empire-1" })];
 
@@ -379,7 +389,7 @@ describe("Event Service", () => {
 
   describe("Event Message Generation", () => {
     it("should generate correct message for global scope", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1" }),
@@ -400,7 +410,7 @@ describe("Event Service", () => {
     });
 
     it("should generate correct message for targeted scope", async () => {
-      const { applyGalacticEvent } = await import("../events/event-service");
+      const { applyGalacticEvent } = await getEventService();
 
       const empires = [
         createMockEmpire({ id: "empire-1" }),
@@ -423,7 +433,7 @@ describe("Event Service", () => {
 
   describe("processGalacticEvents", () => {
     it("should not trigger events before turn 15", async () => {
-      const { processGalacticEvents } = await import("../events/event-service");
+      const { processGalacticEvents } = await getEventService();
 
       const empires = [createMockEmpire({ id: "empire-1" })];
 
@@ -434,7 +444,7 @@ describe("Event Service", () => {
     });
 
     it("should check turn threshold for event triggering", async () => {
-      const { processGalacticEvents } = await import("../events/event-service");
+      const { processGalacticEvents } = await getEventService();
       const { getLastEventTurn } = await import("../../repositories/event-repository");
 
       // Mock last event was at turn 5 (10 turns ago at turn 15)
@@ -452,7 +462,7 @@ describe("Event Service", () => {
 
   describe("calculateActiveModifiers", () => {
     it("should aggregate production bonuses from active events", async () => {
-      const { calculateActiveModifiers } = await import("../events/event-service");
+      const { calculateActiveModifiers } = await getEventService();
       const { getActiveEffects } = await import("../../repositories/event-repository");
 
       vi.mocked(getActiveEffects).mockResolvedValue([
@@ -483,7 +493,7 @@ describe("Event Service", () => {
     });
 
     it("should return empty modifiers when no active events", async () => {
-      const { calculateActiveModifiers } = await import("../events/event-service");
+      const { calculateActiveModifiers } = await getEventService();
       const { getActiveEffects } = await import("../../repositories/event-repository");
 
       vi.mocked(getActiveEffects).mockResolvedValue([]);

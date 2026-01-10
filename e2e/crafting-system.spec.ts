@@ -81,10 +81,8 @@ test.describe("Crafting System", () => {
       await gamePage.waitForLoadState("networkidle");
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Check database for inventory
       const empire = await db.query.empires.findFirst({
@@ -94,10 +92,8 @@ test.describe("Crafting System", () => {
         ),
       });
 
-      if (!empire) {
-        test.skip();
-        return;
-      }
+      expect(empire, "Player empire should exist in the game").toBeTruthy();
+      if (!empire) return; // TypeScript narrowing - test already failed
 
       // Initial inventory should be empty or have default resources
       const inventory = await db.query.resourceInventory.findMany({
@@ -163,10 +159,8 @@ test.describe("Crafting System", () => {
       await gamePage.waitForLoadState("networkidle");
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Try to craft refined metals (simplest Tier 1 recipe)
       const craftButton = gamePage.locator('[data-testid="craft-refined_metals"]');
@@ -282,10 +276,8 @@ test.describe("Syndicate System", () => {
       await gamePage.waitForLoadState("networkidle");
 
       const gameId = await getGameId(gamePage);
-      if (!gameId) {
-        test.skip();
-        return;
-      }
+      expect(gameId, "Game ID should be available after starting a game").toBeTruthy();
+      if (!gameId) return; // TypeScript narrowing - test already failed
 
       // Check database for trust
       const empire = await db.query.empires.findFirst({
@@ -295,10 +287,8 @@ test.describe("Syndicate System", () => {
         ),
       });
 
-      if (!empire) {
-        test.skip();
-        return;
-      }
+      expect(empire, "Player empire should exist in the game").toBeTruthy();
+      if (!empire) return; // TypeScript narrowing - test already failed
 
       const trust = await db.query.syndicateTrust.findFirst({
         where: eq(syndicateTrust.empireId, empire.id),
