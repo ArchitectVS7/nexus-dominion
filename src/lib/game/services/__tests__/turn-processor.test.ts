@@ -3,6 +3,9 @@
  *
  * Unit tests for the turn processing pipeline.
  * Tests individual phase processors and integration scenarios.
+ *
+ * @spec REQ-TURN-001 - Turn Processing Pipeline (partial coverage)
+ * @see docs/PRD.md Section 2
  */
 
 import { describe, it, expect } from "vitest";
@@ -12,6 +15,7 @@ import {
 } from "../core/turn-processor";
 import type { CivilStatusEvent } from "../population/civil-status";
 
+// @spec REQ-TURN-001 - Phase 3: Population Phase
 describe("Turn Processor - Phase 2: Population", () => {
   describe("processPhase2_Population", () => {
     it("should process population growth when food is sufficient", () => {
@@ -48,6 +52,7 @@ describe("Turn Processor - Phase 2: Population", () => {
   });
 });
 
+// @spec REQ-TURN-001 - Phase 4: Civil Status Phase
 describe("Turn Processor - Phase 3: Civil Status", () => {
   describe("processPhase3_CivilStatus", () => {
     it("should upgrade status on sufficient food surplus", () => {
@@ -141,6 +146,7 @@ describe("Turn Processor - Phase 3: Civil Status", () => {
   });
 });
 
+// @spec REQ-RES-003 - Civil Status Income Multiplier
 describe("Turn Processor - Civil Status Income Multipliers", () => {
   // Import constants to verify multipliers
   // Rebalanced: 5x differential (2.5x to 0.5x) instead of 16x (4.0x to 0.25x)
@@ -177,6 +183,7 @@ describe("Turn Processor - Civil Status Income Multipliers", () => {
   });
 });
 
+// @spec REQ-RES-002 - Sector Production (maintenance costs)
 describe("Turn Processor - Maintenance Calculations", () => {
   it("should calculate correct maintenance costs", async () => {
     const { calculateMaintenanceCost, SECTOR_MAINTENANCE_COST } = await import("../economy/resource-engine");
@@ -199,6 +206,7 @@ describe("Turn Processor - Maintenance Calculations", () => {
   });
 });
 
+// @spec REQ-RES-001, REQ-RES-002 - Resource Types and Sector Production
 describe("Turn Processor - Resource Production", () => {
   it("should apply income multiplier to credits", async () => {
     const { processTurnResources, SECTOR_MAINTENANCE_COST } = await import("../economy/resource-engine");

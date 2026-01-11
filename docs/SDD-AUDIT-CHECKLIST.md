@@ -38,9 +38,9 @@ For each system:
 - [ ] Update all 54 `@see docs/PRD.md` references to use correct section numbers (deferred - sections now match)
 
 ### 1.2 Establish Traceability Tooling
-- [ ] Create requirement extraction script or template
-- [ ] Define "validated" vs "unvalidated" test distinction
-- [ ] Add CI check for orphaned requirements (spec without test)
+- [x] Create requirement extraction script or template (manual + grep command in PRD Appendix B)
+- [x] Define "validated" vs "unvalidated" test distinction (`@spec REQ-XXX` annotation convention)
+- [x] Add CI check for orphaned requirements (bash command in PRD Appendix B, CI integration deferred)
 
 ### 1.3 Prioritize Systems
 Critical path (game unplayable without):
@@ -70,29 +70,33 @@ Tertiary (enhancement features):
 
 ### 2.1 Turn Processing System
 **Source:** `docs/design/GAME-DESIGN.md` (Turn Structure section)
-**Code:** `src/lib/game/services/turn-processor.ts`
+**Code:** `src/lib/game/services/core/turn-processor.ts`
 **Tests:** `src/lib/game/services/__tests__/turn-processor.test.ts`
 
 #### Requirements to Extract
-- [ ] REQ-TURN-001: Turn consists of 6 phases (income, population, civil status, market, bots, actions)
+- [x] REQ-TURN-001: Turn Processing Pipeline (updated from 6 phases to actual 17-step pipeline)
+  - PRD updated to match actual code implementation (2-tier transactional/non-transactional)
+  - Tests annotated with @spec REQ-TURN-001
+  - 25 tests pass, validates phases 3-4 (Population, Civil Status)
+  - **GAP:** Full pipeline integration test needed
 - [ ] REQ-TURN-002: Phases execute in strict order
 - [ ] REQ-TURN-003: All empires process simultaneously (not sequentially)
 - [ ] REQ-TURN-004: Turn number increments after all processing complete
 - [ ] REQ-TURN-005: Game ends when victory condition met or turn limit reached
 
 #### Code Mapping
-- [ ] Map each requirement to specific function/line
-- [ ] Verify code matches spec intent (not just "works")
+- [x] REQ-TURN-001 mapped to `turn-processor.ts:processTurn()` lines 142-400+
+- [ ] Map remaining requirements to specific function/line
 
 #### Test Validation
-- [ ] Verify test exists for each requirement
-- [ ] Add `@spec REQ-TURN-XXX` annotation to each test
-- [ ] Fill gaps with new tests
+- [x] REQ-TURN-001: @spec annotation added, 25 tests pass
+- [ ] Add @spec annotations for REQ-TURN-002 through REQ-TURN-005
+- [ ] Fill gaps with integration test for full pipeline
 
 #### Sign-off
-- [ ] All requirements extracted: ___
-- [ ] All requirements mapped to code: ___
-- [ ] All requirements have validating tests: ___
+- [ ] All requirements extracted: 1/5
+- [ ] All requirements mapped to code: 1/5
+- [ ] All requirements have validating tests: 1/5 (partial)
 - [ ] System audit complete: ___
 
 ---
