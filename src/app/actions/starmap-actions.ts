@@ -934,7 +934,7 @@ export async function getTellsForPlayerAction(): Promise<PlayerTellData | null> 
       if (!existing || perception.tell.createdAtTurn > (existing as unknown as { createdAtTurn: number }).createdAtTurn) {
         tellsByEmpire[perception.tell.empireId] = {
           displayType: perception.displayType,
-          displayConfidence: perception.displayConfidence,
+          displayConfidence: `${Math.round(perception.displayConfidence * 100)}%`,
           perceivedTruth: perception.perceivedTruth,
           signalDetected: perception.signalDetected,
           targetEmpireId: perception.tell.targetEmpireId,

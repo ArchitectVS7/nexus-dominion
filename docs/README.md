@@ -12,6 +12,7 @@ Welcome to the Nexus Dominion documentation hub. This guide helps you find what 
 | **Write code** | [CLAUDE.md](../CLAUDE.md) (start here) |
 | **Understand the vision** | [Game Design](design/GAME-DESIGN.md) |
 | **See what's coming** | [Alpha Status](roadmap/ALPHA.md) |
+| **Trace spec → code → tests** | [Spec Registry](SPEC-REGISTRY.md) |
 
 ---
 

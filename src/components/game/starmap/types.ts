@@ -22,26 +22,33 @@ export type MilitaryTier = "weak" | "moderate" | "strong" | "dominant";
 export interface EmpireMapData {
   id: string;
   name: string;
-  isPlayer: boolean;
-  isBot: boolean;
   isEliminated: boolean;
-  regionId: string;
   sectorCount: number;
   networth: number;
-  militaryStrength: number;
   intelLevel: IntelLevel;
-  threatLevel: ThreatLevel;
-  archetype?: EmpireArchetype | "unknown";
+  // Type indicators (optional for flexibility)
   type?: "player" | "bot";
+  isPlayer?: boolean;
+  isBot?: boolean;
+  // Location (optional - not always available)
+  regionId?: string;
+  // Military data (optional - depends on intel level)
+  militaryStrength?: number;
   militaryTier?: MilitaryTier;
-  // Relationship data
-  hasNAP: boolean;
-  hasAlliance: boolean;
+  // Threat assessment (optional - depends on intel level)
+  threatLevel?: ThreatLevel;
+  archetype?: EmpireArchetype | "unknown";
+  // Relationship data (optional)
+  hasNAP?: boolean;
+  hasAlliance?: boolean;
   hasTreaty?: boolean;
-  isAtWar: boolean;
-  recentAttacker: boolean;
-  recentDefender: boolean;
+  isAtWar?: boolean;
+  recentAttacker?: boolean;
+  recentDefender?: boolean;
   recentAggressor?: boolean;
+  // Boss indicators (M7 feature)
+  isBoss?: boolean;
+  bossEmergenceTurn?: number | null;
 }
 
 // Treaty connection between empires
@@ -53,13 +60,17 @@ export interface TreatyConnection {
 
 // Tell data for empire behavior hints
 export interface EmpireTellData {
-  empireId: string;
-  tellType: string;
+  empireId?: string;
+  tellType?: string;
   displayType?: string;
   displayConfidence?: string;
-  message: string;
-  confidence: number;
-  turn: number;
+  message?: string;
+  confidence?: number;
+  turn?: number;
+  // Perception-enhanced fields
+  perceivedTruth?: boolean;
+  signalDetected?: boolean;
+  targetEmpireId?: string | null;
 }
 
 // Region data
