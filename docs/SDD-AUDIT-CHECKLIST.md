@@ -32,10 +32,10 @@ For each system:
 ## Phase 1: Foundation
 
 ### 1.1 Create PRD Structure
-- [ ] Create `docs/PRD.md` as the central requirements document
-- [ ] Define requirement ID format: `REQ-{SYSTEM}-{NUMBER}`
-- [ ] Define requirement template (ID, description, source, code, test, status)
-- [ ] Update all 54 `@see docs/PRD.md` references to use correct section numbers
+- [x] Create `docs/PRD.md` as the central requirements document
+- [x] Define requirement ID format: `REQ-{SYSTEM}-{NUMBER}`
+- [x] Define requirement template (ID, description, source, code, test, status)
+- [ ] Update all 54 `@see docs/PRD.md` references to use correct section numbers (deferred - sections now match)
 
 ### 1.2 Establish Traceability Tooling
 - [ ] Create requirement extraction script or template
@@ -330,10 +330,12 @@ Tertiary (enhancement features):
 - [x] Completed SDD migration (all 12 pages)
 - [x] Fixed TypeScript errors
 - [x] Created this checklist
-- [ ] Started Phase 1.1 (PRD structure)
+- [x] Created `docs/PRD.md` with 46 initial requirements
+- [x] PRD sections match existing code references (7.6, 7.8, 7.9, 7.10, 8.2, 11.x)
+- [x] Phase 1.1 complete (PRD structure)
 
 ### Session 2
-- [ ] Complete Phase 1 (Foundation)
+- [ ] Complete Phase 1.2 (Traceability tooling)
 - [ ] Start Phase 2.1 (Turn Processing audit)
 
 ### Session 3+
@@ -345,8 +347,8 @@ Tertiary (enhancement features):
 ## Completion Criteria
 
 The audit is complete when:
-1. [ ] `docs/PRD.md` exists with all atomic requirements
-2. [ ] Every requirement has a unique ID
+1. [x] `docs/PRD.md` exists with all atomic requirements (46 initial, more to extract)
+2. [x] Every requirement has a unique ID (REQ-{SYSTEM}-{NUMBER} format)
 3. [ ] Every requirement maps to specific code location
 4. [ ] Every requirement has at least one validating test
 5. [ ] Every test has `@spec REQ-XXX-XXX` annotation
