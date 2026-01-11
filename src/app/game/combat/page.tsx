@@ -1,34 +1,26 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
-import { BattleReport } from "@/components/game/combat/BattleReport";
-import { CombatPreview } from "@/components/game/combat/CombatPreview";
-import {
-  getAvailableTargetsAction,
-  getMyForcesAction,
-  getAttackHistoryAction,
-  launchAttackAction,
-} from "@/app/actions/combat-actions";
-import type { Forces, AttackType, CombatResult } from "@/lib/combat/phases";
-import type { Attack } from "@/lib/db/schema";
+/**
+ * Combat Page
+ *
+ * Displays combat interface for attacking other empires.
+ * Uses React Query for data fetching.
+ */
 
-interface Target {
-  id: string;
-  name: string;
-  networth: number;
-  sectorCount: number;
-}
+import { useState } from "react";
+import { useDashboard, useStarmapData } from "@/lib/api";
+import { usePanelStore } from "@/stores";
+import type { Forces } from "@/lib/combat/phases";
 
 export default function CombatPage() {
-  const [targets, setTargets] = useState<Target[]>([]);
-  const [myForces, setMyForces] = useState<Forces | null>(null);
-  const [attackHistory, setAttackHistory] = useState<Attack[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { panelContext } = usePanelStore();
+  const { data: dashboard, isLoading: dashboardLoading } = useDashboard();
+  const { data: starmap, isLoading: starmapLoading } = useStarmapData();
 
-  // Attack state
-  const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
-  const [attackType, setAttackType] = useState<AttackType>("invasion");
+  const [selectedTargetId, setSelectedTargetId] = useState<string | null>(
+    panelContext?.targetEmpireId ?? null
+  );
+  const [attackType, setAttackType] = useState<"invasion" | "guerilla">("invasion");
   const [selectedForces, setSelectedForces] = useState<Forces>({
     soldiers: 0,
     fighters: 0,
@@ -38,124 +30,28 @@ export default function CombatPage() {
     carriers: 0,
   });
 
-  // Combat result
-  const [lastResult, setLastResult] = useState<CombatResult | null>(null);
-  const [isPending, startTransition] = useTransition();
-
-  // Load initial data
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setError(null);
-        const [targetsResult, forcesResult, historyResult] = await Promise.all([
-          getAvailableTargetsAction(),
-          getMyForcesAction(),
-          getAttackHistoryAction(10),
-        ]);
-
-        if (targetsResult.success && targetsResult.targets) {
-          setTargets(targetsResult.targets);
-        }
-        if (forcesResult.success && forcesResult.forces) {
-          setMyForces(forcesResult.forces);
-        }
-        if (historyResult.success && historyResult.attacks) {
-          setAttackHistory(historyResult.attacks);
-        }
-      } catch (err) {
-        console.error("Failed to load combat data:", err);
-        setError(err instanceof Error ? err.message : "Failed to load data");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadData();
-  }, []);
-
-  // Handle attack
-  const handleAttack = () => {
-    if (!selectedTarget) return;
-
-    startTransition(async () => {
-      try {
-        const result = await launchAttackAction(
-          selectedTarget.id,
-          attackType,
-          selectedForces
-        );
-
-        if (result.success && result.result) {
-          setLastResult(result.result);
-          // Refresh forces and history
-          const [forcesResult, historyResult] = await Promise.all([
-            getMyForcesAction(),
-            getAttackHistoryAction(10),
-          ]);
-          if (forcesResult.success && forcesResult.forces) {
-            setMyForces(forcesResult.forces);
-          }
-          if (historyResult.success && historyResult.attacks) {
-            setAttackHistory(historyResult.attacks);
-          }
-          // Reset selection
-          setSelectedForces({
-            soldiers: 0,
-            fighters: 0,
-            stations: 0,
-            lightCruisers: 0,
-            heavyCruisers: 0,
-            carriers: 0,
-          });
-        } else {
-          setError(result.error ?? "Attack failed");
-        }
-      } catch (err) {
-        console.error("Attack failed:", err);
-        setError(err instanceof Error ? err.message : "Attack failed");
-      }
-    });
-  };
+  const isLoading = dashboardLoading || starmapLoading;
 
   if (isLoading) {
     return (
-      <div className="p-6" data-testid="combat-page">
-        <h1 className="text-2xl font-display text-lcars-amber mb-6">Combat</h1>
-        <div className="text-gray-400">Loading combat data...</div>
-      </div>
-    );
-  }
-
-  if (error && !myForces) {
-    return (
-      <div className="p-6" data-testid="combat-page">
-        <h1 className="text-2xl font-display text-lcars-amber mb-6">Combat</h1>
-        <div
-          id="combat-page-error"
-          role="alert"
-          aria-live="assertive"
-          className="text-red-400"
-        >
-          Error: {error}
+      <div className="max-w-6xl mx-auto" data-testid="combat-page">
+        <h1 className="text-3xl font-display text-lcars-amber mb-8">Combat</h1>
+        <div className="lcars-panel animate-pulse">
+          <div className="h-40 bg-gray-800 rounded" />
         </div>
       </div>
     );
   }
+
+  const myForces = dashboard?.military ?? null;
+  const targets = starmap?.empires.filter(
+    (e) => e.id !== starmap.playerEmpireId && !e.isEliminated
+  ) ?? [];
+  const selectedTarget = targets.find((t) => t.id === selectedTargetId);
 
   return (
-    <div className="p-6" data-testid="combat-page">
-      <h1 className="text-2xl font-display text-lcars-amber mb-6">Combat</h1>
-
-      {/* Error display for non-fatal errors */}
-      {error && myForces && (
-        <div
-          id="combat-error"
-          role="alert"
-          aria-live="assertive"
-          className="mb-4 p-3 bg-red-900/50 border border-red-500 text-red-300 text-sm rounded"
-        >
-          {error}
-        </div>
-      )}
+    <div className="max-w-6xl mx-auto" data-testid="combat-page">
+      <h1 className="text-3xl font-display text-lcars-amber mb-8">Combat</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Attack Interface */}
@@ -166,27 +62,24 @@ export default function CombatPage() {
               Select Target
             </h2>
             {targets.length === 0 ? (
-              <div className="text-gray-400 text-sm">
-                No targets available. Start a game with bots to have enemies to attack.
-              </div>
+              <p className="text-gray-400 text-sm">
+                No targets available. Start a game with bots to have enemies.
+              </p>
             ) : (
-              <div className="space-y-2" role="listbox" aria-label="Available targets">
+              <div className="space-y-2 max-h-64 overflow-y-auto">
                 {targets.map((target) => (
                   <button
                     key={target.id}
-                    onClick={() => setSelectedTarget(target)}
-                    role="option"
-                    aria-selected={selectedTarget?.id === target.id}
+                    onClick={() => setSelectedTargetId(target.id)}
                     className={`w-full p-3 rounded text-left transition-colors ${
-                      selectedTarget?.id === target.id
+                      selectedTargetId === target.id
                         ? "bg-lcars-amber/20 border border-lcars-amber"
                         : "bg-gray-800 hover:bg-gray-700 border border-transparent"
                     }`}
-                    data-testid={`target-${target.id}`}
                   >
                     <div className="font-semibold">{target.name}</div>
                     <div className="text-sm text-gray-400">
-                      Networth: {target.networth.toLocaleString()} | Sectors: {target.sectorCount}
+                      NW: {target.networth.toLocaleString()} | Sectors: {target.sectorCount}
                     </div>
                   </button>
                 ))}
@@ -199,34 +92,28 @@ export default function CombatPage() {
             <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
               Attack Type
             </h2>
-            <div className="flex gap-4" role="radiogroup" aria-label="Attack type selection">
+            <div className="flex gap-4">
               <button
                 onClick={() => setAttackType("invasion")}
-                role="radio"
-                aria-checked={attackType === "invasion"}
                 className={`flex-1 p-3 rounded transition-colors ${
                   attackType === "invasion"
                     ? "bg-red-600 text-white"
                     : "bg-gray-800 hover:bg-gray-700"
                 }`}
-                data-testid="attack-type-invasion"
               >
                 <div className="font-semibold">Invasion</div>
                 <div className="text-xs opacity-75">Full 3-phase assault</div>
               </button>
               <button
                 onClick={() => setAttackType("guerilla")}
-                role="radio"
-                aria-checked={attackType === "guerilla"}
                 className={`flex-1 p-3 rounded transition-colors ${
                   attackType === "guerilla"
                     ? "bg-orange-600 text-white"
                     : "bg-gray-800 hover:bg-gray-700"
                 }`}
-                data-testid="attack-type-guerilla"
               >
                 <div className="font-semibold">Guerilla</div>
-                <div className="text-xs opacity-75">Soldiers only, hit & run</div>
+                <div className="text-xs opacity-75">Soldiers only</div>
               </button>
             </div>
           </div>
@@ -238,136 +125,61 @@ export default function CombatPage() {
                 Select Forces
               </h2>
               <div className="space-y-3">
-                {(Object.keys(myForces) as Array<keyof Forces>).map((unit) => (
-                  <div key={unit} className="flex items-center justify-between">
-                    <label htmlFor={`force-input-${unit}`} className="text-sm capitalize">{unit}</label>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 text-xs">
-                        Available: {myForces[unit]}
-                      </span>
-                      <input
-                        id={`force-input-${unit}`}
-                        type="number"
-                        min={0}
-                        max={myForces[unit]}
-                        value={selectedForces[unit]}
-                        onChange={(e) =>
-                          setSelectedForces((prev) => ({
-                            ...prev,
-                            [unit]: Math.min(
-                              Math.max(0, parseInt(e.target.value) || 0),
-                              myForces[unit]
-                            ),
-                          }))
-                        }
-                        aria-describedby={error && myForces ? "combat-error" : undefined}
-                        className="w-24 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-right"
-                        disabled={attackType === "guerilla" && unit !== "soldiers"}
-                        data-testid={`force-${unit}`}
-                      />
+                {(["soldiers", "fighters", "lightCruisers", "heavyCruisers", "carriers"] as const).map(
+                  (unit) => (
+                    <div key={unit} className="flex items-center justify-between">
+                      <label className="text-sm capitalize">
+                        {unit.replace(/([A-Z])/g, " $1").trim()}
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400 text-xs">
+                          Available: {myForces[unit]}
+                        </span>
+                        <input
+                          type="number"
+                          min={0}
+                          max={myForces[unit]}
+                          value={selectedForces[unit]}
+                          onChange={(e) =>
+                            setSelectedForces((prev) => ({
+                              ...prev,
+                              [unit]: Math.min(
+                                Math.max(0, parseInt(e.target.value) || 0),
+                                myForces[unit]
+                              ),
+                            }))
+                          }
+                          className="w-24 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-right"
+                          disabled={attackType === "guerilla" && unit !== "soldiers"}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           )}
 
-          {/* Combat Preview */}
-          {selectedTarget && myForces && (
-            <div className={isPending ? "opacity-50 pointer-events-none" : ""}>
-              {isPending && (
-                <div
-                  role="status"
-                  aria-live="polite"
-                  className="text-center text-lcars-amber mb-4 animate-pulse font-semibold"
-                >
-                  ATTACKING...
-                </div>
-              )}
-              <CombatPreview
-                attackerForces={selectedForces}
-                defenderForces={{
-                  // Estimate defender forces based on networth
-                  soldiers: Math.floor(selectedTarget.networth * 0.001),
-                  fighters: Math.floor(selectedTarget.networth * 0.0002),
-                  stations: selectedTarget.sectorCount * 50,
-                  lightCruisers: Math.floor(selectedTarget.networth * 0.00001),
-                  heavyCruisers: Math.floor(selectedTarget.networth * 0.000002),
-                  carriers: Math.floor(selectedTarget.networth * 0.000005),
-                }}
-                attackerName="Your Empire"
-                defenderName={selectedTarget.name}
-                hasFullIntel={false}
-                onConfirmAttack={handleAttack}
-                onCancel={() => setSelectedTarget(null)}
-              />
-            </div>
-          )}
-
-          {/* Attack Button (shown when no target selected) */}
-          {!selectedTarget && (
-            <div className="w-full p-4 rounded font-semibold bg-gray-700 text-gray-400 text-center">
-              Select a target to view combat preview
-            </div>
-          )}
+          {/* Attack Button */}
+          <button
+            disabled={!selectedTarget}
+            className={`w-full p-4 rounded font-semibold ${
+              selectedTarget
+                ? "bg-red-600 hover:bg-red-700 text-white"
+                : "bg-gray-700 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            {selectedTarget
+              ? `LAUNCH ${attackType.toUpperCase()} AGAINST ${selectedTarget.name.toUpperCase()}`
+              : "Select a target to attack"}
+          </button>
+          <p className="text-gray-500 text-sm text-center">
+            Full combat execution will be implemented in Phase 3
+          </p>
         </div>
 
-        {/* Right Column: Results & History */}
+        {/* Right Column: Info */}
         <div className="space-y-6">
-          {/* Last Battle Report */}
-          {lastResult && (
-            <div className="lcars-panel">
-              <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
-                Battle Report
-              </h2>
-              <BattleReport
-                result={lastResult}
-                attackerName="Your Empire"
-                defenderName={selectedTarget?.name ?? "Enemy"}
-              />
-            </div>
-          )}
-
-          {/* Attack History */}
-          <div className="lcars-panel">
-            <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
-              Recent Battles
-            </h2>
-            {attackHistory.length === 0 ? (
-              <div className="text-gray-400 text-sm">No battles yet.</div>
-            ) : (
-              <div className="space-y-2">
-                {attackHistory.map((attack) => (
-                  <div
-                    key={attack.id}
-                    className="p-3 bg-gray-800 rounded text-sm"
-                    data-testid={`history-${attack.id}`}
-                  >
-                    <div className="flex justify-between">
-                      <span className="font-semibold">
-                        Turn {attack.turn}
-                      </span>
-                      <span
-                        className={
-                          attack.outcome === "attacker_victory"
-                            ? "text-green-400"
-                            : attack.outcome === "defender_victory"
-                            ? "text-red-400"
-                            : "text-yellow-400"
-                        }
-                      >
-                        {attack.outcome.replace("_", " ").toUpperCase()}
-                      </span>
-                    </div>
-                    <div className="text-gray-400 text-xs mt-1">
-                      {attack.attackType} | Captured: {attack.sectorCaptured ? "Yes" : "No"}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Combat Info */}
           <div className="lcars-panel bg-gray-800/50">
             <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
@@ -386,11 +198,15 @@ export default function CombatPage() {
                 <span className="text-lcars-amber">Carriers:</span> Required to
                 transport soldiers. Each carrier holds 100 soldiers.
               </div>
-              <div>
-                <span className="text-lcars-amber">Effectiveness:</span> Wins
-                boost army effectiveness (+5-10%). Losses reduce it (-5%).
-              </div>
             </div>
+          </div>
+
+          {/* Recent Battles */}
+          <div className="lcars-panel">
+            <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+              Recent Battles
+            </h2>
+            <p className="text-gray-500 text-sm">No battles yet.</p>
           </div>
         </div>
       </div>

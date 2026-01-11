@@ -1,43 +1,80 @@
- D docs/reviews/architect-review.md
- D docs/reviews/documentation-review.md
- D docs/reviews/product-review.md
- D docs/reviews/qa-review.md
+ M .claude/settings.local.json
+ M .claude/task-loop-session.md
+ M .claude/task-loop-start.txt
+ M .gitignore
+ D docs/reviews/REMEDIATION-PHASE2.md
+ D docs/reviews/REMEDIATION-PLAN.md
+ D docs/reviews/REVIEW-TODO.md
+ D docs/reviews/architecture.md
+ D docs/reviews/code-quality.md
+ D docs/reviews/dependencies.md
+ D docs/reviews/documentation.md
+ D docs/reviews/game-balance.md
+ D docs/reviews/game-economy.md
+ D docs/reviews/narrative.md
+ D docs/reviews/performance.md
+ M docs/reviews/player-journey.md
+ D docs/reviews/product.md
+ M docs/reviews/qa.md
+ D docs/reviews/security.md
+ M docs/reviews/ux.md
  M e2e/bot-scaling-test.spec.ts
- M e2e/combat-edge-cases.spec.ts
- M e2e/fixtures/game.fixture.ts
- M e2e/global-teardown.ts
- M e2e/milestone-core.spec.ts
+ M e2e/comprehensive-test.spec.ts
+ M e2e/crafting-system.spec.ts
+ M e2e/milestone-12-llm-bots.spec.ts
+ M e2e/milestone-advanced.spec.ts
+ M e2e/quick-diagnostic.spec.ts
+ M e2e/screenshots/01-homepage.png
+ M e2e/screenshots/02-game-setup.png
+ M e2e/screenshots/03-game-dashboard.png
+ M e2e/screenshots/page-combat.png
+ M e2e/screenshots/page-military.png
  M e2e/smoke-test.spec.ts
+ M e2e/tells-5bot-20turn.spec.ts
  M package.json
  M playwright.config.ts
- M src/app/actions/admin-actions.ts
- M src/app/game/crafting/page.tsx
- M src/app/game/diplomacy/page.tsx
- M src/app/game/market/page.tsx
+ M src/app/actions/turn-actions.ts
+ M src/app/game/combat/page.tsx
  M src/app/game/messages/page.tsx
  M src/app/game/military/page.tsx
- M src/app/game/research/page.tsx
- M src/app/game/syndicate/page.tsx
- M src/components/game/CompactHeaderStatus.tsx
- M src/components/game/combat/CombatPreview.tsx
- M src/components/game/starmap/Starmap.tsx
- M src/lib/game/repositories/combat-repository.ts
-?? .claude/task-loop-start.txt
-?? docs/plans/
-?? docs/reviews/REMEDIATION-PLAN.md
-?? docs/reviews/architecture.md
-?? docs/reviews/archive/
-?? docs/reviews/code-quality.md
-?? docs/reviews/dependencies.md
-?? docs/reviews/documentation.md
-?? docs/reviews/game-balance.md
-?? docs/reviews/game-economy.md
-?? docs/reviews/narrative.md
-?? docs/reviews/performance.md
-?? docs/reviews/player-journey.md
-?? docs/reviews/product.md
-?? docs/reviews/qa.md
-?? docs/reviews/security.md
-?? docs/reviews/ux.md
+ M src/components/game/EmpireStatusBar.tsx
+ M src/components/game/GameShell.tsx
+ M src/components/game/MobileActionSheet.tsx
+ M src/components/game/MobileBottomBar.tsx
+ M src/components/game/TurnOrderPanel.tsx
+ M src/components/game/UnlockNotification.tsx
+ M src/components/game/__tests__/EmpireStatusBar.test.tsx
+ M src/components/game/__tests__/MobileActionSheet.test.tsx
+ M src/components/game/__tests__/MobileBottomBar.test.tsx
+ M src/components/game/__tests__/TurnOrderPanel.test.tsx
+ M src/components/game/onboarding/OnboardingHint.tsx
+ M src/components/game/research/FundamentalResearchProgress.tsx
+ M src/components/game/research/ResearchPanel.tsx
+ M src/lib/bots/bot-processor.ts
+ M src/lib/game/repositories/bot-emotional-state-repository.ts
+ M src/lib/game/services/combat/combat-service.ts
+ M src/lib/game/services/core/turn-processor.ts
+?? docs/reviews/UNIFIED-ACTION-PLAN.md
+?? docs/reviews/archive2/
+?? docs/reviews/e2e-test-strategy-review.md
+?? e2e/full-game-testing.md
+?? e2e/screenshots/01-game-setup.png
+?? e2e/screenshots/02-game-dashboard.png
+?? e2e/screenshots/page-combat-failed.png
+?? e2e/screenshots/page-military-failed.png
+?? e2e/screenshots/page-sectors-failed.png
+?? e2e/screenshots/page-sectors.png
+?? e2e/screenshots/page-starmap-failed.png
+?? e2e/screenshots/page-starmap.png
+?? e2e/screenshots/turn-1.png
+?? e2e/screenshots/turn-2.png
+?? e2e/screenshots/turn-3.png
+?? e2e/screenshots/turn-4.png
+?? e2e/screenshots/turn-5.png
 ?? nul
+?? tests/playthrough/
+?? tests/remediation-complete.md
+?? tests/test-results-actual-problems.md
+?? tests/test-troubleshooting-status.md
+?? tests/test-troubleshooting.md
 main

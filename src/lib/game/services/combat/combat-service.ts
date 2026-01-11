@@ -31,8 +31,8 @@ import {
   type SaveAttackParams,
 } from "../../repositories/combat-repository";
 import { db } from "@/lib/db";
-import { empires, games } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { empires, games, treaties } from "@/lib/db/schema";
+import { eq, and, or, inArray } from "drizzle-orm";
 import { hasActiveTreaty } from "@/lib/diplomacy";
 
 // =============================================================================
@@ -420,6 +420,10 @@ export async function executeRetreat(
 /**
  * Get targets available for attack.
  * M7: Filters out empires with active treaties (NAP or Alliance).
+ *
+ * PERFORMANCE: Uses batched query for treaty checks instead of N+1 pattern.
+ * Before: 1 query for targets + N queries for treaties (26 total for 25 bots)
+ * After: 1 query for targets + 1 query for treaties (2 total)
  */
 export async function getTargets(
   gameId: string,
@@ -432,19 +436,42 @@ export async function getTargets(
 
   const targets = await getAvailableTargets(gameId, empireId);
 
-  // Check treaties for each target
-  const targetsWithTreatyInfo = await Promise.all(
-    targets.map(async (t) => {
-      const hasTreatyFlag = await hasActiveTreaty(empireId, t.id);
-      return {
-        id: t.id,
-        name: t.name,
-        networth: t.networth,
-        sectorCount: t.sectorCount,
-        hasTreaty: hasTreatyFlag,
-      };
-    })
+  // Early return if no targets
+  if (targets.length === 0) {
+    return [];
+  }
+
+  // OPTIMIZATION: Batch treaty check - single query for all targets
+  const targetIds = targets.map(t => t.id);
+  const activeTreaties = await db.query.treaties.findMany({
+    where: and(
+      eq(treaties.status, "active"),
+      or(
+        and(
+          eq(treaties.proposerId, empireId),
+          inArray(treaties.recipientId, targetIds)
+        ),
+        and(
+          eq(treaties.recipientId, empireId),
+          inArray(treaties.proposerId, targetIds)
+        )
+      )
+    ),
+  });
+
+  // Build a Set of empire IDs that have active treaties with us
+  const treatyEmpireIds = new Set(
+    activeTreaties.map(t =>
+      t.proposerId === empireId ? t.recipientId : t.proposerId
+    )
   );
 
-  return targetsWithTreatyInfo;
+  // Map targets with treaty flags
+  return targets.map(t => ({
+    id: t.id,
+    name: t.name,
+    networth: t.networth,
+    sectorCount: t.sectorCount,
+    hasTreaty: treatyEmpireIds.has(t.id),
+  }));
 }

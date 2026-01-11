@@ -500,3 +500,101 @@ All P0 blockers have been resolved. The codebase is now ready for the next phase
 
 All high-value P2 tasks have been completed. Remaining P2-13 and P2-14 are architectural refactoring tasks that can be addressed in a future session.
 
+---
+
+# New Session: UNIFIED-ACTION-PLAN.md - 2026-01-10
+
+## Config
+- Task File: docs/reviews/UNIFIED-ACTION-PLAN.md
+- Phase Filter: all (starting with P1 Critical - P0 already done)
+- Start Branch: main
+
+## Task Structure
+- P0 Blockers: B1, B2, B3 (3 items) - ✅ ALREADY COMPLETED
+- P1 Critical: C1-C8 (8 items) - Sprint 1
+- P2 High: H1-H10 (10 items) - Sprint 2-3
+- P3 Medium: M1-M14 (14 items) - Sprint 4-6
+- P4 Low: L1-L13 (13 items) - Future Backlog
+
+## Progress Status (from earlier review)
+
+### P0 Blockers - ALL DONE ✅
+| Item | Status |
+|------|--------|
+| B1: Bot Creation Fix | ✅ DONE |
+| B2: Overlay Blocking Fix | ✅ DONE |
+| B3: Page Render Verification | ✅ DONE |
+
+### P1 Critical - Mixed Status
+| Item | Status |
+|------|--------|
+| C1: Tutorial Complete Modal | ❌ NOT DONE |
+| C2: Tutorial Skip Fallback | ❌ NOT DONE |
+| C3: Research Guidance | ❌ NOT DONE |
+| C4: Timeout Recovery | ⚠️ PARTIAL |
+| C5: Color Contrast | ⚠️ PARTIAL |
+| C6: ARIA Status Indicators | ✅ DONE |
+| C7: Form Validation | ⚠️ PARTIAL |
+| C8: Combat Edge Tests | ⚠️ PARTIAL (6/9 skipped) |
+
+---
+
+### Task Selected
+- Phase: P1 - Critical
+- Task: C5 - Insufficient Color Contrast (WCAG AA Violation)
+- Source: UX #1
+- Files: `MobileBottomBar.tsx`, `EmpireStatusBar.tsx`, `TurnOrderPanel.tsx`
+- Dependencies: None
+- Blocking: WCAG Level A compliance
+
+**Action Required:**
+- Replace `text-gray-400` with `text-gray-300` or `text-gray-200`
+- Update `text-gray-500` to `text-gray-400` for secondary text
+
+### ✓ Task Complete: C5 Color Contrast (WCAG AA)
+- Status: **COMPLETED**
+- Review loops: 1/3 (passed first review)
+- Files changed:
+  - `MobileBottomBar.tsx` - 2 changes (text-gray-500/600 → text-gray-400)
+  - `EmpireStatusBar.tsx` - 2 changes (Rank/Renown labels)
+  - `TurnOrderPanel.tsx` - 9 changes (all secondary labels)
+- Test Gate: PASSED
+
+---
+
+### ✓ Task Complete: C7 Form Validation (WCAG A)
+- Status: **COMPLETED**
+- Review loops: 1/3 (passed first review)
+- Files changed:
+  - `BuildUnitsPanel.tsx` - Added `aria-invalid` and `aria-errormessage` to quantity input
+  - Added `hasQuantityError` helper function for validation state
+- Test Gate: PASSED
+
+---
+
+### ✓ Task Complete: C4 Timeout Recovery
+- Status: **ALREADY IMPLEMENTED** (from previous session)
+- Implementation:
+  - Created `useDataWithRetry` hook with exponential backoff
+  - Applied to `combat/page.tsx` and `military/page.tsx`
+  - Includes `RetryErrorDisplay` and `RetryLoadingDisplay` components
+- Test Gate: PASSED
+
+---
+
+### ✓ Task Complete: M3 Mobile Viewport Height
+- Status: **COMPLETED**
+- Review loops: 0/3 (simple fix)
+- Files changed:
+  - `MobileActionSheet.tsx` - Changed `max-h-[80vh]` to `max-h-[80dvh]`
+- Test Gate: PASSED
+
+---
+
+### Test Gate Summary
+- TypeScript: ✓ No errors
+- ESLint: ✓ No warnings or errors
+- Unit Tests: ✓ 2955 passed, 2 skipped
+
+---
+

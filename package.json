@@ -18,7 +18,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=chromium",
+    "test:e2e:fast": "playwright test --project=fast",
+    "test:e2e:core": "playwright test --project=core",
+    "test:e2e:slow": "playwright test --project=slow",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:smoke": "playwright test smoke-test.spec.ts",
     "test:e2e:debug": "PLAYWRIGHT_TRACE_ALL=true PLAYWRIGHT_HEADED=true playwright test",
@@ -39,10 +42,15 @@
     "db:stats": "tsx scripts/db-stats.ts",
     "db:fix-galaxy": "tsx scripts/regenerate-galaxy.ts",
     "compliance:check": "tsx scripts/compliance-check.ts",
-    "docs:check-links": "tsx scripts/check-doc-links.ts"
+    "docs:check-links": "tsx scripts/check-doc-links.ts",
+    "playthrough": "tsx tests/playthrough/runner.ts",
+    "playthrough:quick": "tsx tests/playthrough/runner.ts quick --runs 20",
+    "playthrough:matchups": "tsx tests/playthrough/runner.ts matchups --runs 5",
+    "playthrough:balance": "tsx tests/playthrough/runner.ts balance"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
+    "@tanstack/react-query": "^5.90.16",
     "@types/d3-force": "^3.0.10",
     "@types/react-window": "^1.8.8",
     "clsx": "^2.1.1",
@@ -59,7 +67,8 @@
     "react-window": "^2.2.4",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.4.0",
-    "zod": "^4.3.5"
+    "zod": "^4.3.5",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",

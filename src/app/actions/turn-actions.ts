@@ -537,6 +537,7 @@ export async function endTurnEnhancedAction(): Promise<EnhancedTurnActionResult>
       return { success: false, error: result.error ?? "Turn processing failed" };
     }
 
+
     // Find player's result
     const playerResult = result.empireResults.find(r => r.empireId === empireId);
 

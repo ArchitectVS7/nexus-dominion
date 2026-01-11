@@ -1,82 +1,64 @@
-import { test, expect } from "@playwright/test";
-import { skipTutorialViaLocalStorage, dismissTutorialOverlays } from "./fixtures/game.fixture";
+import { test, expect, ensureGameExists, getEmpireState, advanceTurn } from "./fixtures/game.fixture";
 
 /**
- * Smoke Test - Fast CI validation
- *
- * This is a minimal test to verify basic game functionality.
- * Runs on every commit to catch critical breakages early.
- *
- * Duration: ~30-60 seconds
- * Bots: 10 (smallest option)
- * Turns: 2
- *
- * Tests:
- * - Can create a game
- * - UI renders correctly
- * - Turn processing works
- * - Basic navigation functions
+ * Smoke tests - Quick validation that core functionality works
+ * These tests run in the "fast" project for rapid feedback
  */
 
-test.describe("Smoke Test", () => {
-  test.beforeEach(async ({ page }) => {
-    // Skip tutorials before each test
-    await skipTutorialViaLocalStorage(page);
+test.describe("Game Creation", () => {
+  test("can create a new game with bots", async ({ page }) => {
+    // Ensure game exists with 25 bots
+    await ensureGameExists(page, { empireName: "Smoke Test Empire", botCount: 25 });
+
+    // Verify we're on a game page
+    await expect(page).toHaveURL(/\/game\/(starmap|dashboard)/);
+
+    // Verify header elements are visible
+    await expect(page.locator('[data-testid="header-credits"]')).toBeVisible();
+    await expect(page.locator('[data-testid="turn-counter"]')).toBeVisible();
   });
 
-  test("basic game creation works", async ({ page }) => {
-    // Short timeout for CI
-    test.setTimeout(45000); // 45 seconds
+  test("game starts with correct initial state", async ({ gamePage }) => {
+    const state = await getEmpireState(gamePage);
 
-    // Step 1: Navigate to game page
-    await page.goto("/game");
-    await dismissTutorialOverlays(page);
+    // Verify initial turn
+    expect(state.turn).toBe(1);
 
-    // Step 2: Create game with minimal config (if setup form is shown)
-    const empireNameInput = page.locator('[data-testid="empire-name-input"]');
-    if (await empireNameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await empireNameInput.fill("Smoke Test Empire");
-      await dismissTutorialOverlays(page);
+    // Verify starting resources (based on game constants)
+    expect(state.credits).toBeGreaterThanOrEqual(40000); // ~50000 starting
+    expect(state.population).toBeGreaterThanOrEqual(8000); // ~10000 starting
+  });
+});
 
-      // Start game - this redirects to /game/starmap on success
-      await page.locator('[data-testid="start-game-button"]').click();
+test.describe("Turn Processing", () => {
+  test("can advance turn", async ({ gamePage }) => {
+    const { before, after } = await advanceTurn(gamePage);
 
-      // Wait for redirect to starmap (successful game creation)
-      await page.waitForURL(/\/game\/starmap/, { timeout: 15000 });
-    }
-
-    await dismissTutorialOverlays(page);
-
-    // Step 3: Verify we're on starmap page (game is active)
-    await expect(page.locator('[data-testid="starmap-page"]')).toBeVisible({ timeout: 5000 });
-
-    // Step 4: Verify game shell elements are present (header with turn counter)
-    await expect(page.getByTestId('game-header')).toBeVisible();
-
-    // Step 5: Verify end turn button exists in game shell
-    const endTurnBtn = page.locator('button:has-text("NEXT CYCLE")').first();
-    await expect(endTurnBtn).toBeVisible();
+    // Turn should increment
+    expect(after.turn).toBe(before.turn + 1);
   });
 
-  test("critical UI elements exist", async ({ page }) => {
-    test.setTimeout(30000); // 30 seconds
+  test("resources update after turn", async ({ gamePage }) => {
+    const { before, after } = await advanceTurn(gamePage);
 
-    await page.goto("/");
+    // Credits should change (income - expenses)
+    // We can't predict exact value but it should be different
+    expect(after.credits).not.toBe(before.credits);
+  });
+});
 
-    // Homepage should have title and start button
-    await expect(page).toHaveTitle(/Nexus Dominion/);
-    const startButton = page.locator('a[href="/game"]').first();
-    await expect(startButton).toBeVisible();
+test.describe("Navigation", () => {
+  test("can navigate to military page", async ({ gamePage }) => {
+    await gamePage.goto("/game/military");
+    await gamePage.waitForLoadState("networkidle").catch(() => {});
 
-    // Navigate to game
-    await startButton.click();
-    await page.waitForLoadState("domcontentloaded");
-    await dismissTutorialOverlays(page);
+    await expect(gamePage).toHaveURL(/\/game\/military/);
+  });
 
-    // Game setup should have either:
-    // - Create button (if no game exists)
-    // - Game header (if active game exists)
-    const gameReady = page.locator('[data-testid="start-game-button"], [data-testid="game-header"]').first();
-    await expect(gameReady).toBeVisible();
+  test("can navigate to research page", async ({ gamePage }) => {
+    await gamePage.goto("/game/research");
+    await gamePage.waitForLoadState("networkidle").catch(() => {});
+
+    await expect(gamePage).toHaveURL(/\/game\/research/);
   });
 });

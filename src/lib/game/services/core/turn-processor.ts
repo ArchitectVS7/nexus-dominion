@@ -323,22 +323,25 @@ export async function processTurn(gameId: string): Promise<TurnResult> {
         playerEmpireName: playerEmpire.name,
       };
 
-      // Trigger casual messages (low chance per bot)
-      const casualCount = await triggerCasualMessages(msgCtx);
-      if (casualCount > 0) {
+      // PERF: Run all message triggers in parallel instead of sequentially
+      const messagePromises: Promise<number | boolean>[] = [
+        triggerCasualMessages(msgCtx),
+        triggerRandomBroadcast(msgCtx),
+      ];
+
+      // Only add endgame trigger if we're in final turns
+      if (nextTurn >= 180) {
+        messagePromises.push(triggerEndgame(msgCtx));
+      }
+
+      const [casualCount] = await Promise.all(messagePromises);
+
+      if (typeof casualCount === "number" && casualCount > 0) {
         globalEvents.push({
           type: "other",
           message: `Received ${casualCount} message${casualCount > 1 ? "s" : ""} from other empires`,
           severity: "info",
         });
-      }
-
-      // Trigger random broadcast (Galactic News)
-      await triggerRandomBroadcast(msgCtx);
-
-      // Trigger endgame messages in final turns (turn 180+)
-      if (nextTurn >= 180) {
-        await triggerEndgame(msgCtx);
       }
     }
 

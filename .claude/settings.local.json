@@ -3,7 +3,10 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(npm run test:e2e:*)"
+      "Bash(npm run test:e2e:*)",
+      "Bash(dir:*)",
+      "Bash(curl:*)",
+      "Bash(npx playwright test:*)"
     ]
   }
 }

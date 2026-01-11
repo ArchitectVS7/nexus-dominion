@@ -9,7 +9,7 @@
  */
 
 import { createContext, useContext, type ReactNode } from "react";
-import type { PanelType } from "@/components/game/EmpireStatusBar";
+import type { PanelType } from "@/stores";
 
 export interface PanelContextData {
   /** Target empire ID for context-aware panels (combat, covert, messages) */

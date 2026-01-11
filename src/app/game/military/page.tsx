@@ -1,55 +1,45 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { fetchDashboardDataAction } from "@/app/actions/game-actions";
-import { BuildUnitsPanel } from "@/components/game/military/BuildUnitsPanel";
-import { BuildQueuePanel } from "@/components/game/military/BuildQueuePanel";
-import { MaintenanceSummary } from "@/components/game/military/MaintenanceSummary";
-import { UnitUpgradePanel } from "@/components/game/military/UnitUpgradePanel";
-import type { DashboardData } from "@/lib/game/repositories/game-repository";
+/**
+ * Military Page
+ *
+ * Displays military forces, build queue, and unit construction.
+ * Uses React Query for data fetching.
+ */
+
+import { useDashboard } from "@/lib/api";
 
 export default function MilitaryPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  const loadData = useCallback(async () => {
-    const dashboardData = await fetchDashboardDataAction();
-    setData(dashboardData);
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData, refreshTrigger]);
-
-  const handleRefresh = () => {
-    setRefreshTrigger((prev) => prev + 1);
-  };
+  const { data, isLoading, error } = useDashboard();
 
   if (isLoading) {
     return (
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-display text-lcars-amber mb-8">Military</h1>
         <div className="lcars-panel">
-          <p className="text-gray-400">Loading military data...</p>
+          <div className="animate-pulse space-y-4">
+            <div className="h-20 bg-gray-800 rounded" />
+            <div className="h-32 bg-gray-800 rounded" />
+          </div>
         </div>
       </div>
     );
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-display text-lcars-amber mb-8">Military</h1>
         <div className="lcars-panel">
-          <p className="text-gray-400">No active game session. Please start a new game.</p>
+          <p className="text-red-400">
+            {error ? "Failed to load military data" : "No active game session"}
+          </p>
         </div>
       </div>
     );
   }
 
-  const { empire, military, turn } = data;
+  const { military } = data;
 
   return (
     <div className="max-w-6xl mx-auto" data-testid="military-page">
@@ -61,76 +51,61 @@ export default function MilitaryPage() {
           Current Forces
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Soldiers</div>
-            <div className="font-mono text-green-400 text-lg">
-              {military.soldiers.toLocaleString()}
-            </div>
-          </div>
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Fighters</div>
-            <div className="font-mono text-blue-400 text-lg">
-              {military.fighters.toLocaleString()}
-            </div>
-          </div>
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Stations</div>
-            <div className="font-mono text-purple-400 text-lg">
-              {military.stations.toLocaleString()}
-            </div>
-          </div>
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Light Cruisers</div>
-            <div className="font-mono text-cyan-400 text-lg">
-              {military.lightCruisers.toLocaleString()}
-            </div>
-          </div>
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Heavy Cruisers</div>
-            <div className="font-mono text-orange-400 text-lg">
-              {military.heavyCruisers.toLocaleString()}
-            </div>
-          </div>
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Carriers</div>
-            <div className="font-mono text-red-400 text-lg">
-              {military.carriers.toLocaleString()}
-            </div>
-          </div>
-          <div className="bg-black/30 p-3 rounded text-center">
-            <div className="text-xs text-gray-500">Covert Agents</div>
-            <div className="font-mono text-gray-400 text-lg">
-              {military.covertAgents.toLocaleString()}
-            </div>
-          </div>
+          <UnitCount label="Soldiers" count={military.soldiers} color="green" />
+          <UnitCount label="Fighters" count={military.fighters} color="blue" />
+          <UnitCount label="Stations" count={military.stations} color="purple" />
+          <UnitCount label="Light Cruisers" count={military.lightCruisers} color="cyan" />
+          <UnitCount label="Heavy Cruisers" count={military.heavyCruisers} color="orange" />
+          <UnitCount label="Carriers" count={military.carriers} color="red" />
+          <UnitCount label="Covert Agents" count={military.covertAgents} color="gray" />
         </div>
       </div>
 
-      {/* Main content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left column */}
-        <div className="space-y-6">
-          {/* Build Units */}
-          <BuildUnitsPanel
-            credits={empire.credits}
-            population={empire.population}
-            researchLevel={empire.fundamentalResearchLevel}
-            currentTurn={turn.currentTurn}
-            onBuildQueued={handleRefresh}
-          />
+      {/* Build Queue - Placeholder */}
+      <div className="lcars-panel mb-6">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Build Queue
+        </h2>
+        <p className="text-gray-500">No units in construction</p>
+      </div>
 
-          {/* Maintenance Summary */}
-          <MaintenanceSummary />
-        </div>
+      {/* Build Units - Placeholder */}
+      <div className="lcars-panel">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Build Units
+        </h2>
+        <p className="text-gray-500">
+          Unit construction interface will be implemented in Phase 3
+        </p>
+      </div>
+    </div>
+  );
+}
 
-        {/* Right column */}
-        <div className="space-y-6">
-          {/* Build Queue */}
-          <BuildQueuePanel onQueueChange={handleRefresh} />
+function UnitCount({
+  label,
+  count,
+  color,
+}: {
+  label: string;
+  count: number;
+  color: string;
+}) {
+  const colorClass = {
+    green: "text-green-400",
+    blue: "text-blue-400",
+    purple: "text-purple-400",
+    cyan: "text-cyan-400",
+    orange: "text-orange-400",
+    red: "text-red-400",
+    gray: "text-gray-400",
+  }[color] ?? "text-gray-400";
 
-          {/* Unit Upgrades */}
-          <UnitUpgradePanel onUpgrade={handleRefresh} />
-        </div>
+  return (
+    <div className="bg-black/30 p-3 rounded text-center">
+      <div className="text-xs text-gray-500">{label}</div>
+      <div className={`font-mono text-lg ${colorClass}`}>
+        {count.toLocaleString()}
       </div>
     </div>
   );

@@ -494,22 +494,111 @@ export async function initializeEmotionalStatesForGame(
 }
 
 /**
+ * Batch load all emotional states with grudges for a game.
+ * Uses only 2 queries total instead of 2 per bot (N+1 fix).
+ *
+ * @param gameId - The game ID
+ * @returns Map of empireId to emotional state with grudges
+ */
+export async function getAllEmotionalStatesWithGrudges(
+  gameId: string
+): Promise<Map<string, EmotionalStateWithContext>> {
+  // Query 1: Get all emotional states for the game
+  const states = await db.query.botEmotionalStates.findMany({
+    where: eq(botEmotionalStates.gameId, gameId),
+  });
+
+  // Query 2: Get all permanent grudges for the game
+  const allGrudges = await db.query.botMemories.findMany({
+    where: and(
+      eq(botMemories.gameId, gameId),
+      eq(botMemories.isPermanentScar, true)
+    ),
+  });
+
+  // Group grudges by empire ID
+  const grudgesByEmpire = new Map<string, string[]>();
+  for (const grudge of allGrudges) {
+    const existing = grudgesByEmpire.get(grudge.empireId) ?? [];
+    if (!existing.includes(grudge.targetEmpireId)) {
+      existing.push(grudge.targetEmpireId);
+    }
+    grudgesByEmpire.set(grudge.empireId, existing);
+  }
+
+  // Combine states with their grudges
+  const result = new Map<string, EmotionalStateWithContext>();
+  for (const state of states) {
+    result.set(state.empireId, {
+      ...state,
+      permanentGrudges: grudgesByEmpire.get(state.empireId) ?? [],
+    });
+  }
+
+  return result;
+}
+
+/**
  * Apply emotional decay to all bots in a game.
  * Called during turn processing.
+ * OPTIMIZED: Uses batch update instead of per-bot updates.
  *
  * @param gameId - The game ID
  * @param currentTurn - Current game turn
  */
 export async function applyDecayForAllBots(
   gameId: string,
-  currentTurn: number
+  currentTurn: number,
+  decayRate: number = 0.02
 ): Promise<void> {
+  // Load all states in one query
   const states = await db.query.botEmotionalStates.findMany({
     where: eq(botEmotionalStates.gameId, gameId),
   });
 
+  // Calculate decayed intensities and collect updates
+  const updates: Array<{ empireId: string; newIntensity: number }> = [];
+
   for (const state of states) {
-    await applyEmotionalDecay(state.empireId, gameId, currentTurn);
+    const turnsSinceChange = currentTurn - (state.stateChangedAtTurn ?? currentTurn);
+    const currentIntensity = parseFloat(state.intensity);
+
+    // Intensity decays toward 0.5 (neutral)
+    const neutralIntensity = 0.5;
+    const decayAmount = decayRate * turnsSinceChange;
+    let newIntensity: number;
+
+    if (currentIntensity > neutralIntensity) {
+      newIntensity = Math.max(neutralIntensity, currentIntensity - decayAmount);
+    } else {
+      newIntensity = Math.min(neutralIntensity, currentIntensity + decayAmount);
+    }
+
+    // Only update if intensity changed meaningfully
+    if (Math.abs(newIntensity - currentIntensity) > 0.001) {
+      updates.push({ empireId: state.empireId, newIntensity });
+    }
+  }
+
+  // Batch update all changed intensities using Promise.all
+  // This is still multiple queries but they run in parallel
+  if (updates.length > 0) {
+    await Promise.all(
+      updates.map(({ empireId, newIntensity }) =>
+        db
+          .update(botEmotionalStates)
+          .set({
+            intensity: String(newIntensity),
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(botEmotionalStates.empireId, empireId),
+              eq(botEmotionalStates.gameId, gameId)
+            )
+          )
+      )
+    );
   }
 }
 

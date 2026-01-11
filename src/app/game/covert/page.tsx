@@ -1,173 +1,81 @@
 "use client";
 
 /**
- * Covert Operations Page (M6.5)
+ * Covert Page
  *
- * Full covert operations interface with:
- * - Status panel (points, agents)
- * - Target selection
- * - Operation list with execution
+ * Displays covert operations interface for espionage missions.
+ * Uses React Query for data fetching and Zustand for panel state.
  */
 
-import { useEffect, useState, useCallback } from "react";
-import { CovertStatusPanel, TargetSelector, OperationCard } from "@/components/game/covert";
-import {
-  getCovertStatusAction,
-  getCovertTargetsAction,
-  getCovertOperationsAction,
-  executeCovertOpAction,
-  previewCovertOpAction,
-} from "@/app/actions/covert-actions";
-import type { OperationType } from "@/lib/covert/constants";
-
-interface Target {
-  id: string;
-  name: string;
-  networth: number;
-  sectorCount: number;
-}
-
-interface Operation {
-  id: OperationType;
-  name: string;
-  description: string;
-  cost: number;
-  minAgents: number;
-  risk: string;
-  baseSuccessRate: number;
-}
-
-interface OperationPreview {
-  successChance: number;
-  catchChance: number;
-  canExecute: boolean;
-}
-
-interface CovertStatus {
-  covertPoints: number;
-  maxCovertPoints: number;
-  agents: number;
-  agentCapacity: number;
-  governmentSectors: number;
-}
+import { useDashboard, useStarmapData } from "@/lib/api";
+import { usePanelStore } from "@/stores";
 
 export default function CovertPage() {
-  const [status, setStatus] = useState<CovertStatus | null>(null);
-  const [targets, setTargets] = useState<Target[]>([]);
-  const [operations, setOperations] = useState<Operation[]>([]);
-  const [selectedTarget, setSelectedTarget] = useState<Target | null>(null);
-  const [previews, setPreviews] = useState<Map<OperationType, OperationPreview>>(
-    new Map()
-  );
-  const [loading, setLoading] = useState(true);
-  const [executing, setExecuting] = useState<OperationType | null>(null);
-  const [lastResult, setLastResult] = useState<{
-    success: boolean;
-    message: string;
-    effects: string[];
-  } | null>(null);
+  const { panelContext } = usePanelStore();
+  const { data: dashboard, isLoading: dashboardLoading } = useDashboard();
+  const { data: starmap, isLoading: starmapLoading } = useStarmapData();
+  const targetEmpireId = panelContext?.targetEmpireId;
 
-  // Load initial data
-  useEffect(() => {
-    async function loadData() {
-      const [statusResult, targetsResult, operationsResult] = await Promise.all([
-        getCovertStatusAction(),
-        getCovertTargetsAction(),
-        getCovertOperationsAction(),
-      ]);
+  const isLoading = dashboardLoading || starmapLoading;
 
-      if (statusResult.success && statusResult.status) {
-        setStatus(statusResult.status);
-      }
-      if (targetsResult.success && targetsResult.targets) {
-        setTargets(targetsResult.targets);
-      }
-      if (operationsResult.success && operationsResult.operations) {
-        setOperations(operationsResult.operations);
-      }
-
-      setLoading(false);
-    }
-    loadData();
-  }, []);
-
-  // Load previews when target changes
-  useEffect(() => {
-    if (!selectedTarget) {
-      setPreviews(new Map());
-      return;
-    }
-
-    async function loadPreviews() {
-      const newPreviews = new Map<OperationType, OperationPreview>();
-
-      await Promise.all(
-        operations.map(async (op) => {
-          const result = await previewCovertOpAction(selectedTarget!.id, op.id);
-          if (result.success && result.preview) {
-            newPreviews.set(op.id, {
-              successChance: result.preview.successChance,
-              catchChance: result.preview.catchChance,
-              canExecute: result.preview.canExecute,
-            });
-          }
-        })
-      );
-
-      setPreviews(newPreviews);
-    }
-
-    loadPreviews();
-  }, [selectedTarget, operations]);
-
-  // Execute operation
-  const handleExecute = useCallback(
-    async (operationType: OperationType) => {
-      if (!selectedTarget) return;
-
-      setExecuting(operationType);
-      setLastResult(null);
-
-      const result = await executeCovertOpAction(selectedTarget.id, operationType);
-
-      if (result.success && result.result) {
-        setLastResult({
-          success: result.result.success,
-          message: result.result.message,
-          effects: result.result.appliedEffects,
-        });
-
-        // Refresh status
-        const statusResult = await getCovertStatusAction();
-        if (statusResult.success && statusResult.status) {
-          setStatus(statusResult.status);
-        }
-      } else {
-        setLastResult({
-          success: false,
-          message: result.error || "Operation failed",
-          effects: [],
-        });
-      }
-
-      setExecuting(null);
-    },
-    [selectedTarget]
-  );
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto" data-testid="covert-page">
         <h1 className="text-3xl font-display text-lcars-amber mb-8">
           Covert Operations
         </h1>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lcars-panel animate-pulse h-32"></div>
-          <div className="lcars-panel animate-pulse h-32 lg:col-span-2"></div>
+        <div className="lcars-panel animate-pulse">
+          <div className="h-40 bg-gray-800 rounded" />
         </div>
       </div>
     );
   }
+
+  if (!dashboard || !starmap) {
+    return (
+      <div className="max-w-6xl mx-auto" data-testid="covert-page">
+        <h1 className="text-3xl font-display text-lcars-amber mb-8">
+          Covert Operations
+        </h1>
+        <div className="lcars-panel">
+          <p className="text-red-400">Failed to load covert operations data</p>
+        </div>
+      </div>
+    );
+  }
+
+  const spies = dashboard.military.covertAgents;
+  const targets = starmap.empires.filter(
+    (e) => e.id !== starmap.playerEmpireId && !e.isEliminated
+  );
+  const selectedTarget = targets.find((t) => t.id === targetEmpireId);
+
+  const operations = [
+    {
+      name: "Reconnaissance",
+      description: "Gather intel on enemy forces",
+      spyCost: 1,
+      successRate: "High",
+    },
+    {
+      name: "Sabotage",
+      description: "Damage enemy production facilities",
+      spyCost: 2,
+      successRate: "Medium",
+    },
+    {
+      name: "Steal Technology",
+      description: "Acquire enemy research data",
+      spyCost: 3,
+      successRate: "Low",
+    },
+    {
+      name: "Assassination",
+      description: "Eliminate enemy leaders",
+      spyCost: 5,
+      successRate: "Very Low",
+    },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto" data-testid="covert-page">
@@ -175,68 +83,105 @@ export default function CovertPage() {
         Covert Operations
       </h1>
 
-      {/* Result Alert */}
-      {lastResult && (
-        <div
-          className={`mb-6 p-4 rounded border ${
-            lastResult.success
-              ? "bg-green-900/30 border-green-500/50 text-green-300"
-              : "bg-red-900/30 border-red-500/50 text-red-300"
-          }`}
-        >
-          <p className="font-medium">{lastResult.message}</p>
-          {lastResult.effects.length > 0 && (
-            <ul className="mt-2 text-sm">
-              {lastResult.effects.map((effect, i) => (
-                <li key={i}>- {effect}</li>
-              ))}
-            </ul>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Intelligence Assets */}
+        <div className="lcars-panel">
+          <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+            Intelligence Assets
+          </h2>
+          <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded">
+            <span className="text-gray-400">Available Agents</span>
+            <span className="text-lcars-amber font-mono text-2xl">{spies}</span>
+          </div>
+          <p className="text-gray-500 text-sm mt-4">
+            Train more agents from the Military page
+          </p>
+        </div>
+
+        {/* Target Selection */}
+        <div className="lcars-panel">
+          <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+            Target Empire
+          </h2>
+          {selectedTarget ? (
+            <div className="p-4 bg-gray-800/50 rounded">
+              <div className="text-lcars-amber font-semibold">
+                {selectedTarget.name}
+              </div>
+              <div className="text-sm text-gray-400">
+                NW: {selectedTarget.networth.toLocaleString()} | Sectors:{" "}
+                {selectedTarget.sectorCount}
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-500">
+              Select a target from the starmap for covert operations
+            </p>
           )}
         </div>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Status Panel */}
-        <div>
-          <CovertStatusPanel />
-        </div>
-
-        {/* Target Selector */}
-        <div className="lg:col-span-2">
-          <TargetSelector
-            targets={targets}
-            selectedTarget={selectedTarget}
-            onSelectTarget={setSelectedTarget}
-          />
+        {/* Available Operations */}
+        <div className="lcars-panel lg:col-span-2">
+          <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+            Available Operations
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {operations.map((op) => {
+              const canExecute = spies >= op.spyCost && selectedTarget;
+              return (
+                <button
+                  key={op.name}
+                  disabled={!canExecute}
+                  className={`p-4 rounded border text-left ${
+                    canExecute
+                      ? "bg-gray-800 hover:bg-gray-700 border-gray-600"
+                      : "bg-gray-900 border-gray-800 opacity-50 cursor-not-allowed"
+                  }`}
+                >
+                  <div className="font-semibold text-lcars-amber">{op.name}</div>
+                  <div className="text-sm text-gray-400">{op.description}</div>
+                  <div className="flex justify-between mt-2 text-xs">
+                    <span className="text-gray-500">
+                      Agents required: {op.spyCost}
+                    </span>
+                    <span
+                      className={
+                        op.successRate === "High"
+                          ? "text-green-400"
+                          : op.successRate === "Medium"
+                          ? "text-yellow-400"
+                          : "text-red-400"
+                      }
+                    >
+                      {op.successRate} success rate
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-gray-500 text-sm mt-4">
+            Covert operation execution will be implemented in Phase 3
+          </p>
         </div>
       </div>
 
-      {/* Operations Grid */}
-      <h2 className="text-2xl font-display text-lcars-blue mb-4">
-        Available Operations
-      </h2>
-
-      {!selectedTarget && (
-        <div className="lcars-panel text-center py-8">
-          <p className="text-gray-400">
-            Select a target empire to view operation success rates
+      {/* Covert Info */}
+      <div className="mt-6 lcars-panel">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Covert Operations System
+        </h2>
+        <div className="text-sm text-gray-400 space-y-2">
+          <p>
+            <span className="text-purple-400">Covert Agents</span> are trained
+            specialists who can perform espionage missions.
           </p>
+          <p>
+            Operations have varying success rates based on target defenses and
+            agent skill.
+          </p>
+          <p>Failed operations may expose your agents and damage relations.</p>
         </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {operations.map((operation) => (
-          <OperationCard
-            key={operation.id}
-            operation={operation}
-            preview={previews.get(operation.id)}
-            currentPoints={status?.covertPoints ?? 0}
-            currentAgents={status?.agents ?? 0}
-            onExecute={handleExecute}
-            disabled={!selectedTarget}
-            executing={executing === operation.id}
-          />
-        ))}
       </div>
     </div>
   );

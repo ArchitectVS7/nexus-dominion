@@ -1,15 +1,14 @@
 /**
- * Panel Content Components
+ * Game Panels
  *
- * All panel contents for the starmap-centric UI.
- * These replace full-page navigation with slide-out panels.
+ * Slide-out panel content components for the game interface.
  */
 
-export { MilitaryPanelContent } from "./MilitaryPanelContent";
-export { SectorsPanelContent } from "./SectorsPanelContent";
-export { CombatPanelContent } from "./CombatPanelContent";
-export { MarketPanelContent } from "./MarketPanelContent";
-export { ResearchPanelContent } from "./ResearchPanelContent";
-export { DiplomacyPanelContent } from "./DiplomacyPanelContent";
-export { CovertPanelContent } from "./CovertPanelContent";
-export { MessagesPanelContent } from "./MessagesPanelContent";
+export { MilitaryPanel } from "./MilitaryPanel";
+export { CombatPanel } from "./CombatPanel";
+export { ResearchPanel } from "./ResearchPanel";
+export { SectorsPanel } from "./SectorsPanel";
+export { MarketPanel } from "./MarketPanel";
+export { DiplomacyPanel } from "./DiplomacyPanel";
+export { CovertPanel } from "./CovertPanel";
+export { MessagesPanel } from "./MessagesPanel";

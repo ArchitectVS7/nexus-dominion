@@ -3,23 +3,18 @@
 /**
  * Error Boundary Component
  *
- * A reusable React error boundary for catching and handling component-level errors.
- * Wraps game components to prevent full page crashes and provide graceful degradation.
- *
- * @example
- * <ErrorBoundary fallback={<div>Something went wrong</div>}>
- *   <RiskyComponent />
- * </ErrorBoundary>
+ * Catches JavaScript errors in child components and displays a fallback UI.
+ * Prevents the entire app from crashing due to component errors.
  */
 
-import React, { Component, type ReactNode, type ErrorInfo } from "react";
+import { Component, type ReactNode, type ErrorInfo } from "react";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
-  /** Custom fallback UI to show when an error occurs */
-  fallback?: ReactNode;
-  /** Component name for better error logging */
+  /** Name of the component being wrapped (for error messages) */
   componentName?: string;
+  /** Custom fallback UI */
+  fallback?: ReactNode;
   /** Callback when an error is caught */
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
@@ -29,10 +24,7 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -43,102 +35,42 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    const { componentName, onError } = this.props;
-
-    // Log error
     console.error(
-      `Error in ${componentName || "component"}:`,
+      `[ErrorBoundary] Error in ${this.props.componentName || "component"}:`,
       error,
-      errorInfo.componentStack
+      errorInfo
     );
-
-    // Call optional error callback
-    if (onError) {
-      onError(error, errorInfo);
-    }
+    this.props.onError?.(error, errorInfo);
   }
 
-  handleRetry = (): void => {
-    this.setState({ hasError: false, error: null });
-  };
-
   render(): ReactNode {
-    const { hasError, error } = this.state;
-    const { children, fallback, componentName } = this.props;
-
-    if (hasError) {
-      // Use custom fallback if provided
-      if (fallback) {
-        return fallback;
+    if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
       }
 
-      // Default fallback UI
       return (
-        <div className="p-4 bg-gray-900/50 rounded-lg border border-red-500/30">
-          <div className="flex items-center gap-2 text-red-400 mb-2">
-            <span className="text-lg">!</span>
-            <span className="font-medium">
-              {componentName ? `${componentName} Error` : "Component Error"}
-            </span>
-          </div>
-          <p className="text-sm text-gray-400 mb-3">
-            This section encountered an error and couldn&apos;t be displayed.
+        <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+          <h3 className="text-red-400 font-semibold mb-2">
+            {this.props.componentName
+              ? `Error in ${this.props.componentName}`
+              : "Something went wrong"}
+          </h3>
+          <p className="text-red-300/70 text-sm mb-3">
+            {this.state.error?.message || "An unexpected error occurred"}
           </p>
-
-          {/* Error details in development */}
-          {process.env.NODE_ENV === "development" && error && (
-            <details className="mb-3">
-              <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-400">
-                Details
-              </summary>
-              <pre className="mt-1 p-2 bg-gray-800 rounded text-xs text-red-400 overflow-auto max-h-24">
-                {error.message}
-              </pre>
-            </details>
-          )}
-
           <button
-            onClick={this.handleRetry}
-            className="text-sm px-3 py-1 bg-gray-800 hover:bg-gray-700 text-white rounded transition-colors"
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="px-3 py-1 text-sm bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded text-red-300 transition-colors"
           >
-            Try again
+            Try Again
           </button>
         </div>
       );
     }
 
-    return children;
+    return this.props.children;
   }
-}
-
-/**
- * HOC to wrap a component with an error boundary
- *
- * @example
- * const SafeStarmap = withErrorBoundary(Starmap, "Starmap");
- */
-export function withErrorBoundary<P extends object>(
-  WrappedComponent: React.ComponentType<P>,
-  componentName?: string
-): React.FC<P & { fallback?: ReactNode }> {
-  const displayName =
-    componentName ||
-    WrappedComponent.displayName ||
-    WrappedComponent.name ||
-    "Component";
-
-  const ComponentWithErrorBoundary: React.FC<P & { fallback?: ReactNode }> = ({
-    fallback,
-    ...props
-  }) => (
-    <ErrorBoundary fallback={fallback} componentName={displayName}>
-      <WrappedComponent {...(props as P)} />
-    </ErrorBoundary>
-  );
-
-  ComponentWithErrorBoundary.displayName = `WithErrorBoundary(${displayName})`;
-
-  return ComponentWithErrorBoundary;
 }
 
 export default ErrorBoundary;

@@ -1,58 +1,75 @@
 "use client";
 
-import { useState } from "react";
-import { ConfirmationModal } from "./ConfirmationModal";
+/**
+ * Clear Data Button
+ *
+ * Button to clear all game data and start fresh.
+ * Currently uses endGameAction to end the current game.
+ */
 
-export function ClearDataButton() {
+import { useState } from "react";
+import { endGameAction } from "@/app/actions/game-actions";
+
+interface ClearDataButtonProps {
+  className?: string;
+}
+
+export function ClearDataButton({ className }: ClearDataButtonProps) {
+  const [isConfirming, setIsConfirming] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleClear = async () => {
+    if (!isConfirming) {
+      setIsConfirming(true);
+      return;
+    }
+
     setIsClearing(true);
     try {
-      // Clear both games and cookies
-      const [gamesResponse, cookiesResponse] = await Promise.all([
-        fetch("/api/admin/clear-games", { method: "POST" }),
-        fetch("/api/admin/clear-cookies", { method: "POST" }),
-      ]);
-
-      if (gamesResponse.ok && cookiesResponse.ok) {
-        // Force a hard refresh to clear all state
-        window.location.href = "/game?newGame=true";
-      } else {
-        alert("Failed to clear data. Check console for details.");
-      }
+      await endGameAction();
+      // Reload page to show fresh state
+      window.location.reload();
     } catch (error) {
       console.error("Failed to clear data:", error);
-      alert("Failed to clear data. Check console for details.");
-    } finally {
       setIsClearing(false);
-      setShowConfirmModal(false);
+      setIsConfirming(false);
     }
   };
 
-  return (
-    <>
-      <button
-        onClick={() => setShowConfirmModal(true)}
-        disabled={isClearing}
-        className="text-sm text-red-400 hover:text-red-300 underline disabled:opacity-50"
-        type="button"
-      >
-        {isClearing ? "Clearing..." : "Clear corrupted data"}
-      </button>
+  const handleCancel = () => {
+    setIsConfirming(false);
+  };
 
-      <ConfirmationModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={handleClear}
-        title="Clear All Game Data"
-        message="Are you sure you want to clear all game data and start fresh?"
-        details="This action cannot be undone. All saved games, progress, and settings will be permanently deleted."
-        variant="danger"
-        confirmText="Clear Data"
-        cancelText="Cancel"
-      />
-    </>
+  return (
+    <div className={className}>
+      {isConfirming ? (
+        <div className="flex items-center gap-2">
+          <span className="text-red-400 text-sm">Delete all data?</span>
+          <button
+            onClick={handleClear}
+            disabled={isClearing}
+            className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-sm disabled:opacity-50"
+          >
+            {isClearing ? "Clearing..." : "Confirm"}
+          </button>
+          <button
+            onClick={handleCancel}
+            disabled={isClearing}
+            className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white rounded text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={handleClear}
+          className="text-gray-500 hover:text-red-400 text-sm transition-colors"
+        >
+          Clear All Data
+        </button>
+      )}
+    </div>
   );
 }
+
+export default ClearDataButton;

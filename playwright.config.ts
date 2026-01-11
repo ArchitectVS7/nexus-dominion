@@ -37,7 +37,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 2,
 
   // Timeouts
-  globalTimeout: 15 * 60 * 1000, // 15 minutes max for ALL tests (increased for retries)
+  globalTimeout: 30 * 60 * 1000, // 30 minutes max for ALL tests (increased for split suites)
   timeout: 90 * 1000, // 90 seconds per test (increased for game loading)
   expect: {
     timeout: 10000, // 10 seconds for expect assertions (increased for network delays)
@@ -70,6 +70,40 @@ export default defineConfig({
     navigationTimeout: 20000, // 20 seconds for navigation (increased for game loading)
   },
   projects: [
+    // Fast tests: smoke tests only (< 1 minute)
+    {
+      name: "fast",
+      testMatch: [
+        "smoke-test.spec.ts",
+      ],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    // Core tests: milestone, feature, and diagnostic tests (2-5 minutes)
+    {
+      name: "core",
+      testMatch: [
+        "quick-diagnostic.spec.ts",
+        "milestone-core.spec.ts",
+        "crafting-system.spec.ts",
+        "milestone-advanced.spec.ts",
+        "combat-edge-cases.spec.ts",
+      ],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    // Slow tests: performance, scaling, and long-running tests (5-15 minutes)
+    {
+      name: "slow",
+      testMatch: [
+        "bot-scaling-test.spec.ts",
+        "comprehensive-test.spec.ts",
+        "tells-5bot-20turn.spec.ts",
+        "milestone-12-llm-bots.spec.ts",
+      ],
+      use: { ...devices["Desktop Chrome"] },
+      // Slow tests get longer timeouts
+      timeout: 120 * 1000, // 2 minutes per test
+    },
+    // Default: run all tests (for backwards compatibility)
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },

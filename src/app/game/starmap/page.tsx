@@ -1,113 +1,53 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { GalaxyView } from "@/components/game/starmap/GalaxyView";
-import { SectorDetail } from "@/components/game/starmap/SectorDetail";
-import { getGalaxyViewDataAction } from "@/app/actions/starmap-actions";
-import { hasActiveGameAction } from "@/app/actions/game-actions";
-import { usePanelContextSafe } from "@/contexts/PanelContext";
-import type { GalaxyRegion } from "@/components/game/starmap/GalaxyView";
-import type { GalaxyViewData } from "@/app/actions/starmap-actions";
+/**
+ * Starmap Page
+ *
+ * Displays the galaxy view with empire positions.
+ * Uses React Query for data and Zustand for panel state.
+ */
 
-function StarmapSkeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="h-8 bg-gray-800/50 rounded w-48 mb-6" />
-      <div className="h-[600px] bg-gray-800/50 rounded-lg" />
-    </div>
-  );
-}
+import { useRouter } from "next/navigation";
+import { useGalaxyView, useHasActiveGame } from "@/lib/api";
+import { usePanelStore } from "@/stores";
+import { useEffect } from "react";
 
 export default function StarmapPage() {
   const router = useRouter();
-  const panelContext = usePanelContextSafe();
-  const [data, setData] = useState<GalaxyViewData | null>(null);
-  const [selectedRegion, setSelectedRegion] = useState<GalaxyRegion | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const { openPanel } = usePanelStore();
+  const { data: hasGame, isLoading: checkingGame } = useHasActiveGame();
+  const { data, isLoading, error } = useGalaxyView();
 
-  // Handle attack - opens combat panel with target pre-selected
-  const handleAttack = useCallback((targetEmpireId: string) => {
-    if (panelContext) {
-      panelContext.openPanel("combat", { targetEmpireId });
-    } else {
-      // Fallback to page navigation if not in GameShell
-      router.push(`/game/combat?target=${targetEmpireId}`);
-    }
-  }, [panelContext, router]);
-
-  // Handle message - opens messages panel
-  const handleMessage = useCallback((targetEmpireId: string) => {
-    if (panelContext) {
-      panelContext.openPanel("messages", { targetEmpireId });
-    } else {
-      router.push(`/game/messages?to=${targetEmpireId}`);
-    }
-  }, [panelContext, router]);
-
-  // Handle view profile - could open a profile panel or navigate
-  const handleViewProfile = useCallback((targetEmpireId: string) => {
-    // For now, we don't have a profile panel, so just log
-    console.log("View profile for:", targetEmpireId);
-  }, []);
-
+  // Redirect if no active game
   useEffect(() => {
-    async function loadData() {
-      const hasGame = await hasActiveGameAction();
-      if (!hasGame) {
-        router.push("/game");
-        return;
-      }
-
-      const galaxyData = await getGalaxyViewDataAction();
-      if (!galaxyData) {
-        setIsLoading(false);
-        return;
-      }
-
-      setData(galaxyData);
-      setIsLoading(false);
+    if (!checkingGame && !hasGame) {
+      router.push("/game");
     }
+  }, [checkingGame, hasGame, router]);
 
-    loadData();
-  }, [router]);
-
-  const handleSelectSector = (regionId: string) => {
-    if (!data) return;
-
-    const region = data.regions.find((r) => r.id === regionId);
-    if (region) {
-      setIsTransitioning(true);
-      // Small delay to trigger the transition animation
-      setTimeout(() => {
-        setSelectedRegion(region);
-        setIsTransitioning(false);
-      }, 50);
-    }
+  const handleAttack = (targetEmpireId: string) => {
+    openPanel("combat", { targetEmpireId });
   };
 
-  const handleBackToGalaxy = () => {
-    setIsTransitioning(true);
-    // Small delay to trigger the transition animation
-    setTimeout(() => {
-      setSelectedRegion(null);
-      setIsTransitioning(false);
-    }, 50);
+  const handleMessage = (targetEmpireId: string) => {
+    openPanel("messages", { targetEmpireId });
   };
 
-  if (isLoading) {
+  if (isLoading || checkingGame) {
     return (
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-display text-lcars-amber mb-8">
           Galactic Starmap
         </h1>
-        <StarmapSkeleton />
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-800/50 rounded w-48 mb-6" />
+          <div className="h-[600px] bg-gray-800/50 rounded-lg" />
+        </div>
       </div>
     );
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-display text-lcars-amber mb-8">
@@ -123,8 +63,6 @@ export default function StarmapPage() {
   const activeEmpires = data.regions
     .flatMap((r) => r.empires)
     .filter((e) => !e.isEliminated);
-
-  const isPlayerRegion = selectedRegion?.id === data.playerRegionId;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -142,68 +80,101 @@ export default function StarmapPage() {
           </p>
         </div>
 
-        {/* View Container with Transitions */}
-        <div className="relative min-h-[600px]">
-          {/* Galaxy View */}
-          <div
-            className={`transition-all duration-500 ease-in-out ${
-              selectedRegion
-                ? "opacity-0 scale-95 pointer-events-none absolute inset-0"
-                : "opacity-100 scale-100"
-            }`}
-          >
-            <GalaxyView
-              regions={data.regions}
-              wormholes={data.wormholes}
-              playerEmpireId={data.playerEmpireId}
-              playerRegionId={data.playerRegionId}
-              currentTurn={data.currentTurn}
-              protectionTurns={data.protectionTurns}
-              treaties={data.treaties}
-              width={900}
-              height={600}
-              onSelectSector={handleSelectSector}
-            />
-          </div>
-
-          {/* Sector Detail View */}
-          {selectedRegion && (
+        {/* Regions Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {data.regions.map((region) => (
             <div
-              className={`transition-all duration-500 ease-in-out ${
-                isTransitioning
-                  ? "opacity-0 scale-105"
-                  : "opacity-100 scale-100"
+              key={region.id}
+              className={`p-4 rounded-lg border ${
+                region.id === data.playerRegionId
+                  ? "bg-lcars-amber/10 border-lcars-amber"
+                  : "bg-gray-800/50 border-gray-700"
               }`}
             >
-              <div className="flex items-start gap-4">
-                {/* Back Button */}
-                <button
-                  onClick={handleBackToGalaxy}
-                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-lcars-amber rounded-lg transition-colors flex items-center gap-2"
-                  data-testid="back-to-galaxy"
-                >
-                  <span className="text-lg">←</span>
-                  <span>Back to Galaxy</span>
-                </button>
+              <h3 className="text-lcars-amber font-medium mb-2">{region.name}</h3>
+              <p className="text-xs text-gray-500 mb-3">
+                {region.regionType} region
+              </p>
 
-                {/* Sector Detail Panel */}
-                <div className="flex-1">
-                  <SectorDetail
-                    region={selectedRegion}
-                    playerEmpireId={data.playerEmpireId}
-                    isPlayerRegion={isPlayerRegion}
-                    currentTurn={data.currentTurn}
-                    protectionTurns={data.protectionTurns}
-                    onClose={handleBackToGalaxy}
-                    onAttack={handleAttack}
-                    onMessage={handleMessage}
-                    onViewProfile={handleViewProfile}
-                  />
-                </div>
+              {/* Empires in this region */}
+              <div className="space-y-2">
+                {region.empires.length > 0 ? (
+                  region.empires.slice(0, 5).map((empire: { id: string; name: string; sectorCount: number; networth: number; isEliminated: boolean }) => (
+                    <div
+                      key={empire.id}
+                      className={`p-2 rounded text-sm ${
+                        empire.id === data.playerEmpireId
+                          ? "bg-lcars-amber/20 text-lcars-amber"
+                          : empire.isEliminated
+                          ? "bg-gray-900 text-gray-600 line-through"
+                          : "bg-gray-800 text-gray-300"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="truncate">{empire.name}</span>
+                        {empire.id !== data.playerEmpireId && !empire.isEliminated && (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleAttack(empire.id)}
+                              className="px-2 py-0.5 text-xs bg-red-900/50 hover:bg-red-800 rounded"
+                              title="Attack"
+                            >
+                              ATK
+                            </button>
+                            <button
+                              onClick={() => handleMessage(empire.id)}
+                              className="px-2 py-0.5 text-xs bg-blue-900/50 hover:bg-blue-800 rounded"
+                              title="Message"
+                            >
+                              MSG
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {empire.sectorCount} sectors • NW: {empire.networth.toLocaleString()}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-gray-600">No empires</p>
+                )}
+                {region.empires.length > 5 && (
+                  <p className="text-xs text-gray-500">
+                    +{region.empires.length - 5} more
+                  </p>
+                )}
               </div>
             </div>
-          )}
+          ))}
         </div>
+
+        {/* Wormholes */}
+        {data.wormholes.length > 0 && (
+          <div className="mt-8 lcars-panel">
+            <h3 className="text-lg font-semibold text-lcars-lavender mb-4">
+              Known Wormholes
+            </h3>
+            <div className="space-y-2">
+              {data.wormholes.map((wh) => {
+                const fromRegion = data.regions.find((r) => r.id === wh.fromRegionId);
+                const toRegion = data.regions.find((r) => r.id === wh.toRegionId);
+                return (
+                  <div
+                    key={wh.id}
+                    className={`p-2 rounded text-sm ${
+                      wh.status === "stabilized"
+                        ? "bg-green-900/30 text-green-400"
+                        : "bg-purple-900/30 text-purple-400"
+                    }`}
+                  >
+                    {fromRegion?.name ?? "?"} ↔ {toRegion?.name ?? "?"} ({wh.status})
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

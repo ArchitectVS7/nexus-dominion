@@ -1,99 +1,88 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { ResourceInventory } from "./ResourceInventory";
-import { RecipeList } from "./RecipeList";
-import { CraftingQueue } from "./CraftingQueue";
+/**
+ * Crafting Panel
+ *
+ * Manufacturing interface for crafting special items and upgrades.
+ * Uses React Query for data fetching.
+ */
 
-interface CraftingPanelProps {
-  refreshTrigger?: number;
-}
+import { useDashboard } from "@/lib/api";
 
-type TabId = "recipes" | "inventory" | "queue";
+export function CraftingPanel() {
+  const { data, isLoading, error } = useDashboard();
 
-interface Tab {
-  id: TabId;
-  label: string;
-}
+  if (isLoading) {
+    return (
+      <div className="animate-pulse">
+        <div className="h-32 bg-gray-800 rounded mb-4" />
+        <div className="h-48 bg-gray-800 rounded" />
+      </div>
+    );
+  }
 
-const TABS: Tab[] = [
-  { id: "recipes", label: "Craft" },
-  { id: "inventory", label: "Inventory" },
-  { id: "queue", label: "Queue" },
-];
-
-export function CraftingPanel({ refreshTrigger }: CraftingPanelProps) {
-  const [activeTab, setActiveTab] = useState<TabId>("recipes");
-  const [localRefresh, setLocalRefresh] = useState(0);
-
-  const handleCraftQueued = useCallback(() => {
-    setLocalRefresh((prev) => prev + 1);
-  }, []);
-
-  const handleQueueUpdated = useCallback(() => {
-    setLocalRefresh((prev) => prev + 1);
-  }, []);
-
-  const combinedRefresh = (refreshTrigger ?? 0) + localRefresh;
+  if (error || !data) {
+    return (
+      <div className="lcars-panel">
+        <p className="text-red-400">Failed to load crafting data</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="lcars-panel" data-testid="crafting-panel">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
-        <h2 className="text-lg md:text-xl font-semibold text-lcars-lavender">
-          Manufacturing
+    <div className="space-y-6">
+      {/* Resources */}
+      <section className="lcars-panel">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Available Resources
         </h2>
-        <p className="text-xs text-gray-400 italic">
-          Convert raw resources into advanced components for ships and weapons
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-3 bg-gray-800/50 rounded text-center">
+            <div className="text-xs text-gray-500">Ore</div>
+            <div className="font-mono text-blue-400">
+              {data.resources.ore.toLocaleString()}
+            </div>
+          </div>
+          <div className="p-3 bg-gray-800/50 rounded text-center">
+            <div className="text-xs text-gray-500">Petroleum</div>
+            <div className="font-mono text-cyan-400">
+              {data.resources.petroleum.toLocaleString()}
+            </div>
+          </div>
+          <div className="p-3 bg-gray-800/50 rounded text-center">
+            <div className="text-xs text-gray-500">Credits</div>
+            <div className="font-mono text-yellow-400">
+              {data.resources.credits.toLocaleString()}
+            </div>
+          </div>
+          <div className="p-3 bg-gray-800/50 rounded text-center">
+            <div className="text-xs text-gray-500">Research</div>
+            <div className="font-mono text-purple-400">
+              {data.resources.researchPoints.toLocaleString()}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recipes */}
+      <section className="lcars-panel">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Available Recipes
+        </h2>
+        <p className="text-gray-500 text-sm">
+          Crafting system coming in Phase 3. Check back soon!
         </p>
-      </div>
+      </section>
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-4 border-b border-gray-700 pb-2 overflow-x-auto">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-3 md:px-4 py-1.5 text-xs md:text-sm rounded-t transition-colors whitespace-nowrap ${
-              activeTab === tab.id
-                ? "bg-lcars-purple/20 text-lcars-purple border-b-2 border-lcars-purple"
-                : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab content */}
-      <div className="min-h-[300px]">
-        {activeTab === "recipes" && (
-          <RecipeList
-            refreshTrigger={combinedRefresh}
-            onCraftQueued={handleCraftQueued}
-          />
-        )}
-
-        {activeTab === "inventory" && (
-          <ResourceInventory
-            refreshTrigger={combinedRefresh}
-          />
-        )}
-
-        {activeTab === "queue" && (
-          <CraftingQueue
-            refreshTrigger={combinedRefresh}
-            onQueueUpdated={handleQueueUpdated}
-          />
-        )}
-      </div>
-
-      {/* Quick summary at bottom */}
-      <div className="mt-4 pt-3 border-t border-gray-700">
-        <ResourceInventory
-          refreshTrigger={combinedRefresh}
-          compact
-        />
-      </div>
+      {/* Queue */}
+      <section className="lcars-panel">
+        <h2 className="text-lg font-semibold text-lcars-lavender mb-4">
+          Crafting Queue
+        </h2>
+        <p className="text-gray-500 text-sm">No items in queue</p>
+      </section>
     </div>
   );
 }
+
+export default CraftingPanel;

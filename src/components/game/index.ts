@@ -1,29 +1,31 @@
-export { ResourcePanel } from "./ResourcePanel";
-export { NetworthPanel } from "./NetworthPanel";
-export { PopulationPanel } from "./PopulationPanel";
-export { MilitaryPanel } from "./MilitaryPanel";
-export { SectorsList } from "./SectorsList";
-export { TurnCounter } from "./TurnCounter";
-export { CivilStatusDisplay } from "./CivilStatusDisplay";
-export { EndTurnButton } from "./EndTurnButton";
-export { GameFooter } from "./GameFooter";
-export { FoodWarning } from "./FoodWarning";
-export { TurnSummary } from "./TurnSummary";
-export { Tooltip } from "./Tooltip";
-export { LockedFeature, LockedSection } from "./LockedFeature";
-export { UnlockNotification, UpcomingUnlocks } from "./UnlockNotification";
+/**
+ * Game Components
+ *
+ * Main barrel export for all game-related components.
+ */
 
-// New UI components for galaxy-centric layout
-export { TurnOrderPanel } from "./TurnOrderPanel";
-export { TurnSummaryModal } from "./TurnSummaryModal";
+// Core layout
 export { GameShell } from "./GameShell";
-export { ConfirmationModal } from "./ConfirmationModal";
-export { AriaAnnouncerProvider, useAriaAnnouncer } from "./AriaAnnouncer";
+export { GameHeader } from "./GameHeader";
+export { ErrorBoundary } from "./ErrorBoundary";
 
-// Session components
-export { SessionSummaryScreen } from "./session";
+// Common components
+export {
+  SlideOutPanel,
+  TurnSummaryModal,
+  QuickReferenceModal,
+  EndTurnButton,
+  ResourceBar,
+} from "./common";
 
-// Frontend redesign components (icon system, compact UI)
-export { CompactCommandBar } from "./CompactCommandBar";
-export { TurnPhaseIndicator } from "./TurnPhaseIndicator";
-export { PhaseIndicator } from "./PhaseIndicator";
+// Panel components
+export {
+  MilitaryPanel,
+  CombatPanel,
+  ResearchPanel,
+  SectorsPanel,
+  MarketPanel,
+  DiplomacyPanel,
+  CovertPanel,
+  MessagesPanel,
+} from "./panels";

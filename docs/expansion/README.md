@@ -1,8 +1,13 @@
-# Expansion Content
+# Expansion Content: Detailed Specifications
 
-**STATUS: NOT IN BASE GAME V1.0**
+**STATUS:** Post-v1.0 Content
+**Overview:** See [roadmap/EXPANSION.md](../roadmap/EXPANSION.md) for the high-level summary
 
-These features are planned for post-launch DLC expansions. They add depth for hardcore players who want more complex economic and strategic systems.
+---
+
+## Purpose of This Folder
+
+This folder contains **detailed specifications** for expansion content. For a quick overview of what expansions are planned and why, see the [Expansion Roadmap](../roadmap/EXPANSION.md).
 
 ---
 
@@ -13,8 +18,7 @@ These features are planned for post-launch DLC expansions. They add depth for ha
 Adds a 4-tier resource progression that gates advanced military units behind strategic resource management.
 
 - **[CRAFTING.md](CRAFTING.md)** - Full crafting system specification
-- Transforms "credits buy everything" into strategic progression
-- 4 tiers: Base → Refined → Components → Advanced Systems
+- 4 tiers: Base -> Refined -> Components -> Advanced Systems
 - Industrial Sectors for manufacturing
 - Crafting queue system
 
@@ -30,27 +34,27 @@ Adds a criminal organization with contracts, black market, and comeback mechanic
 
 ---
 
-## Why These Aren't in Base Game
+## Related Documents
 
-1. **Crafting** - Adds cognitive load (20+ resources), competes with core empire management
-2. **Syndicate** - Parallel progression track that dilutes focus
-
-**Solution**: Make them optional DLC for players who want deeper systems.
-
----
-
-## Roadmap
-
-See **[ROADMAP.md](ROADMAP.md)** for future feature planning including:
-- Pirate systems
-- Persistent factions
-- Raid history
-- Additional expansion concepts
+| Document | Purpose |
+|----------|---------|
+| [roadmap/EXPANSION.md](../roadmap/EXPANSION.md) | High-level expansion overview |
+| [roadmap/FUTURE.md](../roadmap/FUTURE.md) | Long-term vision (Waves 2-4) |
+| [decisions/crafting-alternatives.md](../decisions/crafting-alternatives.md) | Alternative crafting approaches considered |
+| [decisions/syndicate-alternatives.md](../decisions/syndicate-alternatives.md) | Alternative syndicate approaches considered |
 
 ---
 
-## Alternative Concepts
+## Why Detailed Specs?
 
-For experimental board-game-style implementations of these systems, see:
-- [brainstorm/crafting-tech-cards.md](../brainstorm/crafting-tech-cards.md) - Lord of Waterdeep style tech draft
-- [brainstorm/syndicate-hidden-traitor.md](../brainstorm/syndicate-hidden-traitor.md) - Betrayal at House on the Hill mechanics
+These documents provide:
+- Complete resource recipes and costs
+- UI mockups and flow diagrams
+- Balance considerations
+- Implementation file references
+
+Use these when implementing the expansion, not just planning it.
+
+---
+
+*Expansion specs for when we are ready to build.*

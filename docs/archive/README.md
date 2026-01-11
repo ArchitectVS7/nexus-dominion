@@ -1,46 +1,74 @@
-# Archive - Historical Documentation
+# Archive: Historical Documentation
 
-**PURPOSE:** Preserved documents for historical reference. Not active design docs.
-
----
-
-## Contents
-
-| Document | Date | Summary |
-|----------|------|---------|
-| [redesign-2025-12-summary.md](redesign-2025-12-summary.md) | Dec 2025 | Compressed from 19 redesign files |
-| [research-redesign-spec.md](research-redesign-spec.md) | Jan 2026 | 3-tier research system spec (implemented) |
-| [crafting-status-assessment.md](crafting-status-assessment.md) | Dec 2025 | Crafting system implementation audit |
-| [game-config-implementation.md](game-config-implementation.md) | Jan 2026 | Per-game config override system |
-| [terminology-crisis-audit.md](terminology-crisis-audit.md) | Jan 2026 | Full terminology audit (historical context) |
-
-> **Note:** Active remediation tasks moved to [../TERMINOLOGY-REMEDIATION.md](../TERMINOLOGY-REMEDIATION.md)
+**Purpose:** Read-only reference for historical context.
 
 ---
 
-## Why These Were Archived
+## What's Here
 
-### redesign-2025-12-summary.md
-Original 19 files from December 2025 design sprint. Key decisions now in `docs/core/GAME-DESIGN.md`.
+This folder contains documentation that is no longer actively maintained but preserved for reference:
 
-### research-redesign-spec.md
-Full specification for 3-tier research system. The system was implemented - this is the original design doc.
+### reviews-2026-01/
 
-### crafting-status-assessment.md
-Point-in-time assessment of crafting implementation. Useful for understanding what was complete as of Dec 2025.
+Code and UX reviews from January 2026 alpha readiness assessment.
 
-### game-config-implementation.md
-Technical implementation notes for game config override system. Reference for future developers.
+| File | Summary |
+|------|---------|
+| `UNIFIED-ACTION-PLAN.md` | Synthesized action items from all reviews |
+| `ux.md` | 40 UX issues identified |
+| `player-journey.md` | 30 player journey improvements |
+| `qa.md` | 27 QA/testing issues |
+| `e2e-test-strategy-review.md` | E2E testing approach analysis |
+| `previous-reviews/` | Earlier review iterations |
+| `archive2/` | Additional archived reviews |
+
+### plans-completed/
+
+Design plans that have been executed or superseded.
+
+| File | Summary |
+|------|---------|
+| `Five-Agent-Review.md` | Alpha readiness review plan (90 findings) |
+| `Four-Agent-Review.md` | Earlier review structure |
+| `Redesign-Plan.md` | December 2025 redesign specification |
+
+### legacy/
+
+Old archive content from earlier documentation phases.
+
+| File | Summary |
+|------|---------|
+| `redesign-2025-12-summary.md` | December 2025 design sprint |
+| `research-redesign-spec.md` | 3-tier research specification |
+| `crafting-status-assessment.md` | Crafting implementation audit |
+| `game-config-implementation.md` | Config override system |
+| `terminology-crisis-audit.md` | Terminology remediation history |
 
 ---
 
 ## Using Archived Docs
 
-These documents are **read-only references**. If you need to update game design:
-1. Check `docs/core/` for active design docs
-2. Update the active doc, not the archive
-3. Archive docs may have outdated terminology
+**Do:**
+- Reference for historical context
+- Understand why decisions were made
+- Track what was attempted before
+
+**Don't:**
+- Treat as current design docs
+- Update without promoting to active location
+- Expect terminology to be current
 
 ---
 
-*Archive created: January 2026*
+## Active Documentation
+
+For current, maintained documentation:
+
+- **Design:** [/docs/design/](../design/)
+- **Roadmap:** [/docs/roadmap/](../roadmap/)
+- **Guides:** [/docs/guides/](../guides/)
+- **Development:** [/docs/development/](../development/)
+
+---
+
+*Archive preserves history. Active docs drive the project.*

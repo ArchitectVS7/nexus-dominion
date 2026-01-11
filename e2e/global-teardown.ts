@@ -1,43 +1,34 @@
+import { FullConfig } from "@playwright/test";
+
 /**
  * Global teardown for E2E tests
- * Cleans up all test data from the database after test suite completes
+ * Cleans up test data after all tests complete
  */
-import { config } from "dotenv";
+async function globalTeardown(_config: FullConfig): Promise<void> {
+  // In production, this would call an admin endpoint to clear test games
+  // For now, just log completion
+  console.log("\n[E2E Teardown] All tests complete");
 
-// Load environment variables
-config({ path: ".env.local" });
-
-// Set test admin secret for cleanup (matches playwright.config.ts webServer env)
-process.env.ADMIN_SECRET = process.env.ADMIN_SECRET || "e2e-test-secret";
-
-// Import after setting env
-import { deleteAllGamesAction } from "../src/app/actions/admin-actions";
-
-async function globalTeardown() {
-  console.log("\nCleaning up test data from database...");
-
+  // Optionally call admin cleanup endpoint if configured
   const adminSecret = process.env.ADMIN_SECRET;
+  if (adminSecret) {
+    try {
+      const response = await fetch("http://localhost:3000/api/admin/clear-games", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Secret": adminSecret,
+        },
+        body: JSON.stringify({ testGamesOnly: true }),
+      });
 
-  if (!adminSecret) {
-    console.error("Error: ADMIN_SECRET not available for cleanup");
-    console.warn("Warning: Test data may still be in database. Run 'npx tsx scripts/clear-db.ts' to clean manually.");
-    return;
-  }
-
-  try {
-    const result = await deleteAllGamesAction(adminSecret);
-
-    if (result.success) {
-      console.log(`Successfully deleted ${result.deletedCount} test games and all related data`);
-      console.log("Database cleanup complete!");
-    } else {
-      console.error(`Cleanup failed: ${result.error}`);
-      // Don't fail the build if cleanup fails - just warn
-      console.warn("Warning: Test data may still be in database. Run 'npx tsx scripts/clear-db.ts' to clean manually.");
+      if (response.ok) {
+        console.log("[E2E Teardown] Test games cleared successfully");
+      }
+    } catch {
+      // Server might not be running anymore, that's fine
+      console.log("[E2E Teardown] Skipped cleanup (server not available)");
     }
-  } catch (error) {
-    console.error("Error during cleanup:", error);
-    console.warn("Warning: Test data may still be in database. Run 'npx tsx scripts/clear-db.ts' to clean manually.");
   }
 }
 

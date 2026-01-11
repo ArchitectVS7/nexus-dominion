@@ -44,7 +44,9 @@ import { applyNightmareBonus } from "./difficulty";
 // M10: Emotional state imports
 import {
   getEmotionalStateWithGrudges,
+  getAllEmotionalStatesWithGrudges,
   processEmotionalEventForBot,
+  type EmotionalStateWithContext,
 } from "@/lib/game/repositories/bot-emotional-state-repository";
 // Note: applyEmotionalDecay is called in turn-processor.ts Phase 5.5
 // Note: getPermanentGrudges is passed via BotDecisionContext.permanentGrudges
@@ -125,6 +127,12 @@ export async function processBotTurn(
     const protectionTurns = game.protectionTurns ?? 20;
 
     // ==========================================================================
+    // PERF: BATCH LOAD EMOTIONAL STATES
+    // ==========================================================================
+    // Load all emotional states in 2 queries instead of 2 per bot (N+1 fix)
+    const emotionalStatesMap = await getAllEmotionalStatesWithGrudges(gameId);
+
+    // ==========================================================================
     // M4: WEAK-FIRST INITIATIVE
     // ==========================================================================
     // Step 1: Generate all decisions in parallel (for speed)
@@ -137,7 +145,7 @@ export async function processBotTurn(
           protectionTurns,
           difficulty,
           targetList,
-        })
+        }, emotionalStatesMap.get(bot.id))
       )
     );
 
@@ -337,32 +345,46 @@ interface ProcessingContext {
 /**
  * Generate a bot decision and return it with context.
  * Used in the first phase of weak-first initiative to collect all decisions.
+ *
+ * PERF: Accepts optional pre-loaded emotional state to avoid N+1 queries.
+ * When preloadedEmotionalState is provided, uses it directly instead of querying.
  */
 async function generateBotDecisionWithContext(
   empire: Empire,
   empireSectors: Sector[],
-  context: ProcessingContext
+  context: ProcessingContext,
+  preloadedEmotionalState?: EmotionalStateWithContext
 ): Promise<{
   bot: Empire;
   sectors: Sector[];
   decision: BotDecision;
   context: BotDecisionContext;
 }> {
-  // Load emotional state and grudges
+  // Load emotional state and grudges (use preloaded if available)
   let emotionalState: { state: EmotionalStateName | "neutral"; intensity: number } | undefined;
   let permanentGrudges: string[] | undefined;
 
-  try {
-    const emotionData = await getEmotionalStateWithGrudges(empire.id, context.gameId);
+  if (preloadedEmotionalState) {
+    // PERF: Use pre-loaded state (batch loaded upfront)
     emotionalState = {
-      state: emotionData.state as EmotionalStateName | "neutral",
-      intensity: parseFloat(emotionData.intensity),
+      state: preloadedEmotionalState.state as EmotionalStateName | "neutral",
+      intensity: parseFloat(preloadedEmotionalState.intensity),
     };
-    permanentGrudges = emotionData.permanentGrudges;
-  } catch {
-    // If emotional state doesn't exist yet, continue without it
-    emotionalState = undefined;
-    permanentGrudges = undefined;
+    permanentGrudges = preloadedEmotionalState.permanentGrudges;
+  } else {
+    // Fallback: Load individually (for cases where batch load wasn't done)
+    try {
+      const emotionData = await getEmotionalStateWithGrudges(empire.id, context.gameId);
+      emotionalState = {
+        state: emotionData.state as EmotionalStateName | "neutral",
+        intensity: parseFloat(emotionData.intensity),
+      };
+      permanentGrudges = emotionData.permanentGrudges;
+    } catch {
+      // If emotional state doesn't exist yet, continue without it
+      emotionalState = undefined;
+      permanentGrudges = undefined;
+    }
   }
 
   // Build decision context
