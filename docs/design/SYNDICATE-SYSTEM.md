@@ -326,9 +326,16 @@ Skip crafting queues (if crafting system active):
 | Service | Price | Trust Req | Effect |
 |---------|-------|-----------|--------|
 | **Spy Report** | 5,000 cr | 2 | Reveal target's resources/military |
-| **Tech Espionage** | 15,000 cr | 3 | Reveal target's research progress |
+| **Research Espionage** | 5,000 cr | 2 | Reveal target's specialization choice (85% success) |
+| **Tech Espionage** | 15,000 cr | 3 | Reveal target's research progress % toward Tier 3 |
 | **Diplomatic Intel** | 10,000 cr | 3 | Reveal target's treaties/alliances |
 | **Future Intel** | 25,000 cr | 5 | See target's planned actions next turn |
+
+**Note on Research Espionage:**
+- Doctrines are public (all players see when chosen)
+- Specializations are hidden (requires espionage or combat reveal)
+- Tier 3 progress % is always hidden
+- See [RESEARCH.md](RESEARCH.md) for full research visibility system
 
 ---
 

@@ -699,10 +699,22 @@ interface BotGameConfig {
 
 ---
 
+## Commander Stats Reference
+
+Bot commanders have three mental ability scores that affect decision-making:
+- **INT (Intelligence):** 8-18 range, affects tech research speed (+1 RP/turn per modifier)
+- **WIS (Wisdom):** 8-18 range, affects retreat decisions (d20+WIS vs DC 15)
+- **CHA (Charisma):** 8-18 range, affects alliance formation (d20+CHA vs target WIS)
+
+See [COMBAT-SYSTEM.md Section 2.4](COMBAT-SYSTEM.md#24-commander-stats-mental-abilities---bot-ai-only) for complete commander stat table by archetype.
+
+---
+
 ## Related Documents
 
 - [Game Design](GAME-DESIGN.md) - Overall game design
-- [Combat System](COMBAT-SYSTEM.md) - Battle resolution
+- [COMBAT-SYSTEM.md](COMBAT-SYSTEM.md) - Battle resolution, commander stats (Section 2.4)
+- [RESEARCH.md](RESEARCH.md) - Research system, bot preferences (Section 8)
 - [Terminology Rules](../development/TERMINOLOGY.md) - CRITICAL
 - **[BOT_ARCHITECTURE.md](BOT_ARCHITECTURE.md)** - Original detailed vision (archived)
 
