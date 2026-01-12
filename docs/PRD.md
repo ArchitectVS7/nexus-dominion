@@ -318,6 +318,113 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ---
 
+### REQ-COMBAT-009: Multi-Domain Battle Resolution
+
+**Description:** Full Invasions resolve combat across three sequential domains:
+
+1. **SPACE BATTLE:** Fighters, Cruisers, Carriers
+   - Winner gains +2 bonus to Orbital and Ground domains
+
+2. **ORBITAL BATTLE:** Stations, Bombers, Support ships
+   - Winner gains +2 bonus to Ground domain
+
+3. **GROUND BATTLE:** Soldiers, Mechs (transported by carriers)
+   - Winner captures 5-15% of defender's sectors
+
+Cross-domain bonuses stack: Win Space + Orbital = +4 bonus to Ground battle.
+
+**Rationale:** Creates strategic depth where space/orbital supremacy provides tactical advantage on ground.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 4.2
+
+**Code:** `src/lib/combat/multi-domain.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-010: Three Battle Types
+
+**Description:** Three distinct battle types with different requirements and outcomes:
+
+1. **Full Invasion:**
+   - Requirements: Carriers + space control
+   - Resolution: Multi-domain (Space/Orbital/Ground)
+   - Outcome: Can capture 5-15% of defender's sectors
+
+2. **Covert Strike:**
+   - Requirements: Commando units OR Syndicate "Pirate Raid" contract
+   - Resolution: Single domain (Ground only)
+   - Outcome: 10-20% infrastructure damage, -20% production for 2-3 turns, NO sector capture
+
+3. **Blockade:**
+   - Requirements: Space fleet
+   - Resolution: No ground combat (economic pressure)
+   - Outcome: Reduce target's trade income, NO sector capture
+
+**Rationale:** Provides strategic alternatives to direct conquest. Covert Strikes enable asymmetric warfare without fleet superiority.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 4.1 (updated), `docs/design/COMBAT-SYSTEM-RAID-RESOLUTION.md`
+
+**Code:** `src/lib/combat/battle-types.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-011: Unit Rarity Tiers
+
+**Description:** Units are organized into three rarity tiers with escalating power:
+
+- **Tier I (Standard):** Stats 8-12 range, available Turn 1
+- **Tier II (Prototype):** Stats 12-16 range, unlocked via research doctrines
+- **Tier III (Singularity):** Stats 16-20 range, rare drafts after Turn 50, limit 1 per game per empire
+
+Higher tiers have better STR/DEX/CON modifiers, HP pools, and special abilities.
+
+**Rationale:** Creates power progression and late-game escalation. Tier III units feel "legendary."
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 7
+
+**Code:** `src/lib/combat/unit-cards.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-012: Morale & Surrender System
+
+**Description:** Combat includes morale checks and surrender mechanics:
+
+**Morale Check (50%+ unit losses):**
+- Roll: d20 + Commander WIS vs DC 15
+- Success: Fight to the end
+- Failure DC 10-14: Shaken (-2 all rolls next round)
+- Failure <DC 10: Routed (immediate retreat with losses)
+
+**Surrender Offer (75%+ HULL losses):**
+- Roll: d20 + Attacker CHA vs Defender WIS
+- Success: Defender surrenders sector without further combat
+- Failure: Combat continues
+
+**Rationale:** Prevents total annihilation, enables tactical retreats, creates dramatic "last stand" moments.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Sections 4.4-4.5
+
+**Code:** `src/lib/combat/morale.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
 ## 4. Resource System
 
 ### REQ-RES-001: Five Resource Types
@@ -995,18 +1102,187 @@ interface BotDecisionLog {
 
 ## 10. Research System
 
-### REQ-RES-001: Three-Tier Research
+### REQ-RSCH-001: Three-Tier Research Structure
 
 **Description:** Research follows a 3-tier draft system:
-1. Doctrines (Tier 1) - Basic bonuses
-2. Specializations (Tier 2) - Focused upgrades
-3. Capstones (Tier 3) - Powerful abilities
+1. **Doctrines (Tier 1)** - Turn ~10, choose 1 of 3, public announcement
+2. **Specializations (Tier 2)** - Turn ~30, choose 1 of 2, hidden until revealed
+3. **Capstones (Tier 3)** - Turn ~60, automatic based on doctrine, galaxy-wide announcement
 
-**Rationale:** Creates meaningful tech progression with choices.
+**Rationale:** Creates meaningful strategic identity choices with progressive power scaling.
 
-**Source:** `docs/design/GAME-DESIGN.md`
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 1.1
 
 **Code:** `src/lib/game/services/research-service.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-002: Doctrine System (Tier 1)
+
+**Description:** Three doctrines define strategic identity:
+- **War Machine:** +2 STR to all units, -10% planet income, unlocks military specializations
+- **Fortress:** +4 AC when defending, -5% attack power, unlocks defensive specializations
+- **Commerce:** +2 CHA (commander), +20% market prices, unlocks economic specializations
+
+Each doctrine unlocks 2 specializations. Choice is public and announced galaxy-wide.
+
+**Rationale:** Establishes strategic direction and asymmetric gameplay early.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 3
+
+**Code:** `src/lib/game/services/research-service.ts:selectDoctrine`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003: Specialization System (Tier 2)
+
+**Description:** Hidden specializations provide focused tactical bonuses (2 per doctrine, player picks 1):
+
+**War Machine:**
+- Shock Troops: Surprise round (attack before initiative)
+- Siege Engines: +50% damage vs stationary targets
+
+**Fortress:**
+- Shield Arrays: Immunity to surprise rounds
+- Minefield Networks: Pre-combat CON save DC 15
+
+**Commerce:**
+- Trade Monopoly: -20% buy, +30% sell prices
+- Mercenary Contracts: +2 STR to hired units per battle
+
+Choice is **hidden** until revealed through combat, espionage (5,000 cr), alliance sharing, or galactic news rumors.
+
+**Rationale:** Creates information asymmetry and tactical surprise.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 4
+
+**Code:** `src/lib/game/services/research-service.ts:selectSpecialization`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-004: Capstone System (Tier 3)
+
+**Description:** Automatic capstone unlock at ~Turn 60 based on doctrine:
+
+- **War Machine → Dreadnought:** Unique unit (STR 20, HP 200, unlimited attacks per round)
+- **Fortress → Citadel World:** One planet becomes AC 25 (nearly invulnerable)
+- **Commerce → Economic Hegemony:** Generate 50% of 2nd place empire's income automatically
+
+Triggers galaxy-wide announcement and bot reactions.
+
+**Rationale:** Provides late-game power spike and endgame drama.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 5
+
+**Code:** `src/lib/game/services/research-service.ts:unlockCapstone`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-005: Research Point Economy
+
+**Description:**
+- Research planets generate 100 RP/turn
+- Thresholds: 1,000 RP (Tier 1), 5,000 RP (Tier 2), 15,000 RP (Tier 3)
+- Progress is **hidden** from other empires (cannot see opponent's RP totals)
+- No automatic advancement; reaching threshold unlocks choice event
+
+**Rationale:** Creates predictable timing (~Turn 10/30/60) while hiding exact progress.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 1.2
+
+**Code:** `src/lib/game/services/research-service.ts:processResearchProduction`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-006: Research Information Visibility
+
+**Description:** Asymmetric information model:
+
+**PUBLIC:**
+- Doctrine choices (announced Turn ~10)
+- Tier 3 capstone unlocks (announced Turn ~60)
+
+**HIDDEN:**
+- Current RP accumulation
+- Progress % toward next tier
+- Specialization choice
+
+**REVEALED THROUGH:**
+- Combat (first use of specialization ability)
+- Espionage (Investigate Specialization, 5,000 cr, 85% success)
+- Alliance membership (auto-share with coalition)
+- Galactic News rumors (50% accuracy, every 10 turns)
+
+**Rationale:** Encourages intelligence gathering and creates deduction gameplay.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 2
+
+**Code:** `src/lib/game/services/research-service.ts:revealSpecialization`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-007: Research-Combat Integration
+
+**Description:** Research bonuses modify combat mechanics:
+
+- Doctrine bonuses apply to **all units** (permanent stat changes)
+- Specialization bonuses apply **during combat** (conditional effects)
+- Stack multiplicatively: Base damage + Doctrine + Specialization + Tech Cards
+
+Example: War Machine (+2 STR) + Shock Troops (surprise round) + Plasma Torpedoes (+2 damage first round)
+→ First round: 2d8+1 base → 2d8+3 (doctrine) → 2d8+5 (card) with surprise initiative
+
+**Rationale:** Research directly impacts tactical combat outcomes.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 6
+
+**Code:** `src/lib/combat/research-bonuses.ts:applyResearchBonuses`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-008: Specialization Counter-Play
+
+**Description:** Specializations counter each other in rock-paper-scissors fashion:
+
+- **Shield Arrays** > Shock Troops (immunity to surprise)
+- **Siege Engines** > Shield Arrays (bypass AC)
+- **Minefield Networks** > Siege Engines (pre-combat damage)
+
+Counter-picking requires knowledge of opponent's specialization (espionage, combat reveal, or alliance intel).
+
+**Rationale:** Rewards intelligence gathering and creates tactical depth.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 4.5
+
+**Code:** `src/lib/combat/specialization-counters.ts`
 
 **Tests:** TBD
 
@@ -1608,6 +1884,97 @@ Example - Food shortage:
 **Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
 
 **Code:** TBD (expansion content)
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-007: Tech Card Catalog (40 Cards Total)
+
+**Description:** Specific tech card pool organized by tier:
+
+**TIER 1 - Hidden Objectives (12 cards):**
+- Warmonger's Arsenal (+2 VP per empire eliminated)
+- Merchant's Ledger (+1 VP per 25k credits earned)
+- Diplomat's Archive (+3 VP per active treaty)
+- Survivor's Grit (+5 VP if never lost planet)
+- [8 additional cards covering different victory paths]
+
+**TIER 2 - Tactical Cards (20 cards, 5 categories):**
+- Offensive (5): Plasma Torpedoes (+2 damage first round), Ion Cannons, Boarding Parties, Overcharged Weapons, Focus Fire
+- Defensive (5): Shield Arrays (negate surprise), Point Defense, Hardened Circuits, Regenerative Hull, Emergency Shields
+- Utility (5): Cloaking Field (-4 enemy to-hit first round), Scanner Arrays (detect cloak), EMP Burst, Shielded Core, Repair Drones
+- Economic (3): Salvage Operations, Rapid Deployment (-10% unit cost), War Bonds
+- Special (2): Morale Boost, Kamikaze Doctrine
+
+**TIER 3 - Legendary Cards (8 cards):**
+- Planet Cracker (destroy 1 planet, one-use)
+- Dyson Swarm (double income, permanent)
+- Mind Control Array (force bot conflict, 3 uses)
+- [5 additional game-changing effects]
+
+**Rationale:** Provides concrete card pool for balance testing and bot decision-making. Cards designed to synergize with research doctrines.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md` Sections 3-5
+
+**Code:** `src/lib/tech-cards/card-catalog.ts`
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-008: Tech Card Counter-Play System
+
+**Description:** Each card has counters creating rock-paper-scissors dynamics:
+
+**Counter Examples:**
+- Shield Arrays counters Shock Troops (research) + Plasma Torpedoes (negates surprise/first-strike)
+- Scanner Arrays counters Cloaking Field (reveals hidden units)
+- Point Defense counters Plasma Torpedoes (-2 to incoming first-round damage)
+- Siege Engines (research) counters Shield Arrays (bypasses AC bonus)
+
+Players can draft cards to counter known opponent strategies (requires intel from research announcements, combat reveals, or espionage).
+
+**Rationale:** Creates strategic drafting decisions beyond "pick strongest card." Rewards intelligence gathering and counter-picking.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md` Section 2.2, 4
+
+**Code:** `src/lib/tech-cards/counter-system.ts`
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-009: Draft Timing & Combat Integration
+
+**Description:** Draft events occur at fixed intervals with combat integration:
+
+**Draft Schedule:**
+- Turn 1: T1 hidden objective (draw 3, keep 1)
+- Turn 10, 20, 30, 40: T2 tactical cards (draw 3, pick 1, public announcement)
+- Turn 50+: T3 legendary cards enter pool (30% chance per draft slot)
+
+**Draft Order:**
+- Initiative: d20 + CHA modifier
+- Higher roll picks first, repeats each draft event
+- Cards removed from pool once drafted (reset next event)
+
+**Combat Integration:**
+- Research bonuses + Tech Card bonuses stack multiplicatively
+- Example: War Machine (+2 STR) + Plasma Torpedoes (+2 first-round) = 2d8+1 → 2d8+3 → 2d8+5
+- Cards activate automatically unless legendary (require manual activation to prevent "save syndrome")
+
+**Rationale:** Predictable timing enables strategic planning. Stacking with research creates powerful synergies. Automatic activation ensures cards get used.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md` Sections 6, 7
+
+**Code:** `src/lib/tech-cards/draft-engine.ts`, `src/lib/combat/card-integration.ts`
 
 **Tests:** TBD
 
