@@ -1,9 +1,10 @@
-# The Galactic Syndicate: Complete System Specification
+# The Galactic Syndicate System
 
 **Version:** 1.0
 **Status:** Core Game Feature
 **Created:** 2026-01-11
-**Replaces:** SYNDICATE.md, SYNDICATE-EXPANSION-CONCEPT.md
+**Last Updated:** 2026-01-12
+**Replaces:** SYNDICATE-Notes-01.md (expansion concept), SYNDICATE-Notes-Simple.md (simplified version)
 
 ---
 

@@ -1,6 +1,6 @@
 # Nexus Dominion: Product Requirements Document
 
-**Version:** 1.3
+**Version:** 1.4
 **Status:** Active - Canonical Requirements Reference
 **Created:** 2026-01-11
 **Last Updated:** 2026-01-12 (Frontend Consolidation)
@@ -1615,19 +1615,444 @@ Example - Food shortage:
 
 ---
 
-## 15. Expansion: Syndicate
+## 15. The Galactic Syndicate System
 
-**Source Document:** `docs/expansion/SYNDICATE.md`
+**Source Document:** `docs/design/SYNDICATE-SYSTEM.md`
 
-### REQ-SYND-001: Black Market
+**Design Philosophy:** The Syndicate transforms Nexus Dominion from a pure 4X strategy game into a hidden role game with 4X elements. Players receive secret loyalty assignments (Loyalist or Syndicate) that fundamentally change their objectives and create asymmetric gameplay with betrayal mechanics.
 
-**Description:** Syndicate offers illicit trades and contracts after Turn 50.
+**Status:** Core Game Feature (implement post-Beta-1)
 
-**Rationale:** Post-launch expansion content.
+---
 
-**Source:** `docs/expansion/SYNDICATE.md`
+### REQ-SYND-001: Hidden Role Assignment
 
-**Code:** `src/components/game/syndicate/BlackMarketPanel.tsx`
+**Description:** At game start, each empire (player + bots) receives a secret Loyalty Card:
+- **90% are Loyalist** - Win through standard victory conditions (conquest, economic, research, etc.)
+- **10% are Syndicate** - Hidden objective: Complete 3 contracts before Turn 200
+- **No one knows** who serves the Syndicate (including you, about others)
+
+**Archetype Weighting:**
+- Schemer: 50% chance Syndicate (vs 10% baseline)
+- Opportunist: 20% chance Syndicate
+- All others: 10% chance Syndicate
+
+**Player Assignment:**
+- First playthrough: Always Loyalist (learn base game)
+- Subsequent games: Subject to random assignment
+- Can opt-in to "Syndicate Mode" for guaranteed assignment
+
+**Rationale:** Hidden roles create paranoia, suspicion, and dramatic betrayal moments. The "Who is the traitor?" mechanic transforms standard diplomacy into social deduction gameplay.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 2)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:assignLoyaltyRoles()`
+
+**Database:** `empires.loyalty_role` column ('loyalist', 'syndicate', 'defector')
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-002: The Revelation Moment
+
+**Description:** At Turn 50 or when first contract is completed, all players see "The Shadow Emerges" announcement revealing that a Syndicate operative exists in the galaxy.
+
+**Effects:**
+- Galaxy-wide dramatic announcement
+- Accusation system unlocks
+- Suspicious Activity Feed becomes visible to Loyalists
+- Bot messaging shifts to include suspicion and accusations
+- Coalition "Stop the Syndicate" formation increases
+
+**Rationale:** Creates a narrative turning point where the game shifts from standard 4X to paranoid social deduction. Players now question every action and alliance.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 1.3, 12.1)
+
+**Code:** `src/lib/game/services/syndicate-service.ts`, `src/components/game/events/ShadowEmergence.tsx`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-003: Syndicate Contract System
+
+**Description:** Syndicate players see 3 active contracts at any time across 4 tiers:
+
+**Tier 1: Covert Operations (Trust 0-2)**
+- Sabotage Production, Insurgent Aid, Market Manipulation, Pirate Raid
+- 1 Syndicate VP each, Low-Medium suspicion, 8,000-20,000 credits
+
+**Tier 2: Strategic Disruption (Trust 3-5)**
+- Intelligence Leak, Arms Embargo, False Flag Operation, Economic Warfare
+- 1-2 Syndicate VP each, Medium-High suspicion, 25,000-50,000 credits
+
+**Tier 3: High-Risk Operations (Trust 6-7)**
+- Coup d'État, Assassination, Kingslayer, Scorched Earth
+- 2-3 Syndicate VP each, Very High-Extreme suspicion, 60,000-150,000 credits
+
+**Tier 4: Endgame Contracts (Trust 8)**
+- Proxy War, The Equalizer, Shadow Victory
+- 2-5 Syndicate VP each, Variable suspicion, 100,000+ credits or special tech
+
+**Contract Visibility:**
+- Contracts are **hidden** from other players
+- Contract **effects are visible** (but cause is ambiguous)
+- Suspicious Activity Feed shows results without attribution
+
+**Rationale:** Provides Syndicate players with alternative progression path while generating observable events that Loyalists can investigate.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 3)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:generateContracts()`, `src/lib/game/constants/syndicate.ts`
+
+**Database:** `syndicate_contracts` table
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-004: Trust Progression System
+
+**Description:** Syndicate players build trust through contracts and purchases to unlock better goods (0-8 levels):
+
+| Level | Points | Title | Access |
+|-------|--------|-------|--------|
+| 0 | 0 | Unknown | Must complete intro contract |
+| 1 | 100 | Associate | Basic intel, components at 2× price |
+| 2 | 500 | Runner | Tier 1 contracts, 1.75× prices |
+| 3 | 1,500 | Soldier | Tier 2 contracts, 1.5× prices |
+| 4 | 3,500 | Captain | Targeted contracts |
+| 5 | 7,000 | Lieutenant | Advanced systems at 1.5× |
+| 6 | 12,000 | Underboss | Chemical weapons, EMP devices |
+| 7 | 20,000 | Consigliere | Nuclear warheads |
+| 8 | 35,000 | Syndicate Lord | Bioweapons, exclusive contracts |
+
+**Trust Earning:**
+- Contract completion: +10 to +200 trust (tier-dependent)
+- Black Market purchases: +5 trust per 10,000 credits spent
+- Recruitment bonus (bottom 50% empires): Double trust for first contract
+
+**Trust Decay:**
+- No interaction for 10 turns: -5% trust decay per turn
+- Failed contract: -50% of reward trust, drop 1 level
+- Betrayal to Coordinator: Reset to 0, permanent ban
+- Being "outed" via accusation: -25% trust
+
+**Rationale:** Creates progression system for Syndicate players similar to standard tech/economy progression for Loyalists. Trust gates access to WMDs and high-impact contracts.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 4)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:increaseTrust()`, `src/lib/game/constants/syndicate.ts`
+
+**Database:** `empires.syndicate_trust_level`, `empires.syndicate_trust_points`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-005: Black Market System
+
+**Description:** Only Syndicate players can access the Black Market for restricted goods:
+
+**Components (Trust 1+):**
+- Electronics, Armor Plating, Propulsion Units (2.0× base price)
+- Targeting Arrays, Stealth Composites (1.75× base price)
+- Quantum Processors (1.5× base price)
+
+**Advanced Systems (Trust 5+):**
+- Reactor Cores, Shield Generators, Cloaking Devices, Warp Drives
+- 1.25×-1.5× base price
+
+**Restricted Weapons (Trust 6+) - Single-use WMDs:**
+- EMP Device (50,000 cr, Trust 6): Disable defenses for 3 turns
+- Chemical Weapon (75,000 cr, Trust 6): Kill 25% population
+- Nuclear Warhead (100,000 cr, Trust 7): Destroy 50% production
+- Bioweapon Canister (150,000 cr, Trust 8): Kill 75% population
+
+**Intelligence Services (Trust 2+):**
+- Spy Report (5,000 cr): Reveal resources/military
+- Tech Espionage (15,000 cr): Reveal research progress
+- Diplomatic Intel (10,000 cr): Reveal treaties/alliances
+- Future Intel (25,000 cr): See planned actions next turn
+
+**Rationale:** Provides Syndicate-exclusive power spike options that risk high suspicion. WMDs create dramatic moments and give struggling players comeback potential.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 5)
+
+**Code:** `src/components/game/syndicate/BlackMarketPanel.tsx`, `src/lib/game/services/syndicate-service.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-006: Suspicion System
+
+**Description:** Each contract generates suspicion based on visibility and impact:
+
+**Suspicion Levels:**
+- Low (10-20): Minor disruptions, hard to attribute
+- Medium (30-50): Noticeable events, moderate attribution
+- High (60-80): Obvious interference, easy to suspect
+- Extreme (90-100): WMD use, instant reveal risk
+
+**Suspicion Score Calculation:**
+```
+Suspicion Score = Σ(Contract Suspicion) × Investigation Modifier
+```
+
+**High Suspicion (>75) triggers:**
+- More bot accusations
+- Coalition formation against suspect
+- Coordinator automatic monitoring
+- Higher accusation trial success rate
+
+**Reducing Suspicion:**
+- Complete "clean" turns (no contracts for 5 turns): -10 suspicion
+- Form alliances: -5 suspicion per active treaty
+- Win battles legitimately: -15 suspicion
+- Public charity (donate resources): -20 suspicion
+
+**Rationale:** Creates risk/reward balance for Syndicate players. High-impact contracts generate high suspicion. Staying hidden requires mixing contracts with legitimate play.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 3.3)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:increaseSuspicion()`
+
+**Database:** `empires.suspicion_score`, `suspicious_events` table
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-007: Accusation System
+
+**Description:** After Turn 50 (or "Shadow Emerges" event), any empire can accuse another of Syndicate allegiance:
+
+**Process:**
+1. Accuser spends 25 Intel Points to accuse specific empire
+2. Public announcement to all empires: "X accuses Y of Syndicate allegiance"
+3. Accused can defend (spend 10,000 credits for defense statement)
+4. Voting period - All other empires vote Guilty/Innocent (3 turns)
+5. Resolution - Majority vote determines outcome
+
+**Resolution Outcomes:**
+
+**If GUILTY + Target is SYNDICATE:**
+- Accuser: +5,000 credits, +10 Coordinator standing
+- Target: "Outed" (loses hidden status), -25% Syndicate trust
+- Target gains "Desperate" status: +20% combat, -20% income, alliances dissolved
+
+**If GUILTY + Target is LOYALIST (False Accusation):**
+- Accuser: -10,000 credits, -20 Coordinator standing
+- Target: +15,000 credits (sympathy), +2 all diplomatic relations
+
+**If INNOCENT:**
+- No penalties, suspicion score remains, lingering doubt
+
+**Rationale:** Creates high-stakes social deduction mechanics. False accusations have severe penalties to prevent spam. Outed Syndicate players can still win but lose stealth advantage.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 6)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:createAccusation()`, `src/components/game/syndicate/AccusationTrial.tsx`
+
+**Database:** `accusations` table, `accusation_votes` table
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-008: The Coordinator (NPC Faction)
+
+**Description:** The Coordinator is the galactic authority that opposes the Syndicate:
+
+**Services:**
+- Intel Validation (15 Intel Points + 5,000 credits): Confirm or deny suspicions
+- Protection: +10% funding bonus if you report Syndicate player
+- Whistleblower Rewards: Betraying Syndicate pays well
+
+**Loyalist Reporting:**
+If target is SYNDICATE:
+- Receive target's next contract (preview)
+- Gain +10% permanent funding bonus
+- Coordinator standing +50
+
+If target is LOYALIST:
+- Report leaked to target (diplomatic damage)
+- Lose 10,000 credits
+- Coordinator standing -25
+
+**Syndicate Betrayal (Permanent):**
+A Syndicate player can betray the Syndicate:
+- Benefits: +25,000 credits, +25% permanent funding bonus
+- Consequences: Syndicate becomes hostile, random assassination attempts (5% per turn), cannot re-engage
+
+**Rationale:** Provides investigation tools for Loyalists and creates betrayal temptation for Syndicate players. Coordinator acts as counterbalance to Syndicate power.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 7)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:reportToCoordinator()`, `src/components/game/syndicate/CoordinatorInterface.tsx`
+
+**Database:** `coordinator_reports` table
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-009: Syndicate Victory Conditions
+
+**Description:** Syndicate players have asymmetric victory conditions separate from standard victories:
+
+**Condition 1: Contract Mastery**
+- Complete 3 Syndicate contracts before Turn 200
+- Any combination of tiers allowed
+- Victory Type: "Shadow Victory" if hidden, "Defiant Victory" if outed
+
+**Condition 2: Chaos Victory**
+- If no standard victory achieved by Turn 200
+- AND Syndicate player has 2+ contracts completed
+- "The galaxy descends into chaos. The Syndicate wins."
+
+**Condition 3: The Perfect Game**
+- Complete 3 contracts while remaining undetected
+- Never accused, never outed
+- Bonus: "Shadow Master" achievement
+
+**Victory Screen:**
+- Reveals Syndicate operative identity
+- Shows completed contracts with timestamps
+- Displays suspicion score and false accusations survived
+- Shows final Syndicate trust level and credits earned
+
+**Rationale:** Creates alternative win condition that doesn't require territory or economic dominance. Syndicate can win from behind, providing comeback mechanics and dramatic reveals.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 9)
+
+**Code:** `src/lib/game/services/syndicate-service.ts:checkSyndicateVictory()`, `src/lib/game/services/core/victory-service.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-010: Bot Syndicate Integration
+
+**Description:** Bots integrate with Syndicate system through archetype-specific behavior:
+
+**Syndicate Bot Behavior:**
+- Complete low-suspicion contracts first
+- Target rivals (highest networth enemies)
+- Use WMDs only when desperate or for Kingslayer contract
+- Attempt to stay hidden until 2/3 contracts complete
+
+**Loyalist Bot Behavior:**
+- Accusation Patterns:
+  - Diplomat bots: High accusation rate (paranoid)
+  - Warlord bots: Only accuse if high suspicion
+  - Turtle bots: Never accuse (too defensive)
+  - Schemer bots (Loyalist): Frequently accused but rarely accuse
+
+- Coalition Formation:
+  - "Stop the Syndicate" coalitions form after Turn 75
+  - Bots share suspicions in coalition chat
+  - Coordinate accusations via voting
+
+**The Schemer Paradox:**
+- 50% of Schemer bots are Syndicate (high risk)
+- 50% of Schemer bots are Loyalist (false positives)
+- Players never know which, creating permanent suspicion
+
+**Message Templates:**
+- 70+ new message templates for Syndicate-related events
+- Suspicion accusations, contract hints, coalition coordination
+- Post-outing reactions, victory/defeat acknowledgment
+
+**Rationale:** Integrates Syndicate mechanics into existing bot AI system. Scheming bots create natural paranoia. Bot accusations and suspicions make solo play feel dynamic.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 8)
+
+**Code:** `src/lib/bots/syndicate-ai.ts`, `src/lib/bots/messaging.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-011: Intel Point Economy
+
+**Description:** Loyalist players earn Intel Points for investigation and accusation:
+
+**Earning Intel Points:**
+- Earn 5 points per turn (max 50 stored)
+- Bonus points from Coordinator rewards
+
+**Spending Intel Points:**
+- Investigation (10 points): Research target's activities
+- Accusation (25 points): Formally accuse empire of being Syndicate
+- Coordinator Report (15 points): Request intel validation
+
+**Rationale:** Creates economy around investigation to prevent accusation spam. Players must choose between investigating multiple suspects or making formal accusations.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 2.3)
+
+**Code:** `src/lib/game/services/syndicate-service.ts`, `src/lib/game/services/core/turn-processor.ts`
+
+**Database:** `empires.intel_points`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-SYND-012: Suspicious Activity Feed
+
+**Description:** Loyalist players see a feed of unexplained events in the galaxy:
+
+**Event Types:**
+- Production drops without explanation
+- Market price anomalies
+- Convenient "accidents" affecting empires
+- Black Market activity (when detected)
+- Unexplained attacks or disruptions
+
+**Event Data:**
+- Turn number
+- Affected empire
+- Event description
+- Suspicion increase (if investigation conducted)
+- Related empire (if attributable)
+
+**Investigation:**
+- Spend Intel Points to investigate specific events
+- Reveals potential source empire
+- Increases suspicion score of suspect
+
+**Rationale:** Provides information to Loyalists without explicitly revealing Syndicate contracts. Creates detective gameplay where players piece together clues.
+
+**Source:** `docs/design/SYNDICATE-SYSTEM.md` (Section 2.3, 10.1)
+
+**Code:** `src/components/game/syndicate/SuspiciousActivityFeed.tsx`, `src/lib/game/services/syndicate-service.ts`
+
+**Database:** `suspicious_events` table
 
 **Tests:** TBD
 
@@ -1703,7 +2128,8 @@ comm -23 /tmp/reqs.txt /tmp/tested.txt
 
 | Date | Version | Changes |
 |------|---------|---------|
-| 2026-01-12 | 1.3 | **FRONTEND CONSOLIDATION:** Section 13 completely revised for FRONTEND-DESIGN.md consolidation. Updated REQ-UI-001 to Boardgame + LCARS Aesthetic. Replaced REQ-UI-002/003 with Star Map Hub navigation architecture. Added 10 new requirements: REQ-UI-002 (Star Map as Hub), REQ-UI-003 (Overlay Panel System), REQ-UI-004 (Card + Details Sidebar), REQ-UI-005 (Collapsible Phase Indicator), REQ-UI-006 (Actionable Guidance), REQ-UI-007 (Strategic Visual Language), REQ-UI-010 (CSS + GSAP Hybrid), REQ-UI-011 (D3.js Star Map), REQ-UI-012 (Keyboard Navigation), REQ-UI-013 (WCAG AA Contrast). Renumbered existing REQ-UI-002/003 to REQ-UI-008/009. Total: 56→66 requirements. |
+| 2026-01-12 | 1.4 | **FRONTEND CONSOLIDATION:** Section 13 completely revised for FRONTEND-DESIGN.md consolidation. Updated REQ-UI-001 to Boardgame + LCARS Aesthetic. Replaced REQ-UI-002/003 with Star Map Hub navigation architecture. Added 10 new requirements: REQ-UI-002 (Star Map as Hub), REQ-UI-003 (Overlay Panel System), REQ-UI-004 (Card + Details Sidebar), REQ-UI-005 (Collapsible Phase Indicator), REQ-UI-006 (Actionable Guidance), REQ-UI-007 (Strategic Visual Language), REQ-UI-010 (CSS + GSAP Hybrid), REQ-UI-011 (D3.js Star Map), REQ-UI-012 (Keyboard Navigation), REQ-UI-013 (WCAG AA Contrast). Renumbered existing REQ-UI-002/003 to REQ-UI-008/009. Total: 56→66 requirements. |
+| 2026-01-12 | 1.3 | **SYNDICATE SYSTEM INTEGRATION:** Section 15 completely revised from single expansion requirement to full core game system. Added 11 new requirements: REQ-SYND-001 (Hidden Roles), REQ-SYND-002 (Revelation Moment), REQ-SYND-003 (Contract System), REQ-SYND-004 (Trust Progression), REQ-SYND-005 (Black Market), REQ-SYND-006 (Suspicion), REQ-SYND-007 (Accusations), REQ-SYND-008 (Coordinator), REQ-SYND-009 (Victory Conditions), REQ-SYND-010 (Bot Integration), REQ-SYND-011 (Intel Economy), REQ-SYND-012 (Activity Feed). Syndicate now marked as Core Game Feature (post-Beta-1). Source updated to `docs/design/SYNDICATE-SYSTEM.md`. Total: 56→67 requirements. |
 | 2026-01-11 | 1.2 | **BOT SYSTEM EXPANSION:** Section 7 completely revised for BOT-SYSTEM.md alignment. Fixed REQ-BOT-003 emotional states (now: Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant per narrative analysis). Expanded REQ-BOT-001, REQ-BOT-002, REQ-BOT-004, REQ-BOT-005 with implementation details. Added 5 new requirements: REQ-BOT-006 (LLM Integration), REQ-BOT-007 (Decision Audit), REQ-BOT-008 (Coalition AI), REQ-BOT-009 (Telegraphing), REQ-BOT-010 (Endgame Behavior). Total: 51→56 requirements. |
 | 2026-01-11 | 1.1 | **CRITICAL FIX:** Section 14 updated to Tech Card draft system (CRAFTING-EXPANSION-CONCEPT.md). Removed incorrect 4-tier crafting reference. Added REQ-TECH-001 through REQ-TECH-006 (6 new requirements). Total: 51 requirements. |
 | 2026-01-11 | 1.0 | Initial PRD structure with 46 requirements |
