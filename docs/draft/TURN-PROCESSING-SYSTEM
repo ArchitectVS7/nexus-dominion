@@ -1,0 +1,52 @@
+Turn Processing
+REQ-TURN-001: Turn Processing Pipeline
+Description: Each turn consists of two processing tiers executed in order:
+
+Tier 1 - Transactional (atomic, all-or-nothing):
+
+Income Phase - Resources generated (with civil status multiplier)
+Tier 1 Auto-Production - Crafting system resource generation
+Population Phase - Growth/starvation based on food
+Civil Status Phase - Morale evaluated
+Research Phase - Research points allocated
+Build Queue Phase - Unit construction progresses
+Covert Phase - Spy points generated
+Crafting Phase - Crafting queue processed
+Tier 2 - Non-Transactional (can fail gracefully): 9. Bot Decisions - AI makes strategic choices 10. Emotional Decay - Bot emotions cool down 11. Memory Cleanup - Old memories pruned (every 5 turns) 12. Market Phase - Prices update 13. Bot Messages - Communication generated 14. Galactic Events - Random events trigger (M11) 15. Alliance Checkpoints - Coalition evaluations (M11) 16. Victory Check - Win/loss conditions evaluated 17. Auto-Save - Game state persisted
+
+Rationale: Two-tier structure ensures critical empire state is atomic (transaction rollback on failure) while allowing non-critical systems to fail gracefully.
+
+Source: docs/design/GAME-DESIGN.md, src/lib/game/services/core/turn-processor.ts (lines 13-29)
+
+Code: src/lib/game/services/core/turn-processor.ts:processTurn()
+
+Tests: TBD - Test file planned: src/lib/game/services/__tests__/turn-processor.test.ts
+
+Status: Draft - Detailed specification complete, awaiting implementation
+
+REQ-TURN-002: Turn Increment
+Description: Turn number increments by 1 after all phases complete successfully.
+
+Rationale: Provides consistent game clock for all systems.
+
+Source: docs/design/GAME-DESIGN.md
+
+Code: src/lib/game/services/turn-processor.ts
+
+Tests: TBD
+
+Status: Draft
+
+REQ-TURN-003: Victory Check Timing
+Description: Victory conditions are checked after all turn processing completes, before the turn number increments.
+
+Rationale: Ensures fair evaluation of all empire states.
+
+Source: docs/design/GAME-DESIGN.md
+
+Code: src/lib/game/services/turn-processor.ts
+
+Tests: TBD
+
+Status: Draft
+
