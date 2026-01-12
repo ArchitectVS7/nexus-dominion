@@ -191,16 +191,16 @@ This compresses final scores and makes hidden objectives more impactful. A playe
 
 ---
 
-## Why This Works (Where Original Failed)
+## Vision
 
-| Original Crafting | Expansion Crafting |
-|-------------------|-------------------|
-| 22 resources to manage | 30-40 cards to draft |
-| Supply chain logistics | Single choice per event |
-| Invisible progress | Public drafts + hidden objectives |
-| No combat integration | Every card affects combat |
-| No bot reaction | Bots announce, prefer, counter |
-| No end-game payoff | Hidden objective reveal |
+| Card Based Crafting |
+|-------------------|
+| 30-40 cards to draft |
+| Single choice per event |
+| Public drafts + hidden objectives |
+| Every card affects combat |
+| Bots announce, prefer, counter |
+| Hidden objective reveal |
 
 ---
 
@@ -291,4 +291,3 @@ Pricing: $4.99 DLC or included in "Complete Edition"
 
 ---
 
-*This expansion concept transforms crafting from supply chain management into strategic card drafting with hidden objectives and dramatic reveals.*
