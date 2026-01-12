@@ -1,191 +1,677 @@
 # Research System Redesign
 
-**Status**: FOR IMPLEMENTATION
-**Date**: 2026-01-02
-**Replaces**: Current 8-level passive research system
+**Version:** 2.0
+**Status:** FOR IMPLEMENTATION
+**Created:** 2026-01-02
+**Last Updated:** 2026-01-12
+**Replaces:** Current 8-level passive research system
 
 ---
 
-## Executive Summary
+## Document Purpose
 
-Research built on a **draft-based strategic choice system** where players select from competing tech paths, progress is visible to enemies, and unlocks create asymmetric combat advantages.
+This document defines the **Research and Technology system** for Nexus Dominion. Research replaces passive tech grinding with strategic draft-based choices that create asymmetric combat advantages and visible progression.
 
-**DEV NOTE** Explore why it was deemed necessary to specify that research and progress is visible to enemies. We specifically talked about a "fog of war" system requiring either covert reconnaissance, combat, or trade alliances in order to know what the other capabilities of players are. We want to explore various options here. I believe some information should be publicly known, for example battles may be broadcast on a "galactic news" type of system, or spread via rumors. Approach this conversation from a game design perspective, where some information is hidden (such as the cards held in the hand) versus public (cards played face up on a table)
-
----
-
-## Design Goals
-
-1. **Meaningful Choices** — Every research decision should feel like a tradeoff
-2. **Visible Progress** — Enemies see what you're researching (creates tension)
-3. **Asymmetric Combat** — Tech creates different playstyles, not just +10% stats
-4. **Board Game Feel** — Draft from options, not watch a bar fill
-5. **Bot Integration** — Archetypes prefer different tech, announce milestones
+**Design Philosophy:**
+- **Meaningful Choices** — Every research decision involves tradeoffs
+- **Asymmetric Information** — Hybrid visibility creates intel gameplay
+- **Combat Integration** — Tech modifies STR/DEX/CON stats directly
+- **Strategic Identity** — Doctrines define playstyle
+- **Board Game Feel** — Draft from options, not watch a bar fill
+- **Bot Drama** — Bots react to public tech, hide secret progress
 
 ---
 
-## Core Mechanics
+## Table of Contents
 
-### 3-Tier Research Structure
+1. [Core Concept](#1-core-concept)
+2. [Information Visibility System](#2-information-visibility-system)
+3. [Tier 1: Doctrines (Turn ~10)](#3-tier-1-doctrines-turn-10)
+4. [Tier 2: Specializations (Turn ~30)](#4-tier-2-specializations-turn-30)
+5. [Tier 3: Mastery Capstones (Turn ~60)](#5-tier-3-mastery-capstones-turn-60)
+6. [Combat Integration](#6-combat-integration)
+7. [Intel & Espionage System](#7-intel--espionage-system)
+8. [Bot Integration](#8-bot-integration)
+9. [UI/UX Design](#9-uiux-design)
+10. [Implementation Requirements](#10-implementation-requirements)
+11. [Balance Targets](#11-balance-targets)
+12. [Migration Plan](#12-migration-plan)
+13. [Conclusion](#13-conclusion)
 
-Replace 8 passive levels with 3 meaningful tiers:
+---
 
-| Tier | Name | Unlock Turn | Choice |
-|------|------|-------------|--------|
-| **Tier 1** | Foundation | Turn 10 | Pick 1 of 3 Doctrines |
-| **Tier 2** | Specialization | Turn 30 | Pick 1 of 2 Upgrades (based on Doctrine) |
-| **Tier 3** | Mastery | Turn 60 | Doctrine Capstone (automatic) |
+## 1. Core Concept
 
-### Research Points Still Matter
+### 1.1 Three-Tier Structure
 
-- Research planets generate 100 RP/turn (unchanged)
+Replace 8 passive levels with **3 meaningful choice tiers**:
+
+| Tier | Name | Unlock Turn | Choice | Visibility |
+|------|------|-------------|--------|------------|
+| **Tier 1** | Doctrine | Turn 10 | Pick 1 of 3 Doctrines | 🌍 PUBLIC |
+| **Tier 2** | Specialization | Turn 30 | Pick 1 of 2 Upgrades | 🕵️ HIDDEN |
+| **Tier 3** | Mastery | Turn 60 | Doctrine Capstone | 🌍 PUBLIC (unlock) |
+
+### 1.2 Research Points (RP) Accumulation
+
+- Research planets generate **100 RP/turn** (unchanged)
 - RP accumulates toward tier thresholds
 - Threshold reached → Draft choice unlocks
 - **No choice = no progress** (forces engagement)
 
+**Thresholds:**
 ```
-Tier 1 Threshold: 1,000 RP  (~10 turns with 1 Research planet)
-Tier 2 Threshold: 5,000 RP  (~30 turns with 2 Research planets)
-Tier 3 Threshold: 15,000 RP (~60 turns with 3 Research planets)
+Tier 1: 1,000 RP   (~10 turns with 1 research planet)
+Tier 2: 5,000 RP   (~30 turns with 2 research planets)
+Tier 3: 15,000 RP  (~60 turns with 3 research planets)
+```
+
+### 1.3 The Card Game Metaphor
+
+Think of research like a card game:
+- Your **hand** (RP accumulation, progress %) is **HIDDEN** 🔒
+- Cards **played face up** (Doctrine) are **PUBLIC** 🌍
+- Cards **played face down** (Specialization) are **HIDDEN** until revealed 🕵️
+- **Capstone unlocks** are dramatic **PUBLIC** announcements 🌍
+
+---
+
+## 2. Information Visibility System
+
+### 2.1 Hybrid Visibility Model
+
+**PUBLIC Information (All players see):**
+- ✅ Doctrine choice (Tier 1)
+- ✅ Tier 3 capstone unlock
+- ✅ Number of research planets (sector info)
+- ✅ Galactic News rumors (50% accurate)
+
+**HIDDEN Information (Private):**
+- 🔒 Current RP accumulation
+- 🔒 % progress toward next tier
+- 🔒 Specialization choice (Tier 2)
+
+**REVEALED Through Gameplay:**
+- ⚔️ Specialization effects (experienced in combat)
+- 🕵️ Intel operations (costs 5,000 credits)
+- 🤝 Alliances (allies share automatically)
+- 📰 Galactic News (unreliable rumors)
+
+### 2.2 Information Reveal Matrix
+
+| Info Type | Default | Reveal Method | Cost |
+|-----------|---------|---------------|------|
+| **Doctrine choice** | 🌍 PUBLIC | Automatic (Turn 10) | Free |
+| **Specialization** | 🔒 HIDDEN | Combat, espionage, alliance | 5,000 cr (espionage) |
+| **Current RP** | 🔒 PRIVATE | Never visible | N/A |
+| **Tier 3 progress %** | 🔒 PRIVATE | Never visible | N/A |
+| **Tier 3 unlock** | 🌍 PUBLIC | Automatic announcement | Free |
+| **Research planets** | 🌍 PUBLIC | Sector visibility | Free |
+| **Active bonuses** | ⚔️ COMBAT | Experienced in battle | Free |
+
+### 2.3 Deduction & Estimates
+
+Players can **estimate** enemy progress:
+```
+Calculation:
+Known research planets × 100 RP/turn × turns elapsed = Estimated RP
+
+Example:
+Enemy has 2 research planets visible
+Game is on Turn 40
+Estimated RP: 2 × 100 × 40 = 8,000 RP
+Conclusion: They probably have Tier 2 specialization
+
+But you don't know:
+- Which specialization they chose
+- Their exact progress toward Tier 3
+- If they lost/gained research planets recently
 ```
 
 ---
 
-## Tier 1: Doctrines (Turn ~10)
+## 3. Tier 1: Doctrines (Turn ~10)
 
-When threshold reached, player drafts ONE of three Doctrines. This defines their strategic identity for the game.
+### 3.1 The Three Doctrines
 
-### The Three Doctrines
+When threshold reached, player drafts ONE of three Doctrines. This defines their strategic identity.
 
-| Doctrine | Combat Effect | Economic Effect | Unlocks |
-|----------|---------------|-----------------|---------|
-| **War Machine** | +15% attack power | -10% planet income | Heavy Cruisers |
-| **Fortress** | +25% defense power | -5% attack power | Defense Platforms |
-| **Commerce** | +20% market prices when selling | +10% planet costs | Trade Fleets |
+| Doctrine | Combat Effect (D20) | Economic Effect | Unlocks |
+|----------|---------------------|-----------------|---------|
+| **War Machine** | +2 STR modifier | -10% planet income | Heavy Cruisers |
+| **Fortress** | +4 AC when defending | -5% attack power | Defense Platforms |
+| **Commerce** | +2 CHA modifier (commander) | +20% market prices (sell) | Trade Fleets |
 
-### Why Three?
+### 3.2 Doctrine Details
 
-- **War Machine** — Warlord/Blitzkrieg players. Aggressive expansion.
-- **Fortress** — Turtle/Diplomat players. Defensive consolidation.
-- **Commerce** — Merchant/Tech Rush players. Economic victory path.
+**War Machine**
+- **Effect:** All units gain +2 to STR modifier
+- **Example:** Fighter with STR 10 (+0) becomes STR 14 (+2)
+  - Damage increases from 1d6+0 to 1d6+2
+- **Playstyle:** Aggressive expansion, offensive warfare
+- **Counter:** Fortress doctrine negates with +4 AC
 
-Every archetype has a "natural" doctrine, but players can counter-pick.
+**Fortress**
+- **Effect:** +4 AC bonus when defending home territory
+- **Example:** Station with AC 13 becomes AC 17 when defending
+  - Enemies need 17+ to hit instead of 13+
+- **Playstyle:** Defensive consolidation, turtle strategy
+- **Counter:** War Machine sieges with superior firepower
 
-### Visibility
+**Commerce**
+- **Effect:** Commander gains +2 CHA (better diplomacy, no direct combat bonus)
+- **Economic:** +20% prices when selling resources
+- **Playstyle:** Economic victory, trade dominance
+- **Counter:** War Machine raids disrupt trade routes
 
-When a player chooses a Doctrine:
+### 3.3 Public Announcement
+
+When doctrine chosen, **galaxy-wide announcement**:
+
 ```
-[GALACTIC INTEL] Emperor Varkus has adopted the WAR MACHINE doctrine.
-                 Their military grows more dangerous.
+┌─────────────────────────────────────────────────────────┐
+│                 GALACTIC INTEL REPORT                   │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Emperor Varkus has adopted the WAR MACHINE doctrine.   │
+│                                                         │
+│  Their military grows more dangerous.                   │
+│  (+2 STR to all units)                                  │
+│                                                         │
+│  Neighboring empires should fortify defenses.           │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-Bots react to this information. A Turtle seeing neighbors go War Machine will fortify. A Schemer will seek alliance with the Fortress player against the Warlord.
+**Bot Reactions:**
+- Turtle players fortify borders
+- Schemers propose alliances against Warlord
+- Diplomats attempt treaties
+- Other War Machine players see rival
 
 ---
 
-## Tier 2: Specializations (Turn ~30)
+## 4. Tier 2: Specializations (Turn ~30)
+
+### 4.1 Specialization System
 
 Based on Doctrine chosen, player picks ONE of two Specializations.
 
-### War Machine Specializations
+**Specialization choices are HIDDEN until revealed through:**
+- ⚔️ Combat (first use reveals to victim)
+- 🕵️ Espionage operation (costs 5,000 credits)
+- 🤝 Alliance intel sharing (automatic with allies)
+- 📰 Galactic News rumors (50% accuracy)
 
-| Specialization | Effect | Counter |
-|----------------|--------|---------|
-| **Shock Troops** | First strike: Deal 20% damage before defender rolls | Fortress players negate with Shield Arrays |
-| **Siege Engines** | +50% damage to Defense Platforms/Stations | Commerce players can evacuate assets before siege |
+### 4.2 War Machine Specializations
 
-### Fortress Specializations
+| Specialization | Effect (D20) | Counter |
+|----------------|--------------|---------|
+| **Shock Troops** | First strike: Attack before initiative roll | Fortress Shield Arrays negate |
+| **Siege Engines** | +50% damage vs stationary targets (AC penalty ignored) | Commerce evacuation tactics |
 
-| Specialization | Effect | Counter |
-|----------------|--------|---------|
-| **Shield Arrays** | Negate first-strike damage | Siege Engines bypass shields |
-| **Minefield Networks** | Attackers lose 10% forces before combat | War Machine Shock Troops clear minefields |
+**Shock Troops**
+- **Mechanics:** In D20 terms, this is a "surprise round"
+- Your units deal damage before initiative is rolled
+- **Example:**
+  ```
+  Normal combat: Roll initiative → Attack
+  Shock Troops: Attack immediately → Then roll initiative
+  ```
+- **Counter:** Shield Arrays grant immunity to surprise rounds
 
-### Commerce Specializations
+**Siege Engines**
+- **Mechanics:** When attacking stations/defense platforms:
+  - Treat target AC as 10 (ignore armor bonuses)
+  - +2 STR modifier bonus
+- **Example:** Station with AC 17 is treated as AC 10
+- **Counter:** Commerce players can evacuate assets before siege completes
 
-| Specialization | Effect | Counter |
-|----------------|--------|---------|
-| **Trade Monopoly** | Buy resources at -20%, sell at +30% | War Machine players can raid trade routes |
-| **Mercenary Contracts** | Hire temporary combat bonuses with credits | Fortress players resist mercenary tactics |
+### 4.3 Fortress Specializations
 
-### The Rock-Paper-Scissors
+| Specialization | Effect (D20) | Counter |
+|----------------|--------------|---------|
+| **Shield Arrays** | Negate first-strike damage (immunity to surprise rounds) | Siege Engines bypass shields |
+| **Minefield Networks** | Attackers roll CON save (DC 15) or lose 10% HP before combat | Shock Troops clear minefields |
+
+**Shield Arrays**
+- **Mechanics:** Grants "Uncanny Dodge" equivalent
+  - No surprise rounds allowed against you
+  - Always roll initiative normally
+- **Example:** Enemy Shock Troops must wait for initiative
+- **Counter:** Siege Engines treat AC as 10, bypassing shield bonus
+
+**Minefield Networks**
+- **Mechanics:** Before combat Phase 1:
+  - All attacking units make CON save (d20 + CON mod vs DC 15)
+  - Failed save: Lose 10% current HP
+  - Successful save: No damage
+- **Example:** 100 HP cruiser fails save → 90 HP before combat starts
+- **Counter:** Shock Troops auto-clear minefields in surprise round
+
+### 4.4 Commerce Specializations
+
+| Specialization | Effect (D20) | Counter |
+|----------------|--------------|---------|
+| **Trade Monopoly** | Buy resources at -20%, sell at +30% | War Machine raids trade routes |
+| **Mercenary Contracts** | Hire mercenaries: Spend 10,000 cr for +2 STR temp bonus (1 battle) | Fortress resists with high AC |
+
+**Trade Monopoly**
+- **Mechanics:** Economic only, no combat effect
+- Market prices adjusted in your favor
+- Generate passive income lead
+- **Counter:** War Machine raids disrupt trade, force military spending
+
+**Mercenary Contracts**
+- **Mechanics:** Pay 10,000 credits before battle
+  - All units gain +2 STR modifier for that battle
+  - Effect expires after battle (win or lose)
+- **Example:** Normally 1d8+1 damage → 1d8+3 damage
+- **Counter:** Fortress AC negates extra damage
+
+### 4.5 Rock-Paper-Scissors
 
 ```
 War Machine (Shock Troops) > Commerce (undefended)
-Fortress (Shield Arrays) > War Machine (negates first strike)
-Commerce (Mercenaries) > Fortress (overwhelm with hired power)
-```
+Fortress (Shield Arrays)  > War Machine (negates first strike)
+Commerce (Mercenaries)    > Fortress (overwhelm with hired power)
 
-But specializations create counter-play within each matchup.
+Specializations create counter-play within each matchup
+```
 
 ---
 
-## Tier 3: Mastery Capstone (Turn ~60)
+## 5. Tier 3: Mastery Capstones (Turn ~60)
+
+### 5.1 Capstone System
 
 Automatic unlock based on Doctrine. No choice — this is the reward for commitment.
 
-| Doctrine | Capstone | Effect |
-|----------|----------|--------|
-| **War Machine** | **Dreadnought** | Unlock Dreadnought unit (10x Heavy Cruiser power, 1 per game) |
-| **Fortress** | **Citadel World** | One planet becomes invulnerable (cannot be captured, only blockaded) |
+**Capstone progress is HIDDEN** (% toward unlock)
+**Capstone unlock is PUBLIC** (dramatic galaxy-wide announcement)
+
+| Doctrine | Capstone | Effect (D20) |
+|----------|----------|--------------|
+| **War Machine** | **Dreadnought** | Singularity-class unit: STR 20 (+5), 200 HP, once per game |
+| **Fortress** | **Citadel World** | One planet becomes AC 25 (nearly invulnerable) |
 | **Commerce** | **Economic Hegemony** | Generate 50% of #2's income as passive bonus |
 
-### Capstone Drama
-
-These are game-changing. Seeing someone reach Tier 3 should create urgency:
+### 5.2 Capstone Unlock Announcement
 
 ```
-[GALACTIC ALERT] The Crimson Admiral has achieved DREADNOUGHT technology!
-                 A single devastating warship now patrols their borders.
+┌─────────────────────────────────────────────────────────┐
+│                 ⚠️ GALACTIC ALERT ⚠️                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  The Crimson Admiral has achieved                       │
+│  DREADNOUGHT TECHNOLOGY!                                │
+│                                                         │
+│  A single devastating warship now patrols their         │
+│  borders with unmatched firepower.                      │
+│                                                         │
+│  STR 20 (+5), HP 200, Damage: 4d12+5                    │
+│                                                         │
+│  All empires must decide: Attack now or never.          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-Bots will react. Coalitions may form. The game enters endgame phase.
+**Bot Reactions:**
+- Defensive coalitions form automatically
+- Nearby empires panic
+- Rival Warlords launch preemptive strikes
+- Game enters endgame phase
+
+### 5.3 Dreadnought Stats (Example)
+
+```
+┌─────────────────────────────────────┐
+│ DREADNOUGHT          [TIER III]     │
+├─────────────────────────────────────┤
+│ STR: 20 (+5)  DEX: 10 (+0)         │
+│ CON: 20 (+5)                        │
+│                                     │
+│ HP: 200 (base 100 + CON +5 × 20)   │
+│ AC: 20  (10 + DEX +0 + armor +10)  │
+│ Init: +0                            │
+│                                     │
+│ Attack: Planet Killer Cannon        │
+│ +11 to hit (BAB +6 + STR +5)       │
+│ Damage: 4d12+5                      │
+│                                     │
+│ ABILITY: Overwhelming Firepower     │
+│ Attack all enemy units in sector    │
+│                                     │
+│ LIMIT: One per game                 │
+├─────────────────────────────────────┤
+│ Cost: 100,000 💰 | Pop: 10 👥       │
+│ Domain: SPACE    | Maint: 500 🛢️    │
+└─────────────────────────────────────┘
+```
 
 ---
 
-## Bot Integration
+## 6. Combat Integration
 
-### Archetype Preferences
+### 6.1 Doctrine Bonuses Applied to Units
 
-| Archetype | Preferred Doctrine | Preferred Specialization |
-|-----------|-------------------|-------------------------|
-| Warlord | War Machine | Shock Troops |
-| Blitzkrieg | War Machine | Shock Troops |
-| Turtle | Fortress | Shield Arrays |
-| Diplomat | Fortress | Minefield Networks |
-| Merchant | Commerce | Trade Monopoly |
-| Tech Rush | Commerce | Trade Monopoly |
-| Schemer | Commerce | Mercenary Contracts |
-| Opportunist | (copies neighbor) | (copies neighbor) |
+Research bonuses modify base stats on unit cards:
 
-### Bot Announcement Messages
+**War Machine Doctrine: +2 STR**
+```
+Before:  Fighter STR 10 (+0), Damage 1d6+0
+After:   Fighter STR 12 (+1), Damage 1d6+1
 
-Tier 1:
+Before:  Cruiser STR 14 (+2), Damage 2d8+2
+After:   Cruiser STR 16 (+3), Damage 2d8+3
+```
+
+**Fortress Doctrine: +4 AC (defending)**
+```
+Before:  Station AC 13 (defending)
+After:   Station AC 17 (defending)
+
+Effect: Enemies need to roll 17+ instead of 13+ to hit
+```
+
+**Commerce Doctrine: +2 CHA (commander)**
+```
+Bot commander CHA 12 (+1) → CHA 14 (+2)
+
+Effects:
+- +2 to diplomacy checks (d20+2 vs target's WIS)
+- +2 to surrender negotiations
+- Better alliance formation success rate
+```
+
+### 6.2 Combat Integration Example
+
+**Scenario:** War Machine (Shock Troops) vs Fortress (Shield Arrays)
+
+```
+ROUND 0 (Surprise Round Attempt):
+- War Machine attempts Shock Troops surprise round
+- Fortress Shield Arrays: "Uncanny Dodge" immunity
+- Result: No surprise round, proceed to initiative
+
+ROUND 1 (Normal):
+- Initiative rolls
+- War Machine Cruiser: STR 16 (+3), Attack +7, Damage 2d8+3
+- Fortress Station: AC 17 (13 + 4 doctrine bonus defending)
+- Attack roll: d20+7 vs AC 17
+  - Roll 12 + 7 = 19 → HIT
+  - Damage: 2d8+3 = 7+5+3 = 15 damage
+
+Result: War Machine still wins due to +2 STR, but Shield Arrays
+negated the first-strike advantage.
+```
+
+---
+
+## 7. Intel & Espionage System
+
+### 7.1 Intel Operations
+
+**Discover Specialization** (New Operation):
+- **Cost:** 5,000 credits
+- **Target:** Any empire
+- **Success Rate:** 85%
+- **Result:** Reveals target's Tier 2 specialization choice
+
+**Example:**
+```
+You paid 5,000 credits to investigate Emperor Varkus.
+
+INTEL REPORT:
+Target: Emperor Varkus (War Machine Doctrine)
+Specialization: SHOCK TROOPS
+Effect: First-strike capability in combat
+Counter: Shield Arrays negate this advantage
+
+Recommendation: Develop Fortress doctrine or avoid engagement.
+```
+
+### 7.2 Alliance Intel Sharing
+
+**Automatic sharing with allies:**
+- Your specialization revealed to coalition members
+- Coalition members' specializations revealed to you
+- Estimated RP progress shared (based on planet counts)
+
+**Coalition Intel Display:**
+```
+┌─────────────────────────────────────┐
+│ COALITION INTEL SUMMARY             │
+├─────────────────────────────────────┤
+│ YOU: War Machine / Shock Troops     │
+│ ALLY 1: Fortress / Shield Arrays    │
+│ ALLY 2: Commerce / Trade Monopoly   │
+│                                     │
+│ Combined Strengths:                 │
+│ • First-strike offense (you)        │
+│ • Defense negates first-strikes (1) │
+│ • Economic support (2)              │
+│                                     │
+│ Suggested Strategy:                 │
+│ You attack, Ally 1 defends,         │
+│ Ally 2 funds operations             │
+└─────────────────────────────────────┘
+```
+
+### 7.3 Galactic News Rumor System
+
+**Every 10 turns, generate 5 rumors:**
+- **3 TRUE** (50% accuracy overall when mixed with false)
+- **2 FALSE**
+- Players cannot tell which are which
+
+**Example Rumors (Turn 40):**
+```
+GALACTIC NEWS NETWORK
+
+🔹 "Sources say Emperor Varkus deployed Shock Troops" (TRUE)
+🔹 "Reports indicate Lady Chen uses Shield Arrays" (FALSE - she has Trade Monopoly)
+🔹 "The Collective nears Dreadnought completion" (TRUE - 85% progress)
+🔹 "Commander Zhen adopted Commerce doctrine" (TRUE)
+🔹 "Rumors suggest Admiral Kane has Siege Engines" (FALSE - he has Shock Troops)
+```
+
+**Player Decision:**
+- Do you trust the Varkus rumor and build Shield Arrays?
+- Or is it misinformation to waste your research path?
+- Spend 5,000 cr to verify via espionage?
+
+---
+
+## 8. Bot Integration
+
+### 8.1 Archetype Preferences
+
+| Archetype | Preferred Doctrine | Preferred Specialization | Reasoning |
+|-----------|-------------------|-------------------------|-----------|
+| **Warlord** | War Machine | Shock Troops | Offensive playstyle, first-strike fits aggression |
+| **Blitzkrieg** | War Machine | Shock Troops | Early rush benefits from surprise |
+| **Turtle** | Fortress | Shield Arrays | Defensive, negates enemy aggression |
+| **Diplomat** | Fortress | Minefield Networks | Defensive but warns attackers |
+| **Merchant** | Commerce | Trade Monopoly | Economic focus, maximizes income |
+| **Tech Rush** | Commerce | Trade Monopoly | Economic to fund fast research |
+| **Schemer** | Commerce | Mercenary Contracts | Flexible, buys power when needed |
+| **Opportunist** | (copies neighbor) | (copies neighbor) | Mimics strongest neighbor |
+
+### 8.2 Bot Decision Logic
+
+**Doctrine Choice (Turn 10):**
+```typescript
+function chooseDoctrine(bot: Empire, gameState: GameState): Doctrine {
+  // 80% follow archetype preference
+  if (Math.random() < 0.8) {
+    return bot.archetype.preferredDoctrine;
+  }
+
+  // 20% counter-pick based on neighbors
+  const neighborDoctrines = getNeighborDoctrines(bot, gameState);
+  if (neighborDoctrines.includes('war_machine')) {
+    return 'fortress'; // Counter aggression
+  }
+
+  return bot.archetype.preferredDoctrine;
+}
+```
+
+**Specialization Choice (Turn 30):**
+```typescript
+function chooseSpecialization(bot: Empire): Specialization {
+  const doctrine = bot.researchDoctrine;
+  const options = getSpecializationOptions(doctrine);
+
+  // Strategic bots analyze threats
+  if (bot.tier === 'strategic') {
+    const threats = analyzeThreatLevel(bot);
+    if (threats.high && doctrine === 'fortress') {
+      return 'shield_arrays'; // Defensive when threatened
+    }
+  }
+
+  // Default to archetype preference
+  return bot.archetype.preferredSpecialization;
+}
+```
+
+### 8.3 Bot Messaging
+
+**Tier 1 (Doctrine Announcement):**
 ```
 [Warlord] "My factories now produce weapons of conquest. Tremble."
 [Turtle] "My borders are sealed. Come if you dare."
 [Merchant] "While you play soldier, I build an empire of gold."
+[Diplomat] "My defenses ensure peace. Attack and you'll regret it."
+[Schemer] "I've chosen my path. You'll discover what that means... eventually."
 ```
 
-Tier 2:
+**Tier 2 (Specialization Hints - 30% reveal, 70% cryptic):**
 ```
-[War Machine + Shock Troops] "My soldiers strike before you can blink."
-[Fortress + Shield Arrays] "Your weapons mean nothing against my shields."
-[Commerce + Mercenaries] "Credits buy loyalty. Loyalty buys victory."
+[War Machine + Shock Troops - 30% reveal]:
+"My soldiers strike before you can blink."
+
+[Fortress + Shield Arrays - 70% cryptic]:
+"I've installed new defensive systems. You're welcome to test them."
+
+[Commerce + Mercenaries - 70% cryptic]:
+"Credits buy loyalty. Loyalty buys... options."
 ```
 
-Tier 3:
+**Tier 3 (Capstone Drama):**
 ```
-[Dreadnought] "Behold the INEVITABLE. My dreadnought has awakened."
-[Citadel] "My homeworld is now eternal. You cannot touch it."
-[Hegemony] "Your economy flows into mine. Resistance is... unprofitable."
+[Dreadnought Unlock]:
+"Behold the INEVITABLE. My dreadnought has awakened.
+ Choose your last words carefully."
+
+[Citadel Unlock]:
+"My homeworld is now eternal. You cannot touch it.
+ But I can still reach you."
+
+[Economic Hegemony Unlock]:
+"Your economy flows into mine like water downhill.
+ Resistance is... unprofitable."
+```
+
+### 8.4 Bot Reactions to Player Research
+
+**When player unlocks Dreadnought:**
+```
+[Nearby Warlord]: "A Dreadnought? Impressive. But can you build a second
+                   before I destroy the first?"
+
+[Distant Diplomat]: "Congratulations on your achievement. Now please
+                     don't use it on anyone we care about."
+
+[Schemer]: "Dreadnought noted. I'll adjust my calculations accordingly."
+
+[Turtle]: *Immediately builds 10 defense stations*
 ```
 
 ---
 
-## UI/UX Design
+## 9. UI/UX Design
 
-### Research Panel (Replaces Current)
+### 9.1 Research Panel (Your Empire)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ RESEARCH COMMAND                          [3,247 / 5,000 RP]
+├─────────────────────────────────────────────────────────┤
+│ Doctrine: FORTRESS (PUBLIC) 🛡️                          │
+│ Specialization: Shield Arrays (HIDDEN FROM ENEMIES) 🔒  │
+│                                                         │
+│ Tier 3 Progress: 65% ████████░░ (HIDDEN FROM ENEMIES)  │
+│ Capstone Unlocks: Turn 68 (7 turns)                    │
+│                                                         │
+│ ⚠️ Enemies know your doctrine but not your spec         │
+│ ⚠️ Your capstone unlock will be announced galaxy-wide   │
+│                                                         │
+│ Intel Operations Available:                             │
+│ • Investigate Enemy Specialization (5,000 cr)           │
+│ • View Galactic News Rumors (free, 50% accuracy)        │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 9.2 Intel Display (Enemy Empire)
+
+**Enemy with known doctrine, unknown specialization:**
+```
+┌─────────────────────────────┐
+│ EMPEROR VARKUS              │
+│ Warlord · Hostile           │
+├─────────────────────────────┤
+│ Doctrine: WAR MACHINE ⚔️     │ ← PUBLIC (always visible)
+│ Spec: ??? [INVESTIGATE]     │ ← HIDDEN (button to spend 5k)
+│ Tier 3: Unknown             │ ← HIDDEN (% not shown)
+│                             │
+│ Research Planets: 2         │ ← PUBLIC (visible sectors)
+│ Est. RP/turn: ~200          │ ← DEDUCED (calculated)
+│                             │
+│ Rumors:                     │
+│ • "May have Shock Troops"   │ ← RUMOR (50% accurate)
+│   (Galactic News, Turn 40)  │
+└─────────────────────────────┘
+```
+
+**After spending 5,000 credits to investigate:**
+```
+┌─────────────────────────────┐
+│ EMPEROR VARKUS              │
+│ Warlord · Hostile           │
+├─────────────────────────────┤
+│ Doctrine: WAR MACHINE ⚔️     │
+│ Spec: Shock Troops ⚡        │ ← REVEALED (paid intel)
+│ Tier 3: Unknown             │
+│                             │
+│ INTEL REPORT:               │
+│ First-strike capability     │
+│ Counter: Shield Arrays      │
+│                             │
+│ Last updated: Turn 45       │
+└─────────────────────────────┘
+```
+
+**After experiencing in combat:**
+```
+┌─────────────────────────────┐
+│ EMPEROR VARKUS              │
+│ Warlord · Hostile           │
+├─────────────────────────────┤
+│ Doctrine: WAR MACHINE ⚔️     │
+│ Spec: Shock Troops ⚡        │ ← REVEALED (combat)
+│ Tier 3: Unknown             │
+│                             │
+│ COMBAT REPORT (Turn 42):    │
+│ "Enemy attacked before      │
+│  initiative roll. First-    │
+│  strike capability confirmed"│
+└─────────────────────────────┘
+```
+
+### 9.3 Doctrine Selection Screen (Turn 10)
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -197,8 +683,8 @@ Tier 3:
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐       │
 │  │ WAR MACHINE │ │  FORTRESS   │ │  COMMERCE   │       │
 │  │             │ │             │ │             │       │
-│  │ +15% Attack │ │ +25% Defense│ │ +20% Sell   │       │
-│  │ -10% Income │ │ -5% Attack  │ │ +10% Costs  │       │
+│  │ +2 STR      │ │ +4 AC (def) │ │ +2 CHA      │       │
+│  │ -10% Income │ │ -5% Attack  │ │ +20% Prices │       │
 │  │             │ │             │ │             │       │
 │  │ Unlocks:    │ │ Unlocks:    │ │ Unlocks:    │       │
 │  │ Heavy       │ │ Defense     │ │ Trade       │       │
@@ -207,157 +693,406 @@ Tier 3:
 │  │  [SELECT]   │ │  [SELECT]   │ │  [SELECT]   │       │
 │  └─────────────┘ └─────────────┘ └─────────────┘       │
 │                                                         │
-│  ⚠️ This choice is permanent for this game.             │
+│  ⚠️ This choice is permanent and PUBLIC                 │
+│  ⚠️ All empires will see your doctrine                  │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Intel Display (Enemy Research)
-
-On the starmap, each empire shows their research status:
-
-```
-┌─────────────────────────────┐
-│ EMPEROR VARKUS              │
-│ Warlord · Hostile           │
-├─────────────────────────────┤
-│ Doctrine: WAR MACHINE ⚔️     │
-│ Spec: Shock Troops          │
-│ Tier 3: 67% ████████░░░     │
-│                             │
-│ ⚠️ Dreadnought in 12 turns   │
-└─────────────────────────────┘
-```
-
-This creates urgency. "Varkus is 12 turns from Dreadnought. Do we attack now or ally against him?"
-
 ---
 
-## Migration Plan
+## 10. Implementation Requirements
 
-### Database Changes
+### 10.1 Database Schema
 
 ```sql
--- Remove old research tables (after backup)
-DROP TABLE research_progress;
-DROP TABLE research_branch_allocations;
-DROP TABLE unit_upgrades;
-
 -- New simplified schema
-ALTER TABLE empires ADD COLUMN research_doctrine VARCHAR(20); -- 'war_machine', 'fortress', 'commerce', NULL
-ALTER TABLE empires ADD COLUMN research_specialization VARCHAR(30); -- specific spec or NULL
-ALTER TABLE empires ADD COLUMN research_tier INTEGER DEFAULT 0; -- 0, 1, 2, 3
+ALTER TABLE empires ADD COLUMN research_doctrine VARCHAR(20);
+-- Values: 'war_machine', 'fortress', 'commerce', NULL
+
+ALTER TABLE empires ADD COLUMN research_specialization VARCHAR(30);
+-- Values: 'shock_troops', 'siege_engines', 'shield_arrays',
+--         'minefield_networks', 'trade_monopoly', 'mercenary_contracts', NULL
+
+ALTER TABLE empires ADD COLUMN research_tier INTEGER DEFAULT 0;
+-- Values: 0, 1, 2, 3
+
 ALTER TABLE empires ADD COLUMN research_points INTEGER DEFAULT 0;
+-- Accumulated RP
+
+ALTER TABLE empires ADD COLUMN tier3_unlocked_turn INTEGER;
+-- Turn when capstone was unlocked (for announcements)
+
+-- Intel operations tracking
+CREATE TABLE research_intel_operations (
+  id UUID PRIMARY KEY,
+  game_id UUID REFERENCES games(id),
+  investigator_id UUID REFERENCES empires(id),
+  target_id UUID REFERENCES empires(id),
+  operation_type VARCHAR(30) NOT NULL, -- 'discover_specialization'
+  cost_credits INTEGER NOT NULL,
+  success BOOLEAN NOT NULL,
+  result_data JSONB,
+  created_turn INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Galactic News rumor system
+CREATE TABLE galactic_news_rumors (
+  id UUID PRIMARY KEY,
+  game_id UUID REFERENCES games(id),
+  turn_number INTEGER NOT NULL,
+  rumor_text TEXT NOT NULL,
+  is_true BOOLEAN NOT NULL, -- For validation, not shown to players
+  subject_empire_id UUID REFERENCES empires(id),
+  rumor_type VARCHAR(30), -- 'doctrine', 'specialization', 'capstone_progress'
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Public announcements log
+CREATE TABLE research_announcements (
+  id UUID PRIMARY KEY,
+  game_id UUID REFERENCES games(id),
+  empire_id UUID REFERENCES empires(id),
+  announcement_type VARCHAR(30) NOT NULL, -- 'doctrine', 'capstone'
+  announcement_text TEXT NOT NULL,
+  turn_number INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
 ```
 
-### Service Changes
-
-Replace `research-service.ts` with:
-- `getResearchStatus()` — Returns tier, doctrine, specialization, points
-- `selectDoctrine(empireId, doctrine)` — Tier 1 choice
-- `selectSpecialization(empireId, spec)` — Tier 2 choice
-- `processResearchProduction(empireId, researchPlanets)` — Add RP, check thresholds
-- `applyResearchBonuses(empireId, combatPower)` — Apply doctrine/spec modifiers
-
-### Combat Integration
-
-In `combat-service.ts`, add research modifier application:
+### 10.2 Service Architecture
 
 ```typescript
-function calculateCombatPower(forces: Forces, empire: Empire): number {
-  let power = baseCalculation(forces);
+// src/lib/game/services/research-service.ts
 
-  // Apply doctrine bonus
-  if (empire.researchDoctrine === 'war_machine') {
-    power *= 1.15; // +15% attack
-  } else if (empire.researchDoctrine === 'fortress' && isDefending) {
-    power *= 1.25; // +25% defense
+export class ResearchService {
+  // Research progression
+  async processResearchProduction(
+    empireId: string,
+    researchPlanets: number
+  ): Promise<ResearchStatus> {
+    // Add RP, check thresholds, trigger choice events
   }
 
-  // Apply specialization effects
-  if (empire.researchSpecialization === 'shock_troops') {
-    // First strike damage calculated separately
+  async getResearchStatus(empireId: string): Promise<ResearchStatus> {
+    // Returns tier, doctrine, specialization, points
   }
 
-  return power;
+  // Tier 1: Doctrine selection
+  async selectDoctrine(
+    empireId: string,
+    doctrine: 'war_machine' | 'fortress' | 'commerce'
+  ): Promise<void> {
+    // Set doctrine, create public announcement
+    await this.createPublicAnnouncement(empireId, 'doctrine', doctrine);
+  }
+
+  // Tier 2: Specialization selection (hidden)
+  async selectSpecialization(
+    empireId: string,
+    spec: SpecializationType
+  ): Promise<void> {
+    // Set specialization (no public announcement)
+  }
+
+  // Tier 3: Capstone unlock
+  async unlockCapstone(empireId: string): Promise<void> {
+    // Unlock based on doctrine, create dramatic announcement
+    await this.createPublicAnnouncement(empireId, 'capstone', empireData);
+  }
+
+  // Combat integration
+  async applyResearchBonuses(
+    empireId: string,
+    baseStats: UnitStats
+  ): Promise<UnitStats> {
+    const research = await this.getResearchStatus(empireId);
+
+    if (research.doctrine === 'war_machine') {
+      baseStats.strength += 2;
+    } else if (research.doctrine === 'fortress' && isDefending) {
+      baseStats.armorClass += 4;
+    } else if (research.doctrine === 'commerce') {
+      // Commander CHA bonus handled separately
+    }
+
+    return baseStats;
+  }
+
+  // Intel operations
+  async investigateSpecialization(
+    investigatorId: string,
+    targetId: string
+  ): Promise<IntelResult> {
+    const cost = 5000;
+    const successRate = 0.85;
+
+    // Deduct credits, roll for success
+    if (Math.random() < successRate) {
+      const target = await getEmpire(targetId);
+      return {
+        success: true,
+        specialization: target.researchSpecialization,
+        counter: getCounterInfo(target.researchSpecialization)
+      };
+    } else {
+      return { success: false, reason: 'Operation failed' };
+    }
+  }
+
+  // Galactic News
+  async generateRumors(gameId: string, turn: number): Promise<Rumor[]> {
+    // Generate 3 true + 2 false rumors
+    // Mix them randomly
+    // Store in database
+  }
+
+  // Announcements
+  async createPublicAnnouncement(
+    empireId: string,
+    type: 'doctrine' | 'capstone',
+    data: any
+  ): Promise<void> {
+    // Create galaxy-wide announcement
+    // Notify all players
+    // Trigger bot reactions
+  }
+
+  // Visibility checks
+  async getVisibleResearchInfo(
+    viewerEmpireId: string,
+    targetEmpireId: string
+  ): Promise<VisibleResearchInfo> {
+    // Returns only what viewerEmpire can see about targetEmpire
+    // Based on: public info, intel ops, alliance membership, combat history
+  }
+}
+```
+
+### 10.3 Combat Integration
+
+```typescript
+// src/lib/game/services/combat-service.ts
+
+function applyResearchModifiers(
+  attacker: Fleet,
+  defender: Fleet
+): CombatModifiers {
+  const attackerResearch = await researchService.getResearchStatus(attacker.empireId);
+  const defenderResearch = await researchService.getResearchStatus(defender.empireId);
+
+  let modifiers: CombatModifiers = {};
+
+  // War Machine: +2 STR
+  if (attackerResearch.doctrine === 'war_machine') {
+    modifiers.attackerSTRBonus = 2;
+  }
+
+  // Fortress: +4 AC when defending
+  if (defenderResearch.doctrine === 'fortress') {
+    modifiers.defenderACBonus = 4;
+  }
+
+  // Shock Troops: Surprise round
+  if (attackerResearch.specialization === 'shock_troops') {
+    if (defenderResearch.specialization !== 'shield_arrays') {
+      modifiers.surpriseRound = true;
+    }
+  }
+
+  // Shield Arrays: Negate surprise
+  if (defenderResearch.specialization === 'shield_arrays') {
+    modifiers.surpriseRound = false;
+  }
+
+  // Minefield Networks: CON save
+  if (defenderResearch.specialization === 'minefield_networks') {
+    modifiers.minefieldSave = true; // Attacker units roll CON save DC 15
+  }
+
+  // Siege Engines: Treat station AC as 10
+  if (attackerResearch.specialization === 'siege_engines') {
+    if (defender.hasStations) {
+      modifiers.ignoreStationArmor = true;
+    }
+  }
+
+  return modifiers;
+}
+```
+
+### 10.4 UI Components
+
+```typescript
+// src/components/game/research/ResearchPanel.tsx
+interface ResearchPanelProps {
+  empire: Empire;
+  onSelectDoctrine: (doctrine: Doctrine) => void;
+  onSelectSpecialization: (spec: Specialization) => void;
+}
+
+// src/components/game/research/IntelPanel.tsx
+// Shows known/unknown info about enemy empires
+interface IntelPanelProps {
+  targetEmpire: Empire;
+  visibleInfo: VisibleResearchInfo;
+  onInvestigate: (targetId: string) => void;
+}
+
+// src/components/game/research/GalacticNewsPanel.tsx
+// Shows rumors (mix of true/false)
+interface GalacticNewsPanelProps {
+  rumors: Rumor[];
+  currentTurn: number;
+}
+
+// src/components/game/research/ResearchAnnouncement.tsx
+// Dramatic full-screen announcement for capstones
+interface AnnouncementProps {
+  empire: Empire;
+  announcementType: 'doctrine' | 'capstone';
+  data: any;
 }
 ```
 
 ---
 
-## Balance Considerations
+## 11. Balance Targets
 
-### Early Game (Turns 1-10)
-- No research advantages yet
-- Pure economic/expansion competition
-- Doctrine choice creates anticipation
+### 11.1 Doctrine Distribution
 
-### Mid Game (Turns 10-30)
-- Doctrines create asymmetric matchups
-- War Machine players pressure Fortress players
-- Commerce players build economic lead
-- Specialization choice is the key decision
+| Doctrine | Target % | Reasoning |
+|----------|----------|-----------|
+| War Machine | 30-35% | Popular with aggressive players |
+| Fortress | 30-35% | Popular with defensive players |
+| Commerce | 30-35% | Economic players, support role |
 
-### Late Game (Turns 30-60)
-- Specializations define combat outcomes
-- Rock-paper-scissors counter-play
-- Race to Tier 3 capstone
+**Goal:** No dominant choice, roughly even distribution.
 
-### End Game (Turns 60+)
-- Capstones are game-changers
-- Dreadnought owners become targets
-- Citadel owners are unbreakable (but can be contained)
-- Hegemony owners win economic victory if not stopped
+### 11.2 Research Progression Timing
 
----
+| Milestone | Target Turn | % of Games |
+|-----------|-------------|------------|
+| Tier 1 (Doctrine) | Turn 10-15 | 95% |
+| Tier 2 (Specialization) | Turn 30-40 | 80% |
+| Tier 3 (Capstone) | Turn 60-80 | 40-50% |
 
-## What We're Removing
+**Reasoning:** Not all games reach Turn 60+, capstones are late-game rewards.
 
-- 8 passive research levels → 3 meaningful tiers
-- 6 research branches (never implemented) → 3 doctrines
-- Unit upgrade system → Doctrine-based unlocks
-- Invisible progress → Visible to all players
-
----
-
-## Success Metrics
+### 11.3 Intel Operation Usage
 
 | Metric | Target |
 |--------|--------|
-| Doctrine distribution | ~33% each (no dominant choice) |
-| Games where Tier 3 reached | 40-60% |
-| Combat outcome variance by doctrine | 10-20% swing |
-| Player engagement with research UI | 90%+ make active choice |
+| % of players who investigate enemy specialization | 60-70% |
+| Average investigations per game | 3-5 |
+| Galactic News rumor trust rate | 50% (by design) |
+
+### 11.4 Combat Impact
+
+| Research Bonus | Expected Win Rate Increase |
+|----------------|----------------------------|
+| Doctrine advantage | +10-15% |
+| Specialization advantage | +15-20% |
+| Both advantages | +25-30% |
+| Capstone unlocked | +40-50% (game-changing) |
 
 ---
 
-## Open Questions
+## 12. Migration Plan
 
-1. **Should Opportunist bots copy neighbor doctrine or counter it?**
-   - Copy = they blend in, less predictable
-   - Counter = they become natural rivals, more drama
+### 12.1 Development Path
 
-2. **Should Trade Fleet (Commerce unlock) be a unit or a passive bonus?**
-   - Unit = more tactical, but adds complexity
-   - Passive = simpler, but less visible
+**Week 1: Database & Core Service**
+- Implement new schema
+- Create ResearchService with basic methods
+- Add RP accumulation logic
 
-3. **Should Dreadnought be destroyable?**
-   - Yes = creates dramatic "kill the boss ship" moments
-   - No = Tier 3 War Machine is guaranteed power spike
+**Week 2: Doctrine System**
+- Implement doctrine selection UI
+- Add public announcement system
+- Integrate doctrine bonuses with combat (STR/AC)
+
+**Week 3: Specialization System**
+- Implement specialization selection UI (hidden)
+- Add specialization effects to combat
+- Implement combat reveals (first use shows spec)
+
+**Week 4: Intel & Visibility**
+- Implement investigate operation
+- Add alliance intel sharing
+- Create Galactic News rumor generator
+
+**Week 5: Capstone System**
+- Implement capstone unlock logic
+- Create dramatic announcement UI
+- Add Dreadnought unit (example)
+
+**Week 6: Bot Integration**
+- Bot doctrine/spec decision logic
+- Bot message templates (30+ messages)
+- Bot reactions to player research
+
+**Week 7: UI Polish**
+- Research panel redesign
+- Intel display improvements
+- Announcement animations
+
+**Week 8: Testing & Balance**
+- Balance testing (win rates by doctrine)
+- Intel operation cost tuning
+- Rumor accuracy validation
+
+### 12.2 Testing Requirements
+
+**Unit Tests:**
+- [ ] RP accumulation calculation
+- [ ] Threshold detection (tier unlocks)
+- [ ] Doctrine bonus application to STR/AC
+- [ ] Specialization combat effects
+- [ ] Intel operation success rate (85%)
+- [ ] Rumor generation (60% true, 40% false mix)
+
+**Integration Tests:**
+- [ ] Full research progression (Tier 1 → 2 → 3)
+- [ ] Combat with research modifiers applied
+- [ ] Public announcement system
+- [ ] Intel reveal through combat
+- [ ] Alliance intel sharing
+
+**Balance Tests:**
+- [ ] 1000-game simulation: Doctrine distribution
+- [ ] Win rate by doctrine matchup
+- [ ] Capstone impact on victory probability
+- [ ] Intel operation cost vs value
 
 ---
 
-## Implementation Priority
+## 13. Conclusion
 
-1. **Schema migration** — Add new columns, keep old tables temporarily
-2. **Research service rewrite** — New draft-based logic
-3. **Combat integration** — Apply doctrine/spec modifiers
-4. **UI components** — Doctrine selection panel, intel display
-5. **Bot decision logic** — Archetype preferences
-6. **Message templates** — Announcement strings
-7. **Testing** — Balance verification
-8. **Cleanup** — Remove old research tables/code
+The Research system transforms tech progression from passive grinding into **strategic identity creation** with **asymmetric information gameplay**.
+
+**Key Features:**
+✅ 3-tier structure (Doctrine → Specialization → Capstone)
+✅ **Hybrid visibility:** Public doctrines, hidden specializations
+✅ **Intel gameplay:** Espionage operations, combat reveals, alliances
+✅ **D20 integration:** Research modifies STR/DEX/CON directly
+✅ **Galactic News:** Rumor system (50% accuracy)
+✅ **Dramatic moments:** Public capstone announcements
+✅ **Bot integration:** Archetype preferences, messaging, reactions
+✅ **Rock-paper-scissors:** Specialization counter-play
+
+**Implementation Priority:** Core game feature, Milestone 10.
 
 ---
 
-*This design transforms research from a passive time-sink into a strategic identity choice that creates visible asymmetry and bot interaction.*
+## Related Documents
+
+- [COMBAT-SYSTEM.md](COMBAT-SYSTEM.md) - D20 combat mechanics, STR/DEX/CON stats
+- [SYNDICATE-SYSTEM.md](SYNDICATE-SYSTEM.md) - Intel operations integration
+- [BOT-SYSTEM.md](BOT-SYSTEM.md) - Bot decision-making, commander stats
+- [PRD.md](../PRD.md) - Product requirements document
+
+---
+
+**END SPECIFICATION**

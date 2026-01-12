@@ -77,62 +77,81 @@ Result: 21 ≥ 18 → HIT
 
 ### 2.1 The Two Stat Groups
 
-D&D's 6 classic stats are split into **Ship Stats** (visible on cards, affect combat directly) and **Commander Stats** (hidden, affect bot AI decisions).
+D&D's 6 classic stats are split into **Ship Stats** (3 physical abilities visible on cards) and **Commander Stats** (3 mental abilities affecting bot AI decisions).
 
-### 2.2 Ship Stats (Displayed on Unit Cards)
+### 2.2 Ship Stats (Physical Abilities)
 
-These stats appear on every unit card and directly affect combat resolution.
+Every unit has three ability scores following D&D conventions:
 
-| Stat | Abbrev | Replaces | Description | Combat Use |
-|------|--------|----------|-------------|------------|
-| **Attack Power** | ATK | STR + DEX | Offensive capability | Hit roll bonus |
-| **Defense Rating** | DEF | AC (armor class) | Target number to hit | Threshold for enemy attacks |
-| **Hull Integrity** | HULL | HP (hit points) | Damage absorption | Hit points (0 = destroyed) |
-| **Maneuvering** | MNV | DEX | Evasion & initiative | Initiative bonus, evasion chance |
+| Stat | Abbrev | Range | Modifier Range | Affects |
+|------|--------|-------|----------------|---------|
+| **Strength** | STR | 8-20 | -1 to +5 | Damage bonus |
+| **Dexterity** | DEX | 8-20 | -1 to +5 | To-hit bonus, AC, initiative |
+| **Constitution** | CON | 8-20 | -1 to +5 | Hit points (HP) |
 
-**Why 4 stats instead of 6?**
-- Simpler card design (fits on small UI cards)
-- Clear roles: ATK (offense), DEF (armor), HULL (HP), MNV (speed)
-- Other 2 stats (WIS/CHA) moved to bot commanders
+**Stat Modifier Calculation** (Standard D&D):
+```
+Modifier = (Stat - 10) / 2 (rounded down)
 
-**DEV NIOTE** This is imbalanced. If we put three stats into the commander (wis, cha, int) then that should leave three stats for units (str, dex, con). Hit points are additional, as are armor class and other parts of the d20 system. I want as much of the d20 system as possible in this game, compliant with the OGL
+Examples:
+STR  8 → -1 modifier
+STR 10 → +0 modifier
+STR 12 → +1 modifier
+STR 14 → +2 modifier
+STR 16 → +3 modifier
+STR 18 → +4 modifier
+STR 20 → +5 modifier
+```
 
-### 2.3 Commander Stats (Bot AI Only)
+### 2.3 Derived Stats (Standard D20)
+
+These are calculated from the three physical stats:
+
+| Stat | Formula | Purpose |
+|------|---------|---------|
+| **HP (Hit Points)** | Base HP + (CON mod × level) | Damage absorption (0 = destroyed) |
+| **AC (Armor Class)** | 10 + DEX mod + armor bonus | Defense threshold for enemy attacks |
+| **Initiative** | DEX modifier | Turn order in combat |
+| **Attack Bonus** | BAB + STR/DEX mod | Added to d20 roll to hit |
+| **Damage** | Weapon dice + STR mod | HP damage dealt on hit |
+
+**Base Attack Bonus (BAB)** by unit tier:
+- Tier I units: BAB +2
+- Tier II units: BAB +4
+- Tier III units: BAB +6
+
+### 2.4 Commander Stats (Mental Abilities - Bot AI Only)
 
 These stats are **not on unit cards**. They belong to bot commanders and affect strategic decision-making.
 
-| Stat | Abbrev | Replaces | Description | AI Use |
-|------|--------|----------|-------------|--------|
-| **Tactical Wisdom** | WIS | WIS | Strategic planning | Risk assessment, retreat decisions |
-| **Diplomatic Presence** | CHA | CHA | Persuasion & morale | Alliance formation, surrender negotiations |
-| **Strategic Intelligence** | INT | INT | Adaptation & learning | Tech research speed, counter-picking |
+| Stat | Abbrev | Range | Affects |
+|------|--------|-------|---------|
+| **Intelligence** | INT | 8-18 | Tech research speed, tactical adaptation |
+| **Wisdom** | WIS | 8-18 | Strategic planning, retreat decisions, risk assessment |
+| **Charisma** | CHA | 8-18 | Alliance formation, diplomacy, surrender negotiations |
+
+**Commander Stats by Archetype:**
+
+| Archetype | INT | WIS | CHA | Playstyle Impact |
+|-----------|-----|-----|-----|------------------|
+| **Warlord** | 12 (+1) | 14 (+2) | 8 (-1) | Good tactics, poor diplomacy |
+| **Diplomat** | 13 (+1) | 14 (+2) | 18 (+4) | Excellent negotiations |
+| **Tech Rush** | 17 (+3) | 12 (+1) | 10 (+0) | Fast research, logical |
+| **Turtle** | 14 (+2) | 16 (+3) | 10 (+0) | Patient, excellent defense |
+| **Schemer** | 13 (+1) | 15 (+2) | 16 (+3) | Manipulative, cunning |
 
 **Example Bot Commander:**
 ```
 Commander Varkus (Warlord Archetype)
 ─────────────────────────────────────
+INT: 12 (+1) - Strategic Intelligence
 WIS: 14 (+2) - Tactical Wisdom
 CHA: 8  (-1) - Diplomatic Presence
-INT: 12 (+1) - Strategic Intelligence
 
 Effects:
-- +2 to retreat timing decisions
+- +1 to tech research points/turn
+- +2 to retreat timing decisions (d20+2 vs DC 15)
 - -1 to alliance proposal persuasiveness
-- +1 to tech research speed
-```
-
-### 2.4 Stat Modifier Calculation
-
-Uses D&D convention:
-```
-Modifier = (Stat - 10) / 2 (rounded down)
-
-Examples:
-Stat  8 → -1
-Stat 10 → +0
-Stat 12 → +1
-Stat 14 → +2
-Stat 16 → +3
 ```
 
 ---
@@ -145,17 +164,27 @@ Every unit in the game is represented as a card with this structure:
 
 ```
 ┌─────────────────────────────────────┐
-│ [ICON] HEAVY CRUISER      [TIER ★] │ ← Unit name + rarity
+│ [⚔️] HEAVY CRUISER      [TIER II]   │ ← Unit name + rarity
 ├─────────────────────────────────────┤
-│ ATK: ████████░░ (+8)               │ ← Visual bar + modifier
-│ DEF: █████░░░░░ (+5)               │
-│ HULL: 24 ❤️    MNV: 3 ⚡            │ ← Absolute values
-├─────────────────────────────────────┤
-│ ABILITY: Siege Targeting            │ ← Special ability
-│ +2 ATK vs Orbital targets          │
+│ ABILITY SCORES                      │
+│  STR: 16 (+3)  DEX: 12 (+1)        │ ← D&D ability scores
+│  CON: 14 (+2)                       │
+│                                     │
+│ DERIVED STATS                       │
+│  HP: 40  (base 20 + CON +2 × 10)   │ ← Hit points
+│  AC: 15  (10 + DEX +1 + armor +4)  │ ← Armor class
+│  Init: +1 (DEX modifier)            │ ← Initiative
+│                                     │
+│ ATTACK                              │
+│  Heavy Cannons (ranged)             │
+│  +5 to hit (BAB +4 + DEX +1)       │ ← Attack bonus
+│  Damage: 2d8+3 (weapon + STR)       │ ← Damage dice
+│                                     │
+│ SPECIAL ABILITY                     │
+│  Broadside: Attack 2 targets/round │
 ├─────────────────────────────────────┤
 │ Cost: 15,000 💰 | Pop: 3 👥         │ ← Build cost
-│ Domain: SPACE  | Maint: 50 🛢️       │ ← Tags
+│ Domain: SPACE   | Maint: 50 🛢️      │ ← Tags
 └─────────────────────────────────────┘
 ```
 
@@ -164,16 +193,25 @@ Every unit in the game is represented as a card with this structure:
 **Top Bar:**
 - **Icon:** Visual identifier (ship silhouette)
 - **Unit Name:** Human-readable type
-- **Tier:** Rarity indicator (Standard, Prototype, Singularity)
+- **Tier:** Rarity indicator (I-Standard, II-Prototype, III-Singularity)
 
-**Stat Block:**
-- **ATK/DEF:** Visual bars (10 segments) + modifier (+8)
-- **HULL:** Hit points (absolute number + heart icon)
-- **MNV:** Initiative value (absolute number + lightning icon)
+**Ability Scores Block:**
+- **STR/DEX/CON:** Three physical stats with modifiers
+- Standard D&D format: "16 (+3)"
+
+**Derived Stats Block:**
+- **HP:** Hit points (formula shown for clarity)
+- **AC:** Armor class (threshold enemies must roll to hit)
+- **Init:** Initiative modifier (turn order in combat)
+
+**Attack Block:**
+- **Weapon name:** Descriptive weapon type
+- **To hit:** Attack bonus calculation (BAB + mod)
+- **Damage:** Dice notation + STR modifier (e.g., "2d8+3")
 
 **Ability Block:**
-- **One-line description** of special power
-- **Mechanical effect** in parentheses or second line
+- **Special power description**
+- **Mechanical effect**
 
 **Footer:**
 - **Cost:** Credits to build
@@ -435,12 +473,19 @@ TIER III (Singularity):
 **TIER I: Standard-Issue Line Cruiser**
 ```
 ┌─────────────────────────────────────┐
-│ LINE CRUISER             [STANDARD] │
+│ LINE CRUISER            [TIER I]    │
 ├─────────────────────────────────────┤
-│ ATK: █████░░░░░ (+5)               │
-│ DEF: ████░░░░░░ (+4)               │
-│ HULL: 20       MNV: 3               │
-├─────────────────────────────────────┤
+│ STR: 12 (+1)  DEX: 12 (+1)         │
+│ CON: 12 (+1)                        │
+│                                     │
+│ HP: 18  (base 10 + CON +1 × 8)     │
+│ AC: 13  (10 + DEX +1 + armor +2)   │
+│ Init: +1                            │
+│                                     │
+│ Attack: Laser Batteries             │
+│ +3 to hit (BAB +2 + DEX +1)        │
+│ Damage: 1d10+1                      │
+│                                     │
 │ ABILITY: Steady Barrage             │
 │ +1 damage on hit                    │
 ├─────────────────────────────────────┤
@@ -452,12 +497,19 @@ TIER III (Singularity):
 **TIER II: Prototype Line Cruiser**
 ```
 ┌─────────────────────────────────────┐
-│ LINE CRUISER             [PROTOTYPE]│
+│ LINE CRUISER            [TIER II]   │
 ├─────────────────────────────────────┤
-│ ATK: ██████░░░░ (+6)               │
-│ DEF: █████░░░░░ (+5)               │
-│ HULL: 24       MNV: 4               │
-├─────────────────────────────────────┤
+│ STR: 14 (+2)  DEX: 14 (+2)         │
+│ CON: 14 (+2)                        │
+│                                     │
+│ HP: 26  (base 10 + CON +2 × 8)     │
+│ AC: 15  (10 + DEX +2 + armor +3)   │
+│ Init: +2                            │
+│                                     │
+│ Attack: Plasma Batteries            │
+│ +6 to hit (BAB +4 + DEX +2)        │
+│ Damage: 1d12+2                      │
+│                                     │
 │ ABILITY: Linked Targeting           │
 │ Reroll 1 miss per round             │
 ├─────────────────────────────────────┤
@@ -469,15 +521,22 @@ TIER III (Singularity):
 **TIER III: Singularity-Class Line Cruiser**
 ```
 ┌─────────────────────────────────────┐
-│ LINE CRUISER          [SINGULARITY] │
+│ LINE CRUISER            [TIER III]  │
 ├─────────────────────────────────────┤
-│ ATK: ████████░░ (+8)               │
-│ DEF: ███████░░░ (+7)               │
-│ HULL: 30       MNV: 5               │
-├─────────────────────────────────────┤
+│ STR: 18 (+4)  DEX: 16 (+3)         │
+│ CON: 16 (+3)                        │
+│                                     │
+│ HP: 34  (base 10 + CON +3 × 8)     │
+│ AC: 18  (10 + DEX +3 + armor +5)   │
+│ Init: +3                            │
+│                                     │
+│ Attack: Antimatter Cannons          │
+│ +9 to hit (BAB +6 + DEX +3)        │
+│ Damage: 2d10+4                      │
+│                                     │
 │ ABILITY: Overload Salvo             │
 │ Once per battle: Extra attack at    │
-│ +4 ATK, then -2 DEF until end       │
+│ +4 to hit, then -2 AC until end     │
 ├─────────────────────────────────────┤
 │ Cost: 25,000 💰 | Pop: 3 👥         │
 │ Domain: SPACE   | Maint: 50 🛢️      │
@@ -613,11 +672,20 @@ CREATE TABLE unit_templates (
   name TEXT NOT NULL,
   tier INTEGER NOT NULL, -- 1, 2, 3
 
-  -- Ship stats
-  atk_modifier INTEGER NOT NULL,
-  def_rating INTEGER NOT NULL,
-  hull_points INTEGER NOT NULL,
-  maneuvering INTEGER NOT NULL,
+  -- Physical ability scores (D&D stats)
+  strength INTEGER NOT NULL,     -- 8-20
+  dexterity INTEGER NOT NULL,    -- 8-20
+  constitution INTEGER NOT NULL, -- 8-20
+
+  -- Derived stats (calculated from above)
+  base_hp INTEGER NOT NULL,          -- Base hit points before CON modifier
+  armor_bonus INTEGER NOT NULL,      -- Natural armor bonus (added to AC calculation)
+  base_attack_bonus INTEGER NOT NULL, -- BAB based on tier (2/4/6)
+
+  -- Weapon
+  weapon_name TEXT NOT NULL,         -- e.g., "Heavy Cannons"
+  weapon_damage_dice TEXT NOT NULL,  -- e.g., "2d8" (STR mod added automatically)
+  weapon_type TEXT NOT NULL,         -- 'melee' or 'ranged'
 
   -- Special ability
   ability_name TEXT,
@@ -724,16 +792,22 @@ export class DraftService {
 
 **Schema Addition:**
 ```sql
-ALTER TABLE empires ADD COLUMN commander_wis INTEGER DEFAULT 10;
-ALTER TABLE empires ADD COLUMN commander_cha INTEGER DEFAULT 10;
-ALTER TABLE empires ADD COLUMN commander_int INTEGER DEFAULT 10;
+ALTER TABLE empires ADD COLUMN commander_intelligence INTEGER DEFAULT 10;
+ALTER TABLE empires ADD COLUMN commander_wisdom INTEGER DEFAULT 10;
+ALTER TABLE empires ADD COLUMN commander_charisma INTEGER DEFAULT 10;
 
--- Generate based on archetype
+-- Generate based on archetype (Warlord example)
 UPDATE empires SET
-  commander_wis = 14,
-  commander_cha = 8,
-  commander_int = 12
+  commander_intelligence = 12,  -- +1 modifier
+  commander_wisdom = 14,         -- +2 modifier
+  commander_charisma = 8         -- -1 modifier
 WHERE archetype = 'warlord';
+
+-- Other archetypes (see Section 2.4 for full table)
+UPDATE empires SET commander_intelligence = 17, commander_wisdom = 12, commander_charisma = 10 WHERE archetype = 'tech_rush';
+UPDATE empires SET commander_intelligence = 13, commander_wisdom = 14, commander_charisma = 18 WHERE archetype = 'diplomat';
+UPDATE empires SET commander_intelligence = 14, commander_wisdom = 16, commander_charisma = 10 WHERE archetype = 'turtle';
+UPDATE empires SET commander_intelligence = 13, commander_wisdom = 15, commander_charisma = 16 WHERE archetype = 'schemer';
 ```
 
 **Bot Decision Modifiers:**
@@ -817,14 +891,21 @@ Week 8: Full deployment
 **FIGHTERS (Tier I)**
 ```
 ┌─────────────────────────────────────┐
-│ FIGHTER WING            [STANDARD]  │
+│ FIGHTER WING            [TIER I]    │
 ├─────────────────────────────────────┤
-│ ATK: ███░░░░░░░ (+3)               │
-│ DEF: ██░░░░░░░░ (+2)               │
-│ HULL: 8        MNV: 6               │
-├─────────────────────────────────────┤
+│ STR: 10 (+0)  DEX: 16 (+3)         │
+│ CON: 8  (-1)                        │
+│                                     │
+│ HP: 8   (base 10 + CON -1 × 2)     │
+│ AC: 15  (10 + DEX +3 + armor +2)   │
+│ Init: +3                            │
+│                                     │
+│ Attack: Laser Cannons               │
+│ +5 to hit (BAB +2 + DEX +3)        │
+│ Damage: 1d6+0                       │
+│                                     │
 │ ABILITY: Intercept                  │
-│ +2 ATK vs Bombers                   │
+│ +2 to hit vs Bombers                │
 ├─────────────────────────────────────┤
 │ Cost: 200 💰   | Pop: 0.4 👥        │
 │ Domain: SPACE  | Maint: 5 🛢️        │
@@ -834,12 +915,19 @@ Week 8: Full deployment
 **HEAVY CRUISER (Tier II)**
 ```
 ┌─────────────────────────────────────┐
-│ HEAVY CRUISER           [PROTOTYPE] │
+│ HEAVY CRUISER           [TIER II]   │
 ├─────────────────────────────────────┤
-│ ATK: ████████░░ (+8)               │
-│ DEF: ███████░░░ (+7)               │
-│ HULL: 40       MNV: 3               │
-├─────────────────────────────────────┤
+│ STR: 16 (+3)  DEX: 12 (+1)         │
+│ CON: 14 (+2)                        │
+│                                     │
+│ HP: 40  (base 20 + CON +2 × 10)    │
+│ AC: 15  (10 + DEX +1 + armor +4)   │
+│ Init: +1                            │
+│                                     │
+│ Attack: Heavy Cannons               │
+│ +5 to hit (BAB +4 + DEX +1)        │
+│ Damage: 2d8+3                       │
+│                                     │
 │ ABILITY: Broadside                  │
 │ Attack 2 targets per round          │
 ├─────────────────────────────────────┤
@@ -853,14 +941,22 @@ Week 8: Full deployment
 **ORBITAL DEFENSE STATION (Tier I)**
 ```
 ┌─────────────────────────────────────┐
-│ DEFENSE STATION         [STANDARD]  │
+│ DEFENSE STATION         [TIER I]    │
 ├─────────────────────────────────────┤
-│ ATK: █████░░░░░ (+5)               │
-│ DEF: █████░░░░░ (+5) [10 defending] │
-│ HULL: 15       MNV: 0               │
-├─────────────────────────────────────┤
+│ STR: 12 (+1)  DEX: 10 (+0)         │
+│ CON: 14 (+2)                        │
+│                                     │
+│ HP: 20  (base 12 + CON +2 × 4)     │
+│ AC: 13  (10 + DEX +0 + armor +3)   │
+│ AC: 18 when defending (fortified)   │
+│ Init: +0                            │
+│                                     │
+│ Attack: Defense Turrets             │
+│ +3 to hit (BAB +2 + DEX +0)        │
+│ Damage: 1d8+1                       │
+│                                     │
 │ ABILITY: Planetary Bombardment      │
-│ +2 to Ground domain if Orbital won  │
+│ +2 damage to Ground domain units    │
 ├─────────────────────────────────────┤
 │ Cost: 3,000 💰 | Pop: 1 👥          │
 │ Domain: ORBITAL | Maint: 15 🛢️      │
@@ -872,14 +968,21 @@ Week 8: Full deployment
 **MECHANIZED LEGION (Tier I)**
 ```
 ┌─────────────────────────────────────┐
-│ MECHANIZED LEGION       [STANDARD]  │
+│ MECHANIZED LEGION       [TIER I]    │
 ├─────────────────────────────────────┤
-│ ATK: ████░░░░░░ (+4)               │
-│ DEF: ████░░░░░░ (+4)               │
-│ HULL: 12       MNV: 2               │
-├─────────────────────────────────────┤
+│ STR: 12 (+1)  DEX: 10 (+0)         │
+│ CON: 12 (+1)                        │
+│                                     │
+│ HP: 14  (base 10 + CON +1 × 4)     │
+│ AC: 14  (10 + DEX +0 + armor +4)   │
+│ Init: +0                            │
+│                                     │
+│ Attack: Heavy Weapons               │
+│ +3 to hit (BAB +2 + STR +1)        │
+│ Damage: 1d8+1                       │
+│                                     │
 │ ABILITY: Entrenched                 │
-│ +2 DEF when defending               │
+│ +2 AC when defending                │
 ├─────────────────────────────────────┤
 │ Cost: 1,000 💰 | Pop: 1 👥          │
 │ Domain: GROUND | Maint: 10 🛢️       │
@@ -893,8 +996,10 @@ Week 8: Full deployment
 This specification provides a **complete, implementable D20 combat system** that:
 
 ✅ Uses familiar D20 mechanics (roll + modifiers ≥ threshold)
-✅ Displays all stats on visual unit cards
-✅ Splits ship stats (ATK/DEF/HULL/MNV) from commander stats (WIS/CHA/INT)
+✅ **Full OGL compliance** with standard STR/DEX/CON ability scores
+✅ **HP, AC, and BAB** calculated using D&D conventions
+✅ **Damage dice notation** (2d8+3) familiar to tabletop gamers
+✅ Splits ship stats (STR/DEX/CON - physical) from commander stats (INT/WIS/CHA - mental)
 ✅ Supports multi-domain battles (Space/Orbital/Ground)
 ✅ Includes fleet composition bonuses and type advantages
 ✅ Integrates with bot archetypes and personality system

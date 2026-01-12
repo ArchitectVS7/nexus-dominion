@@ -86,11 +86,11 @@ These are drawn Turn 1 and kept secret until game end. They reward specific play
 
 These are drafted publicly every 10 turns. Everyone sees what you pick.
 
-| Card | Combat Effect | Counter |
-|------|---------------|---------|
-| **Plasma Torpedoes** | +20% first-round damage | Shield Arrays |
-| **Cloaking Field** | 30% chance to avoid first attack | Scanner Arrays |
-| **Regenerative Hull** | Recover 10% losses after battle | Plasma Torpedoes (overkill) |
+| Card | Combat Effect (D20) | Counter |
+|------|---------------------|---------|
+| **Plasma Torpedoes** | +2 damage in first round | Shield Arrays |
+| **Cloaking Field** | Enemy attacks at -4 to hit first round | Scanner Arrays |
+| **Regenerative Hull** | Recover 10% HP after battle | Plasma Torpedoes (overkill) |
 | **Ion Cannons** | Disable enemy stations for 1 turn | Hardened Circuits |
 | **Boarding Parties** | Capture 5% enemy units instead of destroying | Point Defense |
 | **EMP Burst** | Cancel enemy tech card effects for this battle | Shielded Core |
