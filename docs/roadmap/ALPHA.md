@@ -6,30 +6,32 @@
 
 ---
 
-## What's Working Right Now
+## The Goal for January
 
-Nexus Dominion is playable end-to-end. Here's what alpha testers can experience:
+Nexus Dominion to be playable end-to-end. Here's what alpha testers can experience:
 
 ### Core Gameplay Loop
 
 - **Turn-based empire management** - Build your empire over 50-500 turns
 - **10-100 AI opponents** - Dynamic bot personalities compete for dominance
-- **6 victory conditions** - Conquest, Economic, Diplomatic, Research, Military, Survival
-- **Unified D20 combat** - Balanced 47.6% attacker win rate with dramatic outcomes
+- **6 victory conditions** - Conquest, Economic, Diplomatic, Research, Military, Survival (selectable by game mode? 6 victory conditions seems excessive for normal play)
+- **D20 combat** - Using the 3.5 OGL from Wizards of the Coast, taking inspiration from d20 era games such as Star Wars Miniatures and d20 Star Wars RPG, utilizing as much of the d20 system as possible, including military stats and bot personas
 
 ### Empire Management
 
-- **5 resource types** - Credits, Food, Ore, Petroleum, Research Points
-- **8 sector types** - Each producing different resources
-- **8 unit types** - From soldiers to heavy cruisers and defense stations
+- **X resource types** - Credits, Food, Etc
+- **X sector types** - Each producing different resources
+- **X unit types** - From soldiers to heavy cruisers and defense stations
 - **Civil status system** - Empire happiness affects income multipliers
+
+**DEV NOTE** - We used to have a legacy document that laid out all the game mechanics of the classic solar realms elite. That game ended up being more of a dead weight than anything, only thriving as a game due to the limited and assymetrical nature of BBS gaming. The system was far too mathmatical and algirithmic. Gameplay was more like "managing a spreadsheet" than "building an empire". As part of our redesign to be our own thing, we are making deliberate efforts to not only shift our terminology but looking mathematically at our combat system, econimic sytsrem, ratios, etc. Keep this in mind as we make our game systems, and let's not be tied down to this.
 
 ### Bot AI System
 
 - **4-tier intelligence** - From LLM-powered elite bots to simple rule-followers
 - **8 archetypes** - Warlord, Diplomat, Merchant, Schemer, Turtle, Blitzkrieg, Tech Rush, Opportunist
 - **Emotional states** - Bots remember relationships and hold grudges
-- **100 unique personas** - Each with distinct voice and behavior
+- **100 unique personas** - Each with distinct voice and behavior. Bots are unique based on their strategic choices and narrative trees. In addition, upong game initialization, it has been discussed to vary key weights by X% across all bots, giving each game a slight unique feel every game. 
 
 ### User Interface
 
@@ -37,34 +39,6 @@ Nexus Dominion is playable end-to-end. Here's what alpha testers can experience:
 - **Starmap command center** - Geographic strategy with sector connections
 - **Progressive disclosure** - UI complexity grows as you learn
 - **Tutorial system** - 5-step guided onboarding
-
----
-
-## What's Being Fixed
-
-Current development focuses on stability and polish:
-
-### P0 Blockers (Fixing Now)
-
-- E2E test reliability (target: 95% pass rate)
-- UI overlay interaction issues
-- Page render verification in tests
-
-### P1 Critical (This Sprint)
-
-- Tutorial completion guidance
-- Research system onboarding
-- WCAG accessibility compliance
-- Timeout error recovery
-
-### P2 High Priority (Next Sprint)
-
-- Processing state feedback
-- Dashboard information density
-- Pre-defeat warnings
-- Mobile touch targets
-
-See [Unified Action Plan](../archive/reviews-2026-01/UNIFIED-ACTION-PLAN.md) for the complete issue tracker.
 
 ---
 
@@ -80,40 +54,7 @@ We need feedback on:
 
 ---
 
-## What's NOT in Alpha
-
-These systems exist in code but are disabled or incomplete:
-
-- **Crafting system** - Schema ready, UI pending
-- **Syndicate/Black Market** - Backend complete, needs integration
-- **Strategic systems** - Virus Uplink, ECM Suite not exposed
-- **Persistent pirates** - Future feature
-
-See [Expansion Roadmap](EXPANSION.md) for post-alpha content.
-
----
-
-## Technical Health
-
-| Metric | Current | Target |
-|--------|---------|--------|
-| E2E Pass Rate | 43% | 95% |
-| Unit Test Coverage | 80%+ | 80%+ |
-| Lighthouse Accessibility | 82-88 | 95+ |
-| Build Time | ~2 min | <2 min |
-| Turn Processing | <500ms | <500ms |
-
----
-
-## How to Play Alpha
-
-1. Clone the repository
-2. Run `npm install && npm run dev`
-3. Start a new game at `localhost:3000`
-4. Experience 20 turns of protection, then engage!
 
 Report issues via GitHub Issues or the feedback form in-game.
 
 ---
-
-*The foundation is solid. Now we polish.*
