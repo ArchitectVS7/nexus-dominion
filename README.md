@@ -1,82 +1,27 @@
 # Nexus Dominion
 
-A turn-based 4X space empire strategy game with AI-controlled bot opponents. Built with Next.js 14, TypeScript, and PostgreSQL.
+A turn-based 4X space empire strategy game with AI-controlled bot opponents. 
 
-## Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/ArchitectVS7/nexus-dominion.git
-cd nexus-dominion
-
-# Install dependencies
-npm install
-
-# Set up environment variables
-cp .env.example .env.local
-# Edit .env.local with your DATABASE_URL (Neon PostgreSQL)
-
-# Run database migrations
-npm run db:push
-
-# Start development server
-npm run dev
-
-# Access at http://localhost:3000
-```
-
-## Tech Stack
-
-- **Frontend:** Next.js 14 (App Router), React 18, TypeScript
-- **Styling:** Tailwind CSS with LCARS-inspired design system
-- **Database:** PostgreSQL (Neon) with Drizzle ORM
-- **Testing:** Vitest (1800+ unit tests), Playwright (E2E)
-- **AI Bots:** 4-tier system with 100 unique personas
-
-## Commands
-
-```bash
-# Development
-npm run dev              # Start dev server
-npm run build            # Production build
-npm run start            # Production server
-
-# Testing
-npm run test             # Unit tests (watch mode)
-npm run test -- --run    # Unit tests once
-npm run test:e2e         # Playwright E2E tests
-npm run test:coverage    # Coverage report (80% threshold)
-
-# Quality
-npm run lint             # ESLint
-npm run typecheck        # TypeScript strict mode
-
-# Database
-npm run db:push          # Push schema changes
-npm run db:studio        # Drizzle Studio GUI
-npm run db:generate      # Generate migrations
-npm run db:migrate       # Run migrations
 ```
 
 ## Game Features
 
 ### Core Gameplay
 - Turn-based empire management (50-500 turns based on game mode)
-- 5 resource types: Credits, Food, Ore, Petroleum, Research
-- 8 sector types with unique production profiles
+- X resource types: Credits, Food, Etc
+- X sector types with unique production profiles
 - Progressive unlock system (features unlock as you advance)
 
 ### Military & Combat
-- 7 unit types: Marines, Drones, Frigates, Cruisers, Carriers, Stations, Agents
+- X unit types: Marines, Drones, Etc
 - 3-phase combat: Space Battle → Orbital Bombardment → Ground Assault
 - Army diversity bonuses and unit effectiveness matrix
-- Nuclear warfare unlocks at Turn 100
 
 ### Diplomacy & Economy
 - Non-Aggression Pacts and Alliances
 - Coalition system for group warfare
 - Dynamic market with supply/demand pricing
-- Black Market access at Turn 30
+- Black Market 
 
 ### Bot Opponents
 - 100 unique bot personas with distinct personalities
@@ -96,47 +41,12 @@ npm run db:migrate       # Run migrations
 5. **Military:** 2x military power of all others combined
 6. **Survival:** Highest networth at Turn 200
 
-## Documentation
-
-### For Players (Alpha Testers)
-- **[How to Play Guide](docs/guides/HOW-TO-PLAY.md)** - Comprehensive game manual
-- **[Quick Start Guide](docs/guides/QUICK-START.md)** - Get playing in 5 minutes
-
-### For Developers
-- [CLAUDE.md](CLAUDE.md) - AI assistant context and codebase guide
-- [docs/index.md](docs/index.md) - Documentation hub and navigation
-- [docs/core/GAME-DESIGN.md](docs/core/GAME-DESIGN.md) - Game vision and design
-- [docs/development/TERMINOLOGY.md](docs/development/TERMINOLOGY.md) - CRITICAL terminology rules
-
-## Project Status
-
-**Version:** 0.6-Prototype (M11 Complete)
-
-| Milestone | Status |
-|-----------|--------|
-| M0-M8: Core Game | Complete |
-| M9: Bot Decision Trees | Complete |
-| M10: Emotional States | Complete |
-| M11: Mid-Game Systems | Complete |
-| M12: LLM Bots | In Progress |
-
-For detailed development status and open items, see [docs/OPEN-ISSUES.md](docs/OPEN-ISSUES.md).
 
 ---
 
 ## Acknowledgments
 
 Nexus Dominion is inspired by **Solar Realms Elite** (1990) by Amit Patel.
-
-While we acknowledge the heritage, Nexus Dominion has diverged significantly with:
-- **100 AI bot opponents** (SRE was multiplayer-only BBS game)
-- **Sector-based strategic geography** (10 sectors with borders and wormholes)
-- **Crafting & syndicate systems** (entirely new mechanics)
-- **Modern LCARS UI** (SRE was text-based BBS interface)
-- **D20 combat system** (SRE used deterministic Lanchester equations)
-- **4-tier bot AI** with archetypes, emotional states, and memory
-
-No code from Solar Realms Elite was used (clean TypeScript implementation from original design concepts).
 
 ## License
 
