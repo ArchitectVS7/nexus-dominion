@@ -46,8 +46,8 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 | 11 | Progressive Systems |
 | 12 | Victory Conditions |
 | 13 | Frontend/UI |
-| 14 | Expansion: Crafting |
-| 15 | Expansion: Syndicate |
+| 14 | Tech Wars System |
+| 15 | Galactic Syndicate System |
 
 ---
 
@@ -178,11 +178,11 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 **Source Document:** `docs/design/COMBAT-SYSTEM.md`
 
-### REQ-COMBAT-001: D20 Unified Resolution
+### REQ-COMBAT-001: Three-Phase Domain Combat
 
-**Description:** All combat is resolved with a single D20 roll using unified resolution mechanics, not sequential phase-based combat.
+**Description:** Full invasions resolve combat across three sequential domains: Space → Orbital → Ground. Each domain is resolved independently using D20 mechanics, with victories in earlier phases providing bonuses to subsequent phases (+2 to next domain). This creates cascading tactical decisions where superior orbital defenses protect ground forces.
 
-**Rationale:** Simplifies combat while maintaining drama and unpredictability.
+**Rationale:** Three phases create narrative coherence—a player with strong orbital defenses shouldn't suffer ground losses. Sequential resolution rewards balanced fleet composition and defensive investment. Will evaluate clunkiness after playtesting.
 
 **Source:** `docs/design/COMBAT-SYSTEM.md`
 
@@ -1767,11 +1767,11 @@ Example - Food shortage:
 
 ---
 
-## 14. Expansion: Tech Wars (Crafting Replacement)
+## 14. Tech Wars System
 
-**Source Document:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source Document:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Design Note:** The original 4-tier crafting system (22 resources, supply chain management) was explicitly rejected as "logistics management bolted onto empire strategy." The Tech Card draft system replaces it with strategic card drafting integrated into the core combat loop.
+**Design Note:** The original 4-tier crafting system (22 resources, supply chain management) was explicitly rejected as "logistics management bolted onto empire strategy." The Tech Card draft system replaces it with strategic card drafting integrated into the core combat loop. This is a core v1 feature that will be rolled out through progressive playtesting phases.
 
 ---
 
@@ -1785,13 +1785,13 @@ Example - Food shortage:
 
 **Rationale:** Provides strategic depth through draft choices while avoiding supply chain micromanagement. Every card directly affects combat, creating visible drama and bot reactions.
 
-**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Code:** TBD (expansion content)
+**Code:** TBD
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1806,13 +1806,13 @@ Example - Food shortage:
 
 **Rationale:** Creates Lord of Waterdeep-style hidden incentives. Players don't know each other's objectives, creating post-game reveals and strategic misdirection.
 
-**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Code:** TBD (expansion content)
+**Code:** TBD
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1825,13 +1825,13 @@ Example - Food shortage:
 
 **Rationale:** Creates draft drama ("The Warlord just drafted Plasma Torpedoes!"), encourages counter-picking, and makes tech choices visible to opponents.
 
-**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Code:** TBD (expansion content)
+**Code:** TBD
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1846,13 +1846,13 @@ Example - Food shortage:
 
 **Rationale:** Creates dramatic moments and galaxy-wide reactions. These are "boss abilities" that shift the balance of power.
 
-**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Code:** TBD (expansion content)
+**Code:** TBD
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1865,13 +1865,13 @@ Example - Food shortage:
 
 **Rationale:** Integrates tech cards into bot personality system, creating narrative moments and strategic visibility.
 
-**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Code:** TBD (expansion content)
+**Code:** TBD
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1881,13 +1881,13 @@ Example - Food shortage:
 
 **Rationale:** Creates post-game discussion ("I thought Varkus was playing aggressively because he's a Warlord, but he was also scoring his hidden objective!").
 
-**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
 
-**Code:** TBD (expansion content)
+**Code:** TBD
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1923,7 +1923,7 @@ Example - Food shortage:
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1947,7 +1947,7 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -1978,7 +1978,7 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 
 **Tests:** TBD
 
-**Status:** Draft - Expansion content only
+**Status:** Draft
 
 ---
 
@@ -2445,7 +2445,7 @@ A Syndicate player can betray the Syndicate:
 | 11 | Progressive | 3 | 0 |
 | 12 | Victory | 6 | 0 |
 | 13 | Frontend | 13 | 2 |
-| 14 | Tech Wars (Expansion) | 6 | 0 |
+| 14 | Tech Wars | 6 | 0 |
 | 15 | Syndicate | 1 | 0 |
 | **Total** | | **66** | **3** |
 
@@ -2495,6 +2495,7 @@ comm -23 /tmp/reqs.txt /tmp/tested.txt
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-01-12 | 1.5 | **EXPANSION CLARITY & COMBAT FIX:** (1) Removed all "expansion" language from Tech Wars (Section 14) and Syndicate (Section 15)—these are core v1 features rolled out through progressive playtesting, not expansions. (2) Fixed REQ-COMBAT-001: Changed from "unified D20 single roll" to "Three-Phase Domain Combat" (Space → Orbital → Ground). Three sequential phases are intentional for narrative coherence—strong orbital defenses should protect ground forces. Single-roll alternatives were considered but rejected. Updated TOC, section headers, source paths, status fields, and summary table. |
 | 2026-01-12 | 1.4 | **FRONTEND CONSOLIDATION:** Section 13 completely revised for FRONTEND-DESIGN.md consolidation. Updated REQ-UI-001 to Boardgame + LCARS Aesthetic. Replaced REQ-UI-002/003 with Star Map Hub navigation architecture. Added 10 new requirements: REQ-UI-002 (Star Map as Hub), REQ-UI-003 (Overlay Panel System), REQ-UI-004 (Card + Details Sidebar), REQ-UI-005 (Collapsible Phase Indicator), REQ-UI-006 (Actionable Guidance), REQ-UI-007 (Strategic Visual Language), REQ-UI-010 (CSS + GSAP Hybrid), REQ-UI-011 (D3.js Star Map), REQ-UI-012 (Keyboard Navigation), REQ-UI-013 (WCAG AA Contrast). Renumbered existing REQ-UI-002/003 to REQ-UI-008/009. Total: 56→66 requirements. |
 | 2026-01-12 | 1.3 | **SYNDICATE SYSTEM INTEGRATION:** Section 15 completely revised from single expansion requirement to full core game system. Added 11 new requirements: REQ-SYND-001 (Hidden Roles), REQ-SYND-002 (Revelation Moment), REQ-SYND-003 (Contract System), REQ-SYND-004 (Trust Progression), REQ-SYND-005 (Black Market), REQ-SYND-006 (Suspicion), REQ-SYND-007 (Accusations), REQ-SYND-008 (Coordinator), REQ-SYND-009 (Victory Conditions), REQ-SYND-010 (Bot Integration), REQ-SYND-011 (Intel Economy), REQ-SYND-012 (Activity Feed). Syndicate now marked as Core Game Feature (post-Beta-1). Source updated to `docs/design/SYNDICATE-SYSTEM.md`. Total: 56→67 requirements. |
 | 2026-01-11 | 1.2 | **BOT SYSTEM EXPANSION:** Section 7 completely revised for BOT-SYSTEM.md alignment. Fixed REQ-BOT-003 emotional states (now: Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant per narrative analysis). Expanded REQ-BOT-001, REQ-BOT-002, REQ-BOT-004, REQ-BOT-005 with implementation details. Added 5 new requirements: REQ-BOT-006 (LLM Integration), REQ-BOT-007 (Decision Audit), REQ-BOT-008 (Coalition AI), REQ-BOT-009 (Telegraphing), REQ-BOT-010 (Endgame Behavior). Total: 51→56 requirements. |
