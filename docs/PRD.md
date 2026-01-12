@@ -20,6 +20,39 @@ All code references (e.g., `src/lib/game/services/turn-processor.ts`) are **plan
 
 **Formula Reference:** Explicit mathematical formulas, baseline values, and calculations are documented in `docs/PRD-FORMULAS-ADDENDUM.md`. Requirements reference formulas; implementation details live in the addendum.
 
+Before full implementation, these formulas must be defined:
+
+Civil Status System
+
+Calculation formula (population + food + battles → happiness level)
+Thresholds for state transitions
+Education sector boost mechanics
+Population Mechanics
+
+Growth rate (baseline: 2%/turn?)
+Food consumption (0.5 food/capita?)
+Starvation decline rate (-10%/turn?)
+Military Economics
+
+Maintenance costs (ore/petroleum per unit per turn)
+Construction costs (resources + credits)
+Upkeep penalties for oversized armies
+Sector Scaling
+
+Cost formula (exponential? Base × (1 + Count × 0.1)^1.5?)
+Purchase limits
+Destruction/loss mechanics
+Bot Intelligence
+
+Decision accuracy by tier (Tier 1: 85%? Tier 2: 70%?)
+LLM prompt templates
+Memory decay curves
+Market System
+
+Price calculation (supply/demand)
+Volatility mechanics
+Trade volume limits
+
 See `docs/PRD-VALIDATION-ANALYSIS.md` for detailed validation status.
 
 ---
