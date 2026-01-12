@@ -8,7 +8,9 @@
 
 ## Executive Summary
 
-The current research system is a passive bar that fills over time with exactly one meaningful unlock (Light Cruisers at level 2). This redesign transforms research into a **draft-based strategic choice system** where players select from competing tech paths, progress is visible to enemies, and unlocks create asymmetric combat advantages.
+Research built on a **draft-based strategic choice system** where players select from competing tech paths, progress is visible to enemies, and unlocks create asymmetric combat advantages.
+
+**DEV NOTE** Explore why it was deemed necessary to specify that research and progress is visible to enemies. We specifically talked about a "fog of war" system requiring either covert reconnaissance, combat, or trade alliances in order to know what the other capabilities of players are. We want to explore various options here. I believe some information should be publicly known, for example battles may be broadcast on a "galactic news" type of system, or spread via rumors. Approach this conversation from a game design perspective, where some information is hidden (such as the cards held in the hand) versus public (cards played face up on a table)
 
 ---
 
