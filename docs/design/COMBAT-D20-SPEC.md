@@ -95,6 +95,8 @@ These stats appear on every unit card and directly affect combat resolution.
 - Clear roles: ATK (offense), DEF (armor), HULL (HP), MNV (speed)
 - Other 2 stats (WIS/CHA) moved to bot commanders
 
+**DEV NIOTE** This is imbalanced. If we put three stats into the commander (wis, cha, int) then that should leave three stats for units (str, dex, con). Hit points are additional, as are armor class and other parts of the d20 system. I want as much of the d20 system as possible in this game, compliant with the OGL
+
 ### 2.3 Commander Stats (Bot AI Only)
 
 These stats are **not on unit cards**. They belong to bot commanders and affect strategic decision-making.
@@ -211,6 +213,8 @@ Every unit in the game is represented as a card with this structure:
 | **Full Invasion** | Capture sectors | Requires carriers | Multi-domain (Space/Orbital/Ground) |
 | **Raid** | Harassment, weaken enemy | Soldiers only | Single domain (Ground) |
 | **Blockade** | Economic warfare | Space units only | No sector capture |
+
+**DEV NOTE** We need to make sure this makes sense from a narrative point of view. I shouldn't be able to do a "ground war only" if I don't get past space and orbital ranges - unless this is a covert guerilla type raid. 
 
 ### 4.2 Full Invasion (Multi-Domain)
 
@@ -770,14 +774,9 @@ export function calculateAttackDesirability(
 
 ## 10. Migration Plan
 
-### 10.1 From Current System
+### 10.1 From Scratch Rewrite
 
-**Current State:**
-- Simple power multipliers (no stat cards)
-- Single-roll resolution
-- No multi-domain battles
-
-**Migration Path:**
+**Development Path:**
 ```
 Week 1: Create unit_templates table with Tier I units
 Week 2: Implement D20 combat engine (single-domain first)
@@ -902,11 +901,6 @@ This specification provides a **complete, implementable D20 combat system** that
 ✅ Provides rarity tiers and draft mechanics
 ✅ Maintains balance targets (45-48% attacker win rate)
 
-**Next Steps:**
-1. Approve this specification
-2. Update PRD.md Section 3 to reference this document
-3. Begin Phase 1 implementation (unit card system)
-4. Deprecate old COMBAT-SYSTEM.md
 
 ---
 
