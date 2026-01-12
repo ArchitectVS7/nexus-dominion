@@ -246,13 +246,24 @@ Every unit in the game is represented as a card with this structure:
 
 ### 4.1 Three Battle Types
 
-| Type | Purpose | Restrictions | Resolution |
-|------|---------|--------------|------------|
-| **Full Invasion** | Capture sectors | Requires carriers | Multi-domain (Space/Orbital/Ground) |
-| **Raid** | Harassment, weaken enemy | Soldiers only | Single domain (Ground) |
-| **Blockade** | Economic warfare | Space units only | No sector capture |
+| Type | Purpose | Requirements | Resolution | Can Capture Sectors? |
+|------|---------|--------------|------------|---------------------|
+| **Full Invasion** | Capture sectors | Carriers + space control | Multi-domain (Space/Orbital/Ground) | YES (5-15%) |
+| **Covert Strike** | Harassment, sabotage | Commandos OR Syndicate contract | Single domain (Ground only) | NO |
+| **Blockade** | Economic warfare | Space fleet | No ground combat | NO |
 
-**DEV NOTE** We need to make sure this makes sense from a narrative point of view. I shouldn't be able to do a "ground war only" if I don't get past space and orbital ranges - unless this is a covert guerilla type raid. 
+**Full Invasions** are overt military campaigns requiring fleet superiority. You must fight through Space and Orbital defenses before landing ground forces. Victory captures enemy sectors.
+
+**Covert Strikes** are black ops missions using specialized forces or Syndicate-hired operatives. These bypass conventional defenses through stealth insertion, insurgent support networks, or diplomatic cover—not raw firepower. They weaken enemies and disrupt infrastructure but cannot capture territory. That requires a Full Invasion.
+
+Available to:
+- Empires with **Commando Squad** units (Research unlock: Special Forces Doctrine)
+- **Syndicate operatives** via "Pirate Raid" contract (uses NPC pirates for plausible deniability)
+- Players supporting **insurgents** in target empire (Syndicate "Insurgent Aid" contract)
+
+Covert Strikes resolve as single Ground domain combat but use specialized unit cards (Commandos or Pirates). They deal 10-20% infrastructure damage and reduce target's resource production for 2-3 turns but do not capture sectors.
+
+**Blockades** are naval sieges that strangle enemy trade routes without landing troops. Effective for economic pressure but cannot capture ground. 
 
 ### 4.2 Full Invasion (Multi-Domain)
 
