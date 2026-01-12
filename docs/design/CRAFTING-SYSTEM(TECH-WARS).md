@@ -1255,6 +1255,223 @@ interface CombatCardEffectsProps {
 
 **Goal:** Legendary cards feel epic but don't guarantee wins. A T3 card should swing momentum ~30-40%, not auto-win.
 
+
+# REQUIREMENTS
+
+**INTEGRATE WITH NEW TEMPLATE**
+
+**Source Document:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Design Note:** The original 4-tier crafting system (22 resources, supply chain management) was explicitly rejected as "logistics management bolted onto empire strategy." The Tech Card draft system replaces it with strategic card drafting integrated into the core combat loop. This is a core v1 feature that will be rolled out through progressive playtesting phases.
+
+---
+
+### REQ-TECH-001: Tech Card Draft System
+
+**Description:** Tech progression uses a card draft system instead of resource crafting:
+- 30-40 unique tech cards in three tiers (T1, T2, T3)
+- Turn 1: Each player draws 3 T1 cards, keeps 1 (hidden until end game)
+- Every 10 turns: Draft event where players draw 2 cards, keep 1 (public)
+- Turn 50+: Rare T3 cards become available with game-changing effects
+
+**Rationale:** Provides strategic depth through draft choices while avoiding supply chain micromanagement. Every card directly affects combat, creating visible drama and bot reactions.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Code:** TBD
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-002: Hidden Objectives (T1 Cards)
+
+**Description:** T1 cards drawn at Turn 1 are secret objectives that score bonus Victory Points at game end:
+- Warmonger's Arsenal: +2 VP per empire eliminated
+- Merchant's Ledger: +1 VP per 10,000 credits earned
+- Diplomat's Archive: +2 VP per active treaty at game end
+- Survivor's Grit: +3 VP if never lost a sector
+- Opportunist's Eye: +1 VP per sector captured from top 3 players
+
+**Rationale:** Creates Lord of Waterdeep-style hidden incentives. Players don't know each other's objectives, creating post-game reveals and strategic misdirection.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Code:** TBD
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-003: Public Draft Cards (T2)
+
+**Description:** T2 cards drafted publicly every 10 turns provide combat effects with counterplay:
+- Each card has a specific combat effect (e.g., Plasma Torpedoes: +20% first-round damage)
+- Each card lists its counter card (e.g., Shield Arrays counter Plasma Torpedoes)
+- All players see who drafts what, enabling strategic responses
+
+**Rationale:** Creates draft drama ("The Warlord just drafted Plasma Torpedoes!"), encourages counter-picking, and makes tech choices visible to opponents.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Code:** TBD
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-004: Legendary Cards (T3)
+
+**Description:** T3 cards are rare, powerful, and announced to all players:
+- Planet Cracker: Destroy 1 sector permanently (removes from game)
+- Dyson Swarm: Double income from all sectors
+- Mind Control Array: Force one bot to attack another
+- Temporal Stasis: Skip one player's turn
+- Genesis Device: Create a new sector in your territory
+
+**Rationale:** Creates dramatic moments and galaxy-wide reactions. These are "boss abilities" that shift the balance of power.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Code:** TBD
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-005: Bot Tech Card Integration
+
+**Description:** Bots have archetype preferences for tech cards and announce their picks:
+- Archetypes prefer specific cards (Warlord → Plasma Torpedoes, Turtle → Shield Arrays)
+- Bots announce drafts with personality-specific messages
+- Bots react to player's visible tech cards in combat decisions
+
+**Rationale:** Integrates tech cards into bot personality system, creating narrative moments and strategic visibility.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Code:** TBD
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-006: End Game Hidden Objective Reveal
+
+**Description:** At game end (turn limit or victory achieved), all hidden T1 cards reveal with bonus VP calculations displayed to all players.
+
+**Rationale:** Creates post-game discussion ("I thought Varkus was playing aggressively because he's a Warlord, but he was also scoring his hidden objective!").
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md`
+
+**Code:** TBD
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-007: Tech Card Catalog (40 Cards Total)
+
+**Description:** Specific tech card pool organized by tier:
+
+**TIER 1 - Hidden Objectives (12 cards):**
+- Warmonger's Arsenal (+2 VP per empire eliminated)
+- Merchant's Ledger (+1 VP per 25k credits earned)
+- Diplomat's Archive (+3 VP per active treaty)
+- Survivor's Grit (+5 VP if never lost planet)
+- [8 additional cards covering different victory paths]
+
+**TIER 2 - Tactical Cards (20 cards, 5 categories):**
+- Offensive (5): Plasma Torpedoes (+2 damage first round), Ion Cannons, Boarding Parties, Overcharged Weapons, Focus Fire
+- Defensive (5): Shield Arrays (negate surprise), Point Defense, Hardened Circuits, Regenerative Hull, Emergency Shields
+- Utility (5): Cloaking Field (-4 enemy to-hit first round), Scanner Arrays (detect cloak), EMP Burst, Shielded Core, Repair Drones
+- Economic (3): Salvage Operations, Rapid Deployment (-10% unit cost), War Bonds
+- Special (2): Morale Boost, Kamikaze Doctrine
+
+**TIER 3 - Legendary Cards (8 cards):**
+- Planet Cracker (destroy 1 planet, one-use)
+- Dyson Swarm (double income, permanent)
+- Mind Control Array (force bot conflict, 3 uses)
+- [5 additional game-changing effects]
+
+**Rationale:** Provides concrete card pool for balance testing and bot decision-making. Cards designed to synergize with research doctrines.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md` Sections 3-5
+
+**Code:** `src/lib/tech-cards/card-catalog.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-008: Tech Card Counter-Play System
+
+**Description:** Each card has counters creating rock-paper-scissors dynamics:
+
+**Counter Examples:**
+- Shield Arrays counters Shock Troops (research) + Plasma Torpedoes (negates surprise/first-strike)
+- Scanner Arrays counters Cloaking Field (reveals hidden units)
+- Point Defense counters Plasma Torpedoes (-2 to incoming first-round damage)
+- Siege Engines (research) counters Shield Arrays (bypasses AC bonus)
+
+Players can draft cards to counter known opponent strategies (requires intel from research announcements, combat reveals, or espionage).
+
+**Rationale:** Creates strategic drafting decisions beyond "pick strongest card." Rewards intelligence gathering and counter-picking.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md` Section 2.2, 4
+
+**Code:** `src/lib/tech-cards/counter-system.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-TECH-009: Draft Timing & Combat Integration
+
+**Description:** Draft events occur at fixed intervals with combat integration:
+
+**Draft Schedule:**
+- Turn 1: T1 hidden objective (draw 3, keep 1)
+- Turn 10, 20, 30, 40: T2 tactical cards (draw 3, pick 1, public announcement)
+- Turn 50+: T3 legendary cards enter pool (30% chance per draft slot)
+
+**Draft Order:**
+- Initiative: d20 + CHA modifier
+- Higher roll picks first, repeats each draft event
+- Cards removed from pool once drafted (reset next event)
+
+**Combat Integration:**
+- Research bonuses + Tech Card bonuses stack multiplicatively
+- Example: War Machine (+2 STR) + Plasma Torpedoes (+2 first-round) = 2d8+1 → 2d8+3 → 2d8+5
+- Cards activate automatically unless legendary (require manual activation to prevent "save syndrome")
+
+**Rationale:** Predictable timing enables strategic planning. Stacking with research creates powerful synergies. Automatic activation ensures cards get used.
+
+**Source:** `docs/design/CRAFTING-SYSTEM.md` Sections 6, 7
+
+**Code:** `src/lib/tech-cards/draft-engine.ts`, `src/lib/combat/card-integration.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+
 ---
 
 ## 12. Migration Plan (Beta 3)
