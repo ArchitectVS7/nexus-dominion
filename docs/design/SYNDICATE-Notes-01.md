@@ -1,24 +1,7 @@
-# Syndicate System: Expansion Concept
+# Syndicate System: Concept
 
-**Status**: QUARANTINED — Future Expansion Content
-**Date**: 2026-01-02
-**Requires**: Base game release + player demand
 
----
-
-## Why This Was Cut
-
-The original Syndicate system (8 trust levels, 14 contract types, black market) was a **parallel progression track** that ran alongside the main game. It targeted weak players as a catch-up mechanic, but:
-
-- Other empires couldn't see your Syndicate involvement
-- Contracts didn't affect combat or create drama
-- It competed for attention rather than enhancing the core loop
-
-This document reimagines the Syndicate as **expansion content** with a "hidden traitor" mechanic inspired by Betrayal at House on the Hill.
-
----
-
-## Design Principles for Expansion
+## Design Principles
 
 1. **Hidden Allegiance** — One (or more) empires secretly serve the Syndicate
 2. **Public Missions** — Contracts are visible, multiple empires can compete
@@ -297,20 +280,20 @@ Using Black Market items generates suspicion — other players see effects and c
 
 ---
 
-## Why This Works (Where Original Failed)
+## Vision
 
-| Original Syndicate | Expansion Syndicate |
+| Expansion Syndicate |
 |--------------------|---------------------|
-| Parallel progression (trust levels) | Hidden role (Loyalist vs Syndicate) |
-| Only affects you | Affects entire galaxy dynamics |
-| No visibility to others | Suspicious activities visible |
-| Catch-up mechanic | Asymmetric victory condition |
-| No drama | Accusation trials, revelation moments |
-| Bots ignore it | Bots are paranoid, accusatory, cryptic |
+| Hidden role (Loyalist vs Syndicate) |
+| Affects entire galaxy dynamics |
+| Suspicious activities visible |
+| Asymmetric victory condition |
+| Accusation trials, revelation moments |
+| Bots are paranoid, accusatory, cryptic |
 
 ---
 
-## Implementation Notes (For Future)
+## Implementation Notes
 
 ### Database Schema
 
