@@ -1,9 +1,9 @@
 # Nexus Dominion: Product Requirements Document
 
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Active - Canonical Requirements Reference
 **Created:** 2026-01-11
-**Last Updated:** 2026-01-11 (Bot System Expansion)
+**Last Updated:** 2026-01-12 (Frontend Consolidation)
 
 ---
 
@@ -1173,13 +1173,26 @@ interface BotDecisionLog {
 
 ## 13. Frontend/UI
 
-### REQ-UI-001: LCARS Design
+**Source Document:** `docs/design/FRONTEND-DESIGN.md` (Consolidated design system v3.0, 2026-01-12)
 
-**Description:** UI follows LCARS-inspired design aesthetic with characteristic colors and panel shapes.
+### 13.1 Design Philosophy
 
-**Rationale:** Creates distinctive, immersive interface.
+### REQ-UI-001: Boardgame + LCARS Aesthetic
 
-**Source:** `docs/design/UI-DESIGN.md`
+**Description:** The UI must embody two core pillars:
+1. **Boardgame Mental Model:** Star map is the board (always visible), panels are like examining cards
+2. **LCARS Visual Design:** Star Trek-inspired glass panels, curved corners, color-coded information
+
+Visual characteristics:
+- Glass panels with backdrop blur over deep space backgrounds
+- LCARS color palette: Orange (primary), Purple (secondary), Blue (friendly), Red (danger), Amber (warnings)
+- Orbitron/Exo 2 display fonts with Roboto Mono for data
+- Pill-shaped buttons with glow effects
+- Ambient animations and transitions
+
+**Rationale:** Creates distinctive, immersive interface that reinforces spatial strategy gameplay.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 1
 
 **Code:** `src/components/`, `tailwind.config.ts`
 
@@ -1189,7 +1202,174 @@ interface BotDecisionLog {
 
 ---
 
-### REQ-UI-002: React Query Data Layer
+### 13.2 Navigation Architecture
+
+### REQ-UI-002: Star Map as Hub
+
+**Description:** The star map is NOT just another page - it is the **default view and central hub** for all gameplay:
+- `/game/starmap` is the primary route (all `/game` routes redirect here)
+- All other screens (military, market, research, diplomacy) are **overlay panels** that slide over a dimmed star map
+- Overlays use query parameters: `/game/starmap?panel=military`, `/game/starmap?panel=market`
+- Pressing ESC or clicking backdrop returns to clean star map view
+- Star map remains visible (dimmed/blurred) behind overlays to maintain spatial context
+
+**Rationale:** Physical boardgames keep the board always visible. Breaking this pattern breaks the boardgame feel. Players need spatial awareness and strategic context at all times.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 3.1
+
+**Code:** `src/app/game/starmap/page.tsx`, `src/components/game/OverlayPanel.tsx`, `src/components/game/OverlayPanelController.tsx`
+
+**Tests:** E2E navigation tests (TBD)
+
+**Status:** Draft
+
+---
+
+### REQ-UI-003: Overlay Panel System
+
+**Description:** All game screens (except star map) render as overlay panels with these properties:
+- **Positions:** right, left, bottom, center
+- **Animations:** Slide in from edge using Framer Motion
+- **Backdrop:** Dimmed star map (60% opacity, blur effect) always visible
+- **Close actions:** ESC key, click backdrop, close button, navigate to `/game/starmap`
+- **Server-rendered:** Panels fetch data server-side, render with Suspense boundaries
+
+Panel routing:
+- Military: `?panel=military` (right overlay)
+- Market: `?panel=market` (bottom overlay)
+- Research: `?panel=research` (right overlay)
+- Diplomacy: `?panel=diplomacy` (center overlay)
+- Empire details: `?empire=<id>` (right overlay)
+
+**Rationale:** Maintains boardgame feel (picking up cards), faster navigation (no page transitions), preserves spatial context.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 3.3
+
+**Code:** `src/components/game/OverlayPanel.tsx`, `src/components/game/OverlayPanelController.tsx`
+
+**Tests:** Component tests for overlay behavior (TBD)
+
+**Status:** Draft
+
+---
+
+### 13.3 Component Patterns
+
+### REQ-UI-004: Card + Details Sidebar Pattern
+
+**Description:** All resource management screens (market, military, sectors) MUST use horizontal split layout to eliminate scrolling:
+- **Left side (1/3 width):** Selection list of items (scrollable if needed)
+- **Right side (2/3 width):** Details + action controls + confirmation button
+- **Critical:** Action button ALWAYS visible at bottom (no scrolling required to confirm)
+- Fixed container height (600px or viewport-based)
+
+Applies to:
+- Market trading interface
+- Unit building panel
+- Sector purchase screen
+- Research allocation
+- Diplomacy offers
+
+**Rationale:** Original vertical stacking forced scrolling and hid action buttons below fold. UX analysis identified this as major friction point. Horizontal split eliminates scrolling and keeps actions visible.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 4.3, `docs/design/UX-ROADMAP.md` (archived analysis)
+
+**Code:** `src/components/game/market/MarketPanel.tsx`, `src/components/game/military/BuildUnitsPanel.tsx`
+
+**Tests:** E2E tests for no-scroll workflow (TBD)
+
+**Status:** Draft
+
+---
+
+### 13.4 UX Patterns
+
+### REQ-UI-005: Collapsible Phase Indicator
+
+**Description:** A persistent turn phase indicator must show players which of the 6 turn phases is executing:
+- **Sticky header** at top of screen showing current turn and phase
+- **Auto-expanded** for first 5 turns (tutorial), then collapsible
+- **Collapsed state:** Shows turn number, current phase name, time remaining
+- **Expanded state:** Shows phase description, available actions (as links), "End Turn" button
+- **Keyboard shortcut:** Toggle with spacebar
+
+Phase display:
+```
+Turn 42/200 | Phase 6/6: Player Actions | ⏰ 4:23 remaining
+```
+
+**Rationale:** UX analysis identified turn phase invisibility as CRITICAL issue. Players cannot learn game mechanics without understanding when events occur. Phase indicator teaches timing and guides actions.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.1, `docs/design/UX-ROADMAP.md` Priority 1
+
+**Code:** `src/components/game/PhaseIndicator.tsx`, `src/app/game/layout.tsx`
+
+**Tests:** Component tests for phase display (TBD)
+
+**Status:** Draft
+
+---
+
+### REQ-UI-006: Actionable Guidance System
+
+**Description:** All warnings and alerts must be actionable (include solution buttons), not passive:
+- **Severity levels:** critical (red, pulsing), warning (amber), opportunity (blue), info (gray)
+- **Components:** Message + 1-3 action buttons with icons
+- **Actions:** Direct links to relevant screens or inline action buttons
+- **Non-dismissible:** Critical alerts block turn end until addressed
+
+Example - Food shortage:
+```
+⚠️ Food deficit! You will lose population next turn (-500 food/turn)
+[🛒 Buy Agriculture Sectors] [🏪 Buy Food from Market] [❌ Dismiss]
+```
+
+**Rationale:** UX analysis found players see warnings but don't know how to fix them. Actionable prompts convert passive notifications into guided solutions.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.2, `docs/design/UX-ROADMAP.md` Priority 2
+
+**Code:** `src/components/game/ActionPrompt.tsx`, replaces `FoodWarning.tsx`
+
+**Tests:** Component tests for action routing (TBD)
+
+**Status:** Draft
+
+---
+
+### REQ-UI-007: Strategic Visual Language
+
+**Description:** Game actions must feel meaningful through visual feedback using Anticipation → Action → Payoff pattern:
+
+**Tier 1 - Anticipation (pre-action):**
+- Show preview of what player will gain BEFORE committing
+- Hover effects with glow/scale (1.05x scale, glow shadow)
+- Cost/benefit breakdown visible
+
+**Tier 2 - Payoff (post-action):**
+- Success animations on completion (scale pulse, green glow)
+- Explicit "+X gained" messages
+- Particle effects for major actions (optional)
+
+**Tier 3 - Threat (attention):**
+- Critical alerts pulse and animate
+- Incoming attacks flash red with countdown
+- Can't-be-ignored visual priority
+
+**Rationale:** Game felt "administrative" rather than "strategic." Visual feedback creates tension, risk, reward feelings. Every action should have emotional weight.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.3, `docs/design/UX-ROADMAP.md` Priority 5
+
+**Code:** Component-specific styles, `src/components/game/*/styles.ts`
+
+**Tests:** Visual regression tests (TBD)
+
+**Status:** Draft
+
+---
+
+### 13.5 Technical Stack
+
+### REQ-UI-008: React Query Data Layer
 
 **Description:** All server state is managed via React Query hooks.
 
@@ -1205,7 +1385,7 @@ interface BotDecisionLog {
 
 ---
 
-### REQ-UI-003: Zustand Client State
+### REQ-UI-009: Zustand Client State
 
 **Description:** All client-only state is managed via Zustand stores.
 
@@ -1218,6 +1398,96 @@ interface BotDecisionLog {
 **Tests:** TBD
 
 **Status:** Validated (Phase 3 complete)
+
+---
+
+### REQ-UI-010: CSS + GSAP Hybrid Animation
+
+**Description:** Animation strategy uses two systems:
+- **CSS transitions:** Hover states, focus states, simple show/hide, color changes (100-300ms)
+- **GSAP timelines:** Combat sequences, turn transitions, complex multi-step animations (3+ steps)
+
+**Performance guidelines:**
+- Only animate transform and opacity (GPU-accelerated)
+- Never animate layout properties (width, height, top, left)
+- Respect `prefers-reduced-motion` setting
+
+**Rationale:** CSS handles micro-interactions efficiently. GSAP handles narrative sequences (combat, turn processing) with precise control. Best of both worlds.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 7
+
+**Code:** `src/styles/globals.css`, `src/lib/animations/`
+
+**Tests:** Animation unit tests (TBD)
+
+**Status:** Draft
+
+---
+
+### REQ-UI-011: D3.js Star Map Visualization
+
+**Description:** Star map uses D3.js force-directed graph visualization:
+- **Nodes:** Empires rendered as nebula clouds with glow filters
+- **Edges:** Treaty lines (alliances, NAPs) and threat indicators
+- **Forces:** Charge (repulsion), center (centering), collision (overlap prevention)
+- **Interactions:** Click empire → open detail overlay, zoom, pan
+- **Intel system:** Unknown/basic/moderate/full visibility levels
+
+**Rationale:** D3.js is already implemented and perfect for network graph layouts. SVG enables easy styling and interaction. Force simulation creates organic, visually pleasing empire distributions.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 8, `docs/design/frontend-developer-manual.md`
+
+**Code:** `src/components/game/starmap/StarMap.tsx`
+
+**Tests:** Visual tests for rendering (TBD)
+
+**Status:** Draft (already implemented)
+
+---
+
+### 13.6 Accessibility
+
+### REQ-UI-012: Keyboard Navigation
+
+**Description:** All interactive elements must be keyboard accessible with global shortcuts:
+- `M` → Return to star map
+- `B` → Open military panel
+- `T` → Open market panel (Trade)
+- `R` → Open research panel
+- `D` → Open diplomacy panel
+- `ESC` → Close all panels
+- `Space` → Toggle phase indicator
+- `Tab` / `Shift+Tab` → Navigate focusable elements
+- `Enter` / `Space` → Activate buttons
+
+**Rationale:** Keyboard navigation improves speed for experienced players and ensures accessibility compliance.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 9.1
+
+**Code:** `src/hooks/useKeyboardShortcuts.ts`, `src/components/game/GameShell.tsx`
+
+**Tests:** E2E keyboard navigation tests (TBD)
+
+**Status:** Draft
+
+---
+
+### REQ-UI-013: WCAG AA Color Contrast
+
+**Description:** All text must meet WCAG AA contrast ratios:
+- Normal text (< 18px): 4.5:1 minimum
+- Large text (≥ 18px): 3:1 minimum
+- Don't rely on color alone (use icons + color)
+
+**Rationale:** Ensures readability for players with visual impairments and in various lighting conditions.
+
+**Source:** `docs/design/FRONTEND-DESIGN.md` Section 9.3
+
+**Code:** `tailwind.config.ts` color definitions
+
+**Tests:** Automated contrast tests with axe-core (TBD)
+
+**Status:** Draft
 
 ---
 
@@ -1382,10 +1652,10 @@ interface BotDecisionLog {
 | 10 | Research | 1 | 0 |
 | 11 | Progressive | 3 | 0 |
 | 12 | Victory | 6 | 0 |
-| 13 | Frontend | 3 | 2 |
+| 13 | Frontend | 13 | 2 |
 | 14 | Tech Wars (Expansion) | 6 | 0 |
 | 15 | Syndicate | 1 | 0 |
-| **Total** | | **56** | **3** |
+| **Total** | | **66** | **3** |
 
 ---
 
@@ -1433,6 +1703,7 @@ comm -23 /tmp/reqs.txt /tmp/tested.txt
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-01-12 | 1.3 | **FRONTEND CONSOLIDATION:** Section 13 completely revised for FRONTEND-DESIGN.md consolidation. Updated REQ-UI-001 to Boardgame + LCARS Aesthetic. Replaced REQ-UI-002/003 with Star Map Hub navigation architecture. Added 10 new requirements: REQ-UI-002 (Star Map as Hub), REQ-UI-003 (Overlay Panel System), REQ-UI-004 (Card + Details Sidebar), REQ-UI-005 (Collapsible Phase Indicator), REQ-UI-006 (Actionable Guidance), REQ-UI-007 (Strategic Visual Language), REQ-UI-010 (CSS + GSAP Hybrid), REQ-UI-011 (D3.js Star Map), REQ-UI-012 (Keyboard Navigation), REQ-UI-013 (WCAG AA Contrast). Renumbered existing REQ-UI-002/003 to REQ-UI-008/009. Total: 56→66 requirements. |
 | 2026-01-11 | 1.2 | **BOT SYSTEM EXPANSION:** Section 7 completely revised for BOT-SYSTEM.md alignment. Fixed REQ-BOT-003 emotional states (now: Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant per narrative analysis). Expanded REQ-BOT-001, REQ-BOT-002, REQ-BOT-004, REQ-BOT-005 with implementation details. Added 5 new requirements: REQ-BOT-006 (LLM Integration), REQ-BOT-007 (Decision Audit), REQ-BOT-008 (Coalition AI), REQ-BOT-009 (Telegraphing), REQ-BOT-010 (Endgame Behavior). Total: 51→56 requirements. |
 | 2026-01-11 | 1.1 | **CRITICAL FIX:** Section 14 updated to Tech Card draft system (CRAFTING-EXPANSION-CONCEPT.md). Removed incorrect 4-tier crafting reference. Added REQ-TECH-001 through REQ-TECH-006 (6 new requirements). Total: 51 requirements. |
 | 2026-01-11 | 1.0 | Initial PRD structure with 46 requirements |

@@ -1,12 +1,12 @@
 # Nexus Dominion Frontend Developer Manual
 
-> **Version:** 2.0
+> **Version:** 2.1
 > **Created:** 2024-12-28
-> **Last Updated:** 2026-01-11
+> **Last Updated:** 2026-01-12
 
 A comprehensive reference for frontend development on Nexus Dominion, covering architecture, data flow, component patterns, styling, and best practices.
 
-**See Also:** [UX-DESIGN.md](UX-DESIGN.md) - Consolidated UX design system with visual design, component library, and UX patterns.
+**See Also:** [FRONTEND-DESIGN.md](FRONTEND-DESIGN.md) - Consolidated frontend design system with visual design, navigation architecture, component library, and UX patterns.
 
 ---
 
@@ -306,6 +306,350 @@ export function BuildButton({ unitType }: { unitType: UnitType }) {
 | Research level | `empires.fundamentalResearchLevel` | `getResearchStatus()` | `ResearchPanel` |
 | Starmap data | `empires` (all) | `getStarmapData()` | `Starmap` |
 | Messages | `messages` table | `getMessagesAction()` | `MessageInbox` |
+
+### 3.6 Navigation Architecture: Star Map Hub Pattern
+
+**Critical Design Decision:** The star map is NOT just another page. It is the **default view and central hub** for all gameplay.
+
+#### Route Structure
+
+```typescript
+// Primary route - Star map is the default
+/game/starmap          // Full-screen star map (DEFAULT)
+
+// Star map with overlays
+/game/starmap?panel=military      // Star map with military overlay
+/game/starmap?panel=market        // Star map with market overlay
+/game/starmap?panel=research      // Star map with research overlay
+/game/starmap?panel=diplomacy     // Star map with diplomacy overlay
+/game/starmap?empire=<id>         // Star map with empire detail overlay
+
+// Redirect old routes
+/game                  // Redirects to /game/starmap
+/game/military         // Redirects to /game/starmap?panel=military
+/game/market           // Redirects to /game/starmap?panel=market
+```
+
+#### Implementation Pattern
+
+**Page Redirect (src/app/game/page.tsx):**
+
+```tsx
+import { redirect } from 'next/navigation';
+
+export default function GamePage() {
+  // Always redirect to star map
+  redirect('/game/starmap');
+}
+```
+
+**Star Map Page with Overlay System (src/app/game/starmap/page.tsx):**
+
+```tsx
+import { Suspense } from 'react';
+import { StarMap } from '@/components/game/starmap/StarMap';
+import { OverlayPanelController } from '@/components/game/OverlayPanelController';
+
+interface PageProps {
+  searchParams: {
+    panel?: 'military' | 'market' | 'research' | 'diplomacy';
+    empire?: string;
+  };
+}
+
+export default async function StarMapPage({ searchParams }: PageProps) {
+  const { panel, empire } = searchParams;
+
+  // Fetch star map data
+  const starmapData = await getStarmapData();
+
+  return (
+    <div className="relative w-full h-screen">
+      {/* Star map - always visible (dimmed when overlay active) */}
+      <div className={panel || empire ? 'opacity-40 blur-sm' : ''}>
+        <StarMap data={starmapData} />
+      </div>
+
+      {/* Overlay panels slide in over star map */}
+      <Suspense fallback={<LoadingOverlay />}>
+        <OverlayPanelController
+          activePanel={panel}
+          selectedEmpire={empire}
+        />
+      </Suspense>
+
+      {/* Floating return to map button (always visible) */}
+      <FloatingMapButton />
+    </div>
+  );
+}
+```
+
+#### Overlay Panel Wiring
+
+**OverlayPanel Component (src/components/game/OverlayPanel.tsx):**
+
+```tsx
+"use client";
+
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+
+interface OverlayPanelProps {
+  isOpen: boolean;
+  position: 'bottom' | 'right' | 'center' | 'left';
+  size?: 'small' | 'medium' | 'large' | 'fullscreen';
+  title: string;
+  children: React.ReactNode;
+}
+
+export function OverlayPanel({
+  isOpen,
+  position,
+  size = 'large',
+  title,
+  children
+}: OverlayPanelProps) {
+  const router = useRouter();
+
+  const handleClose = () => {
+    // Return to clean star map view
+    router.push('/game/starmap');
+  };
+
+  const positionStyles = {
+    right: `top-0 right-0 h-full w-1/2`,
+    left: `top-0 left-0 h-full w-1/2`,
+    bottom: `bottom-0 left-0 right-0 h-2/3`,
+    center: `top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 max-h-[90vh]`,
+  }[position];
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop - dims star map */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            onClick={handleClose}
+          />
+
+          {/* Panel */}
+          <motion.div
+            initial={{ x: position === 'right' ? '100%' : position === 'left' ? '-100%' : 0, y: position === 'bottom' ? '100%' : 0 }}
+            animate={{ x: 0, y: 0 }}
+            exit={{ x: position === 'right' ? '100%' : position === 'left' ? '-100%' : 0, y: position === 'bottom' ? '100%' : 0 }}
+            className={`fixed z-50 bg-background-panel border border-lcars-orange/50 ${positionStyles}`}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-lcars-orange/30">
+              <h2 className="text-xl font-display text-lcars-orange">
+                {title}
+              </h2>
+              <button
+                onClick={handleClose}
+                className="p-2 hover:bg-white/10 rounded transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="overflow-y-auto p-6 h-[calc(100%-4rem)]">
+              {children}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+```
+
+**OverlayPanelController (src/components/game/OverlayPanelController.tsx):**
+
+```tsx
+import { MilitaryPanel } from './military/MilitaryPanel';
+import { MarketPanel } from './market/MarketPanel';
+import { ResearchPanel } from './research/ResearchPanel';
+import { DiplomacyPanel } from './diplomacy/DiplomacyPanel';
+import { EmpireDetailPanel } from './starmap/EmpireDetailPanel';
+import { OverlayPanel } from './OverlayPanel';
+
+interface Props {
+  activePanel?: 'military' | 'market' | 'research' | 'diplomacy';
+  selectedEmpire?: string;
+}
+
+export async function OverlayPanelController({ activePanel, selectedEmpire }: Props) {
+  // Fetch data based on active panel
+  const data = activePanel ? await getPanelData(activePanel) : null;
+
+  return (
+    <>
+      {/* Military Overlay */}
+      <OverlayPanel
+        isOpen={activePanel === 'military'}
+        position="right"
+        size="large"
+        title="Military Command"
+      >
+        {data && <MilitaryPanel {...data} />}
+      </OverlayPanel>
+
+      {/* Market Overlay */}
+      <OverlayPanel
+        isOpen={activePanel === 'market'}
+        position="bottom"
+        size="large"
+        title="Galactic Market"
+      >
+        {data && <MarketPanel {...data} />}
+      </OverlayPanel>
+
+      {/* Research Overlay */}
+      <OverlayPanel
+        isOpen={activePanel === 'research'}
+        position="right"
+        size="medium"
+        title="Research & Development"
+      >
+        {data && <ResearchPanel {...data} />}
+      </OverlayPanel>
+
+      {/* Diplomacy Overlay */}
+      <OverlayPanel
+        isOpen={activePanel === 'diplomacy'}
+        position="center"
+        size="large"
+        title="Diplomatic Relations"
+      >
+        {data && <DiplomacyPanel {...data} />}
+      </OverlayPanel>
+
+      {/* Empire Detail Overlay */}
+      {selectedEmpire && (
+        <OverlayPanel
+          isOpen={true}
+          position="right"
+          size="medium"
+          title="Empire Intelligence"
+        >
+          <EmpireDetailPanel empireId={selectedEmpire} />
+        </OverlayPanel>
+      )}
+    </>
+  );
+}
+```
+
+#### Navigation Links
+
+Use Next.js Link component to open overlays:
+
+```tsx
+import Link from 'next/link';
+
+// Open military overlay
+<Link href="/game/starmap?panel=military" className="lcars-button">
+  Military Command
+</Link>
+
+// Open market overlay
+<Link href="/game/starmap?panel=market" className="lcars-button">
+  Galactic Market
+</Link>
+
+// Return to clean star map
+<Link href="/game/starmap" className="lcars-button">
+  Close Panel
+</Link>
+```
+
+#### Keyboard Shortcuts
+
+```tsx
+// src/hooks/useKeyboardShortcuts.ts
+"use client";
+
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+export function useKeyboardShortcuts() {
+  const router = useRouter();
+
+  useEffect(() => {
+    function handleKeyPress(e: KeyboardEvent) {
+      // Ignore if typing in input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (e.key.toLowerCase()) {
+        case 'm':
+          router.push('/game/starmap');
+          break;
+        case 'b':
+          router.push('/game/starmap?panel=military');
+          break;
+        case 't':
+          router.push('/game/starmap?panel=market');
+          break;
+        case 'r':
+          router.push('/game/starmap?panel=research');
+          break;
+        case 'd':
+          router.push('/game/starmap?panel=diplomacy');
+          break;
+        case 'escape':
+          router.push('/game/starmap'); // Close all panels
+          break;
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [router]);
+}
+```
+
+Use in GameShell:
+
+```tsx
+// src/components/game/GameShell.tsx
+"use client";
+
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+
+export function GameShell({ children }: { children: React.ReactNode }) {
+  useKeyboardShortcuts(); // Enable global shortcuts
+
+  return (
+    <div className="game-shell">
+      {children}
+    </div>
+  );
+}
+```
+
+#### Why This Pattern?
+
+**Boardgame Mental Model:**
+- Physical boardgames: Board is always visible, you examine cards/pieces then return to board
+- Digital implementation: Star map is the board, panels are like picking up cards
+
+**Benefits:**
+- ✅ Always spatially aware (map visible behind panels)
+- ✅ Faster navigation (no full page transitions)
+- ✅ Maintains context (map state preserved)
+- ✅ Better UX (smooth transitions, ESC to close)
+- ✅ Easier to implement (query params vs complex routing)
+
+**See Also:** [FRONTEND-DESIGN.md Section 3](FRONTEND-DESIGN.md#3-navigation--layout-architecture) for complete design specifications.
 
 ---
 
