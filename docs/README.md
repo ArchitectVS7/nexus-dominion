@@ -4,25 +4,45 @@ Welcome to the Nexus Dominion documentation hub. This guide helps you find what 
 
 ---
 
+## Start Here
 
-## Documentation Structure
+**[PRD-EXECUTIVE.md](PRD-EXECUTIVE.md)** - The strategic overview. Vision, success metrics, architecture principles, and system dependencies in 3-5 pages.
 
-### The Vision: [/design](design/)
+---
 
-What we're building and why. The soul of the game. 
+## Documentation Tiers
 
-### The Journey: [/roadmap](roadmap/)
+### Tier 1: Executive
+| Document | Purpose |
+|----------|---------|
+| [PRD-EXECUTIVE.md](PRD-EXECUTIVE.md) | Strategic overview, principles, success metrics |
 
-Where we are and where we're going.
+### Tier 2: Design Documents
+Detailed specifications for each system.
 
-| Document | Description |
-|----------|-------------|
-| [ALPHA.md](roadmap/ALPHA.md) | Current playable state, what's being fixed |
-| [BETA.md](roadmap/BETA.md) | Post-alpha priorities: stability, mobile, polish |
+| Document | Scope |
+|----------|-------|
+| [GAME-DESIGN.md](design/GAME-DESIGN.md) | Consolidated design reference |
+| [COMBAT-SYSTEM.md](design/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
+| [BOT-SYSTEM.md](design/BOT-SYSTEM.md) | AI architecture, personas |
+| [RESEARCH-SYSTEM.md](design/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
+| [FRONTEND-DESIGN.md](design/FRONTEND-DESIGN.md) | UI/UX patterns |
+
+### Tier 3: Implementation References
+| Document | Purpose |
+|----------|---------|
+| [PRD.md](PRD.md) | Detailed requirements with code traces |
+| [SPEC-REGISTRY.md](SPEC-REGISTRY.md) | Spec-to-code mapping |
+| [ARCHITECTURE.md](development/ARCHITECTURE.md) | Technical stack and patterns |
+
+### Tier 4: Roadmap
+| Document | Timeframe |
+|----------|-----------|
+| [ALPHA.md](roadmap/ALPHA.md) | Current playable state |
+| [BETA.md](roadmap/BETA.md) | Stability, mobile, polish |
 | [LAUNCH.md](roadmap/LAUNCH.md) | v1.0 definition of done |
-| [EXPANSION.md](roadmap/EXPANSION.md) | Post-launch DLC: Crafting + Syndicate |
-| [FUTURE.md](roadmap/FUTURE.md) | Long-term vision (Waves 2-4) |
-
+| [EXPANSION.md](roadmap/EXPANSION.md) | Post-launch: Crafting + Syndicate |
+| [FUTURE.md](roadmap/FUTURE.md) | Long-term vision |
 
 ---
 
