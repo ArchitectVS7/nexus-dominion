@@ -1,45 +1,54 @@
-# Nexus Dominion: Complete D20 Combat Specification
+# Combat System
 
-**Version:** 2.0
-**Status:** Canonical Combat Design
+**Version:** 2.1
+**Status:** FOR IMPLEMENTATION
+**Spec Prefix:** REQ-COMBAT
 **Created:** 2026-01-11
-**Replaces:** COMBAT-SYSTEM.md (v1.0), d20-exec-summary.md
+**Last Updated:** 2026-01-12
+**Replaces:** COMBAT-SYSTEM.md (v2.0), d20-exec-summary.md
 
 ---
 
 ## Document Purpose
 
-This document provides the **complete specification** for Nexus Dominion's D20-based combat system. All combat mechanics, stat systems, and unit cards are defined here.
+This document provides the complete specification for Nexus Dominion's D20-based combat system. All combat mechanics, stat systems, and unit cards are defined here.
+
+This document is intended for:
+- **Game designers** defining combat mechanics and balance
+- **Developers** implementing the combat engine
+- **QA** validating combat behavior against specifications
 
 **Design Philosophy:**
-- **Familiar D20 mechanics** (5% granularity, roll + modifiers ≥ threshold)
+- **Familiar D20 mechanics** (5% granularity, roll + modifiers >= threshold)
 - **Card-based clarity** (all stats visible on unit cards)
 - **Strategic depth** (multi-domain conflict, positioning, composition)
 - **Boardgame feel** (easy to learn, dramatic moments, visible tactics)
+- **Full OGL compliance** (standard STR/DEX/CON ability scores)
 
 ---
 
 ## Table of Contents
 
-1. [Core D20 System](#1-core-d20-system)
-2. [Stat Framework](#2-stat-framework)
-3. [Unit Cards](#3-unit-cards)
-4. [Combat Resolution](#4-combat-resolution)
-5. [Multi-Domain Battles](#5-multi-domain-battles)
-6. [Fleet Composition](#6-fleet-composition)
-7. [Rarity System](#7-rarity-system)
-8. [Bot Integration](#8-bot-integration)
-9. [Implementation Requirements](#9-implementation-requirements)
+1. [Core Concept](#1-core-concept)
+2. [Mechanics Overview](#2-mechanics-overview)
+3. [Detailed Rules](#3-detailed-rules)
+4. [Bot Integration](#4-bot-integration)
+5. [UI/UX Design](#5-uiux-design)
+6. [Specifications](#6-specifications)
+7. [Implementation Requirements](#7-implementation-requirements)
+8. [Balance Targets](#8-balance-targets)
+9. [Migration Plan](#9-migration-plan)
+10. [Conclusion](#10-conclusion)
 
 ---
 
-## 1. Core D20 System
+## 1. Core Concept
 
 ### 1.1 Resolution Formula
 
 **Universal Formula:**
 ```
-d20 + (Relevant Stat Modifier) + Bonuses ≥ Target Defense
+d20 + (Relevant Stat Modifier) + Bonuses >= Target Defense
 ```
 
 **Example:**
@@ -51,7 +60,7 @@ Fleet coordination: +2
 Total: 14 + 5 + 2 = 21
 
 Defender DEF: 18
-Result: 21 ≥ 18 → HIT
+Result: 21 >= 18 -> HIT
 ```
 
 ### 1.2 Why D20?
@@ -62,24 +71,56 @@ Result: 21 ≥ 18 → HIT
 - **Scales well** - Works for single units or fleets
 - **Supports drama** - Critical successes (nat 20), critical failures (nat 1)
 
-### 1.3 Critical Events
+### 1.3 Player Experience
+
+Combat in Nexus Dominion feels like commanding a fleet in a tabletop wargame. Players assign units to domains, watch dice rolls resolve, and see dramatic swings from critical hits. The multi-domain structure creates narrative coherence: "We lost space superiority, but our orbital stations held, and ground forces repelled the invasion."
+
+---
+
+## 2. Mechanics Overview
+
+### 2.1 Critical Events
 
 | Roll | Event | Effect |
 |------|-------|--------|
-| **Natural 20** | Critical Success | 2× damage, bypass 50% DEF |
+| **Natural 20** | Critical Success | 2x damage, bypass 50% DEF |
 | **Natural 1** | Critical Failure | Miss, lose 1 SPEED (initiative penalty next round) |
 | **18-19** | Excellent Hit | +50% damage |
 | **2-3** | Glancing Blow | -50% damage (if hit) |
 
+### 2.2 Three Battle Types
+
+| Type | Purpose | Requirements | Resolution | Can Capture? |
+|------|---------|--------------|------------|--------------|
+| **Full Invasion** | Capture sectors | Carriers + space control | Multi-domain | YES (5-15%) |
+| **Covert Strike** | Harassment, sabotage | Commandos OR Syndicate contract | Ground only | NO |
+| **Blockade** | Economic warfare | Space fleet | No combat | NO |
+
+**Full Invasions** are overt military campaigns requiring fleet superiority. You must fight through Space and Orbital defenses before landing ground forces. Victory captures enemy sectors.
+
+**Covert Strikes** are black ops missions using specialized forces or Syndicate-hired operatives. These bypass conventional defenses through stealth insertion, insurgent support networks, or diplomatic cover. They weaken enemies but cannot capture territory.
+
+**Blockades** are naval sieges that strangle enemy trade routes without landing troops. Effective for economic pressure but cannot capture ground.
+
+### 2.3 Unit Type Matrix
+
+| Unit Type | Strong vs | Weak vs | Domain |
+|-----------|-----------|---------|--------|
+| **Soldiers** | Ground units | Air/Space | GROUND |
+| **Fighters** | Bombers, Interceptors | Cruisers | SPACE |
+| **Bombers** | Cruisers, Stations | Fighters | ORBITAL |
+| **Light Cruisers** | Fighters, Carriers | Heavy Cruisers | SPACE |
+| **Heavy Cruisers** | Light Cruisers, Stations | Bombers | SPACE |
+| **Stations** | All (when defending) | Bombers | ORBITAL |
+| **Carriers** | None (support) | All | SPACE |
+
 ---
 
-## 2. Stat Framework
+## 3. Detailed Rules
 
-### 2.1 The Two Stat Groups
+### 3.1 Stat Framework
 
-D&D's 6 classic stats are split into **Ship Stats** (3 physical abilities visible on cards) and **Commander Stats** (3 mental abilities affecting bot AI decisions).
-
-### 2.2 Ship Stats (Physical Abilities)
+#### Ship Stats (Physical Abilities)
 
 Every unit has three ability scores following D&D conventions:
 
@@ -94,22 +135,20 @@ Every unit has three ability scores following D&D conventions:
 Modifier = (Stat - 10) / 2 (rounded down)
 
 Examples:
-STR  8 → -1 modifier
-STR 10 → +0 modifier
-STR 12 → +1 modifier
-STR 14 → +2 modifier
-STR 16 → +3 modifier
-STR 18 → +4 modifier
-STR 20 → +5 modifier
+STR  8 -> -1 modifier
+STR 10 -> +0 modifier
+STR 12 -> +1 modifier
+STR 14 -> +2 modifier
+STR 16 -> +3 modifier
+STR 18 -> +4 modifier
+STR 20 -> +5 modifier
 ```
 
-### 2.3 Derived Stats (Standard D20)
-
-These are calculated from the three physical stats:
+#### Derived Stats
 
 | Stat | Formula | Purpose |
 |------|---------|---------|
-| **HP (Hit Points)** | Base HP + (CON mod × level) | Damage absorption (0 = destroyed) |
+| **HP (Hit Points)** | Base HP + (CON mod x level) | Damage absorption (0 = destroyed) |
 | **AC (Armor Class)** | 10 + DEX mod + armor bonus | Defense threshold for enemy attacks |
 | **Initiative** | DEX modifier | Turn order in combat |
 | **Attack Bonus** | BAB + STR/DEX mod | Added to d20 roll to hit |
@@ -120,9 +159,9 @@ These are calculated from the three physical stats:
 - Tier II units: BAB +4
 - Tier III units: BAB +6
 
-### 2.4 Commander Stats (Mental Abilities - Bot AI Only)
+#### Commander Stats (Bot AI Only)
 
-These stats are **not on unit cards**. They belong to bot commanders and affect strategic decision-making.
+These stats belong to bot commanders and affect strategic decision-making:
 
 | Stat | Abbrev | Range | Affects |
 |------|--------|-------|---------|
@@ -130,101 +169,183 @@ These stats are **not on unit cards**. They belong to bot commanders and affect 
 | **Wisdom** | WIS | 8-18 | Strategic planning, retreat decisions, risk assessment |
 | **Charisma** | CHA | 8-18 | Alliance formation, diplomacy, surrender negotiations |
 
-**Commander Stats by Archetype:**
+### 3.2 Unit Card Anatomy
 
-| Archetype | INT | WIS | CHA | Playstyle Impact |
-|-----------|-----|-----|-----|------------------|
-| **Warlord** | 12 (+1) | 14 (+2) | 8 (-1) | Good tactics, poor diplomacy |
-| **Diplomat** | 13 (+1) | 14 (+2) | 18 (+4) | Excellent negotiations |
-| **Tech Rush** | 17 (+3) | 12 (+1) | 10 (+0) | Fast research, logical |
-| **Turtle** | 14 (+2) | 16 (+3) | 10 (+0) | Patient, excellent defense |
-| **Schemer** | 13 (+1) | 15 (+2) | 16 (+3) | Manipulative, cunning |
+Every unit is represented as a card with this structure:
 
-**Example Bot Commander:**
 ```
-Commander Varkus (Warlord Archetype)
-─────────────────────────────────────
-INT: 12 (+1) - Strategic Intelligence
-WIS: 14 (+2) - Tactical Wisdom
-CHA: 8  (-1) - Diplomatic Presence
-
-Effects:
-- +1 to tech research points/turn
-- +2 to retreat timing decisions (d20+2 vs DC 15)
-- -1 to alliance proposal persuasiveness
++-------------------------------------+
+| [icon] HEAVY CRUISER      [TIER II] |  <- Unit name + rarity
++------------------------------------|
+| ABILITY SCORES                      |
+|  STR: 16 (+3)  DEX: 12 (+1)        |  <- D&D ability scores
+|  CON: 14 (+2)                       |
+|                                     |
+| DERIVED STATS                       |
+|  HP: 40  (base 20 + CON +2 x 10)   |  <- Hit points
+|  AC: 15  (10 + DEX +1 + armor +4)  |  <- Armor class
+|  Init: +1 (DEX modifier)            |  <- Initiative
+|                                     |
+| ATTACK                              |
+|  Heavy Cannons (ranged)             |
+|  +5 to hit (BAB +4 + DEX +1)       |  <- Attack bonus
+|  Damage: 2d8+3 (weapon + STR)       |  <- Damage dice
+|                                     |
+| SPECIAL ABILITY                     |
+|  Broadside: Attack 2 targets/round |
++------------------------------------|
+| Cost: 15,000  | Pop: 3              |  <- Build cost
+| Domain: SPACE | Maint: 50           |  <- Tags
++-------------------------------------+
 ```
+
+**Color Coding by Tier:**
+- **Standard (Tier I)** - Green border
+- **Prototype (Tier II)** - Blue border
+- **Singularity (Tier III)** - Purple border
+
+### 3.3 Combat Resolution Phases
+
+Each domain battle follows this sequence:
+
+**PHASE 1: Initiative**
+- Each side rolls: d20 + Highest MNV in fleet
+- Winner gains "Tactical Advantage Token" (reroll 1 failed attack, strike first)
+
+**PHASE 2: Attack Rolls**
+- For each unit: Roll d20 + ATK modifier
+- Compare to enemy's DEF
+- On hit: Deal damage = Unit's base damage
+- On crit (nat 20): Deal 2x damage
+
+**PHASE 3: Apply Damage**
+- Target priority: Lowest HULL units first
+- Overkill damage carries to next unit
+- Unit destroyed when HULL reaches 0
+
+**PHASE 4: Morale Check**
+- If side loses 50%+ units: Roll d20 + Commander WIS
+- DC 15: Pass (fight to the end)
+- DC 10-14: Shaken (-2 to all rolls next round)
+- DC <10: Routed (immediate retreat with losses)
+
+### 3.4 Multi-Domain Battle Resolution
+
+Full Invasions resolve three simultaneous battles:
+
+**Resolution Order:**
+1. **SPACE BATTLE** - Winner gains +2 bonus to Orbital and Ground domains
+2. **ORBITAL BATTLE** - Winner gains +2 bonus to Ground domain
+3. **GROUND BATTLE** - Winner captures 5-15% of defender's sectors
+
+**Victory Conditions:**
+- **Total Victory:** Win all 3 domains -> Capture 15% sectors
+- **Decisive Victory:** Win 2 domains -> Capture 10% sectors
+- **Pyrrhic Victory:** Win 1 domain -> Capture 5% sectors, heavy casualties
+- **Stalemate:** Win 0 domains -> No capture, mutual casualties
+- **Defeat:** Lose all domains -> Attacker retreats, 15% unit losses
+
+**Cross-Domain Bonuses Stack:**
+- Win Space + Orbital = +4 bonus to Ground battle
+
+### 3.5 Fleet Composition Bonuses
+
+| Composition | Requirement | Bonus |
+|-------------|-------------|-------|
+| **Balanced Force** | 4+ different unit types | +15% to all stats |
+| **Speed Wing** | 3+ units with MNV 5+ | Strike first, ignore initiative roll |
+| **Defensive Wall** | 5+ Stations | 2x DEF bonus when defending |
+| **Overwhelming Force** | 20+ total units | Intimidation: Enemy morale -2 |
+| **Surgical Strike** | All units MNV 6+ | +3 to initiative, retreat always succeeds |
+
+### 3.6 Retreat & Surrender
+
+**Attacker Can Retreat:**
+- At end of any combat round
+- Roll d20 + MNV (best unit) vs DC 12
+- Success: Retreat safely
+- Failure: Suffer "Attack of Opportunity" (15% casualties)
+
+**Defender Cannot Retreat** (defending home territory)
+
+**Surrender Mechanics:**
+- Triggered at 75%+ HULL losses
+- Roll: d20 + Attacker CHA vs Defender WIS
+- Success: Sector captured without further combat, 50% defender units survive (scattered)
+- Failure: Fight continues
+
+### 3.7 Rarity Tiers
+
+| Tier | Name | Design Intent | Stat Range |
+|------|------|---------------|------------|
+| **Tier I** | Standard-Issue | Baseline units | 8-12 |
+| **Tier II** | Prototype | Tech-enhanced | 12-16 |
+| **Tier III** | Singularity-Class | Elite/legendary | 16-20 |
+
+**Acquisition:**
+- **Tier I:** Available Turn 1, purchased with credits
+- **Tier II:** Unlocked via research, draft every 10 turns (draw 2, keep 1), costs 2x Tier I
+- **Tier III:** Ultra-rare draft at Turn 50+, only 1 per game per player, public announcement
 
 ---
 
-## 3. Unit Cards
+## 4. Bot Integration
 
-### 3.1 Card Anatomy
+### 4.1 Archetype Combat Behavior
 
-Every unit in the game is represented as a card with this structure:
+| Archetype | INT | WIS | CHA | Aggression | Retreat Threshold | Favored Units |
+|-----------|-----|-----|-----|------------|-------------------|---------------|
+| **Warlord** | 12 | 14 | 8 | 9/10 | 25% HULL | Heavy Cruisers, Bombers |
+| **Turtle** | 14 | 16 | 10 | 2/10 | Never | Stations, Light Cruisers |
+| **Diplomat** | 13 | 14 | 18 | 3/10 | 60% HULL | Mixed (balanced) |
+| **Tech Rush** | 17 | 12 | 10 | 5/10 | 40% HULL | Prototype units |
+| **Schemer** | 13 | 15 | 16 | 6/10 | 50% HULL | Covert Agents, Bombers |
 
+### 4.2 Bot Decision Logic
+
+**Attack Decision:**
 ```
-┌─────────────────────────────────────┐
-│ [⚔️] HEAVY CRUISER      [TIER II]   │ ← Unit name + rarity
-├─────────────────────────────────────┤
-│ ABILITY SCORES                      │
-│  STR: 16 (+3)  DEX: 12 (+1)        │ ← D&D ability scores
-│  CON: 14 (+2)                       │
-│                                     │
-│ DERIVED STATS                       │
-│  HP: 40  (base 20 + CON +2 × 10)   │ ← Hit points
-│  AC: 15  (10 + DEX +1 + armor +4)  │ ← Armor class
-│  Init: +1 (DEX modifier)            │ ← Initiative
-│                                     │
-│ ATTACK                              │
-│  Heavy Cannons (ranged)             │
-│  +5 to hit (BAB +4 + DEX +1)       │ ← Attack bonus
-│  Damage: 2d8+3 (weapon + STR)       │ ← Damage dice
-│                                     │
-│ SPECIAL ABILITY                     │
-│  Broadside: Attack 2 targets/round │
-├─────────────────────────────────────┤
-│ Cost: 15,000 💰 | Pop: 3 👥         │ ← Build cost
-│ Domain: SPACE   | Maint: 50 🛢️      │ ← Tags
-└─────────────────────────────────────┘
+attackDesirability = baseAggression - (WIS_modifier * riskAssessment)
+
+where riskAssessment = (targetPower / botPower) + (targetAllies * 0.2)
 ```
 
-### 3.2 Card Elements Explained
+**Retreat Decision:**
+```
+if (currentHullPercent <= retreatThreshold):
+    wisCheck = d20 + WIS_modifier
+    if wisCheck >= 15: retreat()
+```
 
-**Top Bar:**
-- **Icon:** Visual identifier (ship silhouette)
-- **Unit Name:** Human-readable type
-- **Tier:** Rarity indicator (I-Standard, II-Prototype, III-Singularity)
+**Draft Preference by Archetype:**
+- Warlord: +ATK cards
+- Turtle: +DEF cards
+- Diplomat: Balanced/utility cards
+- Tech Rush: Prototype unlocks
+- Schemer: Disruption/morale attack cards
 
-**Ability Scores Block:**
-- **STR/DEX/CON:** Three physical stats with modifiers
-- Standard D&D format: "16 (+3)"
+### 4.3 Bot Combat Messages
 
-**Derived Stats Block:**
-- **HP:** Hit points (formula shown for clarity)
-- **AC:** Armor class (threshold enemies must roll to hit)
-- **Init:** Initiative modifier (turn order in combat)
+**Warlord (Pre-Battle):**
+- "Your defenses crumble before the might of the {empire_name} war machine."
+- "Surrender now. My heavy cruisers don't discriminate."
 
-**Attack Block:**
-- **Weapon name:** Descriptive weapon type
-- **To hit:** Attack bonus calculation (BAB + mod)
-- **Damage:** Dice notation + STR modifier (e.g., "2d8+3")
+**Warlord (Draft Event):**
+- "My fleets grow stronger. Your shields won't save you."
 
-**Ability Block:**
-- **Special power description**
-- **Mechanical effect**
+**Turtle (Defending):**
+- "You've made a grave miscalculation attacking my territory."
+- "My stations have held for decades. You won't be the one to break them."
 
-**Footer:**
-- **Cost:** Credits to build
-- **Pop:** Population consumed
-- **Domain:** SPACE, ORBITAL, or GROUND
-- **Maintenance:** Petroleum/turn upkeep
+**Schemer (Covert Strike):**
+- "Strange how accidents keep happening to your infrastructure..."
+- "The Syndicate sends their regards."
 
-### 3.3 Visual Design Principles
+---
 
-**Color Coding by Tier:**
-- **Standard** (Green border) - Common baseline units
-- **Prototype** (Blue border) - Advanced tech variants
-- **Singularity** (Purple border) - Legendary units
+## 5. UI/UX Design
+
+### 5.1 Unit Card Visual Design
 
 **Stat Bars:**
 - 10-segment visual bars (like fighting games)
@@ -232,810 +353,61 @@ Every unit in the game is represented as a card with this structure:
 - Makes relative power instantly visible
 
 **Icons:**
-- ⚔️ Attack
-- 🛡️ Defense
-- ❤️ Hull
-- ⚡ Maneuvering
-- 💰 Credits
-- 👥 Population
-- 🛢️ Petroleum
+- Attack: crossed swords
+- Defense: shield
+- Hull: heart
+- Maneuvering: lightning bolt
+- Credits: coin
+- Population: person
+- Petroleum: oil drop
+
+### 5.2 Combat UI Flow
+
+1. **Pre-Battle Screen:** Fleet comparison, domain assignment, predicted outcomes
+2. **Domain Selection:** Drag-drop units to Space/Orbital/Ground
+3. **Battle Animation:** Dice roll visualization, hit/miss indicators
+4. **Result Screen:** Casualties, territory changes, dramatic outcome text
+
+### 5.3 Combat Preview Panel
+
+Shows before committing to battle:
+- Attack roll modifiers breakdown
+- Estimated hit probability per unit
+- Domain-by-domain power comparison
+- Predicted outcome range (victory types)
 
 ---
 
-## 4. Combat Resolution
+## 6. Specifications
 
-### 4.1 Three Battle Types
+### Specification Status Legend
 
-| Type | Purpose | Requirements | Resolution | Can Capture Sectors? |
-|------|---------|--------------|------------|---------------------|
-| **Full Invasion** | Capture sectors | Carriers + space control | Multi-domain (Space/Orbital/Ground) | YES (5-15%) |
-| **Covert Strike** | Harassment, sabotage | Commandos OR Syndicate contract | Single domain (Ground only) | NO |
-| **Blockade** | Economic warfare | Space fleet | No ground combat | NO |
-
-**Full Invasions** are overt military campaigns requiring fleet superiority. You must fight through Space and Orbital defenses before landing ground forces. Victory captures enemy sectors.
-
-**Covert Strikes** are black ops missions using specialized forces or Syndicate-hired operatives. These bypass conventional defenses through stealth insertion, insurgent support networks, or diplomatic cover—not raw firepower. They weaken enemies and disrupt infrastructure but cannot capture territory. That requires a Full Invasion.
-
-Available to:
-- Empires with **Commando Squad** units (Research unlock: Special Forces Doctrine)
-- **Syndicate operatives** via "Pirate Raid" contract (uses NPC pirates for plausible deniability)
-- Players supporting **insurgents** in target empire (Syndicate "Insurgent Aid" contract)
-
-Covert Strikes resolve as single Ground domain combat but use specialized unit cards (Commandos or Pirates). They deal 10-20% infrastructure damage and reduce target's resource production for 2-3 turns but do not capture sectors.
-
-**Blockades** are naval sieges that strangle enemy trade routes without landing troops. Effective for economic pressure but cannot capture ground. 
-
-### 4.2 Full Invasion (Multi-Domain)
-
-Every contested sector resolves **three simultaneous battles**:
-
-#### Domain Assignment Phase
-```
-Attacker assigns forces to domains:
-- SPACE:   Fighters, Cruisers, Carriers
-- ORBITAL: Stations, Bombers, Support ships
-- GROUND:  Soldiers, Mechs (transported by carriers)
-
-Defender auto-assigns based on stationed forces.
-```
-
-#### Resolution Order
-```
-1. SPACE BATTLE
-   Winner gains +2 bonus to Orbital and Ground domains
-
-2. ORBITAL BATTLE
-   Winner gains +2 bonus to Ground domain
-
-3. GROUND BATTLE
-   Winner captures 5-15% of defender's sectors
-```
-
-**Victory Conditions:**
-- **Total Victory:** Win all 3 domains → Capture 15% sectors
-- **Decisive Victory:** Win 2 domains → Capture 10% sectors
-- **Pyrrhic Victory:** Win 1 domain → Capture 5% sectors, heavy casualties
-- **Stalemate:** Win 0 domains → No capture, mutual casualties
-- **Defeat:** Lose all domains → Attacker retreats, 15% unit losses
-
-### 4.3 Single Domain Resolution
-
-Each domain battle follows this sequence:
-
-**PHASE 1: Initiative**
-```
-Each side rolls: d20 + Highest MNV in fleet
-
-Winner gains "Tactical Advantage Token"
-- Reroll 1 failed attack this battle
-- Strike first (resolve attacks before opponent)
-```
-
-**PHASE 2: Attack Rolls**
-```
-For each unit:
-1. Roll d20 + ATK modifier
-2. Compare to enemy's DEF
-3. On hit: Deal damage = Unit's base damage
-4. On crit (nat 20): Deal 2× damage
-
-Example:
-Heavy Cruiser (ATK +8, Base Damage: 12)
-Roll: 14 + 8 = 22
-vs Enemy DEF: 18
-Result: HIT → Deal 12 damage
-```
-
-**PHASE 3: Apply Damage**
-```
-Damage is distributed across enemy units:
-- Target priority: Lowest HULL units first
-- Overkill damage carries to next unit
-- Unit destroyed when HULL reaches 0
-```
-
-**PHASE 4: Morale Check**
-```
-If side loses 50%+ units:
-Roll d20 + Commander WIS
-
-DC 15: Pass → Fight to the end
-DC 10-14: Shaken → -2 to all rolls next round
-DC <10: Routed → Immediate retreat with losses
-```
-
-### 4.4 Retreat Mechanics
-
-**Attacker Can Retreat:**
-- At end of any combat round
-- Must roll d20 + MNV (best unit) vs DC 12
-- **Success:** Retreat safely
-- **Failure:** Suffer "Attack of Opportunity" (15% casualties)
-
-**Defender Cannot Retreat:**
-- Defending home territory
-- Fight until victory or defeat
-
-### 4.5 Surrender Mechanics
-
-**Defender May Surrender:**
-```
-Conditions (any trigger surrender roll):
-- Lost 75%+ HULL across fleet
-- Lost 2/3 domains decisively
-- Commander morale roll failed twice
-
-Surrender Roll:
-d20 + Attacker's Commander CHA vs Defender's Commander WIS
-
-Success: Defender surrenders
-- Sector captured without further combat
-- 50% of defender's units survive (scattered)
-
-Failure: Fight continues
-```
+| Status | Meaning |
+|--------|---------|
+| **Draft** | Design complete, not yet implemented |
+| **Implemented** | Code exists, tests pending |
+| **Validated** | Code exists and tests pass |
 
 ---
 
-## 5. Multi-Domain Battles
+### REQ-COMBAT-001: D20 Attack Resolution
 
-### 5.1 Domain Interactions
-
-Winning one domain affects others through **cross-domain bonuses**:
-
-```
-SPACE SUPERIORITY (win space domain)
-→ +2 to Orbital attacks
-→ +2 to Ground attacks
-→ Enemy cannot retreat (blockaded)
-
-ORBITAL CONTROL (win orbital domain)
-→ +2 to Ground attacks
-→ Bombardment: Deal 10% HULL damage to all ground units before combat
-→ Defender's ground DEF -2
-
-GROUND DOMINANCE (win ground domain)
-→ Capture sectors
-→ No effect on other domains
-```
-
-### 5.2 Combined Arms Doctrine
-
-**Fleet Composition Bonuses:**
-
-| Composition | Requirement | Bonus |
-|-------------|-------------|-------|
-| **Balanced Force** | 4+ different unit types | +15% to all stats |
-| **Speed Wing** | 3+ units with MNV 5+ | Strike first, ignore initiative roll |
-| **Defensive Wall** | 5+ Stations | 2× DEF bonus when defending |
-| **Overwhelming Force** | 20+ total units | Intimidation: Enemy morale -2 |
-| **Surgical Strike** | All units MNV 6+ | +3 to initiative, retreat always succeeds |
-
----
-
-## 6. Fleet Composition
-
-### 6.1 Rock-Paper-Scissors Layer
-
-Unit types have advantages against specific enemies:
-
-```
-FIGHTERS ──(+2 ATK)──→ BOMBERS ──(+2 ATK)──→ CRUISERS ──(+2 ATK)──→ FIGHTERS
-    ↑                                                                   ↓
-    └───────────────────────── STATIONS (2× DEF vs all) ──────────────┘
-```
-
-**Example:**
-```
-Fighter (ATK +5) attacks Bomber (DEF 12)
-Roll: 12 + 5 + 2 (type advantage) = 19
-vs DEF 12 → HIT
-```
-
-### 6.2 Unit Type Matrix
-
-| Unit Type | Strong vs | Weak vs | Domain |
-|-----------|-----------|---------|--------|
-| **Soldiers** | Ground units | Air/Space | GROUND |
-| **Fighters** | Bombers, Interceptors | Cruisers | SPACE |
-| **Bombers** | Cruisers, Stations | Fighters | ORBITAL |
-| **Light Cruisers** | Fighters, Carriers | Heavy Cruisers | SPACE |
-| **Heavy Cruisers** | Light Cruisers, Stations | Bombers | SPACE |
-| **Stations** | All (when defending) | Bombers | ORBITAL |
-| **Carriers** | None (support) | All | SPACE |
-
----
-
-## 7. Rarity System
-
-### 7.1 Three Tiers
-
-| Tier | Name | Design Intent | Stat Scaling |
-|------|------|---------------|--------------|
-| **Tier I** | Standard-Issue | Baseline units | Stats 8-12 |
-| **Tier II** | Prototype | Tech-enhanced | Stats 12-16 |
-| **Tier III** | Singularity-Class | Elite/legendary | Stats 16-20 |
-
-### 7.2 Tier Progression
-
-**How Players Obtain:**
-```
-TIER I (Standard):
-- Available from Turn 1
-- Purchased with credits
-- Default build queue options
-
-TIER II (Prototype):
-- Unlocked via research (specific tech branches)
-- Draft events: Draw 2, keep 1 (every 10 turns)
-- Costs 2× credits of Tier I
-
-TIER III (Singularity):
-- Ultra-rare draft at Turn 50+
-- Only 1 per game per player
-- Costs 5× credits of Tier I
-- Public announcement to all players when drafted
-```
-
-### 7.3 Example Unit Progression
-
-**Line Cruiser Evolution:**
-
-**TIER I: Standard-Issue Line Cruiser**
-```
-┌─────────────────────────────────────┐
-│ LINE CRUISER            [TIER I]    │
-├─────────────────────────────────────┤
-│ STR: 12 (+1)  DEX: 12 (+1)         │
-│ CON: 12 (+1)                        │
-│                                     │
-│ HP: 18  (base 10 + CON +1 × 8)     │
-│ AC: 13  (10 + DEX +1 + armor +2)   │
-│ Init: +1                            │
-│                                     │
-│ Attack: Laser Batteries             │
-│ +3 to hit (BAB +2 + DEX +1)        │
-│ Damage: 1d10+1                      │
-│                                     │
-│ ABILITY: Steady Barrage             │
-│ +1 damage on hit                    │
-├─────────────────────────────────────┤
-│ Cost: 5,000 💰 | Pop: 2 👥          │
-│ Domain: SPACE  | Maint: 25 🛢️       │
-└─────────────────────────────────────┘
-```
-
-**TIER II: Prototype Line Cruiser**
-```
-┌─────────────────────────────────────┐
-│ LINE CRUISER            [TIER II]   │
-├─────────────────────────────────────┤
-│ STR: 14 (+2)  DEX: 14 (+2)         │
-│ CON: 14 (+2)                        │
-│                                     │
-│ HP: 26  (base 10 + CON +2 × 8)     │
-│ AC: 15  (10 + DEX +2 + armor +3)   │
-│ Init: +2                            │
-│                                     │
-│ Attack: Plasma Batteries            │
-│ +6 to hit (BAB +4 + DEX +2)        │
-│ Damage: 1d12+2                      │
-│                                     │
-│ ABILITY: Linked Targeting           │
-│ Reroll 1 miss per round             │
-├─────────────────────────────────────┤
-│ Cost: 10,000 💰 | Pop: 2 👥         │
-│ Domain: SPACE   | Maint: 30 🛢️      │
-└─────────────────────────────────────┘
-```
-
-**TIER III: Singularity-Class Line Cruiser**
-```
-┌─────────────────────────────────────┐
-│ LINE CRUISER            [TIER III]  │
-├─────────────────────────────────────┤
-│ STR: 18 (+4)  DEX: 16 (+3)         │
-│ CON: 16 (+3)                        │
-│                                     │
-│ HP: 34  (base 10 + CON +3 × 8)     │
-│ AC: 18  (10 + DEX +3 + armor +5)   │
-│ Init: +3                            │
-│                                     │
-│ Attack: Antimatter Cannons          │
-│ +9 to hit (BAB +6 + DEX +3)        │
-│ Damage: 2d10+4                      │
-│                                     │
-│ ABILITY: Overload Salvo             │
-│ Once per battle: Extra attack at    │
-│ +4 to hit, then -2 AC until end     │
-├─────────────────────────────────────┤
-│ Cost: 25,000 💰 | Pop: 3 👥         │
-│ Domain: SPACE   | Maint: 50 🛢️      │
-└─────────────────────────────────────┘
-```
-
----
-
-## 8. Bot Integration
-
-### 8.1 Commander Stats in Action
-
-Every bot has 3 commander stats that affect behavior:
-
-**WIS (Tactical Wisdom):**
-```
-Effects:
-- Retreat timing: WIS check vs DC 15
-- Risk assessment: WIS modifier to "should I attack?" calculation
-- Morale threshold: WIS + d20 vs enemy threat level
-
-Example:
-Bot with WIS 16 (+3):
-- Retreats smartly (high success rate on DC 15 checks)
-- Avoids bad fights (bonus to risk calculation)
-- Holds morale longer under pressure
-```
-
-**CHA (Diplomatic Presence):**
-```
-Effects:
-- Alliance formation: CHA check vs target's WIS
-- Surrender negotiations: CHA vs enemy WIS to end combat early
-- Coalition leadership: Highest CHA in coalition = leader
-
-Example:
-Diplomat bot with CHA 18 (+4):
-- Forms alliances easily (+4 to persuasion)
-- Can talk enemies into surrendering
-- Natural coalition leader
-```
-
-**INT (Strategic Intelligence):**
-```
-Effects:
-- Tech research speed: INT modifier to research points/turn
-- Counter-picking: INT check to identify enemy weaknesses
-- Adaptation: INT + d20 to learn from defeats
-
-Example:
-Tech Rush bot with INT 17 (+3):
-- +3 research points per turn
-- Frequently counter-picks in drafts
-- Adapts strategy after losing battles
-```
-
-### 8.2 Bot Card Drafting
-
-**Tier I (Turn 1 Secret Draft):**
-```
-Each bot draws 3 cards, keeps 1 (hidden objective)
-
-Warlord bot:
-- Prefers: "Conqueror's Pride" (+2 VP per empire eliminated)
-- Avoids: "Peaceful Prosperity" (+1 VP per treaty)
-
-Diplomat bot:
-- Prefers: "Alliance Network" (+2 VP per active treaty)
-- Avoids: "Warmonger's Arsenal"
-```
-
-**Tier II (Public Drafts Every 10 Turns):**
-```
-Turn 20 Draft Event:
-1. All players notified: "TECH DRAFT AVAILABLE"
-2. Each empire draws 2 cards simultaneously
-3. 30-second timer to choose 1
-4. Choices revealed publicly
-
-Bot Warlord drafts "Plasma Torpedoes" (+2 ATK space domain)
-→ Sends message: "My fleets grow stronger. Your shields won't save you."
-→ Other bots react:
-   - Turtle bot: Queues "Shield Arrays" research
-   - Diplomat bot: Proposes alliance against Warlord
-```
-
-**Tier III (Singularity Draft at Turn 50+):**
-```
-GALAXY-WIDE ANNOUNCEMENT:
-"Commander Varkus has obtained PLANET CRACKER technology!"
-
-Effects:
-- All bots see the card
-- Tier 1 LLM bots generate dramatic responses
-- Defensive coalitions may form automatically
-```
-
-### 8.3 Bot Combat Behavior
-
-**Archetype-Specific Combat Styles:**
-
-**Warlord:**
-- **Aggression:** 9/10 - Attacks frequently
-- **Retreat Threshold:** 25% HULL remaining
-- **Favored Units:** Heavy Cruisers, Bombers
-- **Draft Preference:** +ATK cards
-- **WIS 14, CHA 8, INT 12** - Good tactics, poor diplomacy
-
-**Turtle:**
-- **Aggression:** 2/10 - Only attacks when threatened
-- **Retreat Threshold:** Never retreats (fights to 0 HULL)
-- **Favored Units:** Stations, Light Cruisers
-- **Draft Preference:** +DEF cards
-- **WIS 16, CHA 10, INT 14** - Excellent defense, patient
-
-**Schemer:**
-- **Aggression:** 6/10 - Opportunistic strikes
-- **Retreat Threshold:** 50% HULL (preserves forces)
-- **Favored Units:** Covert Agents, Bombers
-- **Draft Preference:** Disruption cards (morale attacks)
-- **WIS 15, CHA 16, INT 13** - Manipulative, unpredictable
-
----
-
-## 9. Implementation Requirements
-
-### 9.1 Phase 1: Unit Card System
-
-**Database Schema:**
-```sql
-CREATE TABLE unit_templates (
-  id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
-  tier INTEGER NOT NULL, -- 1, 2, 3
-
-  -- Physical ability scores (D&D stats)
-  strength INTEGER NOT NULL,     -- 8-20
-  dexterity INTEGER NOT NULL,    -- 8-20
-  constitution INTEGER NOT NULL, -- 8-20
-
-  -- Derived stats (calculated from above)
-  base_hp INTEGER NOT NULL,          -- Base hit points before CON modifier
-  armor_bonus INTEGER NOT NULL,      -- Natural armor bonus (added to AC calculation)
-  base_attack_bonus INTEGER NOT NULL, -- BAB based on tier (2/4/6)
-
-  -- Weapon
-  weapon_name TEXT NOT NULL,         -- e.g., "Heavy Cannons"
-  weapon_damage_dice TEXT NOT NULL,  -- e.g., "2d8" (STR mod added automatically)
-  weapon_type TEXT NOT NULL,         -- 'melee' or 'ranged'
-
-  -- Special ability
-  ability_name TEXT,
-  ability_description TEXT,
-  ability_mechanics JSONB,
-
-  -- Build info
-  cost_credits INTEGER NOT NULL,
-  cost_population DECIMAL NOT NULL,
-  maintenance_petroleum INTEGER NOT NULL,
-  domain TEXT NOT NULL, -- 'SPACE', 'ORBITAL', 'GROUND'
-
-  -- Type advantages
-  strong_vs TEXT[], -- ['bombers', 'fighters']
-  weak_vs TEXT[],
-
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE empire_units (
-  id UUID PRIMARY KEY,
-  empire_id UUID REFERENCES empires(id),
-  template_id UUID REFERENCES unit_templates(id),
-  quantity INTEGER NOT NULL,
-  current_hull INTEGER, -- For damaged units
-  stationed_sector_id UUID REFERENCES sectors(id),
-  created_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-**UI Components:**
-```typescript
-// src/components/game/units/UnitCard.tsx
-interface UnitCardProps {
-  unit: UnitTemplate;
-  quantity?: number;
-  showCost?: boolean;
-  onClick?: () => void;
-}
-
-// src/components/game/combat/FleetCompositionPanel.tsx
-// Shows all units assigned to Space/Orbital/Ground domains
-
-// src/components/game/combat/CombatPreview.tsx
-// D20 preview with modifiers breakdown
-```
-
-### 9.2 Phase 2: D20 Combat Engine
-
-**Core Services:**
-```typescript
-// src/lib/combat/d20-combat-engine.ts
-export class D20CombatEngine {
-  resolveInvasion(
-    attacker: Fleet,
-    defender: Fleet,
-    sector: Sector
-  ): CombatResult;
-
-  resolveDomainBattle(
-    attackerUnits: Unit[],
-    defenderUnits: Unit[],
-    domain: 'SPACE' | 'ORBITAL' | 'GROUND',
-    bonuses: DomainBonuses
-  ): DomainResult;
-
-  rollInitiative(fleet: Fleet): number;
-  rollAttack(unit: Unit, target: Unit, bonuses: Bonuses): AttackResult;
-  applyDamage(unit: Unit, damage: number): void;
-  checkMorale(fleet: Fleet, commanderWis: number): MoraleResult;
-}
-
-// src/lib/combat/combat-calculator.ts
-export function calculateFleetPower(units: Unit[]): number;
-export function getTypeAdvantage(attacker: UnitType, defender: UnitType): number;
-export function getCompositionBonus(units: Unit[]): CompositionBonus | null;
-```
-
-### 9.3 Phase 3: Card Draft System
-
-**Draft Events:**
-```typescript
-// src/lib/game/services/draft-service.ts
-export class DraftService {
-  // Turn 1: Secret draft (hidden objectives)
-  initiateSecretDraft(gameId: string): Promise<void>;
-
-  // Every 10 turns: Public tech draft
-  initiatePublicDraft(gameId: string, turn: number): Promise<void>;
-
-  // Turn 50+: Singularity draft
-  initiateSingularityDraft(gameId: string): Promise<void>;
-
-  // Bot draft AI
-  botSelectCard(
-    bot: Empire,
-    options: UnitTemplate[],
-    draftType: 'secret' | 'public' | 'singularity'
-  ): UnitTemplate;
-}
-```
-
-### 9.4 Phase 4: Bot Commander Stats
-
-**Schema Addition:**
-```sql
-ALTER TABLE empires ADD COLUMN commander_intelligence INTEGER DEFAULT 10;
-ALTER TABLE empires ADD COLUMN commander_wisdom INTEGER DEFAULT 10;
-ALTER TABLE empires ADD COLUMN commander_charisma INTEGER DEFAULT 10;
-
--- Generate based on archetype (Warlord example)
-UPDATE empires SET
-  commander_intelligence = 12,  -- +1 modifier
-  commander_wisdom = 14,         -- +2 modifier
-  commander_charisma = 8         -- -1 modifier
-WHERE archetype = 'warlord';
-
--- Other archetypes (see Section 2.4 for full table)
-UPDATE empires SET commander_intelligence = 17, commander_wisdom = 12, commander_charisma = 10 WHERE archetype = 'tech_rush';
-UPDATE empires SET commander_intelligence = 13, commander_wisdom = 14, commander_charisma = 18 WHERE archetype = 'diplomat';
-UPDATE empires SET commander_intelligence = 14, commander_wisdom = 16, commander_charisma = 10 WHERE archetype = 'turtle';
-UPDATE empires SET commander_intelligence = 13, commander_wisdom = 15, commander_charisma = 16 WHERE archetype = 'schemer';
-```
-
-**Bot Decision Modifiers:**
-```typescript
-// src/lib/bots/decision-engine.ts
-export function calculateAttackDesirability(
-  bot: Empire,
-  target: Empire,
-  gameState: GameState
-): number {
-  const baseDesire = bot.archetype.aggression;
-  const wisModifier = getModifier(bot.commander_wis);
-  const riskAssessment = assessRisk(bot, target);
-
-  // WIS reduces reckless attacks
-  return baseDesire - (wisModifier * riskAssessment);
-}
-```
-
-### 9.5 Balance Targets
-
-**Combat Win Rates (Equal Forces):**
-- Attacker: 45-48%
-- Defender: 52-55%
-- Stalemate: 5-10%
-
-**Type Advantage Impact:**
-- +2 ATK advantage = +15-20% win rate
-- Composition bonus = +10-15% power
-- Domain superiority = +20-25% win rate in next domain
-
-**Critical Event Frequency:**
-- Natural 20: 5% of rolls (expected)
-- Natural 1: 5% of rolls (expected)
-- Morale breaks: 10-15% of battles with 50%+ casualties
-
----
-
-## 10. Migration Plan
-
-### 10.1 From Scratch Rewrite
-
-**Development Path:**
-```
-Week 1: Create unit_templates table with Tier I units
-Week 2: Implement D20 combat engine (single-domain first)
-Week 3: Add multi-domain battle resolution
-Week 4: Implement card UI components
-Week 5: Add draft system (Tier II/III cards)
-Week 6: Integrate bot commander stats
-Week 7: Balance testing and tuning
-Week 8: Full deployment
-```
-
-### 10.2 Testing Requirements
-
-**Unit Tests:**
-- [ ] D20 roll distribution (10,000 samples, validate 5% per number)
-- [ ] Type advantage calculations
-- [ ] Composition bonus detection
-- [ ] Damage application (including overkill)
-- [ ] Morale check thresholds
-
-**Integration Tests:**
-- [ ] Full invasion with 3 domains
-- [ ] Fleet with composition bonus wins more often
-- [ ] Defender advantage = 52-55% win rate
-- [ ] Critical hits occur at 5% frequency
-
-**Balance Tests:**
-- [ ] 1000-battle Monte Carlo simulation
-- [ ] Validate win rates per unit composition
-- [ ] Ensure no dominant strategies
-
----
-
-## 11. Card Gallery (Reference)
-
-### 11.1 Space Units
-
-**FIGHTERS (Tier I)**
-```
-┌─────────────────────────────────────┐
-│ FIGHTER WING            [TIER I]    │
-├─────────────────────────────────────┤
-│ STR: 10 (+0)  DEX: 16 (+3)         │
-│ CON: 8  (-1)                        │
-│                                     │
-│ HP: 8   (base 10 + CON -1 × 2)     │
-│ AC: 15  (10 + DEX +3 + armor +2)   │
-│ Init: +3                            │
-│                                     │
-│ Attack: Laser Cannons               │
-│ +5 to hit (BAB +2 + DEX +3)        │
-│ Damage: 1d6+0                       │
-│                                     │
-│ ABILITY: Intercept                  │
-│ +2 to hit vs Bombers                │
-├─────────────────────────────────────┤
-│ Cost: 200 💰   | Pop: 0.4 👥        │
-│ Domain: SPACE  | Maint: 5 🛢️        │
-└─────────────────────────────────────┘
-```
-
-**HEAVY CRUISER (Tier II)**
-```
-┌─────────────────────────────────────┐
-│ HEAVY CRUISER           [TIER II]   │
-├─────────────────────────────────────┤
-│ STR: 16 (+3)  DEX: 12 (+1)         │
-│ CON: 14 (+2)                        │
-│                                     │
-│ HP: 40  (base 20 + CON +2 × 10)    │
-│ AC: 15  (10 + DEX +1 + armor +4)   │
-│ Init: +1                            │
-│                                     │
-│ Attack: Heavy Cannons               │
-│ +5 to hit (BAB +4 + DEX +1)        │
-│ Damage: 2d8+3                       │
-│                                     │
-│ ABILITY: Broadside                  │
-│ Attack 2 targets per round          │
-├─────────────────────────────────────┤
-│ Cost: 15,000 💰 | Pop: 3 👥         │
-│ Domain: SPACE   | Maint: 50 🛢️      │
-└─────────────────────────────────────┘
-```
-
-### 11.2 Orbital Units
-
-**ORBITAL DEFENSE STATION (Tier I)**
-```
-┌─────────────────────────────────────┐
-│ DEFENSE STATION         [TIER I]    │
-├─────────────────────────────────────┤
-│ STR: 12 (+1)  DEX: 10 (+0)         │
-│ CON: 14 (+2)                        │
-│                                     │
-│ HP: 20  (base 12 + CON +2 × 4)     │
-│ AC: 13  (10 + DEX +0 + armor +3)   │
-│ AC: 18 when defending (fortified)   │
-│ Init: +0                            │
-│                                     │
-│ Attack: Defense Turrets             │
-│ +3 to hit (BAB +2 + DEX +0)        │
-│ Damage: 1d8+1                       │
-│                                     │
-│ ABILITY: Planetary Bombardment      │
-│ +2 damage to Ground domain units    │
-├─────────────────────────────────────┤
-│ Cost: 3,000 💰 | Pop: 1 👥          │
-│ Domain: ORBITAL | Maint: 15 🛢️      │
-└─────────────────────────────────────┘
-```
-
-### 11.3 Ground Units
-
-**MECHANIZED LEGION (Tier I)**
-```
-┌─────────────────────────────────────┐
-│ MECHANIZED LEGION       [TIER I]    │
-├─────────────────────────────────────┤
-│ STR: 12 (+1)  DEX: 10 (+0)         │
-│ CON: 12 (+1)                        │
-│                                     │
-│ HP: 14  (base 10 + CON +1 × 4)     │
-│ AC: 14  (10 + DEX +0 + armor +4)   │
-│ Init: +0                            │
-│                                     │
-│ Attack: Heavy Weapons               │
-│ +3 to hit (BAB +2 + STR +1)        │
-│ Damage: 1d8+1                       │
-│                                     │
-│ ABILITY: Entrenched                 │
-│ +2 AC when defending                │
-├─────────────────────────────────────┤
-│ Cost: 1,000 💰 | Pop: 1 👥          │
-│ Domain: GROUND | Maint: 10 🛢️       │
-└─────────────────────────────────────┘
-```
-
----
-
-# PRD SPECS 
-**integrate with new template**
-### REQ-COMBAT-001: Three-Phase Domain Combat
-
-**Description:** Full invasions resolve combat across three sequential domains: Space → Orbital → Ground. Each domain is resolved independently using D20 mechanics, with victories in earlier phases providing bonuses to subsequent phases (+2 to next domain). This creates cascading tactical decisions where superior orbital defenses protect ground forces.
+**Description:** Attack success is determined by rolling d20 + Attack Bonus >= Target AC.
 
 **Formula:**
 ```
-Attack Success = d20 + Attack Bonus ≥ Target Defense
-**Rationale:** Three phases create narrative coherence—a player with strong orbital defenses shouldn't suffer ground losses. Sequential resolution rewards balanced fleet composition and defensive investment. Will evaluate clunkiness after playtesting.
-
-Where:
-- Attack Bonus = BAB + Stat Modifier + Situational Bonuses
-- Target Defense = Enemy AC
-- Stat Modifier = floor((Stat - 10) / 2)
+Attack Success = d20 + Attack Bonus >= Target Defense
+Attack Bonus = BAB + Stat Modifier + Situational Bonuses
+Stat Modifier = floor((Stat - 10) / 2)
 ```
 
-**Example:**
-```
-Light Cruiser attacks Heavy Cruiser
-Roll: 14, ATK bonus: +5 (BAB +4, DEX +1), Fleet coordination: +2
-Total: 14 + 5 + 2 = 21 vs Defender AC: 18
-Result: 21 ≥ 18 → HIT
-```
+**Rationale:** Simplifies combat while maintaining drama. Single-roll resolution is faster and more intuitive.
 
-**Rationale:** Simplifies combat while maintaining drama and unpredictability. Single-roll resolution is faster and more intuitive than multi-phase systems.
+**Source:** Section 1.1
 
-**Source:** `docs/design/COMBAT-SYSTEM.md` Section 1.1
+**Code:** `src/lib/combat/d20-combat-engine.ts`
 
-**Formulas:** See `docs/PRD-FORMULAS-ADDENDUM.md` Section 1.1-1.3
-
-**Code:** `src/lib/combat/phases.ts`
-
-**Tests:** `src/lib/combat/phases.test.ts`
+**Tests:** `src/lib/combat/__tests__/d20-combat-engine.test.ts`
 
 **Status:** Draft
 
@@ -1047,7 +419,7 @@ Result: 21 ≥ 18 → HIT
 
 **Rationale:** Slight defender advantage encourages defensive play and alliances.
 
-**Source:** `docs/design/COMBAT-SYSTEM.md`
+**Source:** Section 8.1
 
 **Code:** `src/lib/formulas/combat-power.ts`
 
@@ -1059,11 +431,11 @@ Result: 21 ≥ 18 → HIT
 
 ### REQ-COMBAT-003: Defender Advantage
 
-**Description:** Defenders receive a 1.10x (10%) power bonus when fighting in their own territory.
+**Description:** Defenders receive a 1.10x (10%) power bonus in their own territory.
 
 **Rationale:** Makes conquest harder, rewards defense.
 
-**Source:** `docs/design/COMBAT-SYSTEM.md`
+**Source:** Section 3.4
 
 **Code:** `src/lib/formulas/combat-power.ts:DEFENDER_ADVANTAGE`
 
@@ -1085,11 +457,11 @@ Result: 21 ≥ 18 → HIT
 
 **Rationale:** Creates unit hierarchy and strategic choices.
 
-**Source:** `docs/design/COMBAT-SYSTEM.md`
+**Source:** Section 2.3
 
 **Code:** `src/lib/formulas/combat-power.ts:POWER_MULTIPLIERS`
 
-**Tests:** `src/lib/formulas/combat-power.test.ts` (line 248: "has correct values from PRD 6.2")
+**Tests:** `src/lib/formulas/combat-power.test.ts`
 
 **Status:** Draft
 
@@ -1097,11 +469,11 @@ Result: 21 ≥ 18 → HIT
 
 ### REQ-COMBAT-005: Diversity Bonus
 
-**Description:** Fleets with 4 or more distinct unit types receive a 15% power bonus.
+**Description:** Fleets with 4+ distinct unit types receive a 15% power bonus.
 
 **Rationale:** Encourages balanced fleet composition over mono-unit strategies.
 
-**Source:** `docs/design/COMBAT-SYSTEM.md`
+**Source:** Section 3.5
 
 **Code:** `src/lib/formulas/combat-power.ts:calculateDiversityBonus()`
 
@@ -1117,7 +489,7 @@ Result: 21 ≥ 18 → HIT
 
 **Rationale:** Stations are defensive installations, not offensive units.
 
-**Source:** `docs/design/COMBAT-SYSTEM.md`
+**Source:** Section 3.5
 
 **Code:** `src/lib/formulas/combat-power.ts:STATION_DEFENSE_MULTIPLIER`
 
@@ -1133,7 +505,7 @@ Result: 21 ≥ 18 → HIT
 
 **Rationale:** Allows new players to establish their empire before combat.
 
-**Source:** `docs/design/GAME-DESIGN.md`
+**Source:** GAME-DESIGN.md
 
 **Code:** `src/lib/game/constants.ts:PROTECTION_TURNS`
 
@@ -1155,9 +527,9 @@ Result: 21 ≥ 18 → HIT
 
 **Rationale:** Creates narrative variety in battle reports.
 
-**Source:** `docs/design/COMBAT-SYSTEM.md`
+**Source:** Section 3.4
 
-**Code:** `src/lib/combat/phases.ts`
+**Code:** `src/lib/combat/outcomes.ts`
 
 **Tests:** TBD
 
@@ -1165,24 +537,13 @@ Result: 21 ≥ 18 → HIT
 
 ---
 
-### REQ-COMBAT-009: Multi-Domain Battle Resolution
+### REQ-COMBAT-009: Multi-Domain Resolution
 
-**Description:** Full Invasions resolve combat across three sequential domains:
+**Description:** Full Invasions resolve across three sequential domains: Space -> Orbital -> Ground. Victories provide +2 bonus to subsequent domains.
 
-1. **SPACE BATTLE:** Fighters, Cruisers, Carriers
-   - Winner gains +2 bonus to Orbital and Ground domains
+**Rationale:** Creates narrative coherence and rewards balanced fleet composition.
 
-2. **ORBITAL BATTLE:** Stations, Bombers, Support ships
-   - Winner gains +2 bonus to Ground domain
-
-3. **GROUND BATTLE:** Soldiers, Mechs (transported by carriers)
-   - Winner captures 5-15% of defender's sectors
-
-Cross-domain bonuses stack: Win Space + Orbital = +4 bonus to Ground battle.
-
-**Rationale:** Creates strategic depth where space/orbital supremacy provides tactical advantage on ground.
-
-**Source:** `docs/design/COMBAT-SYSTEM.md` Section 4.2
+**Source:** Section 3.4
 
 **Code:** `src/lib/combat/multi-domain.ts`
 
@@ -1194,26 +555,14 @@ Cross-domain bonuses stack: Win Space + Orbital = +4 bonus to Ground battle.
 
 ### REQ-COMBAT-010: Three Battle Types
 
-**Description:** Three distinct battle types with different requirements and outcomes:
+**Description:** Three distinct battle types:
+- Full Invasion: Multi-domain, can capture 5-15% sectors
+- Covert Strike: Ground only, 10-20% infrastructure damage, no capture
+- Blockade: Economic pressure, no combat, no capture
 
-1. **Full Invasion:**
-   - Requirements: Carriers + space control
-   - Resolution: Multi-domain (Space/Orbital/Ground)
-   - Outcome: Can capture 5-15% of defender's sectors
+**Rationale:** Provides strategic alternatives to direct conquest.
 
-2. **Covert Strike:**
-   - Requirements: Commando units OR Syndicate "Pirate Raid" contract
-   - Resolution: Single domain (Ground only)
-   - Outcome: 10-20% infrastructure damage, -20% production for 2-3 turns, NO sector capture
-
-3. **Blockade:**
-   - Requirements: Space fleet
-   - Resolution: No ground combat (economic pressure)
-   - Outcome: Reduce target's trade income, NO sector capture
-
-**Rationale:** Provides strategic alternatives to direct conquest. Covert Strikes enable asymmetric warfare without fleet superiority.
-
-**Source:** `docs/design/COMBAT-SYSTEM.md` Section 4.1 (updated), `docs/design/COMBAT-SYSTEM-RAID-RESOLUTION.md`
+**Source:** Section 2.2
 
 **Code:** `src/lib/combat/battle-types.ts`
 
@@ -1225,17 +574,14 @@ Cross-domain bonuses stack: Win Space + Orbital = +4 bonus to Ground battle.
 
 ### REQ-COMBAT-011: Unit Rarity Tiers
 
-**Description:** Units are organized into three rarity tiers with escalating power:
+**Description:** Units organized into three tiers:
+- Tier I (Standard): Stats 8-12, available Turn 1
+- Tier II (Prototype): Stats 12-16, unlocked via research
+- Tier III (Singularity): Stats 16-20, rare drafts Turn 50+
 
-- **Tier I (Standard):** Stats 8-12 range, available Turn 1
-- **Tier II (Prototype):** Stats 12-16 range, unlocked via research doctrines
-- **Tier III (Singularity):** Stats 16-20 range, rare drafts after Turn 50, limit 1 per game per empire
+**Rationale:** Creates power progression and late-game escalation.
 
-Higher tiers have better STR/DEX/CON modifiers, HP pools, and special abilities.
-
-**Rationale:** Creates power progression and late-game escalation. Tier III units feel "legendary."
-
-**Source:** `docs/design/COMBAT-SYSTEM.md` Section 7
+**Source:** Section 3.7
 
 **Code:** `src/lib/combat/unit-cards.ts`
 
@@ -1245,24 +591,13 @@ Higher tiers have better STR/DEX/CON modifiers, HP pools, and special abilities.
 
 ---
 
-### REQ-COMBAT-012: Morale & Surrender System
+### REQ-COMBAT-012: Morale & Surrender
 
-**Description:** Combat includes morale checks and surrender mechanics:
+**Description:** Morale checks at 50%+ losses (d20 + WIS vs DC 15). Surrender offers at 75%+ losses (Attacker CHA vs Defender WIS).
 
-**Morale Check (50%+ unit losses):**
-- Roll: d20 + Commander WIS vs DC 15
-- Success: Fight to the end
-- Failure DC 10-14: Shaken (-2 all rolls next round)
-- Failure <DC 10: Routed (immediate retreat with losses)
+**Rationale:** Prevents total annihilation, enables tactical retreats.
 
-**Surrender Offer (75%+ HULL losses):**
-- Roll: d20 + Attacker CHA vs Defender WIS
-- Success: Defender surrenders sector without further combat
-- Failure: Combat continues
-
-**Rationale:** Prevents total annihilation, enables tactical retreats, creates dramatic "last stand" moments.
-
-**Source:** `docs/design/COMBAT-SYSTEM.md` Sections 4.4-4.5
+**Source:** Section 3.6
 
 **Code:** `src/lib/combat/morale.ts`
 
@@ -1272,22 +607,138 @@ Higher tiers have better STR/DEX/CON modifiers, HP pools, and special abilities.
 
 ---
 
+### Specification Summary
 
-## 12. Conclusion
+| ID | Title | Status |
+|----|-------|--------|
+| REQ-COMBAT-001 | D20 Attack Resolution | Draft |
+| REQ-COMBAT-002 | Attacker Win Rate | Draft |
+| REQ-COMBAT-003 | Defender Advantage | Draft |
+| REQ-COMBAT-004 | Unit Power Multipliers | Draft |
+| REQ-COMBAT-005 | Diversity Bonus | Draft |
+| REQ-COMBAT-006 | Station Defense Multiplier | Draft |
+| REQ-COMBAT-007 | Protection Period | Draft |
+| REQ-COMBAT-008 | Six Dramatic Outcomes | Draft |
+| REQ-COMBAT-009 | Multi-Domain Resolution | Draft |
+| REQ-COMBAT-010 | Three Battle Types | Draft |
+| REQ-COMBAT-011 | Unit Rarity Tiers | Draft |
+| REQ-COMBAT-012 | Morale & Surrender | Draft |
 
-This specification provides a **complete, implementable D20 combat system** that:
+---
 
-✅ Uses familiar D20 mechanics (roll + modifiers ≥ threshold)
-✅ **Full OGL compliance** with standard STR/DEX/CON ability scores
-✅ **HP, AC, and BAB** calculated using D&D conventions
-✅ **Damage dice notation** (2d8+3) familiar to tabletop gamers
-✅ Splits ship stats (STR/DEX/CON - physical) from commander stats (INT/WIS/CHA - mental)
-✅ Supports multi-domain battles (Space/Orbital/Ground)
-✅ Includes fleet composition bonuses and type advantages
-✅ Integrates with bot archetypes and personality system
-✅ Provides rarity tiers and draft mechanics
-✅ Maintains balance targets (45-48% attacker win rate)
+## 7. Implementation Requirements
 
+Implementation details including database schemas, service architecture, and UI components are documented in the appendix.
+
+**See:** [COMBAT-SYSTEM-APPENDIX.md](appendix/COMBAT-SYSTEM-APPENDIX.md)
+
+### 7.1 Key Files
+
+| Component | Path |
+|-----------|------|
+| Combat Engine | `src/lib/combat/d20-combat-engine.ts` |
+| Combat Calculator | `src/lib/combat/combat-calculator.ts` |
+| Draft Service | `src/lib/game/services/draft-service.ts` |
+| Unit Card Component | `src/components/game/units/UnitCard.tsx` |
+| Fleet Panel | `src/components/game/combat/FleetCompositionPanel.tsx` |
+| Combat Preview | `src/components/game/combat/CombatPreview.tsx` |
+
+### 7.2 Database Tables
+
+| Table | Purpose |
+|-------|---------|
+| `unit_templates` | Unit card definitions (stats, abilities, costs) |
+| `empire_units` | Player-owned units with current HP |
+| `empires` (columns) | Commander stats (INT/WIS/CHA) |
+
+---
+
+## 8. Balance Targets
+
+### 8.1 Quantitative Targets
+
+| Metric | Target | Tolerance | Measurement |
+|--------|--------|-----------|-------------|
+| Attacker win rate (equal forces) | 47.6% | +/-3% | Monte Carlo 10,000 battles |
+| Defender advantage | 10% | +/-2% | Win rate differential |
+| Critical hit frequency | 5% | exact | D20 distribution |
+| Morale break rate (50%+ losses) | 10-15% | +/-5% | Combat log analysis |
+
+### 8.2 Type Advantage Impact
+
+- +2 ATK advantage = +15-20% win rate
+- Composition bonus = +10-15% power
+- Domain superiority = +20-25% win rate in next domain
+
+### 8.3 Playtest Checklist
+
+- [ ] Balanced fleets beat mono-unit fleets (composition bonus working)
+- [ ] Defenders win slightly more often (defender advantage working)
+- [ ] Tier III units feel legendary but not game-breaking
+- [ ] Multi-domain battles have cascading tactical impact
+- [ ] Covert strikes provide meaningful alternative to invasion
+
+---
+
+## 9. Migration Plan
+
+### 9.1 Development Path
+
+1. Create `unit_templates` table with Tier I units
+2. Implement D20 combat engine (single-domain first)
+3. Add multi-domain battle resolution
+4. Implement card UI components
+5. Add draft system (Tier II/III cards)
+6. Integrate bot commander stats
+7. Balance testing and tuning
+8. Full deployment
+
+### 9.2 Testing Requirements
+
+**Unit Tests:**
+- [ ] D20 roll distribution (10,000 samples, validate 5% per number)
+- [ ] Type advantage calculations
+- [ ] Composition bonus detection
+- [ ] Damage application (including overkill)
+- [ ] Morale check thresholds
+
+**Integration Tests:**
+- [ ] Full invasion with 3 domains
+- [ ] Fleet with composition bonus wins more often
+- [ ] Defender advantage = 52-55% win rate
+- [ ] Critical hits occur at 5% frequency
+
+**Balance Tests:**
+- [ ] 1000-battle Monte Carlo simulation
+- [ ] Validate win rates per unit composition
+- [ ] Ensure no dominant strategies
+
+---
+
+## 10. Conclusion
+
+### Key Decisions
+
+- **D20 system:** Familiar mechanics, 5% granularity, dramatic critical events
+- **Three-domain combat:** Narrative coherence, strategic depth, cascading bonuses
+- **Ship vs Commander stats:** Physical abilities on cards, mental abilities for bot AI
+- **Three battle types:** Full Invasion, Covert Strike, Blockade provide strategic variety
+
+### Open Questions
+
+- None currently - DEV NOTE about covert raids resolved (see COMBAT-SYSTEM-RAID-RESOLUTION.md)
+
+### Dependencies
+
+- **Depends On:** SYNDICATE-SYSTEM (for Covert Strike contracts), RESEARCH-SYSTEM (for unit unlocks)
+- **Depended By:** BOT-SYSTEM (combat decision making), FRONTEND-DESIGN (combat UI)
+
+---
+
+## Appendix Reference
+
+Full implementation code examples available in:
+- [COMBAT-SYSTEM-APPENDIX.md](appendix/COMBAT-SYSTEM-APPENDIX.md) - Database schemas, service architecture, UI components, unit card gallery
 
 ---
 
