@@ -6,6 +6,33 @@
 
 ---
 
+## Document Purpose
+
+This document serves as the canonical reference for all bot AI behavior in Nexus Dominion. It defines the complete bot intelligence system, from simple random bots to sophisticated LLM-powered opponents that create a dynamic, player-like experience.
+
+**Who Should Read This:**
+- Backend developers implementing bot decision logic
+- Game designers balancing bot archetypes and difficulty
+- Frontend developers building bot communication UI
+- QA testers validating bot behavior across difficulty levels
+
+**What This Resolves:**
+- Complete specification of the 4-tier intelligence system (Random, Simple, Strategic, LLM)
+- All 8 archetypes with decision matrices and personality traits
+- Bot communication, coalition formation, and betrayal mechanics
+- Memory, emotion, and relationship tracking systems
+- LLM integration strategy and fallback chains
+
+**Design Philosophy:**
+- **Player-like unpredictability**: Bots should feel like human opponents, not robots
+- **Observable but not transparent**: Players deduce personality through behavior, not labels
+- **Mechanically meaningful emotions**: Emotional states affect decision probabilities, not just flavor text
+- **Persistent memory with decay**: Bots remember major events longer than minor ones, creating organic rivalries
+- **Scalable intelligence tiers**: Support 10-100 bots with mixed intelligence levels
+- **Cost-conscious LLM usage**: Elite bots use LLM calls strategically, with robust fallbacks
+
+---
+
 ## Overview
 
 Nexus Dominion features 10-100 AI bot opponents with varying intelligence, personalities, and strategies. Bots create a dynamic, unpredictable game world where players must read behavior, form alliances, and anticipate betrayals.
@@ -670,6 +697,290 @@ interface BotGameConfig {
 | Normal | 100% | 85% optimal | 100% |
 | Hard | 100% | 95% optimal | +10% |
 | Nightmare | +20% | 100% optimal | +20% |
+
+---
+
+## Balance Targets
+
+### Win Rate Expectations (Normal Difficulty, 100-bot games)
+
+| Archetype | Target Win Rate | Avg Placement | Victory Type Preference |
+|-----------|----------------|---------------|------------------------|
+| **Warlord** | 12-15% | Top 15 | Conquest (60%), Economic (40%) |
+| **Diplomat** | 10-13% | Top 20 | Survival (50%), Economic (50%) |
+| **Merchant** | 13-16% | Top 12 | Economic (80%), Conquest (20%) |
+| **Schemer** | 14-18% | Top 10 | Conquest (70%), Economic (30%) |
+| **Turtle** | 8-10% | Top 25 | Survival (90%), Economic (10%) |
+| **Blitzkrieg** | 11-14% | Top 18 | Conquest (95%), Eliminated Early (30%) |
+| **Tech Rush** | 12-15% | Top 15 | Economic (60%), Conquest (40%) |
+| **Opportunist** | 10-12% | Top 22 | Conquest (65%), Economic (35%) |
+
+**Intelligence Tier Win Rates:**
+- Tier 1 (LLM): 15-20% win rate (should feel like strong human players)
+- Tier 2 (Strategic): 10-15% win rate (competent opponents)
+- Tier 3 (Simple): 5-8% win rate (baseline challenge)
+- Tier 4 (Random): 2-5% win rate (chaos factor)
+
+### Performance Metrics
+
+**Bot Decision Quality:**
+- Average decision time: <500ms for Tier 2-4, <2s for Tier 1 LLM calls
+- LLM API success rate: >95% (with fallback chain)
+- Decision coherence: Bots should maintain archetype personality >85% of actions
+- Coalition betrayal timing: Scheming archetype betrays after 20+ turns, others only if trust <-50
+
+**Communication Targets:**
+- Message variety: Minimum 30 unique templates per persona
+- Template reuse: <10% repetition in single game
+- Telegraph accuracy: Warlord threats predict attacks 70% of time, Schemer 30%
+- Drama escalation: 2-5 global announcements in last 20 turns
+
+**Memory & Emotion:**
+- Memory decay rate: Minor events decay 50% per 10 turns, major events 10% per 20 turns
+- Permanent grudge rate: 20% of major negative events never decay
+- Emotion state changes: 3-7 transitions per bot per game
+- Emotion intensity impact: Full intensity (1.0) should swing decision probabilities by ±30%
+
+### Testing Checklist
+
+**Core Functionality:**
+- [ ] All 8 archetypes make decisions consistent with personality matrix
+- [ ] Tier 1 LLM bots generate natural language messages
+- [ ] Fallback chain works when LLM providers fail
+- [ ] Bot turn processing completes <5s for 100 bots (parallelized)
+- [ ] Coalition formation triggers after turn 10 in 80%+ of games
+- [ ] Schemer archetype betrays allies in 90%+ of games
+
+**Balance Validation:**
+- [ ] Run 100 simulations per archetype, verify win rates within target ranges
+- [ ] Verify Tier 1 bots win 2-3× more often than Tier 4 bots
+- [ ] No single archetype wins >25% of games (indicates imbalance)
+- [ ] Turtle archetype eliminated before turn 50 in <15% of games
+- [ ] Blitzkrieg archetype achieves early kills in 60%+ of games
+
+**Communication & Personality:**
+- [ ] Each persona uses unique voice (verified by sampling 10 messages per persona)
+- [ ] No template repetition exceeds 10% in single-game spot check
+- [ ] Warlord threats precede attacks 70% ±10%
+- [ ] Diplomat proposals accepted >50% of time (indicates appropriate targeting)
+- [ ] Schemer messages contain false promises >40% of alliance proposals
+
+**Memory & Relationships:**
+- [ ] Major betrayal events create lasting negative relationship scores (<-30 after 50 turns)
+- [ ] Minor positive events (trades) decay to near-zero after 30 turns
+- [ ] Permanent grudges persist for 100+ turns in 20% of major events
+- [ ] Emotion states trigger appropriate behavior changes (Desperate bots seek alliances)
+
+**Performance & Stability:**
+- [ ] LLM API fallback chain tested with provider outages
+- [ ] Rate limits prevent excessive API costs (<$50/day across all games)
+- [ ] Bot decision logs stored without performance impact
+- [ ] 100-bot games complete 200 turns in <60 minutes real-time
+
+**Player Experience:**
+- [ ] Playtesters correctly identify 4+ archetypes through observation alone
+- [ ] Players report "bots feel human" in >70% of feedback
+- [ ] Coalition betrayals create memorable dramatic moments
+- [ ] Endgame messaging creates tension in final turns
+
+---
+
+## Migration Plan
+
+### Current State (January 2026)
+
+**Implemented:**
+- ✅ Bot database schema (Drizzle ORM)
+- ✅ Bot creation during game setup
+- ✅ Basic turn processing framework
+- ✅ Tier 4 (random) behavior functional
+
+**In Progress:**
+- 🔄 Tier 3 simple behavioral bots (70% complete)
+- 🔄 Message template system (basic structure in place)
+
+**Not Started:**
+- ❌ Tier 2 strategic decision trees
+- ❌ Tier 1 LLM integration
+- ❌ Emotional state system
+- ❌ Relationship memory with decay
+- ❌ Coalition coordination logic
+
+### Phase-by-Phase Migration
+
+#### Phase 1: Tier 3 & Basic Templates (M12 → M13)
+**Goal:** Functional mid-tier bots with personality
+
+**Steps:**
+1. Complete Tier 3 simple behavior implementation
+   - Balanced, Reactive, Builder subtypes
+   - Basic threat response logic
+   - Resource management decisions
+2. Implement basic message template system
+   - 10-15 templates per archetype (expandable to 30-45)
+   - Template selection based on context
+   - Basic variable substitution
+3. Test 50-bot games with Tier 3+4 only
+4. Validate decision consistency with archetype personalities
+
+**Success Criteria:**
+- Tier 3 bots make archetype-consistent decisions >80% of time
+- Games complete without crashes or decision hangs
+- Players can identify "aggressive" vs "peaceful" bots
+
+**Rollback Plan:** If Tier 3 proves unstable, fall back to Tier 4 random for all bots until fixed
+
+#### Phase 2: Tier 2 Strategic Bots (M13 → M14)
+**Goal:** Sophisticated rule-based opponents with alliance behavior
+
+**Steps:**
+1. Implement decision priority matrix system
+   - Weight-based action selection
+   - Context-aware decision trees
+   - Risk assessment calculations
+2. Build coalition formation logic
+   - Trust score calculations
+   - Alliance proposal evaluation
+   - Defensive pact coordination
+3. Expand template library to 30-45 per persona
+4. Add basic personality traits with mechanical effects
+
+**Success Criteria:**
+- Coalition formation happens in 80%+ of games after turn 10
+- Tier 2 bots win 2× more often than Tier 3
+- Alliance messages feel contextually appropriate
+
+**Rollback Plan:** Disable Tier 2 decision trees, fall back to Tier 3 behavior for those bots
+
+#### Phase 3: LLM Integration (M14 → M15)
+**Goal:** Elite bots with natural language communication
+
+**Steps:**
+1. Implement LLM provider abstraction layer
+   - Groq primary, Together secondary, OpenAI fallback
+   - Rate limiting and cost tracking
+   - Timeout and retry logic
+2. Create system prompts per archetype
+   - Personality descriptions
+   - Game state summarization
+   - Decision schema enforcement
+3. Build response parser and validator
+   - JSON schema validation
+   - Fallback to Tier 2 on parse failure
+4. Generate natural language messages
+   - Replace template selection with LLM generation
+   - Maintain voice consistency across messages
+
+**Success Criteria:**
+- LLM API success rate >95% with fallback chain
+- Tier 1 bots generate coherent, personality-consistent messages
+- API costs stay <$50/day across all active games
+- Tier 1 bots feel "more human" in playtesting
+
+**Rollback Plan:** Disable LLM calls entirely, treat Tier 1 bots as Tier 2 until issues resolved
+
+#### Phase 4: Memory & Emotion (M15 → M16)
+**Goal:** Persistent relationships and dynamic emotional states
+
+**Steps:**
+1. Implement relationship memory system
+   - Event weight and decay calculations
+   - Permanent grudge mechanics (20% of negatives)
+   - Cross-turn memory persistence
+2. Build emotional state system
+   - State transitions based on game events
+   - Mechanical modifiers to decision weights
+   - Intensity scaling (0.0-1.0)
+3. Add telegraph system
+   - Archetype-specific warning patterns
+   - Message timing before actions
+   - Schemer false signal logic
+4. Implement grudge/revenge mechanics
+   - Prioritize attacks against grudge targets
+   - Coalition invitations biased by relationships
+
+**Success Criteria:**
+- Bots remember major betrayals for 50+ turns
+- Emotional states visibly affect behavior
+- Players report "bots hold grudges" in feedback
+- Scheming bots successfully deceive players
+
+**Rollback Plan:** Disable emotion system, relationships become static trust scores
+
+#### Phase 5: Polish & Tuning (M16)
+**Goal:** Production-ready balance and drama
+
+**Steps:**
+1. Run Monte Carlo simulations
+   - 1000+ games across difficulty levels
+   - Archetype win rate validation
+   - Identify dominant strategies
+2. Balance tuning
+   - Adjust archetype decision weights
+   - Calibrate difficulty modifiers
+   - Fix exploitable patterns
+3. Implement dramatic endgame messaging
+   - Global announcements by Tier 1 bots
+   - Coalition coordination messages
+   - Victory/defeat monologues
+4. Build decision log viewer
+   - Post-game "God Mode" replay
+   - Bot reasoning explanations
+   - Entertainment value for players
+
+**Success Criteria:**
+- All archetypes within target win rate ranges
+- No dominant strategy emerges in 1000-game simulation
+- Endgame feels dramatic and memorable
+- Players want to review bot decision logs
+
+**Rollback Plan:** N/A (polish phase, no breaking changes)
+
+### Data Migration Strategy
+
+**Bot Persona Data:**
+- `data/personas.json` will be created incrementally
+- Phase 1: 8 generic personas (1 per archetype)
+- Phase 2: Expand to 20 personas (2-3 per archetype)
+- Phase 3: Full 100 unique personas with LLM voice profiles
+- Migration: Backward compatible, old persona IDs remain valid
+
+**Message Templates:**
+- Stored in `data/templates/` as JSON files
+- Archetype-based organization: `templates/warlord.json`, etc.
+- Phase-by-phase expansion: 10 → 30 → 45+ templates
+- Migration: Template ID references, old IDs never deleted
+
+**Database Schema:**
+- All bot tables exist from Phase 1 (with nullable fields)
+- Each phase activates additional columns
+- No breaking schema changes required
+- Migration: Drizzle migrations applied automatically
+
+### Rollback Safety
+
+**Feature Flags:**
+```typescript
+const BOT_FEATURES = {
+  tier3Enabled: true,
+  tier2Enabled: false,  // Can disable if broken
+  tier1LlmEnabled: false,
+  emotionSystemEnabled: false,
+  memoryDecayEnabled: false,
+  coalitionLogicEnabled: true,
+};
+```
+
+**Graceful Degradation:**
+- LLM failure → fall back to Tier 2 decision tree
+- Tier 2 failure → fall back to Tier 3 simple rules
+- Tier 3 failure → fall back to Tier 4 random (always works)
+- Template system failure → use generic fallback messages
+
+**Testing Gates:**
+- Each phase requires 50+ successful test games before production
+- Balance validation must pass before promoting to next tier
+- Player feedback must be "neutral or better" (not "frustrating")
 
 ---
 
