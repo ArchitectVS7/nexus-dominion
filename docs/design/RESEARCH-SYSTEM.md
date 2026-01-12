@@ -1068,6 +1068,198 @@ interface AnnouncementProps {
 
 ---
 
+# requirements
+
+**integrate with new template**
+
+### REQ-RSCH-001: Three-Tier Research Structure
+
+**Description:** Research follows a 3-tier draft system:
+1. **Doctrines (Tier 1)** - Turn ~10, choose 1 of 3, public announcement
+2. **Specializations (Tier 2)** - Turn ~30, choose 1 of 2, hidden until revealed
+3. **Capstones (Tier 3)** - Turn ~60, automatic based on doctrine, galaxy-wide announcement
+
+**Rationale:** Creates meaningful strategic identity choices with progressive power scaling.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 1.1
+
+**Code:** `src/lib/game/services/research-service.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-002: Doctrine System (Tier 1)
+
+**Description:** Three doctrines define strategic identity:
+- **War Machine:** +2 STR to all units, -10% planet income, unlocks military specializations
+- **Fortress:** +4 AC when defending, -5% attack power, unlocks defensive specializations
+- **Commerce:** +2 CHA (commander), +20% market prices, unlocks economic specializations
+
+Each doctrine unlocks 2 specializations. Choice is public and announced galaxy-wide.
+
+**Rationale:** Establishes strategic direction and asymmetric gameplay early.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 3
+
+**Code:** `src/lib/game/services/research-service.ts:selectDoctrine`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003: Specialization System (Tier 2)
+
+**Description:** Hidden specializations provide focused tactical bonuses (2 per doctrine, player picks 1):
+
+**War Machine:**
+- Shock Troops: Surprise round (attack before initiative)
+- Siege Engines: +50% damage vs stationary targets
+
+**Fortress:**
+- Shield Arrays: Immunity to surprise rounds
+- Minefield Networks: Pre-combat CON save DC 15
+
+**Commerce:**
+- Trade Monopoly: -20% buy, +30% sell prices
+- Mercenary Contracts: +2 STR to hired units per battle
+
+Choice is **hidden** until revealed through combat, espionage (5,000 cr), alliance sharing, or galactic news rumors.
+
+**Rationale:** Creates information asymmetry and tactical surprise.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 4
+
+**Code:** `src/lib/game/services/research-service.ts:selectSpecialization`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-004: Capstone System (Tier 3)
+
+**Description:** Automatic capstone unlock at ~Turn 60 based on doctrine:
+
+- **War Machine → Dreadnought:** Unique unit (STR 20, HP 200, unlimited attacks per round)
+- **Fortress → Citadel World:** One planet becomes AC 25 (nearly invulnerable)
+- **Commerce → Economic Hegemony:** Generate 50% of 2nd place empire's income automatically
+
+Triggers galaxy-wide announcement and bot reactions.
+
+**Rationale:** Provides late-game power spike and endgame drama.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 5
+
+**Code:** `src/lib/game/services/research-service.ts:unlockCapstone`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-005: Research Point Economy
+
+**Description:**
+- Research planets generate 100 RP/turn
+- Thresholds: 1,000 RP (Tier 1), 5,000 RP (Tier 2), 15,000 RP (Tier 3)
+- Progress is **hidden** from other empires (cannot see opponent's RP totals)
+- No automatic advancement; reaching threshold unlocks choice event
+
+**Rationale:** Creates predictable timing (~Turn 10/30/60) while hiding exact progress.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 1.2
+
+**Code:** `src/lib/game/services/research-service.ts:processResearchProduction`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-006: Research Information Visibility
+
+**Description:** Asymmetric information model:
+
+**PUBLIC:**
+- Doctrine choices (announced Turn ~10)
+- Tier 3 capstone unlocks (announced Turn ~60)
+
+**HIDDEN:**
+- Current RP accumulation
+- Progress % toward next tier
+- Specialization choice
+
+**REVEALED THROUGH:**
+- Combat (first use of specialization ability)
+- Espionage (Investigate Specialization, 5,000 cr, 85% success)
+- Alliance membership (auto-share with coalition)
+- Galactic News rumors (50% accuracy, every 10 turns)
+
+**Rationale:** Encourages intelligence gathering and creates deduction gameplay.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 2
+
+**Code:** `src/lib/game/services/research-service.ts:revealSpecialization`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-007: Research-Combat Integration
+
+**Description:** Research bonuses modify combat mechanics:
+
+- Doctrine bonuses apply to **all units** (permanent stat changes)
+- Specialization bonuses apply **during combat** (conditional effects)
+- Stack multiplicatively: Base damage + Doctrine + Specialization + Tech Cards
+
+Example: War Machine (+2 STR) + Shock Troops (surprise round) + Plasma Torpedoes (+2 damage first round)
+→ First round: 2d8+1 base → 2d8+3 (doctrine) → 2d8+5 (card) with surprise initiative
+
+**Rationale:** Research directly impacts tactical combat outcomes.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 6
+
+**Code:** `src/lib/combat/research-bonuses.ts:applyResearchBonuses`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-008: Specialization Counter-Play
+
+**Description:** Specializations counter each other in rock-paper-scissors fashion:
+
+- **Shield Arrays** > Shock Troops (immunity to surprise)
+- **Siege Engines** > Shield Arrays (bypass AC)
+- **Minefield Networks** > Siege Engines (pre-combat damage)
+
+Counter-picking requires knowledge of opponent's specialization (espionage, combat reveal, or alliance intel).
+
+**Rationale:** Rewards intelligence gathering and creates tactical depth.
+
+**Source:** `docs/design/RESEARCH-SYSTEM.md` Section 4.5
+
+**Code:** `src/lib/combat/specialization-counters.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
 ## 13. Conclusion
 
 The Research system transforms tech progression from passive grinding into **strategic identity creation** with **asymmetric information gameplay**.
