@@ -105,25 +105,40 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ## 2. Turn Processing
 
-### REQ-TURN-001: Six-Phase Turn Structure
+### REQ-TURN-001: Turn Processing Pipeline
 
-**Description:** Each turn consists of exactly 6 phases executed in order:
-1. Income Phase - Resources generated
-2. Population Phase - Population growth/decline
-3. Civil Status Phase - Morale evaluated
-4. Market Phase - Trade orders executed
-5. Bot Phase - AI decisions processed
-6. Action Phase - Player/bot actions resolved
+**Description:** Each turn consists of two processing tiers executed in order:
 
-**Rationale:** Deterministic phase order ensures predictable game state.
+**Tier 1 - Transactional (atomic, all-or-nothing):**
+1. Income Phase - Resources generated (with civil status multiplier)
+2. Tier 1 Auto-Production - Crafting system resource generation
+3. Population Phase - Growth/starvation based on food
+4. Civil Status Phase - Morale evaluated
+5. Research Phase - Research points allocated
+6. Build Queue Phase - Unit construction progresses
+7. Covert Phase - Spy points generated
+8. Crafting Phase - Crafting queue processed
 
-**Source:** `docs/design/GAME-DESIGN.md`
+**Tier 2 - Non-Transactional (can fail gracefully):**
+9. Bot Decisions - AI makes strategic choices
+10. Emotional Decay - Bot emotions cool down
+11. Memory Cleanup - Old memories pruned (every 5 turns)
+12. Market Phase - Prices update
+13. Bot Messages - Communication generated
+14. Galactic Events - Random events trigger (M11)
+15. Alliance Checkpoints - Coalition evaluations (M11)
+16. Victory Check - Win/loss conditions evaluated
+17. Auto-Save - Game state persisted
 
-**Code:** `src/lib/game/services/turn-processor.ts:processTurn()`
+**Rationale:** Two-tier structure ensures critical empire state is atomic (transaction rollback on failure) while allowing non-critical systems to fail gracefully.
 
-**Tests:** `src/lib/game/services/__tests__/turn-processor.test.ts`
+**Source:** `docs/design/GAME-DESIGN.md`, `src/lib/game/services/core/turn-processor.ts` (lines 13-29)
 
-**Status:** Draft
+**Code:** `src/lib/game/services/core/turn-processor.ts:processTurn()`
+
+**Tests:** `src/lib/game/services/__tests__/turn-processor.test.ts` (25 tests - validates phases 3-4 individually)
+
+**Status:** Partial - phases 3-4 validated, full pipeline integration test pending
 
 ---
 
@@ -947,6 +962,34 @@ For each requirement to be marked "Validated":
 - [ ] Test has `@spec REQ-XXX-XXX` annotation
 - [ ] Test passes
 - [ ] Code behavior matches requirement description
+
+### Test Annotation Convention
+
+Tests that validate requirements MUST include a `@spec` comment:
+
+```typescript
+describe("Turn Processing", () => {
+  // @spec REQ-TURN-001 - validates 6-phase execution order
+  it("executes phases in correct order: income, population, civil, market, bots, actions", () => {
+    // test implementation
+  });
+});
+```
+
+### Finding Orphaned Requirements
+
+Run this command to find requirements without tests:
+
+```bash
+# Extract all REQ-* IDs from PRD
+grep -oE "REQ-[A-Z]+-[0-9]+" docs/PRD.md | sort -u > /tmp/reqs.txt
+
+# Extract all @spec REQ-* from tests
+grep -r "@spec REQ-" src/ --include="*.test.ts" | grep -oE "REQ-[A-Z]+-[0-9]+" | sort -u > /tmp/tested.txt
+
+# Show requirements without tests
+comm -23 /tmp/reqs.txt /tmp/tested.txt
+```
 
 ---
 
