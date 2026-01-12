@@ -22,7 +22,7 @@ This document provides:
 
 | System | Lines | Status | Completeness |
 |--------|-------|--------|--------------|
-| **COMBAT-SYSTEM.md** | 1,012 | Canonical | Complete* |
+| **COMBAT-SYSTEM.md** | 1,012 | Canonical | ✅ Complete |
 | **RESEARCH-SYSTEM.md** | 1,098 | FOR IMPL | Complete |
 | **SYNDICATE-SYSTEM.md** | 934 | Core Feature | Mostly Complete |
 | **CRAFTING-SYSTEM.md** | 1,382 | Beta 3 | Complete* |
@@ -42,11 +42,13 @@ This document provides:
 - Testing checklist with 11 test categories
 
 **Issues:**
-- ⚠️ **BLOCKER:** 1 unresolved DEV NOTE (line 255)
-  - Question: "Can you do ground-only invasion without space/orbital dominance?"
-  - **Recommendation:** Clarify that full invasions require multi-domain; ground raids are covert ops (Syndicate system)
+- ✅ **RESOLVED:** DEV NOTE about ground-only invasions (was line 255)
+  - Solution: Reframed "Raids" as "Covert Strikes" with explicit narrative justification
+  - Three paths: Military Commandos, Syndicate Pirates, Insurgent Support
+  - Clear distinction: Covert Strikes cannot capture sectors (harassment only)
+  - See: docs/design/COMBAT-SYSTEM-RAID-RESOLUTION.md for full design consultation
 
-**Verdict:** Ready for implementation after resolving DEV NOTE
+**Verdict:** ✅ Ready for implementation immediately - No blockers
 
 ---
 
@@ -333,11 +335,12 @@ turnProcessor.ts
 
 ### Blockers (Must Fix Before Implementation)
 
-1. **COMBAT-SYSTEM.md Line 255**
+1. ✅ **RESOLVED: COMBAT-SYSTEM.md Line 255**
    - Issue: Unresolved DEV NOTE about ground-only invasions
-   - Resolution: Clarify that ground-only raids are covert ops (Syndicate), full invasions require multi-domain
-   - Owner: Game Designer
-   - Priority: HIGH (blocks COMBAT implementation)
+   - Resolution: ✅ Reframed "Raids" as "Covert Strikes" with narrative justification
+   - Implementation: Updated Section 4.1 with three-tier system (Commandos/Pirates/Insurgents)
+   - Status: BLOCKER REMOVED - Ready for implementation
+   - See: docs/design/COMBAT-SYSTEM-RAID-RESOLUTION.md
 
 2. **CRAFTING-SYSTEM.md Line 1041**
    - Issue: Typo in service method name (`applyTechCardsToCommbat`)
