@@ -45,6 +45,10 @@ Unified D20 resolution replaced sequential 3-phase combat for better balance:
 - **6 dramatic outcomes** create varied narratives
 - Single roll determines victor, casualties, and sectors captured
 
+> **Design Philosophy**: D-Day wasn't "win air superiority, THEN naval battle, THEN beach landing" - it was a **unified operation** where all elements contributed simultaneously. Our combat reflects this.
+>
+> The original "ground war is hardest" philosophy is preserved through massive defender advantage (1.5× power multiplier), costly victories showing attrition, stalemates representing grinding warfare, and rare but devastating disasters.
+
 ### [Bot AI System](BOT-SYSTEM.md)
 
 4-tier intelligence system with 100 unique personas:
@@ -65,6 +69,12 @@ Turn 21-40:   Expand to adjacent sectors (via borders)
 Turn 41-60:   Build wormholes to distant sectors
 Turn 61+:     Multi-sector empire management
 ```
+
+> **Why Sectors?** 100 empires with "attack anyone" = cognitive overload and no strategic positioning. Sectors create **regional strategy**:
+> - You start with ~9 neighbors (manageable)
+> - Expansion has direction and purpose
+> - Wormholes are expensive investments creating meaningful choices
+> - At game setup, sectors are balanced for fairness (±10% networth, similar resources)
 
 **Attack Accessibility:**
 - **Same Sector**: Attack freely (1.0x cost)
@@ -101,19 +111,48 @@ Turn 61+:     Multi-sector empire management
 
 > **"Crusader Kings meets Eve Online, simulated."**
 
-- **Bots fight bots** - Natural selection occurs. 100 empires become 80, then 60, then fewer
-- **Emergent bosses** - A bot that eliminated 5 others IS the boss, organically
-- **Player fights ~10-15** - At any time, only your neighbors matter
-- **Coalitions are raids** - Defeating emergent bosses requires coordination
-- **Neighbors are characters** - Your 5-10 neighbors become personalities you know
+> Nexus Dominion isn't "Solar Realms with 100 AI players" - it's a **simulated MMO galaxy** designed for solo play:
+>
+> - **Bots fight bots** - Natural selection occurs. 100 empires become 80, then 60, then fewer.
+> - **Emergent bosses** - Victors accumulate power. A bot that eliminated 5 others IS the boss, organically.
+> - **Player fights ~10-15** - At any time, only your neighbors matter. Not the whole galaxy.
+> - **Coalitions are raids** - Defeating an emergent boss requires coordination, like MMO raids against dungeon bosses.
+> - **Sessions are chapters** - A 100-empire campaign spans multiple 1-2 hour sessions, each a chapter in your story.
+> - **Neighbors are characters** - Your 5-10 neighbors become personalities you know, with history and rivalries.
+>
+> **Target audience**: Single-player enthusiasts who want a rich, deep experience without being steamrolled by power gamers in multiplayer. The game delivers MMO-style emergent drama in a controlled, fair environment.
 
 ### Design Principles
 
-1. **"Every game is someone's first game"** - New players learn in 5 minutes
-2. **"Geography creates strategy"** - Sectors are neighborhoods, wormholes are highways
-3. **"Consequence over limits"** - Game responds to behavior, not hard caps
-4. **"Foundation before complexity"** - Combat works before adding features
-5. **"Natural selection is the content"** - Don't script bosses, let them emerge
+> 1. **"Every game is someone's first game"** *(Stan Lee / Mark Rosewater)*
+>    - New players can learn in 5 minutes
+>    - Complexity unlocks progressively over 200 turns
+>    - Tutorial is required but can be skipped on replay
+>
+> 2. **"Geography creates strategy"**
+>    - Sectors are neighborhoods, borders are roads, wormholes are highways
+>    - 10 regions = manageable cognitive load
+>    - Expansion has direction and purpose
+>
+> 3. **"Consequence over limits"**
+>    - No hard caps - game responds to player behavior
+>    - Leader hits 7 VP → automatic coalition forms
+>    - Weak empires move first (catchup mechanics)
+>
+> 4. **"Clarity through constraints"**
+>    - 100 empires exist, but only ~10 are relevant at once
+>    - Fewer systems, deeper interactions
+>    - Every feature must earn its place
+>
+> 5. **"Foundation before complexity"**
+>    - Combat must work before adding covert ops
+>    - Balance before variety
+>    - Elegance before feature creep
+>
+> 6. **"Natural selection is the content"**
+>    - Don't script bosses - let them emerge from bot-vs-bot conflict
+>    - A bot that won 5 battles IS the boss, with all the power that implies
+>    - The drama comes from organic gameplay, not authored scenarios
 
 ### Anti-Snowball Mechanics
 
@@ -253,6 +292,16 @@ The starmap is your bridge:
 
 ## New Player Experience
 
+> **"Every session is someone's first session"**
+>
+> The game teaches progressively, unlocking complexity as players gain experience:
+> - **Turn 1-5**: Learn your sector ("your neighborhood in space")
+> - **Turn 6-15**: Discover borders and adjacent sectors
+> - **Turn 16-30**: Build wormholes to distant sectors
+> - **Turn 31+**: Galaxy-wide strategic thinking
+>
+> Interactive tutorial shows concrete actions ("Build 100 soldiers, 50 fighters") rather than abstract rules. Skip checkbox available for veteran players.
+
 ### 20-Turn Protection Period
 
 - No bot attacks during protection
@@ -339,5 +388,9 @@ The starmap is your bridge:
 
 ---
 
-*Document consolidated from VISION.md (v2.0) and PRD.md (v3.0)*
-*Source files archived after consolidation*
+**Document History:**
+- Consolidated from VISION.md (v2.0) and PRD.md (v3.0) - January 2026
+- Enhanced with narrative explanations from VISION.md - January 2026
+- VISION.md archived to `docs/archive/design-evolution/`
+
+*This is the canonical design reference. All other design documents defer to this one.*

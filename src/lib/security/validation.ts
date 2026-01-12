@@ -9,7 +9,6 @@ import { db } from "@/lib/db";
 import { empires } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { UNIT_TYPES, type UnitType } from "@/lib/game/unit-config";
-import type { CraftedResource } from "@/lib/game/constants/crafting";
 import type { ContractType } from "@/lib/game/constants/syndicate";
 
 // =============================================================================
@@ -166,50 +165,7 @@ export function sanitizeQuantity(
 }
 
 // =============================================================================
-// CRAFTING RESOURCE VALIDATION
-// =============================================================================
-
-/**
- * Valid crafted resource types (Tier 1, 2, and 3)
- */
-export const VALID_CRAFTED_RESOURCES = [
-  // Tier 1
-  "refined_metals",
-  "fuel_cells",
-  "polymers",
-  "processed_food",
-  "labor_units",
-  // Tier 2
-  "electronics",
-  "armor_plating",
-  "propulsion_units",
-  "life_support",
-  "weapons_grade_alloy",
-  "targeting_arrays",
-  "stealth_composites",
-  "quantum_processors",
-  // Tier 3
-  "reactor_cores",
-  "shield_generators",
-  "warp_drives",
-  "cloaking_devices",
-  "ion_cannon_cores",
-  "neural_interfaces",
-  "singularity_containment",
-  "bioweapon_synthesis",
-  "nuclear_warheads",
-] as const;
-
-/**
- * Validate that a value is a valid crafted resource type.
- */
-export function isValidCraftedResource(type: unknown): type is CraftedResource {
-  if (typeof type !== "string") return false;
-  return VALID_CRAFTED_RESOURCES.includes(type as CraftedResource);
-}
-
-// =============================================================================
-// CONTRACT TYPE VALIDATION
+// CONTRACT TYPE VALIDATION (Syndicate Expansion)
 // =============================================================================
 
 /**

@@ -6,8 +6,6 @@
  */
 
 import type { Empire, Sector } from "@/lib/db/schema";
-import type { CraftedResource } from "@/lib/game/constants/crafting";
-import type { ContractType } from "@/lib/game/constants/syndicate";
 import type { CombatStance } from "@/lib/combat/stances";
 
 // Re-export for convenience
@@ -126,10 +124,6 @@ export type BotDecision =
       action: "buy" | "sell";
     }
   | { type: "do_nothing" }
-  // Crafting system decisions
-  | { type: "craft_component"; resourceType: CraftedResource; quantity: number }
-  | { type: "accept_contract"; contractType: ContractType; targetId?: string }
-  | { type: "purchase_black_market"; itemId: string; quantity: number }
   // Covert operations (PRD 6.8)
   | { type: "covert_operation"; operation: CovertOperationType; targetId: string }
   // Research funding (PRD 9.2)
@@ -144,10 +138,6 @@ export type BotDecisionType =
   | "diplomacy"
   | "trade"
   | "do_nothing"
-  // Crafting system decision types
-  | "craft_component"
-  | "accept_contract"
-  | "purchase_black_market"
   // Additional game systems
   | "covert_operation"
   | "fund_research"

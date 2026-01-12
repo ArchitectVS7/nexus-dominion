@@ -1,9 +1,9 @@
 # Nexus Dominion: Product Requirements Document
 
-**Version:** 1.0
+**Version:** 1.2
 **Status:** Active - Canonical Requirements Reference
 **Created:** 2026-01-11
-**Last Updated:** 2026-01-11
+**Last Updated:** 2026-01-11 (Bot System Expansion)
 
 ---
 
@@ -503,17 +503,34 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ### REQ-BOT-001: Four-Tier Intelligence
 
-**Description:** Bots operate in 4 intelligence tiers:
-- Tier 1 (LLM): 5-10 elite bots with natural language decisions
-- Tier 2 (Strategic): 20-25 bots with archetype-based decision trees
-- Tier 3 (Simple): 50-60 bots with behavioral rules
-- Tier 4 (Random): 10-15 chaotic bots
+**Description:** Bots operate in 4 intelligence tiers with specific behaviors:
 
-**Rationale:** Creates varied opposition without requiring LLM for all bots.
+**Tier 1 (LLM): 5-10 elite bots**
+- Natural language decisions via LLM API (Groq → Together → OpenAI fallback chain)
+- Async processing during player turn for performance
+- Falls back to Tier 2 scripted behavior on API failure
+- Custom personality prompts per persona
+
+**Tier 2 (Strategic): 20-25 bots**
+- Archetype-based decision trees with weighted priorities
+- Template-based messages (30-45 per persona)
+- Sophisticated coalition and betrayal logic
+
+**Tier 3 (Simple): 50-60 bots**
+- Basic behavioral rules (if/then decision trees)
+- Subtypes: Balanced, Reactive, Builder
+- Minimal communication
+
+**Tier 4 (Random): 10-15 chaotic bots**
+- Weighted random decisions with constraints
+- Intentionally suboptimal choices for baseline challenge
+- Adds unpredictability to the game
+
+**Rationale:** Creates varied opposition without requiring LLM for all bots. Tier distribution provides skill curve from chaotic to elite.
 
 **Source:** `docs/design/BOT-SYSTEM.md`
 
-**Code:** `src/lib/bots/types.ts`
+**Code:** `src/lib/bots/types.ts`, `src/lib/bots/bot-processor.ts`
 
 **Tests:** `src/lib/bots/__tests__/bot-processor.test.ts`
 
@@ -525,21 +542,42 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ### REQ-BOT-002: Eight Archetypes
 
-**Description:** 8 bot archetypes define behavioral patterns:
-1. Warlord - Aggressive military focus
-2. Diplomat - Alliance-seeking
-3. Merchant - Economic focus
-4. Schemer - Deceptive tactics
-5. Turtle - Defensive buildup
-6. Blitzkrieg - Fast expansion
-7. Tech Rush - Research priority
-8. Opportunist - Adaptive strategy
+**Description:** 8 bot archetypes define behavioral patterns with unique passive abilities:
 
-**Rationale:** Creates diverse, memorable opponents.
+1. **Warlord** - Aggressive military focus
+   - Passive: War Economy (-20% military cost when at war)
+   - Priority: Attack 0.9, Defense 0.5, Alliance 0.3
+
+2. **Diplomat** - Alliance-seeking, mediates conflicts
+   - Passive: Trade Network (+10% income per active alliance)
+   - Priority: Alliance 0.95, Communication 0.9, Attack 0.2
+
+3. **Merchant** - Economic domination, buys loyalty
+   - Passive: Market Insight (sees next turn market prices)
+   - Priority: Economy 0.95, Alliance 0.7, Attack 0.3
+
+4. **Schemer** - Deceptive tactics, betrayals
+   - Passive: Shadow Network (-50% covert operation cost)
+   - Priority: Covert 0.9, Communication 0.95*, Alliance 0.8* (*for deception)
+
+5. **Turtle** - Defensive buildup, never attacks first
+   - Passive: Fortification (2× defensive structure power)
+   - Priority: Defense 0.95, Economy 0.7, Attack 0.1
+
+6. **Blitzkrieg** - Fast early expansion, aggressive strikes
+   - Priority: Early aggression focus, cripples neighbors
+
+7. **Tech Rush** - Research priority, late-game power spike
+   - Priority: Research focus, delayed military buildup
+
+8. **Opportunist** - Adaptive vulture strategy, attacks weakened empires
+   - Priority: Opportunistic targeting of low-networth empires
+
+**Rationale:** Creates diverse, memorable opponents with distinct mechanical advantages and playstyles.
 
 **Source:** `docs/design/BOT-SYSTEM.md`
 
-**Code:** `src/lib/bots/archetypes/`
+**Code:** `src/lib/bots/archetypes/`, `src/lib/bots/types.ts`
 
 **Tests:** TBD
 
@@ -551,12 +589,40 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ### REQ-BOT-003: Emotional States
 
-**Description:** Bots have emotional states that affect their decisions:
-- Confident, Cautious, Aggressive, Fearful, Vengeful, Neutral
+**Description:** Bots have 6 emotional states that mechanically affect their decisions:
 
-**Rationale:** Creates dynamic, reactive AI behavior.
+1. **Confident** - Baseline positive state (doing well, balanced)
+   - Effects: +5% decision, -20% alliance, +10% aggression, +10% negotiation
+   - Trigger: Steady progress, winning battles
 
-**Source:** `docs/design/BOT-SYSTEM.md`
+2. **Arrogant** - Hubris from excessive success (creates vulnerability)
+   - Effects: -15% decision, -40% alliance, +30% aggression, -30% negotiation
+   - Trigger: Multiple victories, high networth lead, dominant position
+
+3. **Desperate** - Crisis mode (losing badly, makes wild moves)
+   - Effects: -10% decision, +40% alliance, -20% aggression, -20% negotiation
+   - Trigger: Low networth, losing sectors, under sustained attack
+
+4. **Vengeful** - Revenge focus (personal grudges override strategy)
+   - Effects: -5% decision, -30% alliance, +40% aggression (toward target), -40% negotiation
+   - Trigger: Sector capture, treaty betrayal, major attack
+
+5. **Fearful** - Defensive (worried about survival, seeks protection)
+   - Effects: -10% decision, +50% alliance, -30% aggression, +10% negotiation
+   - Trigger: Enemy buildup on borders, recent defeat, networth dropping
+
+6. **Triumphant** - Victory high (post-win momentum and boldness)
+   - Effects: +10% decision, -10% alliance, +20% aggression, -20% negotiation
+   - Trigger: Won major battle, captured valuable sector, eliminated enemy
+
+**State Arcs:**
+- Success spiral: Confident → Triumphant → Arrogant (hubris trap)
+- Failure spiral: Fearful → Desperate (escalating crisis)
+- Revenge arc: Any state → Vengeful (emotional override)
+
+**Rationale:** Creates dynamic, reactive AI behavior with narrative arcs. States are hidden from player but can be inferred from bot messages and actions. Mechanical effects ensure states meaningfully impact gameplay.
+
+**Source:** `docs/design/BOT-SYSTEM.md`, `docs/decisions/EMOTIONAL-STATES-ANALYSIS.md`
 
 **Code:** `src/lib/bots/emotions/`
 
@@ -568,14 +634,33 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ### 7.9 Relationship Memory
 
-### REQ-BOT-004: Memory System
+### REQ-BOT-004: Memory System with Weighted Decay
 
-**Description:** Bots remember past interactions with decay over time:
-- Attacks remembered (creates grudges)
-- Treaties remembered (builds trust)
-- Memory decays by X% per turn
+**Description:** Bots remember past interactions with sophisticated decay mechanics:
 
-**Rationale:** Creates persistent relationships and grudges.
+**Event Weighting:**
+- Events have weight (1-100) based on significance
+- Events have decay resistance levels (LOW, MEDIUM, HIGH, PERMANENT)
+- Examples:
+  - Captured sector: Weight 80, Decay Resistance HIGH
+  - Saved from destruction: Weight 90, Decay Resistance HIGH
+  - Broke alliance: Weight 70, Decay Resistance HIGH
+  - Won battle: Weight 40, Decay Resistance MEDIUM
+  - Trade accepted: Weight 10, Decay Resistance LOW
+  - Message sent: Weight 1, Decay Resistance VERY LOW
+
+**Decay System:**
+- High-resistance events decay slowly (major betrayals, sector captures)
+- Low-resistance events decay quickly (minor trades, casual messages)
+- 20% of negative events become permanent scars (never decay)
+- Memory cleanup runs every 5 turns
+
+**Effects:**
+- Trust score: Positive events increase, negative events decrease
+- Threat score: Military actions against bot increase
+- Value score: Economic/strategic value as potential ally
+
+**Rationale:** Creates persistent relationships and grudges without hard-coding alliances. Major events (betrayals, conquests) resist being "washed away" by minor positive actions. Permanent scars ensure some grudges last the entire game.
 
 **Source:** `docs/design/BOT-SYSTEM.md`
 
@@ -591,15 +676,262 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ### REQ-BOT-005: 100 Unique Personas
 
-**Description:** 100 unique bot personas with distinct names, personalities, and message templates.
+**Description:** 100 unique bot personas with structured voice and message templates:
 
-**Rationale:** Creates memorable, distinguishable opponents.
+```typescript
+interface BotPersona {
+  id: string;                    // "commander_hexen"
+  name: string;                  // "Commander Hexen"
+  archetype: Archetype;          // Warlord, Diplomat, etc.
+
+  voice: {
+    tone: string;                // "gruff military veteran"
+    quirks: string[];            // ["never says please", "addresses by rank"]
+    vocabulary: string[];        // ["soldier", "campaign", "victory"]
+    catchphrase?: string;        // "Victory favors the prepared"
+  };
+
+  templates: {
+    greeting: string[];          // 3-5 variations
+    battleTaunt: string[];
+    victoryGloat: string[];
+    defeat: string[];
+    tradeOffer: string[];
+    allianceProposal: string[];
+    betrayal: string[];
+    // ... 30-45 total templates per persona
+  };
+
+  usedPhrases: Set<string>;      // Prevent phrase repetition within game
+}
+```
+
+**Template Variables:**
+- `{player_name}`, `{empire_name}`, `{target}`, `{sector_count}`, etc.
+- Templates filled dynamically based on game state
+
+**Rationale:** Creates memorable, distinguishable opponents. Voice and quirks ensure each bot feels unique. Template variety prevents repetitive messages.
 
 **Source:** `docs/design/BOT-SYSTEM.md`
 
-**Code:** `data/personas.json`
+**Code:** `data/personas.json`, `src/lib/bots/personas.ts`
 
 **Tests:** `src/lib/messages/__tests__/personas.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-006: LLM Integration
+
+**Description:** Tier 1 bots integrate with LLM APIs for natural language decision-making:
+
+**Provider Chain:**
+- Primary: Groq (fast, cost-effective)
+- Fallback 1: Together AI
+- Fallback 2: OpenAI
+- Emergency: Tier 2 scripted behavior
+
+**System Prompt Template:**
+```
+You are {empire_name}, a player in Nexus Dominion.
+
+PERSONALITY: {archetype_description}
+TRAITS: Aggression {aggression}/10, Diplomacy {diplomacy}/10, etc.
+
+CURRENT SITUATION:
+{game_state_summary}
+
+YOUR RELATIONSHIPS:
+{relationship_summary}
+
+RECENT EVENTS:
+{recent_events}
+
+Decide your actions for this turn. Respond in JSON format.
+Stay in character as {archetype}.
+```
+
+**Response Schema:**
+- `reasoning`: String explaining thought process
+- `actions`: Military, production, diplomacy, research, covert decisions
+- `messages`: Array of messages to send (recipient, subject, content)
+- `coalition`: Invite/accept/leave decisions
+
+**Rate Limits:**
+- 5000 LLM calls per game maximum
+- 50 LLM calls per turn maximum
+- 500 LLM calls per hour maximum
+- $50.00 daily spend cap
+
+**Rationale:** Provides elite-tier AI opponents with natural language communication while controlling costs through fallbacks and rate limits.
+
+**Source:** `docs/design/BOT-SYSTEM.md`
+
+**Code:** `src/lib/bots/llm/`, `src/lib/bots/types.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-007: Decision Audit System
+
+**Description:** All bot decisions are logged with full context for debugging and player entertainment:
+
+```typescript
+interface BotDecisionLog {
+  id: string;
+  botId: string;
+  gameId: string;
+  turnNumber: number;
+
+  decisionType: BotDecisionType;
+  decisionData: Record<string, unknown>;
+  reasoning: string;              // Why bot made this choice
+  llmResponse?: string;           // Raw LLM response if applicable
+
+  preDecisionState: {
+    resources: Resources;
+    military: Forces;
+    relationships: RelationshipScore[];
+    emotion: EmotionalState;
+  };
+
+  outcome?: {
+    success: boolean;
+    impact: string;
+  };
+
+  createdAt: Date;
+}
+```
+
+**Player Access:**
+- Post-game analysis view shows all bot decisions
+- Optional "God Mode" view during game (debug/spectator)
+- Reasoning visible for understanding bot strategy
+
+**Rationale:** Transparency for debugging, entertainment value seeing bot thought process, learning tool for understanding AI behavior.
+
+**Source:** `docs/design/BOT-SYSTEM.md`
+
+**Code:** `src/lib/game/repositories/bot-decision-log-repository.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-008: Coalition AI Behavior
+
+**Description:** Bots form, manage, and betray coalitions based on archetype and game state:
+
+**Formation Logic (game turn > 10):**
+- Diplomat: Actively seeks allies (trust_score > 30)
+- Warlord: Only allies with strong players (top 20% networth)
+- Merchant: Allies with trade partners
+- Schemer: Joins any coalition (plans betrayal after 20 turns)
+- Turtle: Joins defensive coalitions only
+- Random: 30% chance to propose/accept
+
+**Coalition Behavior:**
+- Honor defense pacts (if loyalty > 0.5)
+- Coordinate attacks on shared enemies
+- Share intelligence via coalition chat
+- Coalition chat examples: defensive coordination, attack planning, strategic discussion
+
+**Betrayal Conditions:**
+- Schemer archetype: Always after 20 turns in coalition
+- Other archetypes: Only if trust_score < -50
+- Opportunity: Coalition weakened by war
+
+**Leave Conditions:**
+- Coalition attacks the bot
+- Coalition leader eliminated
+- Better opportunity exists (risk_tolerance > 0.7)
+
+**Rationale:** Creates dynamic alliance politics. Scheming bots make all alliances untrustworthy. Coalition coordination creates challenging multi-bot opponents.
+
+**Source:** `docs/design/BOT-SYSTEM.md`
+
+**Code:** `src/lib/bots/coalition.ts`, `src/lib/game/services/__tests__/coalition-service.test.ts`
+
+**Tests:** `src/lib/game/services/__tests__/coalition-service.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-009: Behavioral Telegraphing
+
+**Description:** Each archetype telegraphs intentions with varying clarity, enabling player readability:
+
+| Archetype | Telegraph % | Style | Advance Warning |
+|-----------|-------------|-------|-----------------|
+| Warlord | 70% | Obvious threats | 2-3 turns |
+| Diplomat | 80% | Polite warnings | 3-5 turns |
+| Schemer | 30% | Cryptic/inverted | 1 turn (if any) |
+| Merchant | 60% | Transactional | 2 turns |
+| Blitzkrieg | 40% | Minimal | 1 turn |
+| Turtle | 90% | Very clear | 5+ turns |
+
+**Telegraph Methods:**
+- Direct messages ("Your defenses are weak")
+- Military buildup visible on borders
+- Coalition chat leaks
+- Emotional state changes (Vengeful bot fixates on target)
+
+**Rationale:** Players can read bot intentions and respond strategically. Scheming bots are intentionally hard to read. Creates skill expression in "reading" bot behavior.
+
+**Source:** `docs/design/BOT-SYSTEM.md`
+
+**Code:** `src/lib/bots/messaging.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-010: Endgame Behavior
+
+**Description:** Bot behavior escalates as the game approaches victory conditions:
+
+**Turn 150+ (Late Campaign):**
+- All archetypes increase aggression +10%
+- Alliance formation increases (defensive coalitions)
+- Tier 1 LLM bots generate more dramatic messages
+
+**Leader at 50% Dominance:**
+- Automatic defensive coalition forms against leader
+- Coalition coordination increases
+- "Stop the leader" messaging to all empires
+
+**Last 3 Empires Standing:**
+- Maximum communication drama
+- Tier 1 bots generate epic monologues
+- Final showdown messaging
+
+**Victory Imminent (One Empire at 55%+ territory):**
+- Global announcements from LLM bots
+- Last alliance proposals
+- Dramatic "it's over" or "last stand" messages
+
+**Example Messages:**
+- "Attention all commanders. {leader} threatens galactic domination. Temporary ceasefire proposed." (Warlord)
+- "To my allies: It has been an honor. For the coalition!" (Diplomat)
+- "You all trusted me. Now the galaxy is mine." (Schemer victory)
+
+**Rationale:** Creates narrative climax. Endgame feels different from mid-game. Player experiences dramatic finale whether they win or lose.
+
+**Source:** `docs/design/BOT-SYSTEM.md`
+
+**Code:** `src/lib/bots/endgame.ts`
+
+**Tests:** TBD
 
 **Status:** Draft
 
@@ -889,23 +1221,127 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 ---
 
-## 14. Expansion: Crafting
+## 14. Expansion: Tech Wars (Crafting Replacement)
 
-**Source Document:** `docs/expansion/CRAFTING.md`
+**Source Document:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
 
-### REQ-CRAFT-001: Four-Tier Crafting
+**Design Note:** The original 4-tier crafting system (22 resources, supply chain management) was explicitly rejected as "logistics management bolted onto empire strategy." The Tech Card draft system replaces it with strategic card drafting integrated into the core combat loop.
 
-**Description:** Crafting system with 4 tiers of craftable items.
+---
 
-**Rationale:** Post-launch expansion content.
+### REQ-TECH-001: Tech Card Draft System
 
-**Source:** `docs/expansion/CRAFTING.md`
+**Description:** Tech progression uses a card draft system instead of resource crafting:
+- 30-40 unique tech cards in three tiers (T1, T2, T3)
+- Turn 1: Each player draws 3 T1 cards, keeps 1 (hidden until end game)
+- Every 10 turns: Draft event where players draw 2 cards, keep 1 (public)
+- Turn 50+: Rare T3 cards become available with game-changing effects
 
-**Code:** `src/app/actions/crafting-actions.ts`
+**Rationale:** Provides strategic depth through draft choices while avoiding supply chain micromanagement. Every card directly affects combat, creating visible drama and bot reactions.
+
+**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+
+**Code:** TBD (expansion content)
 
 **Tests:** TBD
 
-**Status:** Draft
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-002: Hidden Objectives (T1 Cards)
+
+**Description:** T1 cards drawn at Turn 1 are secret objectives that score bonus Victory Points at game end:
+- Warmonger's Arsenal: +2 VP per empire eliminated
+- Merchant's Ledger: +1 VP per 10,000 credits earned
+- Diplomat's Archive: +2 VP per active treaty at game end
+- Survivor's Grit: +3 VP if never lost a sector
+- Opportunist's Eye: +1 VP per sector captured from top 3 players
+
+**Rationale:** Creates Lord of Waterdeep-style hidden incentives. Players don't know each other's objectives, creating post-game reveals and strategic misdirection.
+
+**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+
+**Code:** TBD (expansion content)
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-003: Public Draft Cards (T2)
+
+**Description:** T2 cards drafted publicly every 10 turns provide combat effects with counterplay:
+- Each card has a specific combat effect (e.g., Plasma Torpedoes: +20% first-round damage)
+- Each card lists its counter card (e.g., Shield Arrays counter Plasma Torpedoes)
+- All players see who drafts what, enabling strategic responses
+
+**Rationale:** Creates draft drama ("The Warlord just drafted Plasma Torpedoes!"), encourages counter-picking, and makes tech choices visible to opponents.
+
+**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+
+**Code:** TBD (expansion content)
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-004: Legendary Cards (T3)
+
+**Description:** T3 cards are rare, powerful, and announced to all players:
+- Planet Cracker: Destroy 1 sector permanently (removes from game)
+- Dyson Swarm: Double income from all sectors
+- Mind Control Array: Force one bot to attack another
+- Temporal Stasis: Skip one player's turn
+- Genesis Device: Create a new sector in your territory
+
+**Rationale:** Creates dramatic moments and galaxy-wide reactions. These are "boss abilities" that shift the balance of power.
+
+**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+
+**Code:** TBD (expansion content)
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-005: Bot Tech Card Integration
+
+**Description:** Bots have archetype preferences for tech cards and announce their picks:
+- Archetypes prefer specific cards (Warlord → Plasma Torpedoes, Turtle → Shield Arrays)
+- Bots announce drafts with personality-specific messages
+- Bots react to player's visible tech cards in combat decisions
+
+**Rationale:** Integrates tech cards into bot personality system, creating narrative moments and strategic visibility.
+
+**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+
+**Code:** TBD (expansion content)
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
+
+---
+
+### REQ-TECH-006: End Game Hidden Objective Reveal
+
+**Description:** At game end (turn limit or victory achieved), all hidden T1 cards reveal with bonus VP calculations displayed to all players.
+
+**Rationale:** Creates post-game discussion ("I thought Varkus was playing aggressively because he's a Warlord, but he was also scoring his hidden objective!").
+
+**Source:** `docs/expansion/CRAFTING-EXPANSION-CONCEPT.md`
+
+**Code:** TBD (expansion content)
+
+**Tests:** TBD
+
+**Status:** Draft - Expansion content only
 
 ---
 
@@ -940,16 +1376,16 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 | 5 | Sectors | 3 | 0 |
 | 6 | Military | 2 | 0 |
 | 6.8 | Covert | 1 | 0 |
-| 7 | Bot AI | 5 | 0 |
+| 7 | Bot AI | 10 | 0 |
 | 8 | Diplomacy | 2 | 0 |
 | 9 | Market | 1 | 0 |
 | 10 | Research | 1 | 0 |
 | 11 | Progressive | 3 | 0 |
 | 12 | Victory | 6 | 0 |
 | 13 | Frontend | 3 | 2 |
-| 14 | Crafting | 1 | 0 |
+| 14 | Tech Wars (Expansion) | 6 | 0 |
 | 15 | Syndicate | 1 | 0 |
-| **Total** | | **46** | **3** |
+| **Total** | | **56** | **3** |
 
 ---
 
@@ -997,4 +1433,6 @@ comm -23 /tmp/reqs.txt /tmp/tested.txt
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-01-11 | 1.2 | **BOT SYSTEM EXPANSION:** Section 7 completely revised for BOT-SYSTEM.md alignment. Fixed REQ-BOT-003 emotional states (now: Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant per narrative analysis). Expanded REQ-BOT-001, REQ-BOT-002, REQ-BOT-004, REQ-BOT-005 with implementation details. Added 5 new requirements: REQ-BOT-006 (LLM Integration), REQ-BOT-007 (Decision Audit), REQ-BOT-008 (Coalition AI), REQ-BOT-009 (Telegraphing), REQ-BOT-010 (Endgame Behavior). Total: 51→56 requirements. |
+| 2026-01-11 | 1.1 | **CRITICAL FIX:** Section 14 updated to Tech Card draft system (CRAFTING-EXPANSION-CONCEPT.md). Removed incorrect 4-tier crafting reference. Added REQ-TECH-001 through REQ-TECH-006 (6 new requirements). Total: 51 requirements. |
 | 2026-01-11 | 1.0 | Initial PRD structure with 46 requirements |

@@ -28,7 +28,6 @@ import {
   CONTRACT_CONFIGS,
   type ContractType,
 } from "@/lib/game/constants/syndicate";
-import { RESOURCE_TIERS, type CraftedResource } from "@/lib/game/constants/crafting";
 import { getGameSession } from "@/lib/session";
 
 // =============================================================================
@@ -548,36 +547,9 @@ export async function purchaseBlackMarketItemAction(
       })
       .where(eq(empires.id, empireId));
 
-    // Add resource to inventory if applicable
-    if (result.resourceType && result.resourceType in RESOURCE_TIERS) {
-      const existing = await db.query.resourceInventory.findFirst({
-        where: and(
-          eq(resourceInventory.empireId, empireId),
-          eq(resourceInventory.gameId, gameId),
-          eq(resourceInventory.resourceType, result.resourceType as CraftedResource)
-        ),
-      });
-
-      if (existing) {
-        await db
-          .update(resourceInventory)
-          .set({
-            quantity: existing.quantity + result.quantity!,
-            updatedAt: new Date(),
-          })
-          .where(eq(resourceInventory.id, existing.id));
-      } else {
-        const numericTier = RESOURCE_TIERS[result.resourceType as CraftedResource];
-        const tierString = `tier${numericTier}` as "tier1" | "tier2" | "tier3";
-        await db.insert(resourceInventory).values({
-          empireId,
-          gameId,
-          resourceType: result.resourceType as CraftedResource,
-          tier: tierString,
-          quantity: result.quantity!,
-        });
-      }
-    }
+    // TODO: Resource inventory system removed with old crafting system
+    // When implementing Tech Card system (docs/design/CRAFTING-EXPANSION-CONCEPT.md),
+    // add code here to grant tech cards instead of crafted resources
 
     // Update interaction turn - reuse the game query from unlock check
     const currentGame = await db.query.games.findFirst({

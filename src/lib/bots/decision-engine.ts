@@ -9,15 +9,15 @@
  * M10: Emotional state modifiers
  *
  * Decision Weights (PRD M5, modified by archetype/emotion):
- * - 30% build units
- * - 15% buy sectors
- * - 12% attack (0% during protection period)
+ * - 25% build units
+ * - 12% buy sectors
+ * - 10% attack (0% during protection period)
  * - 8% diplomacy
  * - 8% trade
- * - 7% do nothing
- * - 10% craft component
- * - 5% accept contract
- * - 5% purchase black market
+ * - 6% covert operations
+ * - 5% fund research
+ * - 5% upgrade units
+ * - 5% do nothing
  */
 
 import type {
@@ -40,14 +40,6 @@ import {
   calculateAffordableUnits,
 } from "@/lib/game/unit-config";
 import { SECTOR_COSTS } from "@/lib/game/constants";
-import {
-  ARCHETYPE_CRAFTING_PROFILES,
-  getNextCraftingPriority,
-  shouldEngageSyndicate,
-  getPreferredContract,
-} from "./archetypes/crafting-profiles";
-import type { CraftedResource } from "@/lib/game/constants/crafting";
-import { CONTRACT_CONFIGS, type ContractType } from "@/lib/game/constants/syndicate";
 // M10: Emotional state imports
 import {
   type EmotionalStateName,
@@ -84,10 +76,6 @@ export const BASE_WEIGHTS: BotDecisionWeights = {
   diplomacy: 0.08,
   trade: 0.08,
   do_nothing: 0.05,
-  // Crafting system weights
-  craft_component: 0.08,
-  accept_contract: 0.04,
-  purchase_black_market: 0.04,
   // Additional game systems (PRD 6.8, 9.2, 9.4)
   covert_operation: 0.06,
   fund_research: 0.05,
@@ -118,9 +106,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.03,
     trade: 0.03,
     do_nothing: 0.03,
-    craft_component: 0.08,
-    accept_contract: 0.05,
-    purchase_black_market: 0.03,
     // Military focus: high covert ops, low research
     covert_operation: 0.10,
     fund_research: 0.03,
@@ -133,9 +118,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.18,   // High diplomacy
     trade: 0.10,
     do_nothing: 0.03,
-    craft_component: 0.06,
-    accept_contract: 0.02,
-    purchase_black_market: 0.03,
     // Peaceful: low covert, moderate research
     covert_operation: 0.04,
     fund_research: 0.08,
@@ -148,9 +130,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.06,
     trade: 0.12,       // High trade
     do_nothing: 0.03,
-    craft_component: 0.12,
-    accept_contract: 0.03,
-    purchase_black_market: 0.03,
     // Economy focus: moderate covert, economy research
     covert_operation: 0.05,
     fund_research: 0.10,
@@ -163,9 +142,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.05,
     trade: 0.05,
     do_nothing: 0.02,
-    craft_component: 0.10,
-    accept_contract: 0.07,
-    purchase_black_market: 0.10,
     // Stealth focus: HIGH covert ops
     covert_operation: 0.12,
     fund_research: 0.04,
@@ -178,9 +154,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.06,
     trade: 0.06,
     do_nothing: 0.03,
-    craft_component: 0.10,
-    accept_contract: 0.02,
-    purchase_black_market: 0.05,
     // Defense focus: low covert, defense research, high upgrades
     covert_operation: 0.04,
     fund_research: 0.07,
@@ -193,9 +166,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.03,
     trade: 0.03,
     do_nothing: 0.03,
-    craft_component: 0.06,
-    accept_contract: 0.06,
-    purchase_black_market: 0.04,
     // Speed focus: moderate covert, low research, moderate upgrades
     covert_operation: 0.08,
     fund_research: 0.05,
@@ -208,9 +178,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.06,
     trade: 0.08,
     do_nothing: 0.03,
-    craft_component: 0.12,
-    accept_contract: 0.04,
-    purchase_black_market: 0.04,
     // Tech focus: HIGH research, high upgrades
     covert_operation: 0.05,
     fund_research: 0.12,
@@ -223,9 +190,6 @@ export const ARCHETYPE_WEIGHTS: Record<BotArchetype, BotDecisionWeights> = {
     diplomacy: 0.06,
     trade: 0.03,
     do_nothing: 0.03,
-    craft_component: 0.08,
-    accept_contract: 0.04,
-    purchase_black_market: 0.05,
     // Balanced: moderate everything
     covert_operation: 0.08,
     fund_research: 0.06,
