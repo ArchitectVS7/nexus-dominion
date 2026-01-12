@@ -1,9 +1,24 @@
 # Nexus Dominion: Product Requirements Document
 
-**Version:** 1.4
+**Version:** 1.5
 **Status:** Active - Canonical Requirements Reference
 **Created:** 2026-01-11
-**Last Updated:** 2026-01-12 (Frontend Consolidation)
+**Last Updated:** 2026-01-12 (Validation Status Correction)
+
+---
+
+## ⚠️ Implementation Status
+
+**This is a pre-implementation design document.**
+
+- **Code Implementation:** 0% (src/ directory not created)
+- **Test Coverage:** 0% (no test files exist)
+- **Validated Requirements:** 1 of 91 (1.1%)
+- **Phase:** Design & Planning
+
+All code references (e.g., `src/lib/game/services/turn-processor.ts`) are **planned locations**, not existing files. All test references are **planned test files**, not existing tests. The project is in the design phase, and implementation has not yet begun.
+
+See `docs/PRD-VALIDATION-ANALYSIS.md` for detailed validation status.
 
 ---
 
@@ -136,9 +151,9 @@ Sections are numbered to match existing code references (`@see docs/PRD.md Secti
 
 **Code:** `src/lib/game/services/core/turn-processor.ts:processTurn()`
 
-**Tests:** `src/lib/game/services/__tests__/turn-processor.test.ts` (25 tests - validates phases 3-4 individually)
+**Tests:** TBD - Test file planned: `src/lib/game/services/__tests__/turn-processor.test.ts`
 
-**Status:** Partial - phases 3-4 validated, full pipeline integration test pending
+**Status:** Draft - Detailed specification complete, awaiting implementation
 
 ---
 
@@ -1657,7 +1672,7 @@ Example - Food shortage:
 
 **Tests:** TBD
 
-**Status:** Validated (Phase 3 complete)
+**Status:** Draft - Design complete, awaiting implementation
 
 ---
 
@@ -1673,7 +1688,7 @@ Example - Food shortage:
 
 **Tests:** TBD
 
-**Status:** Validated (Phase 3 complete)
+**Status:** Draft - Design complete, awaiting implementation
 
 ---
 
@@ -2429,25 +2444,35 @@ A Syndicate player can betray the Syndicate:
 
 ## Appendix A: Requirement Summary
 
-| Section | System | Reqs Defined | Reqs Validated |
-|---------|--------|--------------|----------------|
-| 1 | Game Overview | 3 | 1 |
-| 2 | Turn Processing | 3 | 0 |
-| 3 | Combat | 8 | 0 |
-| 4 | Resources | 3 | 0 |
-| 5 | Sectors | 3 | 0 |
-| 6 | Military | 2 | 0 |
-| 6.8 | Covert | 1 | 0 |
-| 7 | Bot AI | 10 | 0 |
-| 8 | Diplomacy | 2 | 0 |
-| 9 | Market | 1 | 0 |
-| 10 | Research | 1 | 0 |
-| 11 | Progressive | 3 | 0 |
-| 12 | Victory | 6 | 0 |
-| 13 | Frontend | 13 | 2 |
-| 14 | Tech Wars (Expansion) | 6 | 0 |
-| 15 | Syndicate | 1 | 0 |
-| **Total** | | **66** | **3** |
+| Section | System | Reqs Defined | Reqs Validated | Status |
+|---------|--------|--------------|----------------|--------|
+| 1 | Game Overview | 3 | 1 | 1 conceptual |
+| 2 | Turn Processing | 3 | 0 | Design complete |
+| 3 | Combat | 12 | 0 | Design complete |
+| 4 | Resources | 3 | 0 | Design complete |
+| 5 | Sectors | 3 | 0 | Design complete |
+| 6 | Military | 2 | 0 | Design complete |
+| 6.8 | Covert | 1 | 0 | Design complete |
+| 7 | Bot AI | 10 | 0 | Design complete |
+| 8 | Diplomacy | 2 | 0 | Design complete |
+| 9 | Market | 1 | 0 | Design complete |
+| 10 | Research | 8 | 0 | Design complete |
+| 11 | Progressive | 3 | 0 | Design complete |
+| 12 | Victory | 6 | 0 | Design complete |
+| 13 | Frontend | 13 | 0 | Design complete |
+| 14 | Tech Wars (Expansion) | 9 | 0 | Expansion only |
+| 15 | Syndicate | 12 | 0 | Core (post-Beta-1) |
+| **Total** | | **91** | **1** | **1.1% complete** |
+
+**Implementation Status:** Pre-implementation (design phase)
+- Code exists: No (src/ directory not created)
+- Tests exist: No (0 test files)
+- @spec annotations: 0
+
+**Validation Progress:**
+- Validated: 1 (REQ-GAME-001 - conceptual)
+- Draft: 90 requirements awaiting implementation
+- Tests needed: 68 requirements marked "TBD"
 
 ---
 
@@ -2495,6 +2520,7 @@ comm -23 /tmp/reqs.txt /tmp/tested.txt
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-01-12 | 1.5 | **VALIDATION STATUS CORRECTION:** Fixed incorrect validation claims. Updated REQ-UI-008 and REQ-UI-009 from "Validated (Phase 3 complete)" to "Draft - Design complete, awaiting implementation". Updated REQ-TURN-001 from "Partial" to "Draft". Corrected Appendix A counts: 66→91 total requirements, 3→1 validated. Added implementation status warning at document start. Added PRD-VALIDATION-ANALYSIS.md with detailed audit. Actual status: 1 of 91 requirements validated (1.1%), no code or tests exist yet. |
 | 2026-01-12 | 1.4 | **FRONTEND CONSOLIDATION:** Section 13 completely revised for FRONTEND-DESIGN.md consolidation. Updated REQ-UI-001 to Boardgame + LCARS Aesthetic. Replaced REQ-UI-002/003 with Star Map Hub navigation architecture. Added 10 new requirements: REQ-UI-002 (Star Map as Hub), REQ-UI-003 (Overlay Panel System), REQ-UI-004 (Card + Details Sidebar), REQ-UI-005 (Collapsible Phase Indicator), REQ-UI-006 (Actionable Guidance), REQ-UI-007 (Strategic Visual Language), REQ-UI-010 (CSS + GSAP Hybrid), REQ-UI-011 (D3.js Star Map), REQ-UI-012 (Keyboard Navigation), REQ-UI-013 (WCAG AA Contrast). Renumbered existing REQ-UI-002/003 to REQ-UI-008/009. Total: 56→66 requirements. |
 | 2026-01-12 | 1.3 | **SYNDICATE SYSTEM INTEGRATION:** Section 15 completely revised from single expansion requirement to full core game system. Added 11 new requirements: REQ-SYND-001 (Hidden Roles), REQ-SYND-002 (Revelation Moment), REQ-SYND-003 (Contract System), REQ-SYND-004 (Trust Progression), REQ-SYND-005 (Black Market), REQ-SYND-006 (Suspicion), REQ-SYND-007 (Accusations), REQ-SYND-008 (Coordinator), REQ-SYND-009 (Victory Conditions), REQ-SYND-010 (Bot Integration), REQ-SYND-011 (Intel Economy), REQ-SYND-012 (Activity Feed). Syndicate now marked as Core Game Feature (post-Beta-1). Source updated to `docs/design/SYNDICATE-SYSTEM.md`. Total: 56→67 requirements. |
 | 2026-01-11 | 1.2 | **BOT SYSTEM EXPANSION:** Section 7 completely revised for BOT-SYSTEM.md alignment. Fixed REQ-BOT-003 emotional states (now: Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant per narrative analysis). Expanded REQ-BOT-001, REQ-BOT-002, REQ-BOT-004, REQ-BOT-005 with implementation details. Added 5 new requirements: REQ-BOT-006 (LLM Integration), REQ-BOT-007 (Decision Audit), REQ-BOT-008 (Coalition AI), REQ-BOT-009 (Telegraphing), REQ-BOT-010 (Endgame Behavior). Total: 51→56 requirements. |
