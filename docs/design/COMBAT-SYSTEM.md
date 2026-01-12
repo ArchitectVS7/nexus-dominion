@@ -1002,6 +1002,277 @@ Week 8: Full deployment
 
 ---
 
+# PRD SPECS 
+**integrate with new template**
+### REQ-COMBAT-001: Three-Phase Domain Combat
+
+**Description:** Full invasions resolve combat across three sequential domains: Space → Orbital → Ground. Each domain is resolved independently using D20 mechanics, with victories in earlier phases providing bonuses to subsequent phases (+2 to next domain). This creates cascading tactical decisions where superior orbital defenses protect ground forces.
+
+**Formula:**
+```
+Attack Success = d20 + Attack Bonus ≥ Target Defense
+**Rationale:** Three phases create narrative coherence—a player with strong orbital defenses shouldn't suffer ground losses. Sequential resolution rewards balanced fleet composition and defensive investment. Will evaluate clunkiness after playtesting.
+
+Where:
+- Attack Bonus = BAB + Stat Modifier + Situational Bonuses
+- Target Defense = Enemy AC
+- Stat Modifier = floor((Stat - 10) / 2)
+```
+
+**Example:**
+```
+Light Cruiser attacks Heavy Cruiser
+Roll: 14, ATK bonus: +5 (BAB +4, DEX +1), Fleet coordination: +2
+Total: 14 + 5 + 2 = 21 vs Defender AC: 18
+Result: 21 ≥ 18 → HIT
+```
+
+**Rationale:** Simplifies combat while maintaining drama and unpredictability. Single-roll resolution is faster and more intuitive than multi-phase systems.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 1.1
+
+**Formulas:** See `docs/PRD-FORMULAS-ADDENDUM.md` Section 1.1-1.3
+
+**Code:** `src/lib/combat/phases.ts`
+
+**Tests:** `src/lib/combat/phases.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-002: Attacker Win Rate
+
+**Description:** With equal forces, the attacker wins approximately 47.6% of battles.
+
+**Rationale:** Slight defender advantage encourages defensive play and alliances.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md`
+
+**Code:** `src/lib/formulas/combat-power.ts`
+
+**Tests:** TBD (Monte Carlo validation needed)
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-003: Defender Advantage
+
+**Description:** Defenders receive a 1.10x (10%) power bonus when fighting in their own territory.
+
+**Rationale:** Makes conquest harder, rewards defense.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md`
+
+**Code:** `src/lib/formulas/combat-power.ts:DEFENDER_ADVANTAGE`
+
+**Tests:** `src/lib/formulas/combat-power.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-004: Unit Power Multipliers
+
+**Description:** Each unit type has a specific power multiplier:
+- Soldiers: 0.1
+- Fighters: 1
+- Stations: 3 (6 when defending)
+- Light Cruisers: 4
+- Heavy Cruisers: 8
+- Carriers: 12
+
+**Rationale:** Creates unit hierarchy and strategic choices.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md`
+
+**Code:** `src/lib/formulas/combat-power.ts:POWER_MULTIPLIERS`
+
+**Tests:** `src/lib/formulas/combat-power.test.ts` (line 248: "has correct values from PRD 6.2")
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-005: Diversity Bonus
+
+**Description:** Fleets with 4 or more distinct unit types receive a 15% power bonus.
+
+**Rationale:** Encourages balanced fleet composition over mono-unit strategies.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md`
+
+**Code:** `src/lib/formulas/combat-power.ts:calculateDiversityBonus()`
+
+**Tests:** `src/lib/formulas/combat-power.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-006: Station Defense Multiplier
+
+**Description:** Stations have 2.0x power when defending (effectively power 6 instead of 3).
+
+**Rationale:** Stations are defensive installations, not offensive units.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md`
+
+**Code:** `src/lib/formulas/combat-power.ts:STATION_DEFENSE_MULTIPLIER`
+
+**Tests:** `src/lib/formulas/combat-power.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-007: Protection Period
+
+**Description:** New players have a 20-turn protection period during which they cannot be attacked.
+
+**Rationale:** Allows new players to establish their empire before combat.
+
+**Source:** `docs/design/GAME-DESIGN.md`
+
+**Code:** `src/lib/game/constants.ts:PROTECTION_TURNS`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-008: Six Dramatic Outcomes
+
+**Description:** Combat results in one of 6 outcomes based on roll and power differential:
+1. Decisive Victory (attacker)
+2. Victory (attacker)
+3. Pyrrhic Victory (attacker)
+4. Pyrrhic Victory (defender)
+5. Victory (defender)
+6. Decisive Victory (defender)
+
+**Rationale:** Creates narrative variety in battle reports.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md`
+
+**Code:** `src/lib/combat/phases.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-009: Multi-Domain Battle Resolution
+
+**Description:** Full Invasions resolve combat across three sequential domains:
+
+1. **SPACE BATTLE:** Fighters, Cruisers, Carriers
+   - Winner gains +2 bonus to Orbital and Ground domains
+
+2. **ORBITAL BATTLE:** Stations, Bombers, Support ships
+   - Winner gains +2 bonus to Ground domain
+
+3. **GROUND BATTLE:** Soldiers, Mechs (transported by carriers)
+   - Winner captures 5-15% of defender's sectors
+
+Cross-domain bonuses stack: Win Space + Orbital = +4 bonus to Ground battle.
+
+**Rationale:** Creates strategic depth where space/orbital supremacy provides tactical advantage on ground.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 4.2
+
+**Code:** `src/lib/combat/multi-domain.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-010: Three Battle Types
+
+**Description:** Three distinct battle types with different requirements and outcomes:
+
+1. **Full Invasion:**
+   - Requirements: Carriers + space control
+   - Resolution: Multi-domain (Space/Orbital/Ground)
+   - Outcome: Can capture 5-15% of defender's sectors
+
+2. **Covert Strike:**
+   - Requirements: Commando units OR Syndicate "Pirate Raid" contract
+   - Resolution: Single domain (Ground only)
+   - Outcome: 10-20% infrastructure damage, -20% production for 2-3 turns, NO sector capture
+
+3. **Blockade:**
+   - Requirements: Space fleet
+   - Resolution: No ground combat (economic pressure)
+   - Outcome: Reduce target's trade income, NO sector capture
+
+**Rationale:** Provides strategic alternatives to direct conquest. Covert Strikes enable asymmetric warfare without fleet superiority.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 4.1 (updated), `docs/design/COMBAT-SYSTEM-RAID-RESOLUTION.md`
+
+**Code:** `src/lib/combat/battle-types.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-011: Unit Rarity Tiers
+
+**Description:** Units are organized into three rarity tiers with escalating power:
+
+- **Tier I (Standard):** Stats 8-12 range, available Turn 1
+- **Tier II (Prototype):** Stats 12-16 range, unlocked via research doctrines
+- **Tier III (Singularity):** Stats 16-20 range, rare drafts after Turn 50, limit 1 per game per empire
+
+Higher tiers have better STR/DEX/CON modifiers, HP pools, and special abilities.
+
+**Rationale:** Creates power progression and late-game escalation. Tier III units feel "legendary."
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Section 7
+
+**Code:** `src/lib/combat/unit-cards.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-012: Morale & Surrender System
+
+**Description:** Combat includes morale checks and surrender mechanics:
+
+**Morale Check (50%+ unit losses):**
+- Roll: d20 + Commander WIS vs DC 15
+- Success: Fight to the end
+- Failure DC 10-14: Shaken (-2 all rolls next round)
+- Failure <DC 10: Routed (immediate retreat with losses)
+
+**Surrender Offer (75%+ HULL losses):**
+- Roll: d20 + Attacker CHA vs Defender WIS
+- Success: Defender surrenders sector without further combat
+- Failure: Combat continues
+
+**Rationale:** Prevents total annihilation, enables tactical retreats, creates dramatic "last stand" moments.
+
+**Source:** `docs/design/COMBAT-SYSTEM.md` Sections 4.4-4.5
+
+**Code:** `src/lib/combat/morale.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+
 ## 12. Conclusion
 
 This specification provides a **complete, implementable D20 combat system** that:
