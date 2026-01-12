@@ -1,10 +1,10 @@
-# Nexus Dominion: UX Design System
+# Nexus Dominion: Frontend Design System
 
-**Version:** 2.0
-**Date:** 2026-01-11
+**Version:** 3.0
+**Date:** 2026-01-12
 **Status:** Consolidated Design Document
 
-**Supersedes:** `UI_DESIGN.md`, `UI-DESIGN.md`, `UX-ROADMAP.md`
+**Consolidates:** `FRONTEND-GUIDE.md`, `UI_DESIGN.md`, `UX-DESIGN.md`, `UX-ROADMAP.md`
 
 ---
 
@@ -26,60 +26,63 @@
 
 ## 1. Design Philosophy
 
-### 1.1 LCARS Aesthetic (Star Trek Inspired)
+### 1.1 Core Design Vision: Boardgame + LCARS
 
-Nexus Dominion's interface draws inspiration from **Star Trek's LCARS** (Library Computer Access/Retrieval System) - the iconic futuristic UI seen throughout the franchise. This creates an immersive "command center" experience where players feel like they're running a galactic empire from a starship bridge.
+Nexus Dominion is a **digital boardgame** with a **Star Trek LCARS-inspired** aesthetic. Every design decision must support these two pillars:
 
-**Core Design Principles:**
+**Boardgame Mental Model:**
+- The **star map is the board** - always the central reference point
+- Panels are like **picking up cards** from the board - you examine them, then return to the board
+- **Spatial awareness** is paramount - players should always know where empires are located
+- Actions feel **meaningful and consequential** - not administrative busywork
 
-1. **Glass Panel Aesthetic** - Translucent panels over space backgrounds
-2. **Curved Corners** - Rounded rectangles, pill shapes for buttons
-3. **Color-Coded Information** - Different colors for different data types
-4. **Ambient Atmosphere** - Space backgrounds, subtle animations
-5. **Information Density** - Show critical data without overwhelming
-6. **Actionable Guidance** - Every piece of data should suggest an action
+**LCARS Aesthetic:**
+- **Glass panels** over deep space backgrounds
+- **Curved corners** and pill-shaped buttons
+- **Color-coded information** for instant recognition
+- **Ambient atmosphere** with subtle animations
+- **Information density** balanced with clarity
 
-### 1.2 Strategic Game UX Philosophy
+### 1.2 The Central Constraint: Star Map as Hub
 
-**From Board Game to Digital:**
-- Physical board games have the board always visible as a reference point
-- Digital implementation: Star map should be the persistent hub
-- Panels overlay the map like picking up cards from a board
+**Core Architectural Decision:**
+The star map is NOT just another page. It is the **default view, central hub, and persistent reference point** for all gameplay.
 
-**Turn-Based Strategy Best Practices:**
+**This means:**
+1. `/game/starmap` is the primary destination
+2. All other screens are **overlays** that slide over a dimmed star map
+3. Players can **return to the map instantly** from any screen
+4. The map is always visible (dimmed) to maintain spatial context
 
-**Phase Awareness (from Civilization VI):**
-- Players always know which phase they're in
-- Clear "action required" prompts
-- Phase-by-phase feedback, not just end-of-turn summary
+**Why This Matters:**
+- In physical boardgames, the board is always visible - you never put it away
+- Digital implementations often bury the map in navigation menus
+- **Breaking this pattern breaks the boardgame feel**
+- Players lose spatial awareness and strategic context
 
-**Resource Management (from Stellaris):**
-- Persistent resource bar always visible
-- Tooltips explain every calculation
-- Color-coded warnings with severity
+### 1.3 Key UX Problems Solved
 
-**Tactical Clarity (from XCOM):**
-- Preview outcomes before committing
-- Show action economy (attacks remaining, build slots used)
-- Critical alerts demand attention
-
-### 1.3 Core UX Problems Solved
+Based on analysis of the original design (see archived UX-ROADMAP.md), the following critical issues have been addressed:
 
 **Problem 1: Turn Phase Invisibility**
-- **Issue:** Players don't know which of 6 phases they're in
-- **Solution:** Collapsible phase indicator with smart defaults (§6.1)
+❌ Players don't know which of 6 phases they're in
+✅ **Solution:** Collapsible Phase Indicator (§6.1)
 
 **Problem 2: Passive Warnings**
-- **Issue:** Players see "low food" but don't know how to fix it
-- **Solution:** Actionable guidance prompts with clickable actions (§6.2)
+❌ Players see "low food" but don't know how to fix it
+✅ **Solution:** Actionable Guidance System (§6.2)
 
 **Problem 3: Buried Star Map**
-- **Issue:** Map is just another page, not the central hub
-- **Solution:** Hybrid navigation with map mode toggle (§3.2)
+❌ Map is just another page in navigation
+✅ **Solution:** Star Map as Hub architecture (§3)
 
 **Problem 4: Scroll-Heavy Interfaces**
-- **Issue:** Action buttons hidden below fold
-- **Solution:** Card + details sidebar layout pattern (§4.3)
+❌ Action buttons hidden below fold
+✅ **Solution:** Card + Details Sidebar pattern (§4.3)
+
+**Problem 5: Administrative Feel**
+❌ Game feels like a spreadsheet, not a conquest
+✅ **Solution:** Strategic Visual Language (§6.3)
 
 ---
 
@@ -87,77 +90,48 @@ Nexus Dominion's interface draws inspiration from **Star Trek's LCARS** (Library
 
 ### 2.1 Color Palette
 
-**Implementation Strategy: Tailwind Theme + LCARS Aliases**
-
-Configure in `tailwind.config.ts`:
+**LCARS Brand Colors:**
 
 ```typescript
-export default {
-  theme: {
-    extend: {
-      colors: {
-        // LCARS Brand Colors
-        lcars: {
-          orange: '#FF9900',   // Primary interactive elements
-          purple: '#CC99FF',   // Secondary panels, navigation
-          blue: '#66CCFF',     // Friendly indicators, alliance
-          green: '#99FFCC',    // Success, positive events
-          amber: '#FFCC66',    // Warnings, attention
-          red: '#FF6666',      // Danger, enemy indicators
-          peach: '#FFCC99',    // Data readouts, neutral info
-        },
-        // Background System
-        background: {
-          space: '#0a0e27',      // Deep space navy
-          panel: '#1a1f3a',      // Panel background
-          elevated: '#2a3150',   // Hover/elevated state
-        },
-        // Semantic Colors (map to LCARS)
-        primary: {
-          DEFAULT: '#FF9900',
-          hover: '#FFB133',
-          active: '#E68A00',
-        },
-        secondary: {
-          DEFAULT: '#CC99FF',
-          hover: '#D9B3FF',
-          active: '#B380E6',
-        },
-      },
-      // LCARS-specific utilities
-      borderRadius: {
-        'lcars': '12px',
-        'lcars-pill': '9999px',
-      },
-      backdropBlur: {
-        'lcars': '10px',
-      },
-    },
+// tailwind.config.ts
+colors: {
+  lcars: {
+    orange: '#FF9900',   // Primary interactive elements, headers
+    purple: '#CC99FF',   // Secondary panels, navigation
+    blue: '#66CCFF',     // Friendly indicators, alliance
+    green: '#99FFCC',    // Success, positive events
+    amber: '#FFCC66',    // Warnings, attention
+    red: '#FF6666',      // Danger, enemy indicators
+    peach: '#FFCC99',    // Data readouts, neutral info
+  },
+  background: {
+    space: '#0a0e27',    // Deep space navy
+    panel: '#1a1f3a',    // Panel background
+    elevated: '#2a3150', // Hover/elevated state
+  },
+  primary: {
+    DEFAULT: '#FF9900',
+    hover: '#FFB133',
+    active: '#E68A00',
+  },
+  secondary: {
+    DEFAULT: '#CC99FF',
+    hover: '#D9B3FF',
+    active: '#B380E6',
   },
 }
 ```
 
-**Usage Examples:**
+**Color Usage Guidelines:**
 
-```tsx
-// Primary button with LCARS orange
-<button className="bg-lcars-orange hover:bg-primary-hover rounded-lcars-pill">
-  Launch Attack
-</button>
-
-// Panel with glass effect
-<div className="bg-background-panel/60 backdrop-blur-lcars border border-lcars-orange/30">
-  Panel content
-</div>
-
-// Success indicator
-<span className="text-lcars-green">+1,500 credits</span>
-
-// Danger warning
-<div className="border-l-4 border-lcars-red bg-lcars-red/10">
-  Critical food shortage!
-</div>
-```
+| Color | Primary Use | Secondary Use | Avoid |
+|-------|-------------|---------------|-------|
+| **Orange** | Action buttons, headers, primary focus | Hover states | Warnings (use amber) |
+| **Purple** | Secondary actions, navigation | Panel accents | Danger states |
+| **Blue** | Resources, research, allies | Positive indicators | Enemy indicators |
+| **Green** | Success messages, gains | Growth indicators | Neutral info |
+| **Amber** | Warnings, attention needed | Cost indicators | Success messages |
+| **Red** | Danger, enemies, critical alerts | Losses, deficits | Success messages |
 
 ### 2.2 Typography
 
@@ -167,32 +141,35 @@ export default {
 font-family: 'Orbitron', 'Exo 2', 'Roboto Mono', monospace;
 ```
 
-- **Display:** Orbitron (futuristic, geometric) - Headers, titles, important values
-- **Body:** Exo 2 - Paragraph text, descriptions
-- **Data:** Roboto Mono - Numbers, statistics, monospace data
+- **Display (Orbitron):** Headers, titles, important values, buttons
+- **Body (Exo 2):** Paragraph text, descriptions, labels
+- **Data (Roboto Mono):** Numbers, statistics, codes
 
 **Font Scale:**
 
-| Element | Size | Weight | Use Case |
-|---------|------|--------|----------|
-| **Page Title** | 2rem (32px) | Bold (700) | Screen headers |
-| **Section Header** | 1.5rem (24px) | Semi-bold (600) | Panel titles |
-| **Panel Title** | 1.25rem (20px) | Medium (500) | Card headers |
-| **Body Text** | 1rem (16px) | Normal (400) | Descriptions |
-| **Data Values** | 0.875rem (14px) | Medium (500) | Statistics |
-| **Labels** | 0.75rem (12px) | Normal (400) | Input labels |
+| Element | Size | Weight | Font | Use Case |
+|---------|------|--------|------|----------|
+| Page Title | 2rem (32px) | Bold (700) | Display | Screen headers |
+| Section Header | 1.5rem (24px) | Semi-bold (600) | Display | Panel titles |
+| Panel Title | 1.25rem (20px) | Medium (500) | Display | Card headers |
+| Body Text | 1rem (16px) | Normal (400) | Body | Descriptions |
+| Data Values | 0.875rem (14px) | Medium (500) | Mono | Statistics |
+| Labels | 0.75rem (12px) | Normal (400) | Body | Input labels |
 
 **Tailwind Classes:**
 
 ```tsx
+// Page title
 <h1 className="text-2xl font-bold font-display text-lcars-orange">
   Empire Dashboard
 </h1>
 
+// Body text
 <p className="text-base font-body text-slate-300">
   Manage your galactic empire's resources and military forces.
 </p>
 
+// Data values
 <span className="text-sm font-mono text-lcars-blue">
   1,234,567 cr
 </span>
@@ -200,7 +177,7 @@ font-family: 'Orbitron', 'Exo 2', 'Roboto Mono', monospace;
 
 ### 2.3 Panel Design System
 
-**Glass Panel Base Component:**
+**Base Glass Panel Component:**
 
 ```tsx
 // GlassPanel.tsx
@@ -211,22 +188,23 @@ interface GlassPanelProps {
   actions?: React.ReactNode;
 }
 
-export function GlassPanel({ title, accentColor = 'orange', children, actions }: GlassPanelProps) {
+export function GlassPanel({
+  title,
+  accentColor = 'orange',
+  children,
+  actions
+}: GlassPanelProps) {
   return (
     <div className="bg-background-panel/60 backdrop-blur-lcars rounded-lcars border border-lcars-orange/30">
       {title && (
         <div className={`flex items-center justify-between px-4 py-3 border-b border-lcars-${accentColor}/30`}>
-          <div className={`flex items-center gap-2`}>
+          <div className="flex items-center gap-2">
             <div className={`w-1 h-6 bg-lcars-${accentColor} rounded-full`} />
             <h2 className="text-lg font-display uppercase tracking-wider text-white">
               {title}
             </h2>
           </div>
-          {actions && (
-            <div className="flex items-center gap-2">
-              {actions}
-            </div>
-          )}
+          {actions}
         </div>
       )}
       <div className="p-4">
@@ -277,7 +255,7 @@ export function GlassPanel({ title, accentColor = 'orange', children, actions }:
   Delete
 </button>
 
-// Ghost Button (Text Only)
+// Ghost Button
 <button className="px-4 py-2 text-lcars-blue hover:text-blue-300 hover:bg-lcars-blue/10 rounded transition-colors">
   Learn More
 </button>
@@ -327,200 +305,197 @@ export function SpaceBackground() {
 
 ## 3. Navigation & Layout Architecture
 
-### 3.1 Navigation Philosophy
+### 3.1 Navigation Philosophy: Star Map as Hub
 
-**Hybrid Approach: Dashboard + Map Mode Toggle**
+**THE CORE ARCHITECTURAL DECISION:**
 
-Nexus Dominion uses a flexible navigation system that accommodates both traditional dashboard-first users and immersive map-first players.
+The star map is the game. Everything else is an overlay.
 
-**Two Modes:**
+```
+┌──────────────────────────────────────────────────────────────┐
+│                    [Logo]  Turn 42/200    [User]             │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│                                                              │
+│                                                              │
+│                   STAR MAP (Always Visible)                  │
+│                                                              │
+│                 • Click empire → Detail overlay              │
+│                 • Press ESC → Close all overlays             │
+│                 • Press M → Return to full map               │
+│                                                              │
+│                                                              │
+│                                                              │
+├──────────────────────────────────────────────────────────────┤
+│  Credits: 1.2M  |  Food: +500  |  Ore: +200  |  [Actions]   │
+└──────────────────────────────────────────────────────────────┘
 
-1. **Dashboard Mode** (Default for new players)
-   - 6-panel grid showing empire overview
-   - Traditional web app navigation
-   - Sidebar with links to all screens
+     [Overlay panels slide in from edges as needed]
+```
 
-2. **Map Mode** (Toggle for advanced players)
-   - Full-screen star map
-   - Overlay panels slide in from edges
-   - Spatial navigation by clicking empires/sectors
+### 3.2 Route Architecture
 
-**Mode Switcher:**
+**Primary Routes:**
+
+```typescript
+/game/starmap          // DEFAULT - Full-screen star map
+/game/starmap?panel=military      // Star map with military overlay
+/game/starmap?panel=market        // Star map with market overlay
+/game/starmap?panel=research      // Star map with research overlay
+/game/starmap?panel=diplomacy     // Star map with diplomacy overlay
+/game/starmap?empire=<id>         // Star map with empire detail overlay
+```
+
+**Redirect Logic:**
+
+```typescript
+// src/app/game/page.tsx
+export default function GamePage() {
+  redirect('/game/starmap');
+}
+
+// All old routes redirect to starmap with panel query
+// /game/military → /game/starmap?panel=military
+// /game/market → /game/starmap?panel=market
+```
+
+### 3.3 Overlay Panel System
+
+**Core Component:**
 
 ```tsx
-// Add to top navigation bar
-<ToggleButton
-  options={[
-    { value: 'dashboard', label: 'Dashboard Mode', icon: LayoutGrid },
-    { value: 'map', label: 'Map Mode', icon: Map }
-  ]}
-  value={viewMode}
-  onChange={setViewMode}
-  className="fixed top-4 right-4 z-50"
-/>
-```
+// OverlayPanel.tsx
+interface OverlayPanelProps {
+  isOpen: boolean;
+  onClose: () => void;
+  position: 'bottom' | 'right' | 'center' | 'left';
+  size?: 'small' | 'medium' | 'large' | 'fullscreen';
+  title: string;
+  children: React.ReactNode;
+}
 
-### 3.2 Dashboard Mode Layout
-
-**6-Panel Actionable Grid:**
-
-```
-┌─────────────────────────────────────────────────────────┐
-│ [Logo] TURN 42/200 | PHASE 6/6: PLAYER ACTIONS    [▼]  │
-├──────────────────┬──────────────────┬──────────────────┤
-│ ⚠️ Critical      │ 📊 Empire Stats  │ ⚔️ Military       │
-│ Alerts           │                  │ Status            │
-│                  │                  │                   │
-│ • Food: -500/turn│ • Networth: #12  │ • Active wars: 2  │
-│   [Buy Food]     │ • Sectors: 8     │   [View Battles]  │
-│   [Build Farms]  │ • Pop: 1.5M      │ • Fleet: 45.2K    │
-│                  │   [Details]      │   [Manage]        │
-├──────────────────┼──────────────────┼──────────────────┤
-│ 🗺️ Territory     │ 📨 Messages (3)  │ 🎯 Opportunities  │
-│ [Mini Star Map]  │                  │                   │
-│                  │ • Vexar: NAP?    │ • Weak neighbor   │
-│ Click for full   │   [Reply]        │   [Attack]        │
-│ view             │ • Trade offer    │ • Alliance offer  │
-│                  │   [View]         │   [Review]        │
-└──────────────────┴──────────────────┴──────────────────┘
-```
-
-**Key Features:**
-
-1. **Critical Alerts Panel** - Actionable warnings with solution buttons
-2. **Empire Stats Panel** - High-level overview with drill-down links
-3. **Military Status Panel** - Current conflicts and fleet power
-4. **Territory Panel** - Mini star map preview (clicks open full map mode)
-5. **Messages Panel** - Latest communications with quick actions
-6. **Opportunities Panel** - Strategic suggestions based on game state
-
-**Each Panel Structure:**
-
-```tsx
-<GlassPanel title="Critical Alerts" accentColor="red">
-  {alerts.map(alert => (
-    <ActionPrompt
-      key={alert.id}
-      severity={alert.severity}
-      message={alert.message}
-      actions={alert.actions}
-    />
-  ))}
-</GlassPanel>
-```
-
-### 3.3 Map Mode Layout
-
-**Full-Screen Star Map with Overlay Panels:**
-
-```
-┌──────────────────────────────────────────────────────┐
-│ [Logo] [Dashboard Mode] [Map Mode ✓]          [User]│
-├──────────────────────────────────────────────────────┤
-│                                                      │
-│                                                      │
-│            [Full-Screen Star Map]                    │
-│                                                      │
-│          • Click empire → Empire detail overlay      │
-│          • Click sector → Sector detail overlay      │
-│          • Right-click → Context menu                │
-│                                                      │
-│                                                      │
-│                                                      │
-├──────────────────────────────────────────────────────┤
-│ [Resource Bar] Credits: 1.2M | Food: +500 | ...     │
-└──────────────────────────────────────────────────────┘
-
-[Overlay Panel slides in from right/bottom as needed]
-```
-
-**Persistent Map Button (Available in Dashboard Mode):**
-
-```tsx
-<button
-  onClick={() => router.push('/game/starmap')}
-  className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-lcars-orange text-black rounded-full shadow-lg hover:scale-110 transition-all hover:shadow-[0_0_30px_rgba(255,153,0,0.6)]"
-  aria-label="Open star map"
->
-  <Map className="w-8 h-8 mx-auto" />
-</button>
-```
-
-### 3.4 Sidebar Navigation (Dashboard Mode)
-
-**LCARS-Style Sidebar:**
-
-```tsx
-<nav className="w-64 bg-background-panel/80 backdrop-blur-lcars border-r border-lcars-orange/30">
-  <div className="p-4 border-b border-lcars-orange/30">
-    <h1 className="text-xl font-display text-lcars-orange">NEXUS DOMINION</h1>
-  </div>
-
-  <div className="p-2 space-y-1">
-    {navItems.map(item => (
-      <NavLink
-        key={item.href}
-        href={item.href}
-        icon={item.icon}
-        label={item.label}
-        accentColor={item.color}
-        isActive={pathname === item.href}
-        badge={item.badge}
-      />
-    ))}
-  </div>
-</nav>
-
-// NavLink component
-function NavLink({ href, icon: Icon, label, accentColor, isActive, badge }) {
+export function OverlayPanel({
+  isOpen,
+  onClose,
+  position,
+  size = 'large',
+  title,
+  children
+}: OverlayPanelProps) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-lg transition-all group relative",
-        isActive
-          ? `bg-lcars-${accentColor}/20 border-l-4 border-lcars-${accentColor}`
-          : "hover:bg-white/5"
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop - dims star map */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            onClick={onClose}
+          />
+
+          {/* Panel */}
+          <motion.div
+            initial={getSlideAnimation(position, 'initial')}
+            animate={getSlideAnimation(position, 'animate')}
+            exit={getSlideAnimation(position, 'exit')}
+            className={cn(
+              "fixed z-50 bg-background-panel border border-lcars-orange/50",
+              getPositionStyles(position, size)
+            )}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-lcars-orange/30">
+              <h2 className="text-xl font-display text-lcars-orange">
+                {title}
+              </h2>
+              <button onClick={onClose} className="p-2 hover:bg-white/10 rounded">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="overflow-y-auto p-6">
+              {children}
+            </div>
+          </motion.div>
+        </>
       )}
-    >
-      <div className={`w-1 h-full absolute left-0 bg-lcars-${accentColor} opacity-0 group-hover:opacity-100 transition-opacity`} />
-      <Icon className={`w-5 h-5 text-lcars-${accentColor}`} />
-      <span className="text-white font-display uppercase tracking-wide text-sm">
-        {label}
-      </span>
-      {badge && (
-        <span className="ml-auto px-2 py-1 bg-lcars-red rounded-full text-xs font-bold">
-          {badge}
-        </span>
-      )}
-    </Link>
+    </AnimatePresence>
   );
 }
 ```
 
-**Navigation Items:**
+**Position Styles:**
 
 ```typescript
-const navItems = [
-  { href: '/game', icon: LayoutDashboard, label: 'Dashboard', color: 'orange' },
-  { href: '/game/starmap', icon: Map, label: 'Star Map', color: 'blue' },
-  { href: '/game/sectors', icon: Globe, label: 'Sectors', color: 'green' },
-  { href: '/game/military', icon: Swords, label: 'Military', color: 'red' },
-  { href: '/game/research', icon: FlaskConical, label: 'Research', color: 'purple' },
-  { href: '/game/diplomacy', icon: Users, label: 'Diplomacy', color: 'blue' },
-  { href: '/game/market', icon: TrendingUp, label: 'Market', color: 'amber' },
-  { href: '/game/covert', icon: Eye, label: 'Covert Ops', color: 'purple' },
-  { href: '/game/messages', icon: Mail, label: 'Messages', color: 'blue', badge: unreadCount },
-];
+function getPositionStyles(position: string, size: string) {
+  const sizeMap = {
+    small: 'w-96',
+    medium: 'w-1/3',
+    large: 'w-1/2',
+    fullscreen: 'w-full h-full'
+  };
+
+  const positionMap = {
+    right: `top-0 right-0 h-full ${sizeMap[size]}`,
+    left: `top-0 left-0 h-full ${sizeMap[size]}`,
+    bottom: `bottom-0 left-0 right-0 h-2/3`,
+    center: `top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${sizeMap[size]} max-h-[90vh]`,
+  };
+
+  return positionMap[position];
+}
 ```
+
+### 3.4 Dashboard View (Alternative to Star Map)
+
+Some players may prefer a traditional dashboard. This is available but **not the default**.
+
+**6-Panel Actionable Grid:**
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ [Logo] TURN 42/200 | PHASE 6/6: PLAYER ACTIONS    [Map] [▼] │
+├──────────────────┬──────────────────┬────────────────────────┤
+│ ⚠️ Critical      │ 📊 Empire Stats  │ ⚔️ Military Status     │
+│ Alerts           │                  │                        │
+│                  │ • Networth: #12  │ • Active wars: 2       │
+│ • Food: -500/turn│ • Sectors: 8     │   [View Battles]       │
+│   [Buy Food]     │ • Pop: 1.5M      │ • Fleet: 45.2K         │
+│   [Build Farms]  │   [Details]      │   [Manage]             │
+├──────────────────┼──────────────────┼────────────────────────┤
+│ 🗺️ Territory     │ 📨 Messages (3)  │ 🎯 Opportunities       │
+│ [Mini Star Map]  │                  │                        │
+│                  │ • Vexar: NAP?    │ • Weak neighbor        │
+│ Click to expand  │   [Reply]        │   [Attack]             │
+│                  │ • Trade offer    │ • Alliance offer       │
+│                  │   [View]         │   [Review]             │
+└──────────────────┴──────────────────┴────────────────────────┘
+```
+
+**Key Panels:**
+
+1. **Critical Alerts** - Actionable warnings with solution buttons
+2. **Empire Stats** - High-level overview with drill-down links
+3. **Military Status** - Current conflicts and fleet power
+4. **Territory** - Mini star map preview (clicks open full map)
+5. **Messages** - Latest communications with quick actions
+6. **Opportunities** - Strategic suggestions based on game state
+
+**Access:**
+- Available at `/game/dashboard`
+- Floating "View Dashboard" button on star map
+- NOT the default view
 
 ---
 
 ## 4. Component Library
 
-### 4.1 Card Patterns
+### 4.1 Card Component
 
-**Base Card Component:**
+**Base Card:**
 
 ```tsx
 interface CardProps {
@@ -576,45 +551,6 @@ export function Card({
     </div>
   );
 }
-```
-
-**Usage Examples:**
-
-```tsx
-// Sector Card
-<Card
-  title="Antares V"
-  subtitle="Agricultural Sector"
-  accentColor="green"
-  interactive
-  selected={selectedSector?.id === sector.id}
-  onClick={() => selectSector(sector)}
-  actions={
-    <button className="text-lcars-blue hover:text-blue-300">
-      <Settings className="w-4 h-4" />
-    </button>
-  }
->
-  <div className="space-y-2">
-    <DataRow label="Population" value="1.2M" />
-    <DataRow label="Production" value="+640 food/turn" positive />
-    <DataRow label="Maintenance" value="-672 cr/turn" negative />
-  </div>
-</Card>
-
-// Unit Card
-<Card
-  title="Soldiers"
-  accentColor="red"
-  interactive
-  selected={selectedUnit === 'soldiers'}
-  onClick={() => setSelectedUnit('soldiers')}
->
-  <div className="text-center">
-    <div className="text-3xl font-mono text-lcars-blue">5,000</div>
-    <div className="text-xs text-slate-400 mt-1">Combat Power: 1.0</div>
-  </div>
-</Card>
 ```
 
 ### 4.2 Data Display Components
@@ -712,12 +648,14 @@ function ResourceBar({ label, current, max, change, icon: Icon }: ResourceBarPro
 
 ### 4.3 Layout Pattern: Card + Details Sidebar
 
+**THE CRITICAL PATTERN - NO SCROLLING TO TAKE ACTION**
+
 **Problem:** Vertical stacking forces scrolling and hides action buttons
 
 **Solution:** Horizontal split with selection list and details panel
 
 ```tsx
-// Example: Market Panel Redesign
+// Example: Market Panel using this pattern
 export function MarketPanel() {
   const [selectedResource, setSelectedResource] = useState<ResourceType>('food');
   const [action, setAction] = useState<'buy' | 'sell'>('buy');
@@ -739,13 +677,13 @@ export function MarketPanel() {
           ))}
         </div>
 
-        {/* RIGHT: Trade Interface (2/3 width, no scroll) */}
+        {/* RIGHT: Trade Interface (2/3 width, NO SCROLL) */}
         <div className="w-2/3 pl-4 flex flex-col">
           <h3 className="text-xl font-display mb-4">
             Trade {selectedResource.toUpperCase()}
           </h3>
 
-          {/* Buy/Sell Toggle - Always Visible */}
+          {/* All controls visible without scrolling */}
           <SegmentedControl
             options={[
               { value: 'buy', label: 'Buy', icon: ShoppingCart },
@@ -756,7 +694,6 @@ export function MarketPanel() {
             className="mb-6"
           />
 
-          {/* Quantity Slider - Always Visible */}
           <div className="mb-6">
             <label className="block text-sm text-slate-400 mb-2">Quantity</label>
             <Slider
@@ -768,7 +705,6 @@ export function MarketPanel() {
             />
           </div>
 
-          {/* Trade Preview - Always Visible */}
           <div className="flex-1 bg-black/30 rounded-lg p-4 mb-4">
             <TradePreview
               resource={selectedResource}
@@ -793,7 +729,6 @@ export function MarketPanel() {
 ```
 
 **Benefits:**
-
 - ✅ No scrolling required to complete action
 - ✅ Selection and details both visible
 - ✅ Action button always in sight
@@ -811,11 +746,7 @@ export function MarketPanel() {
 
 ## 5. Screen Designs
 
-### 5.1 Dashboard (Default Landing)
-
-See §3.2 for full layout. Dashboard uses 6-panel actionable grid.
-
-### 5.2 Star Map (Full-Screen)
+### 5.1 Star Map (Primary View)
 
 **Implementation: D3.js Force-Directed Graph**
 
@@ -853,15 +784,6 @@ export function StarMap() {
       .attr('opacity', 0.6)
       .attr('filter', 'url(#glow)');
 
-    // Empire name label
-    empireNodes.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('y', d => Math.sqrt(d.networth) / 10 + 20)
-      .attr('fill', 'white')
-      .attr('font-family', 'Orbitron')
-      .attr('font-size', '12px')
-      .text(d => d.name);
-
     // Update positions on tick
     simulation.on('tick', () => {
       empireNodes.attr('transform', d => `translate(${d.x}, ${d.y})`);
@@ -876,7 +798,6 @@ export function StarMap() {
     <div className="relative w-full h-full">
       <svg ref={svgRef} className="w-full h-full">
         <defs>
-          {/* Glow filter */}
           <filter id="glow">
             <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
             <feMerge>
@@ -927,15 +848,7 @@ export function StarMap() {
 }
 ```
 
-**Interactive Features:**
-
-- Click empire → Show detail panel
-- Hover empire → Highlight connected empires (allies/enemies)
-- Right-click → Context menu (attack, diplomacy, intel)
-- Zoom controls
-- Filter toggle (show/hide neutral empires, treaties, trade routes)
-
-### 5.3 Combat Interface
+### 5.2 Combat Interface (Overlay)
 
 ```tsx
 export function AttackInterface({ targetEmpireId }: { targetEmpireId: string }) {
@@ -1019,153 +932,15 @@ export function AttackInterface({ targetEmpireId }: { targetEmpireId: string }) 
 }
 ```
 
-### 5.4 Research Screen
-
-```tsx
-export function ResearchScreen() {
-  const [allocations, setAllocations] = useState<ResearchAllocations>({});
-
-  return (
-    <div className="space-y-6">
-
-      {/* Fundamental Research Progress */}
-      <GlassPanel title="Fundamental Research" accentColor="purple">
-        <FundamentalResearchProgress
-          currentLevel={fundamentalLevel}
-          progress={fundamentalProgress}
-          nextLevelCost={nextLevelCost}
-        />
-      </GlassPanel>
-
-      {/* Eight Research Branches Grid */}
-      <GlassPanel title="Research Branches" accentColor="purple">
-        <div className="grid grid-cols-4 gap-4">
-          {branches.map(branch => (
-            <ResearchBranchCard
-              key={branch.id}
-              branch={branch}
-              allocation={allocations[branch.id] || 0}
-              onAllocationChange={(value) => updateAllocation(branch.id, value)}
-            />
-          ))}
-        </div>
-
-        {/* Allocation Summary */}
-        <div className="mt-6 p-4 bg-black/30 rounded-lg">
-          <div className="flex justify-between">
-            <span className="text-slate-400">Total Allocation:</span>
-            <span className={cn(
-              "font-mono text-lg",
-              totalAllocation === 100 ? "text-lcars-green" : "text-lcars-amber"
-            )}>
-              {totalAllocation}%
-            </span>
-          </div>
-          {totalAllocation !== 100 && (
-            <p className="text-sm text-lcars-amber mt-2">
-              Allocations must total 100%
-            </p>
-          )}
-        </div>
-      </GlassPanel>
-
-      {/* Unit Upgrades */}
-      <GlassPanel title="Available Upgrades" accentColor="blue">
-        <div className="grid grid-cols-3 gap-4">
-          {availableUpgrades.map(upgrade => (
-            <UpgradeCard
-              key={upgrade.id}
-              upgrade={upgrade}
-              onPurchase={() => purchaseUpgrade(upgrade.id)}
-            />
-          ))}
-        </div>
-      </GlassPanel>
-    </div>
-  );
-}
-```
-
-### 5.5 Messages / Events
-
-```tsx
-export function MessagesInbox() {
-  const [filter, setFilter] = useState<'all' | 'diplomatic' | 'combat' | 'trade' | 'system'>('all');
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
-
-  return (
-    <GlassPanel
-      title="Messages"
-      actions={
-        <div className="flex gap-2">
-          <button className="text-sm text-slate-400 hover:text-white">
-            Mark All Read
-          </button>
-        </div>
-      }
-    >
-      <div className="flex h-[700px]">
-
-        {/* LEFT: Message List */}
-        <div className="w-1/2 overflow-y-auto pr-4 border-r border-slate-700 space-y-2">
-          {/* Filters */}
-          <div className="flex gap-2 mb-4">
-            {(['all', 'diplomatic', 'combat', 'trade', 'system'] as const).map(tab => (
-              <button
-                key={tab}
-                className={cn(
-                  "px-3 py-1 rounded text-sm transition-colors",
-                  filter === tab
-                    ? "bg-lcars-orange text-black"
-                    : "bg-slate-800 text-slate-400 hover:text-white"
-                )}
-                onClick={() => setFilter(tab)}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          {/* Message Cards */}
-          {filteredMessages.map(message => (
-            <MessageCard
-              key={message.id}
-              message={message}
-              isSelected={selectedMessage === message.id}
-              onClick={() => setSelectedMessage(message.id)}
-            />
-          ))}
-        </div>
-
-        {/* RIGHT: Message Detail */}
-        <div className="w-1/2 pl-4 flex flex-col">
-          {selectedMessage ? (
-            <MessageDetail
-              messageId={selectedMessage}
-              onReply={() => openReplyModal(selectedMessage)}
-              onDelete={() => deleteMessage(selectedMessage)}
-            />
-          ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-500">
-              Select a message to view details
-            </div>
-          )}
-        </div>
-      </div>
-    </GlassPanel>
-  );
-}
-```
-
 ---
 
 ## 6. UX Patterns
 
 ### 6.1 Turn Phase Awareness System
 
-**Critical Missing Feature:** Players need to know which phase they're in and what actions are available.
+**CRITICAL FEATURE** - Players must always know which phase they're in
 
-**Collapsible Phase Indicator Implementation:**
+**Collapsible Phase Indicator:**
 
 ```tsx
 export function PhaseIndicator() {
@@ -1306,12 +1081,12 @@ const TURN_PHASES = [
     name: 'Player Actions',
     description: 'Your turn to build units, launch attacks, trade, and make diplomatic offers.',
     availableActions: [
-      { label: '⚔️ Launch Attacks', href: '/game/military' },
-      { label: '🏗️ Build Units', href: '/game/military?tab=build' },
-      { label: '💬 Diplomacy', href: '/game/diplomacy' },
+      { label: '⚔️ Launch Attacks', href: '/game/starmap?panel=military' },
+      { label: '🏗️ Build Units', href: '/game/starmap?panel=military&tab=build' },
+      { label: '💬 Diplomacy', href: '/game/starmap?panel=diplomacy' },
       { label: '📊 Review Intel', href: '/game/starmap' },
-      { label: '🔬 Research', href: '/game/research' },
-      { label: '📈 Trade', href: '/game/market' },
+      { label: '🔬 Research', href: '/game/starmap?panel=research' },
+      { label: '📈 Trade', href: '/game/starmap?panel=market' },
     ],
     canEndTurn: true,
   },
@@ -1320,9 +1095,9 @@ const TURN_PHASES = [
 
 ### 6.2 Actionable Guidance System
 
-**Problem:** Players see warnings but don't know how to solve them.
+**Problem:** Players see warnings but don't know how to solve them
 
-**Solution:** Convert passive warnings into actionable prompts.
+**Solution:** Convert passive warnings into actionable prompts
 
 ```tsx
 interface ActionPromptProps {
@@ -1438,13 +1213,13 @@ export function ActionPrompt({
   actions={[
     {
       label: "Buy Agriculture Sectors",
-      href: "/game/sectors?type=agriculture",
+      href: "/game/starmap?panel=sectors&type=agriculture",
       icon: ShoppingCart,
       variant: "primary"
     },
     {
       label: "Buy Food from Market",
-      href: "/game/market?resource=food&action=buy",
+      href: "/game/starmap?panel=market&resource=food&action=buy",
       icon: Store,
       variant: "primary"
     },
@@ -1462,19 +1237,13 @@ export function ActionPrompt({
 <ActionPrompt
   severity="opportunity"
   icon={Target}
-  message="Empire 'Vexar Coalition' is Fearful and has weak defenses at Sector Antares V."
+  message="Empire 'Vexar Coalition' is Fearful and has weak defenses."
   actions={[
     {
       label: "Launch Attack",
-      onClick: () => openAttackInterface('vexar', 'antares-v'),
+      href: "/game/starmap?panel=military&target=vexar",
       icon: Swords,
       variant: "primary"
-    },
-    {
-      label: "Demand Tribute",
-      href: "/game/diplomacy?action=demand&target=vexar",
-      icon: Coins,
-      variant: "secondary"
     },
     {
       label: "View on Map",
@@ -1484,28 +1253,15 @@ export function ActionPrompt({
     }
   ]}
 />
-
-// Research milestone
-<ActionPrompt
-  severity="info"
-  icon={Sparkles}
-  message="Research complete! Fundamental Research Level 2 unlocked."
-  actions={[
-    {
-      label: "View New Upgrades",
-      href: "/game/research#upgrades",
-      icon: Zap,
-      variant: "primary"
-    }
-  ]}
-/>
 ```
 
 ### 6.3 Strategic Visual Language
 
 **Anticipation → Action → Payoff Pattern**
 
-**Tier 1: Anticipation (Pre-Action State)**
+Game actions should feel meaningful through visual feedback:
+
+**Tier 1: Anticipation (Pre-Action)**
 
 Show what the player will get BEFORE they commit:
 
@@ -1527,7 +1283,7 @@ Show what the player will get BEFORE they commit:
 </div>
 ```
 
-**Tier 2: Payoff (Post-Action State)**
+**Tier 2: Payoff (Post-Action)**
 
 Celebrate successful actions with visual feedback:
 
@@ -1555,7 +1311,7 @@ Celebrate successful actions with visual feedback:
 </motion.div>
 ```
 
-**Tier 3: Threat/Warning (Attention State)**
+**Tier 3: Threat (Attention)**
 
 Make critical issues impossible to ignore:
 
@@ -1590,74 +1346,31 @@ Make critical issues impossible to ignore:
 </div>
 ```
 
-### 6.4 Resource Flow Visualization
-
-**Show connections between sectors → resources → units:**
-
-```tsx
-export function ResourceFlowDiagram() {
-  return (
-    <div className="relative p-6 bg-black/30 rounded-lg">
-      <svg className="w-full h-64">
-        {/* Sectors → Resources */}
-        <g id="sector-to-resource">
-          <line x1="50" y1="50" x2="200" y2="100" stroke="#66CCFF" strokeWidth="2" strokeDasharray="5,5">
-            <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite" />
-          </line>
-          <text x="100" y="70" fill="#66CCFF" fontSize="12">+640/turn</text>
-        </g>
-
-        {/* Resources → Units */}
-        <g id="resource-to-units">
-          <line x1="200" y1="100" x2="350" y2="100" stroke="#FF9900" strokeWidth="2" strokeDasharray="5,5">
-            <animate attributeName="stroke-dashoffset" from="10" to="0" dur="1s" repeatCount="indefinite" />
-          </line>
-          <text x="250" y="90" fill="#FF9900" fontSize="12">-500/turn</text>
-        </g>
-
-        {/* Nodes */}
-        <circle cx="50" cy="50" r="20" fill="#99FFCC" />
-        <text x="50" y="55" textAnchor="middle" fill="black" fontWeight="bold">4</text>
-        <text x="50" y="90" textAnchor="middle" fill="white" fontSize="12">Agri Sectors</text>
-
-        <circle cx="200" cy="100" r="20" fill="#66CCFF" />
-        <text x="200" y="105" textAnchor="middle" fill="black" fontWeight="bold">640</text>
-        <text x="200" y="140" textAnchor="middle" fill="white" fontSize="12">Food</text>
-
-        <circle cx="350" cy="100" r="20" fill="#FF9900" />
-        <text x="350" y="105" textAnchor="middle" fill="black" fontWeight="bold">1.2M</text>
-        <text x="350" y="140" textAnchor="middle" fill="white" fontSize="12">Population</text>
-      </svg>
-    </div>
-  );
-}
-```
-
 ---
 
 ## 7. Animation & Motion
 
-### 7.1 Animation Strategy
-
-**Hybrid Approach: CSS for Simple, GSAP for Complex**
+### 7.1 Animation Strategy: CSS + GSAP Hybrid
 
 **CSS Transitions - Use For:**
-- Hover states
-- Focus states
-- Simple show/hide
-- Color changes
-- Opacity fades
+- ✅ Hover states
+- ✅ Focus states
+- ✅ Simple show/hide
+- ✅ Color changes
+- ✅ Opacity fades
+- ✅ Scale transforms (buttons)
 
 **GSAP Timelines - Use For:**
-- Combat sequences
-- Turn transitions
-- Star map interactions
-- Multi-step animations (3+ steps)
-- Complex easing curves
+- ✅ Combat sequences (multi-step)
+- ✅ Turn transitions (flash overlay, number updates)
+- ✅ Star map interactions (zoom, pan, highlight)
+- ✅ Complex easing curves (bounce, elastic)
+- ✅ Any animation with 3+ sequential steps
 
 ### 7.2 CSS Animation Guidelines
 
 **Performance Best Practices:**
+
 ```css
 /* ✅ GOOD - Animate transform and opacity only */
 .card {
@@ -1676,26 +1389,11 @@ export function ResourceFlowDiagram() {
 ```
 
 **Timing Guidelines:**
-```css
-/* Micro-interactions: 100-200ms */
-.button {
-  transition: background-color 150ms ease;
-}
+- **Micro-interactions:** 100-200ms (hover, focus)
+- **UI elements:** 200-300ms (panels, modals)
+- **Page transitions:** 300-500ms (max)
 
-/* UI elements: 200-300ms */
-.panel {
-  transition: transform 250ms ease-out;
-}
-
-/* Page transitions: 300-500ms (max) */
-.page-transition {
-  transition: opacity 400ms ease-in-out;
-}
-
-/* Never exceed 500ms for UI animations */
-```
-
-**Common Tailwind Animation Classes:**
+**Common Tailwind Classes:**
 
 ```tsx
 // Fade in
@@ -1714,7 +1412,7 @@ export function ResourceFlowDiagram() {
 <div className="animate-pulse">
 ```
 
-### 7.3 GSAP Implementation Guide
+### 7.3 GSAP Implementation
 
 **Installation:**
 
@@ -1722,7 +1420,7 @@ export function ResourceFlowDiagram() {
 npm install gsap
 ```
 
-**Example: Combat Animation Sequence**
+**Combat Animation Sequence:**
 
 ```typescript
 import gsap from 'gsap';
@@ -1765,11 +1463,11 @@ export function animateCombatSequence(
     ease: 'power1.inOut',
   });
 
-  return tl; // Return timeline for external control (pause, reverse, etc.)
+  return tl;
 }
 ```
 
-**Example: Turn Transition**
+**Turn Transition:**
 
 ```typescript
 export function animateTurnTransition(fromTurn: number, toTurn: number) {
@@ -1798,8 +1496,6 @@ export function animateTurnTransition(fromTurn: number, toTurn: number) {
 ```
 
 ### 7.4 Respect Reduced Motion
-
-**Always check user preferences:**
 
 ```tsx
 // Hook to detect reduced motion preference
@@ -1841,8 +1537,6 @@ function MyComponent() {
 
 ### 8.1 Number Formatting
 
-**Utility Function:**
-
 ```typescript
 export function formatNumber(value: number, decimals: number = 0): string {
   if (value >= 1_000_000) {
@@ -1864,22 +1558,7 @@ export function formatPercentage(value: number, decimals: number = 1): string {
 }
 ```
 
-**Usage:**
-
-```tsx
-<span className="font-mono text-2xl">{formatNumber(1_234_567)}</span>
-// Output: "1.2M"
-
-<span className="text-lcars-green">{formatChange(5_400)}</span>
-// Output: "+5.4K"
-
-<span>{formatPercentage(0.8542, 0)}</span>
-// Output: "85%"
-```
-
-### 8.2 Charts & Graphs
-
-**Win Probability Bar:**
+### 8.2 Win Probability Bar
 
 ```tsx
 interface WinProbabilityBarProps {
@@ -1930,43 +1609,13 @@ export function WinProbabilityBar({ probability }: WinProbabilityBarProps) {
 }
 ```
 
-**Resource Trend Line (Mini Chart):**
-
-```tsx
-export function ResourceTrendLine({ history }: { history: number[] }) {
-  const max = Math.max(...history);
-  const min = Math.min(...history);
-  const range = max - min;
-
-  const points = history.map((value, index) => {
-    const x = (index / (history.length - 1)) * 100;
-    const y = 100 - ((value - min) / range) * 100;
-    return `${x},${y}`;
-  }).join(' ');
-
-  const isPositiveTrend = history[history.length - 1] > history[0];
-
-  return (
-    <svg className="w-full h-16" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <polyline
-        points={points}
-        fill="none"
-        stroke={isPositiveTrend ? '#99FFCC' : '#FF6666'}
-        strokeWidth="2"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  );
-}
-```
-
 ---
 
 ## 9. Accessibility
 
 ### 9.1 Keyboard Navigation
 
-**All interactive elements must be keyboard accessible:**
+All interactive elements must be keyboard accessible:
 
 ```tsx
 // ✅ GOOD - Proper keyboard navigation
@@ -1982,53 +1631,35 @@ export function ResourceTrendLine({ history }: { history: number[] }) {
 >
   Launch Attack
 </button>
-
-// ✅ GOOD - Divs with proper role and keyboard handling
-<div
-  role="button"
-  tabIndex={0}
-  className="..."
-  onClick={handleClick}
-  onKeyDown={(e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleClick();
-    }
-  }}
->
-  Card content
-</div>
 ```
 
-**Keyboard Shortcuts:**
+**Global Keyboard Shortcuts:**
 
 ```tsx
-// Global keyboard shortcuts
 useEffect(() => {
   function handleKeyPress(e: KeyboardEvent) {
-    // Don't trigger if user is typing in an input
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
       return;
     }
 
     switch (e.key.toLowerCase()) {
-      case 'b':
-        router.push('/game/military?action=build');
-        break;
-      case 'a':
-        router.push('/game/military?action=attack');
-        break;
       case 'm':
         router.push('/game/starmap');
         break;
+      case 'b':
+        router.push('/game/starmap?panel=military&action=build');
+        break;
+      case 'a':
+        router.push('/game/starmap?panel=military&action=attack');
+        break;
       case 'r':
-        router.push('/game/research');
+        router.push('/game/starmap?panel=research');
         break;
       case 'd':
-        router.push('/game/diplomacy');
+        router.push('/game/starmap?panel=diplomacy');
         break;
       case 'escape':
-        closeAllModals();
+        closeAllPanels();
         break;
     }
   }
@@ -2043,14 +1674,10 @@ useEffect(() => {
 **ARIA Labels:**
 
 ```tsx
-// ✅ GOOD - Descriptive labels
+// Descriptive labels
 <button aria-label="Launch attack on Empire Vexar Coalition">
   <Swords className="w-4 h-4" />
 </button>
-
-<div aria-label="Combat power: 45,200 units">
-  45.2K
-</div>
 
 // Live regions for dynamic updates
 <div aria-live="polite" aria-atomic="true">
@@ -2062,124 +1689,32 @@ useEffect(() => {
 </div>
 ```
 
-**Semantic HTML:**
-
-```tsx
-// ✅ GOOD - Use semantic elements
-<nav aria-label="Main navigation">
-  <Link href="/game">Dashboard</Link>
-  <Link href="/game/starmap">Star Map</Link>
-</nav>
-
-<main>
-  <h1>Empire Dashboard</h1>
-  <section aria-labelledby="resources-heading">
-    <h2 id="resources-heading">Resources</h2>
-    {/* content */}
-  </section>
-</main>
-
-<aside aria-label="Messages">
-  {/* sidebar content */}
-</aside>
-```
-
 ### 9.3 Color Contrast
 
 **WCAG AA Compliance:**
-
-All text must meet minimum contrast ratios:
-- Normal text (< 18px): 4.5:1
-- Large text (≥ 18px): 3:1
-
-```tsx
-// ✅ GOOD - High contrast combinations
-<div className="bg-background-space text-white">
-  // Contrast ratio: 15.1:1 ✅
-</div>
-
-<div className="bg-slate-900 text-slate-300">
-  // Contrast ratio: 8.2:1 ✅
-</div>
-
-// ❌ BAD - Low contrast
-<div className="bg-slate-800 text-slate-600">
-  // Contrast ratio: 2.1:1 ❌ Fails WCAG
-</div>
-```
+- Normal text (< 18px): 4.5:1 contrast ratio
+- Large text (≥ 18px): 3:1 contrast ratio
 
 **Don't rely on color alone:**
 
 ```tsx
-// ❌ BAD - Color only
-<span className="text-green-500">+1,500</span>
-<span className="text-red-500">-800</span>
-
-// ✅ GOOD - Color + Symbol/Text
-<span className="text-lcars-green">+1,500</span>
-<span className="text-lcars-red">-800</span>
-
-// Even better - use icons
+// ✅ GOOD - Color + Icon
 <span className="text-lcars-green flex items-center gap-1">
   <TrendingUp className="w-4 h-4" />
   +1,500
 </span>
 ```
 
-### 9.4 Mobile Responsiveness
-
-**Touch Targets:**
-
-Minimum touch target size: 44x44px (iOS guideline)
-
-```tsx
-// ✅ GOOD - Large enough for touch
-<button className="px-6 py-3 min-h-[44px] min-w-[44px]">
-  Tap Me
-</button>
-
-// ❌ BAD - Too small
-<button className="p-1">
-  <X className="w-3 h-3" />
-</button>
-
-// ✅ GOOD - Icon button with proper padding
-<button className="p-3" aria-label="Close">
-  <X className="w-5 h-5" />
-</button>
-```
-
-**Responsive Breakpoints:**
-
-```tsx
-// Mobile-first approach
-<div className="
-  // Mobile (default)
-  flex flex-col p-4
-
-  // Tablet (768px+)
-  md:flex-row md:p-6
-
-  // Desktop (1024px+)
-  lg:grid lg:grid-cols-3 lg:p-8
-
-  // Wide (1280px+)
-  xl:grid-cols-4
-">
-  Content
-</div>
-```
-
 ---
 
 ## 10. Testing Conventions
 
-### 10.1 data-testid Naming Convention
+### 10.1 data-testid Naming
 
 **Pattern:** `[area]-[component]-[identifier]-[action]`
 
 ```tsx
-// Sector card in sector list
+// Sector card
 <div data-testid="sector-card-antares-v">
   <button data-testid="sector-card-antares-v-manage">Manage</button>
   <button data-testid="sector-card-antares-v-release">Release</button>
@@ -2191,37 +1726,6 @@ Minimum touch target size: 44x44px (iOS guideline)
   <input data-testid="combat-interface-quantity-input" />
   <button data-testid="combat-interface-attack-button">Launch Attack</button>
 </div>
-
-// Research branch card
-<div data-testid="research-branch-soldiers">
-  <input data-testid="research-branch-soldiers-allocation-slider" />
-  <button data-testid="research-branch-soldiers-fund-button">Fund</button>
-</div>
-```
-
-**Rules:**
-- Use kebab-case
-- Be specific (avoid generic names like "button" or "select")
-- Include context (what page/section?)
-- For dynamic IDs, use the actual ID (empire name, sector name, etc.)
-
-### 10.2 Playwright E2E Test Selectors
-
-```typescript
-// Use data-testid for reliable selectors
-const attackButton = page.getByTestId('combat-interface-attack-button');
-await attackButton.click();
-
-// For dynamic content, use partial matches
-const sectorCard = page.getByTestId(/^sector-card-/);
-await expect(sectorCard).toBeVisible();
-
-// Prefer data-testid over text content (text may change with i18n)
-// ❌ BAD
-await page.getByText('Launch Attack').click();
-
-// ✅ GOOD
-await page.getByTestId('combat-interface-attack-button').click();
 ```
 
 ---
@@ -2230,39 +1734,21 @@ await page.getByTestId('combat-interface-attack-button').click();
 
 ### 11.1 Tech Stack
 
-**Required Dependencies:**
-
-```json
-{
-  "dependencies": {
-    "next": "^14.0.0",
-    "react": "^18.2.0",
-    "tailwindcss": "^3.4.0",
-    "d3": "^7.8.5",
-    "gsap": "^3.12.0",
-    "lucide-react": "^0.300.0",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0"
-  },
-  "devDependencies": {
-    "@types/d3": "^7.4.3",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.33"
-  }
-}
-```
+**Framework:** Next.js 14 with App Router
+**Styling:** Tailwind CSS
+**Visualization:** D3.js
+**Animation:** CSS Transitions + GSAP
+**Icons:** Lucide React
+**Utilities:** clsx, tailwind-merge
 
 ### 11.2 Tailwind Configuration
 
-**Complete tailwind.config.ts:**
-
 ```typescript
+// tailwind.config.ts
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
@@ -2322,9 +1808,8 @@ export default config;
 
 ### 11.3 Font Setup
 
-**Add to `app/layout.tsx`:**
-
 ```tsx
+// app/layout.tsx
 import { Orbitron, Exo_2, Roboto_Mono } from 'next/font/google';
 
 const orbitron = Orbitron({
@@ -2349,6 +1834,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${orbitron.variable} ${exo2.variable} ${robotoMono.variable}`}>
       <body className="font-body">
+        <SpaceBackground />
         {children}
       </body>
     </html>
@@ -2358,9 +1844,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ### 11.4 Utility Functions
 
-**Create `src/lib/ui/utils.ts`:**
-
 ```typescript
+// src/lib/ui/utils.ts
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -2398,9 +1883,8 @@ export function formatTime(seconds: number): string {
 
 ## Related Documents
 
-- **[Frontend Developer Manual](frontend-developer-manual.md)** - Technical implementation guide, architecture patterns, server actions
-- **[PRD.md](../PRD.md)** - Product requirements and game mechanics specifications
-- **[BOT-SYSTEM.md](BOT-SYSTEM.md)** - Bot AI architecture and emotional states
+- **[Frontend Developer Manual](frontend-developer-manual.md)** - Technical implementation, architecture, server actions
+- **[PRD.md](../PRD.md)** - Product requirements and game mechanics
 - **[GAME-DESIGN.md](../core/GAME-DESIGN.md)** - Core game design philosophy
 
 ---
@@ -2409,8 +1893,9 @@ export function formatTime(seconds: number): string {
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.0 | 2026-01-11 | Consolidated from UI_DESIGN.md, UI-DESIGN.md, UX-ROADMAP.md. Incorporated approved design decisions. |
-| 1.0 | 2024-12-28 | Initial UI_DESIGN.md creation |
+| 3.0 | 2026-01-12 | **CONSOLIDATED DOCUMENT.** Merged FRONTEND-GUIDE.md, UI_DESIGN.md, UX-DESIGN.md, UX-ROADMAP.md. Implemented Star Map as Hub architecture. Added Card + Details Sidebar pattern. Integrated Phase Indicator and Actionable Guidance systems. |
+| 2.0 | 2026-01-11 | (Previous UX-DESIGN.md consolidation) |
+| 1.0 | 2024-12-28 | (Original UI_DESIGN.md) |
 
 ---
 
