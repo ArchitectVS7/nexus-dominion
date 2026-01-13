@@ -914,11 +914,17 @@ Where:
 
 ---
 
-### REQ-SEC-004: Production Timing
+### REQ-SEC-004: Production Timing (Split)
 
-**Description:** All sectors produce resources at the Turn Boundary (server-side turn processing). Production is added to empire stockpile before consumption calculations. Newly acquired sectors do not produce until the *next* turn boundary.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-SEC-004-A through REQ-SEC-004-C.
 
-**Rationale:** Deterministic turn processing ensures predictable economy. Delaying new sector production by 1 turn prevents same-turn exploitation (acquire + immediate benefit). Server-side processing prevents client-side manipulation.
+---
+
+### REQ-SEC-004-A: Turn Boundary Production Timing
+
+**Description:** All sectors produce resources at the Turn Boundary during server-side turn processing. Production is deterministic and server-side to prevent client-side manipulation.
+
+**Rationale:** Deterministic turn processing ensures predictable economy. Server-side processing prevents client-side manipulation and ensures fair play.
 
 **Source:** Section 3.3 - Production Timing
 
@@ -928,7 +934,42 @@ Where:
 
 **Tests:**
 - `src/lib/game/__tests__/turn-processing.test.ts` - "should produce resources from all sectors at turn boundary"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-004-B: New Sector Production Delay
+
+**Description:** Newly acquired sectors do not produce resources until the next turn boundary. 1 turn delay prevents same-turn exploitation (acquire sector + immediate benefit).
+
+**Rationale:** Delaying new sector production by 1 turn prevents same-turn exploitation and creates strategic timing considerations for sector acquisition.
+
+**Source:** Section 3.3 - Production Timing
+
+**Code:**
+- `src/lib/game/turn-processing.ts` - `processTurnBoundary()` function
+- `src/lib/sectors/production.ts` - `calculateSectorProduction(empire: Empire): Resources`
+
+**Tests:**
 - `src/lib/game/__tests__/turn-processing.test.ts` - "newly acquired sectors should not produce on same turn"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-004-C: Production Before Consumption Order
+
+**Description:** Production is added to empire stockpile before consumption calculations during turn processing. Ensures current turn's production can satisfy current turn's consumption.
+
+**Rationale:** Production-before-consumption ordering ensures predictable economy and allows current production to meet current needs.
+
+**Source:** Section 3.3 - Production Timing
+
+**Code:**
+- `src/lib/game/turn-processing.ts` - `processTurnBoundary()` function
+
+**Tests:**
 - `src/lib/game/__tests__/turn-processing.test.ts` - "production should occur before consumption calculations"
 
 **Status:** Draft
