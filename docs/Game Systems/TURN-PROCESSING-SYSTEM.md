@@ -1541,18 +1541,30 @@ else:
 
 ---
 
-### REQ-TURN-004: Income Phase Execution
+### REQ-TURN-004: Income Phase Execution (PARENT)
 
-**Description:** Income Phase (Phase 1) generates resources for all empires based on formula:
+**Description:** Income Phase (Phase 1) generates resources for all empires. This parent spec tracks the complete income phase system.
+
+**Children:**
+- REQ-TURN-004.1: Income Generation Formula
+- REQ-TURN-004.2: Civil Status Income Multipliers
+
+**Rationale:** Resource generation is foundation of game economy. Civil status link incentivizes maintaining morale.
+
+**Source:** Section 3.1
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-004.1: Income Generation Formula
+
+**Description:** Base income formula for resource generation:
 ```
 credits_income = base_credits_per_sector * num_sectors * civil_status_multiplier
 ore_income = base_ore_per_sector * num_sectors * civil_status_multiplier
 food_income = base_food_per_sector * num_sectors * civil_status_multiplier
 ```
-
-Civil status multipliers: Happy (1.2), Content (1.0), Unrest (0.8), Rebellion (0.5).
-
-**Rationale:** Resource generation is foundation of game economy. Civil status link incentivizes maintaining morale.
 
 **Formula:**
 ```
@@ -1565,23 +1577,46 @@ income = base_rate * sector_count * civil_multiplier
 | base_credits_per_sector | 100 | Base credit generation per sector |
 | base_ore_per_sector | 50 | Base ore generation per sector |
 | base_food_per_sector | 75 | Base food generation per sector |
-| civil_status_multiplier (Happy) | 1.2 | +20% income bonus |
-| civil_status_multiplier (Content) | 1.0 | Normal income |
-| civil_status_multiplier (Unrest) | 0.8 | -20% income penalty |
-| civil_status_multiplier (Rebellion) | 0.5 | -50% income penalty |
+
+**Rationale:** Sector-based income scales with empire size, creating expansion incentives.
 
 **Source:** Section 3.1
 
 **Code:**
 - `src/lib/game/services/phases/income-phase.ts` - `processIncomePhase()`
-- `src/lib/game/services/civil-status.ts` - `getCivilStatusMultiplier()`
 
 **Tests:**
-- `src/lib/game/services/__tests__/income-phase.test.ts` - Verify income calculation with various civil statuses
+- `src/lib/game/services/__tests__/income-phase.test.ts` - Verify base income calculation
 
 **Status:** Draft
 
 ---
+
+### REQ-TURN-004.2: Civil Status Income Multipliers
+
+**Description:** Civil status affects income generation through multipliers:
+
+| Civil Status | Multiplier | Effect |
+|--------------|------------|--------|
+| Happy | 1.2 | +20% income bonus |
+| Content | 1.0 | Normal income |
+| Unrest | 0.8 | -20% income penalty |
+| Rebellion | 0.5 | -50% income penalty |
+
+**Rationale:** Civil status multipliers incentivize maintaining high morale and create consequences for poor governance.
+
+**Source:** Section 3.1
+
+**Code:**
+- `src/lib/game/services/civil-status.ts` - `getCivilStatusMultiplier()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/income-phase.test.ts` - Verify multiplier effects on income
+
+**Status:** Draft
+
+---
+
 
 ### REQ-TURN-005: Auto-Production Phase
 

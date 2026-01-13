@@ -2948,10 +2948,27 @@
         },
         {
           "id": "REQ-TURN-004",
-          "title": "Income Phase Execution",
+          "title": "Income Phase Execution (PARENT)",
           "atomic": false,
-          "line": 1115,
-          "splitCandidate": "formula + multiplier"
+          "line": 1544,
+          "children": [
+            "REQ-TURN-004.1",
+            "REQ-TURN-004.2"
+          ]
+        },
+        {
+          "id": "REQ-TURN-004.1",
+          "title": "Income Generation Formula",
+          "atomic": true,
+          "line": 1556,
+          "parent": "REQ-TURN-004"
+        },
+        {
+          "id": "REQ-TURN-004.2",
+          "title": "Civil Status Income Multipliers",
+          "atomic": true,
+          "line": 1617,
+          "parent": "REQ-TURN-004"
         },
         {
           "id": "REQ-TURN-005",
@@ -3056,7 +3073,7 @@
           "id": "REQ-TURN-019",
           "title": "Victory Check Phase (Split)",
           "atomic": true,
-          "line": 1950,
+          "line": 1976,
           "parentOf": [
             "REQ-TURN-019-01",
             "REQ-TURN-019-02",
@@ -3070,56 +3087,56 @@
           "id": "REQ-TURN-019-01",
           "title": "Military Victory Check",
           "atomic": true,
-          "line": 1958,
+          "line": 1984,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-02",
           "title": "Economic Victory Check",
           "atomic": true,
-          "line": 1991,
+          "line": 2017,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-03",
           "title": "Diplomatic Victory Check",
           "atomic": true,
-          "line": 2024,
+          "line": 2050,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-04",
           "title": "Research Victory Check",
           "atomic": true,
-          "line": 2058,
+          "line": 2084,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-05",
           "title": "Covert Victory Check",
           "atomic": true,
-          "line": 2091,
+          "line": 2117,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-06",
           "title": "Survival Victory Check",
           "atomic": true,
-          "line": 2124,
+          "line": 2150,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-020",
           "title": "Auto-Save Phase",
           "atomic": false,
-          "line": 2157,
+          "line": 2183,
           "splitCandidate": "save + rotation + failure"
         },
         {
           "id": "REQ-TURN-021",
           "title": "Performance Budget (Split)",
           "atomic": true,
-          "line": 2176,
+          "line": 2202,
           "parentOf": [
             "REQ-TURN-021-A",
             "REQ-TURN-021-B",
@@ -3131,28 +3148,28 @@
           "id": "REQ-TURN-021-A",
           "title": "Tier 1 Performance Budget",
           "atomic": true,
-          "line": 2191,
+          "line": 2217,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-B",
           "title": "Bot Decisions Performance Budget",
           "atomic": true,
-          "line": 2218,
+          "line": 2244,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-C",
           "title": "Tier 2 Performance Budget",
           "atomic": true,
-          "line": 2245,
+          "line": 2271,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-D",
           "title": "UI and Animation Performance Budget",
           "atomic": true,
-          "line": 2272,
+          "line": 2298,
           "splitFrom": "REQ-TURN-021"
         }
       ]
@@ -3466,9 +3483,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 378,
-    "atomicSpecs": 338,
-    "splitCandidates": 31,
+    "totalSpecs": 379,
+    "atomicSpecs": 340,
+    "splitCandidates": 30,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
