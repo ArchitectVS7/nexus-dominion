@@ -1753,28 +1753,100 @@ When market event generated (for turn T):
 
 ---
 
-### REQ-MKT-009: Market History & Transparency
+### REQ-MKT-009: Market History & Transparency (Split)
 
-**Description:** Public information visible to all:
-- Current prices (all resources)
-- Price history (last 20 turns, line graph)
-- Active market events
-- Total market volume (last 5 turns)
+> **Note:** This spec has been split into atomic sub-specs. See REQ-MKT-009-A through REQ-MKT-009-B.
 
-Private information (Merchant only):
-- Next turn price predictions
-- Large bot orders
-- Upcoming event detection
+---
 
-**Rationale:** Informed decision-making requires historical data. Merchant passive provides information edge without full transparency.
+### REQ-MKT-009-A: Public Market Information
+
+**Description:** All players have access to public market information including current prices for all resources, 20-turn price history with line graphs, active market events, and total market volume for the last 5 turns.
+
+**Rationale:** Informed decision-making requires historical data. Public transparency creates fair market conditions while allowing skilled players to identify patterns and opportunities.
+
+**Public Information:**
+| Information Type | Details | Display |
+|------------------|---------|---------|
+| Current prices | All resources (Food, Ore, Petroleum) | Real-time |
+| Price history | Last 20 turns | Line graph |
+| Active market events | Current events and duration | Event panel |
+| Market volume | Last 5 turns total | Bar chart |
+
+**Price History Display:**
+- X-axis: Last 20 turns (T-20 to current)
+- Y-axis: Price in credits
+- Three lines: Food (green), Ore (orange), Petroleum (red)
+- Markers for major price swings (>30%)
+- Event annotations on timeline
+
+**Market Volume Display:**
+- Total buy + sell volume per turn
+- Last 5 turns shown as bar chart
+- Helps identify unusual market activity
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5
 
 **Code:**
-- `src/lib/market/history.ts` - `getMarketHistory()`, `recordTransaction()`
+- `src/lib/market/history.ts` - `getPublicMarketData()`, `recordTransaction()`
+- `src/lib/market/price-history.ts` - Historical price tracking
+- `src/lib/market/volume-tracker.ts` - Volume aggregation
 
 **Tests:**
-- `src/lib/market/__tests__/history.test.ts` - History tracking tests
+- `src/lib/market/__tests__/history.test.ts` - Test 20-turn window and public visibility
+- `src/lib/market/__tests__/volume-tracker.test.ts` - Verify 5-turn volume calculation
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-009-B: Private Merchant Information
+
+**Description:** Merchant archetype (and their coalition allies) have access to private market information not available to other players. This includes next turn price predictions, visibility of large bot orders, and early detection of upcoming market events.
+
+**Rationale:** Provides Merchant archetype with information edge as their core passive ability. Information advantage creates viable economic specialization without full market transparency. Coalition sharing creates synergy benefits.
+
+**Private Information Access:**
+| Information Type | Visibility | Source Spec |
+|------------------|-----------|-------------|
+| Next turn price predictions | Merchant + allies | REQ-MKT-007-A |
+| Large bot orders (>10k units) | Merchant + allies | REQ-MKT-007-B |
+| Upcoming event detection | Merchant + allies | REQ-MKT-007-C |
+
+**Access Control:**
+- Check player archetype: Must be Merchant
+- Check coalition membership: Allied with Merchant player
+- No access for other archetypes (even if high VP)
+
+**Display Integration:**
+- Private information shown with special icon/color
+- Tooltip: "Merchant Insight" indicator
+- Clear visual distinction from public data
+- No information leakage in UI
+
+**Coalition Sharing:**
+- All coalition members see Merchant's private info
+- Benefit persists while coalition active
+- Removed immediately upon coalition dissolution
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.5
+
+**Code:**
+- `src/lib/market/history.ts` - `getPrivateMarketData()`
+- `src/lib/market/access-control.ts` - Merchant visibility checks
+- `src/lib/bots/archetypes/merchant.ts` - Passive ability integration
+
+**Tests:**
+- `src/lib/market/__tests__/history.test.ts` - Test Merchant-only access
+- `src/lib/market/__tests__/access-control.test.ts` - Verify coalition sharing and restrictions
 
 **Status:** Draft
 

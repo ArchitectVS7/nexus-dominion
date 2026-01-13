@@ -169,7 +169,9 @@
         { "id": "REQ-MKT-008-B", "title": "Warlord Trading Behavior", "atomic": true, "line": 1348, "splitFrom": "REQ-MKT-008" },
         { "id": "REQ-MKT-008-C", "title": "Turtle Trading Behavior", "atomic": true, "line": 1381, "splitFrom": "REQ-MKT-008" },
         { "id": "REQ-MKT-008-D", "title": "Schemer Trading Behavior", "atomic": true, "line": 1414, "splitFrom": "REQ-MKT-008" },
-        { "id": "REQ-MKT-009", "title": "Market History & Transparency", "atomic": false, "line": 1447, "splitCandidate": "public + private info types" },
+        { "id": "REQ-MKT-009", "title": "Market History & Transparency (Split)", "atomic": true, "line": 1756, "parentOf": ["REQ-MKT-009-A", "REQ-MKT-009-B"] },
+        { "id": "REQ-MKT-009-A", "title": "Public Market Information", "atomic": true, "line": 1762, "splitFrom": "REQ-MKT-009" },
+        { "id": "REQ-MKT-009-B", "title": "Private Merchant Information", "atomic": true, "line": 1807, "splitFrom": "REQ-MKT-009" },
         { "id": "REQ-MKT-010", "title": "Base Resource Prices", "atomic": true, "line": 985 },
         { "id": "REQ-MKT-011", "title": "Commerce Research Integration", "atomic": true, "line": 1013 },
         { "id": "REQ-MKT-012", "title": "Market UI Real-Time Updates", "atomic": false, "line": 1038, "splitCandidate": "interval + timeout + animation" }
@@ -456,9 +458,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 310,
-    "atomicSpecs": 242,
-    "splitCandidates": 59,
+    "totalSpecs": 311,
+    "atomicSpecs": 244,
+    "splitCandidates": 58,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
