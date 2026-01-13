@@ -293,7 +293,7 @@ If empire cannot afford maintenance costs:
 - **Resource scarcity** - Petroleum limits cruiser/carrier production
 - **Maintenance drain** - Large fleets consume income
 - **Production time** - 5-turn builds limit rapid mobilization
-- **Population cap** - Limits total unit slots (see GAME-DESIGN.md)
+- **Population cap** - Limits total unit slots (see SECTOR-MANAGEMENT-SYSTEM.md)
 
 **Design Philosophy:** "Consequence over limits" - players can build as many units as they can afford and maintain.
 
@@ -571,25 +571,136 @@ When viewing individual units:
 
 ---
 
-### REQ-MIL-002: Build Queue System
+### REQ-MIL-002: Build Queue System (Split)
 
-**Description:** Units are constructed via a build queue with per-turn completion:
-- Resources deducted upfront when queuing
-- Each unit has production time: 1-5 turns
-- Multiple units can be built simultaneously
-- Units complete independently based on production time
-- Cancellation before completion refunds 50% of cost
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-MIL-002-A through REQ-MIL-002-D below.
 
-**Rationale:** Prevents instant army creation, requires planning. Multi-turn builds create strategic investment decisions.
+**Overview:** Units are constructed via a build queue with multi-turn production, upfront payment, and cancellation options.
 
-**Source:** Section 2.3, Section 3.1
+**Build Mechanics:**
+- Queue Management: Parallel builds [REQ-MIL-002-A]
+- Upfront Payment: Resources deducted at queue time [REQ-MIL-002-B]
+- Production Times: 1-5 turns per unit [REQ-MIL-002-C]
+- Cancellation: 50% refund before completion [REQ-MIL-002-D]
 
-**Code:**
-- `src/lib/game/services/build-queue-service.ts` - Queue management
-- `src/app/actions/build-actions.ts` - Build unit actions
+---
 
-**Tests:**
-- `src/lib/game/services/__tests__/build-queue-service.test.ts` - Queue operations
+### REQ-MIL-002-A: Build Queue Management
+
+**Description:** Multiple units can be queued and built simultaneously, with each unit completing independently based on its own production timer.
+
+**Queue Rules:**
+- Multiple units: Players can queue unlimited units (resource-limited)
+- Parallel builds: All queued units build simultaneously
+- Independent completion: Each unit tracks its own production timer
+- No queue limit: Only limited by available resources at queue time
+- Persistent: Queue survives across turns until completion
+
+**Rationale:** Parallel building allows strategic investment across multiple unit types. No arbitrary queue limits - only economic constraints matter.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Build Queue System, Parallel Production
+
+**Code:** TBD - `src/lib/game/services/build-queue-service.ts` - Queue management
+
+**Tests:** TBD - Verify multiple units build in parallel
+
+**Status:** Draft
+
+---
+
+### REQ-MIL-002-B: Upfront Resource Deduction
+
+**Description:** All resource costs for a unit are deducted immediately when the unit is queued, not when it completes production.
+
+**Payment Rules:**
+- Timing: Resources deducted at queue time (not completion)
+- Full cost: Complete unit cost paid upfront
+- Insufficient resources: Cannot queue if resources unavailable
+- No installments: Cannot pay partially over multiple turns
+- Economic commitment: Resources locked into production immediately
+
+**Rationale:** Upfront payment creates meaningful economic decisions. Players must have resources available now, preventing overextension. Simplifies turn processing (no per-turn payment tracking).
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Build Queue System, Upfront Costs
+
+**Code:** TBD - `src/lib/game/services/build-queue-service.ts` - Resource deduction
+
+**Tests:** TBD - Verify resources deducted when queued
+
+**Status:** Draft
+
+---
+
+### REQ-MIL-002-C: Multi-Turn Production Times
+
+**Description:** Each unit type has a production time of 1-5 turns, with units completing automatically when their production timer reaches zero.
+
+**Production Time Rules:**
+- Duration: 1-5 turns depending on unit type (exact values in REQ-MIL-003)
+- Turn-based: Timer decrements by 1 each turn
+- Auto-completion: Unit added to empire when timer reaches 0
+- No acceleration: Production time cannot be reduced
+- Independent timers: Each queued unit tracks its own countdown
+
+**Example:**
+- Turn 1: Queue Carrier (5 turns) - timer: 5
+- Turn 2: Timer: 4
+- Turn 3: Queue Fighter (2 turns) - Carrier timer: 3, Fighter timer: 2
+- Turn 4: Carrier timer: 2, Fighter timer: 1
+- Turn 5: Carrier timer: 1, Fighter completes
+- Turn 6: Carrier completes
+
+**Rationale:** Multi-turn production prevents instant army spam. Creates strategic planning requirement - must anticipate future needs. High-value units require longer commitment.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Build Queue System, Production Times
+
+**Code:** TBD - `src/lib/game/turn-processing/build-completion-phase.ts` - Timer decrement
+
+**Tests:** TBD - Verify units complete after correct turn count
+
+**Status:** Draft
+
+---
+
+### REQ-MIL-002-D: Build Cancellation and Refunds
+
+**Description:** Players can cancel queued units before completion, receiving a 50% refund of the original resource costs.
+
+**Cancellation Rules:**
+- Availability: Can cancel any time before completion
+- Refund rate: 50% of original costs returned
+- Rounding: Round down to nearest integer for partial resources
+- No penalty: No additional penalty beyond 50% loss
+- Immediate: Refund applied instantly when cancelled
+
+**Example:**
+- Queue Carrier: 30,000 cr, 4,000 ore, 1,500 petroleum (paid upfront)
+- Cancel after 3 turns: Receive 15,000 cr, 2,000 ore, 750 petroleum
+- Lost: 15,000 cr, 2,000 ore, 750 petroleum (50% sunk cost)
+
+**Rationale:** Cancellation option provides flexibility for strategic pivots. 50% penalty creates meaningful sunk cost - not free to change plans, but not catastrophic. Encourages thoughtful queueing without locking players into bad decisions.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Build Cancellation
+
+**Code:** TBD - `src/lib/game/services/build-queue-service.ts` - Cancellation and refunds
+
+**Tests:** TBD - Verify 50% refund calculation
 
 **Status:** Draft
 

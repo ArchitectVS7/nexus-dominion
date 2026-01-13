@@ -146,8 +146,12 @@
       "file": "docs/Game Systems/MILITARY-SYSTEM.md",
       "specs": [
         { "id": "REQ-MIL-001", "title": "Six Unit Types", "atomic": true, "line": 548, "note": "Title says 6, lists 7 units" },
-        { "id": "REQ-MIL-002", "title": "Build Queue System", "atomic": false, "line": 574, "splitCandidate": "queue + upfront + multi-turn + cancel" },
-        { "id": "REQ-MIL-003", "title": "Resource Costs", "atomic": true, "line": 598 },
+        { "id": "REQ-MIL-002", "title": "Build Queue System (Split)", "atomic": true, "line": 574, "parentOf": ["REQ-MIL-002-A", "REQ-MIL-002-B", "REQ-MIL-002-C", "REQ-MIL-002-D"] },
+        { "id": "REQ-MIL-002-A", "title": "Build Queue Management", "atomic": true, "line": 588, "splitFrom": "REQ-MIL-002" },
+        { "id": "REQ-MIL-002-B", "title": "Upfront Resource Deduction", "atomic": true, "line": 615, "splitFrom": "REQ-MIL-002" },
+        { "id": "REQ-MIL-002-C", "title": "Multi-Turn Production Times", "atomic": true, "line": 642, "splitFrom": "REQ-MIL-002" },
+        { "id": "REQ-MIL-002-D", "title": "Build Cancellation and Refunds", "atomic": true, "line": 677, "splitFrom": "REQ-MIL-002" },
+        { "id": "REQ-MIL-003", "title": "Resource Costs", "atomic": true, "line": 709 },
         { "id": "REQ-MIL-004", "title": "Maintenance Costs", "atomic": false, "line": 627, "splitCandidate": "costs + attrition" },
         { "id": "REQ-MIL-005", "title": "Production Time", "atomic": true, "line": 660 },
         { "id": "REQ-MIL-006", "title": "Power Multipliers", "atomic": true, "line": 686, "note": "Potential duplicate of REQ-COMBAT-004" },
@@ -418,9 +422,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 283,
-    "atomicSpecs": 204,
-    "splitCandidates": 72,
+    "totalSpecs": 286,
+    "atomicSpecs": 208,
+    "splitCandidates": 71,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
