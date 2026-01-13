@@ -2349,33 +2349,105 @@ Economic Hegemony Income = floor(2nd_place_empire_income × 0.5)
 
 ---
 
-### REQ-RSCH-005: Research Point Economy
+### REQ-RSCH-005: Research Point Economy (Split)
 
-**Description:**
-- Research sectors generate 100 RP per turn
-- RP accumulates toward tier thresholds: 1,000 (Tier 1), 5,000 (Tier 2), 15,000 (Tier 3)
-- Progress percentage is **hidden** from other empires (cannot see opponent's RP totals or %)
-- No automatic advancement - reaching threshold triggers draft choice event (player must select)
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-005-A through REQ-RSCH-005-C.
 
-**Rationale:** Creates predictable timing (~Turn 10/30/60) while hiding exact progress. Empires can estimate based on visible research sectors but cannot know precise RP totals.
+---
+
+### REQ-RSCH-005-A: RP Generation Rate
+
+**Description:** Research sectors generate 100 Research Points (RP) per turn. Generation occurs during Turn Processing Phase 4 (Resource Production).
+
+**Rationale:** Simple flat rate creates predictable timing and makes research sector value clear. No diminishing returns encourages research investment.
 
 **Formula:**
 ```
 RP per turn = Research Sector Count × 100
-Estimated RP (by enemies) = Visible Sectors × 100 × Turns Elapsed
-Actual RP = Accumulated total (hidden)
 ```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| RP per sector | 100 RP/turn | Flat rate, no diminishing returns |
+| Processing timing | Phase 4 | Turn Processing (Resource Production) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.2 - Research Points (RP) Economy
 
 **Code:**
 - `src/lib/game/services/research-service.ts:processResearchProduction` - RP generation per turn
-- `src/lib/game/research/rp-accumulation.ts` - Threshold detection
+
+**Tests:**
+- `src/lib/game/__tests__/rp-production.test.ts` - Test 100 RP/sector/turn generation
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-005-B: RP Accumulation and Tier Thresholds
+
+**Description:** RP accumulates toward tier thresholds: 1,000 RP (Tier 1 / Doctrine), 5,000 RP (Tier 2 / Specialization), 15,000 RP (Tier 3 / Capstone). Reaching threshold triggers draft choice event (player must select). No automatic advancement.
+
+**Rationale:** Creates predictable milestone timing (~Turn 10/30/60 with 1/2/3 research sectors). Manual selection ensures player control over strategic choices.
+
+**Key Values:**
+| Parameter | Value | Expected Timing |
+|-----------|-------|-----------------|
+| Tier 1 threshold | 1,000 RP | ~Turn 10 with 1 research sector (100 RP/turn) |
+| Tier 2 threshold | 5,000 RP | ~Turn 30 with 2 research sectors (200 RP/turn from Turn 10) |
+| Tier 3 threshold | 15,000 RP | ~Turn 60 with 3 research sectors (300 RP/turn from Turn 30) |
+| Advancement | Manual | Player must select when threshold reached |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 1.2 - Research Points (RP) Economy
+
+**Code:**
+- `src/lib/game/research/rp-accumulation.ts` - Threshold detection and draft trigger
+
+**Tests:**
+- `src/lib/game/__tests__/rp-thresholds.test.ts` - Test threshold detection (1k, 5k, 15k)
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-005-C: RP Progress Visibility
+
+**Description:** RP accumulation totals and progress percentage are **hidden** from other empires. Enemies cannot see opponent's RP totals or % progress toward next tier. Enemies can estimate based on visible research sectors and turn count, but actual RP is hidden.
+
+**Rationale:** Creates strategic uncertainty. Empires can estimate progress but cannot know precise RP totals, encouraging intelligence gathering and risk assessment.
+
+**Formula:**
+```
+Estimated RP (by enemies) = Visible Sectors × 100 × Turns Elapsed
+Actual RP = Accumulated total (hidden)
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| RP total | Hidden | Cannot see opponent's RP accumulation |
+| Progress % | Hidden | Cannot see % toward next tier |
+| Research sectors | Visible | Sector count is public information |
+| Estimation | Possible | Enemies can estimate based on sectors × turns |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 1.2 - Research Points (RP) Economy
+
+**Code:**
 - `src/lib/game/research/visibility.ts` - Hide RP totals from enemies
 
 **Tests:**
-- `src/lib/game/__tests__/rp-production.test.ts` - Test 100 RP/sector/turn
-- `src/lib/game/__tests__/rp-thresholds.test.ts` - Test threshold detection (1k, 5k, 15k)
 - `src/lib/game/__tests__/rp-visibility.test.ts` - Test RP totals hidden from enemies
 
 **Status:** Draft
