@@ -2550,36 +2550,123 @@ Actual RP = Accumulated total (hidden)
 
 ---
 
-### REQ-RSCH-007: Research-Combat Integration
+### REQ-RSCH-007: Research-Combat Integration (Split)
 
-**Description:** Research bonuses modify D20 combat mechanics:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-007-A through REQ-RSCH-007-C.
 
-- Doctrine bonuses apply to **all units** as permanent stat changes (STR/AC modifiers)
-- Specialization bonuses apply **during combat** as conditional effects (surprise rounds, CON saves, etc.)
-- Bonuses stack multiplicatively: Base stats + Doctrine + Specialization + Tech Cards
+---
 
-**Example Integration:**
+### REQ-RSCH-007-A: Doctrine Bonus Application
+
+**Description:** Doctrine bonuses apply to **all units** as permanent stat modifications (STR/AC modifiers). These are persistent changes that remain active for all combat encounters.
+
+**Rationale:** Permanent bonuses create consistent strategic identity. All units benefit equally, reinforcing doctrine theme.
+
+**Application Rules:**
+| Doctrine | Stat Modified | Modifier | Scope |
+|----------|---------------|----------|-------|
+| War Machine | STR | +2 | All units (permanent) |
+| Fortress | AC (defending) | +4 | All units (when defending only) |
+| Commerce | N/A | N/A | No direct combat bonuses |
+
+**Example:**
+```
+War Machine Cruiser:
+- Base: STR 14 (+2), Damage 2d8+2
+- With doctrine: STR 16 (+3), Damage 2d8+3
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.4 - Research-Combat Integration Flow
+
+**Code:**
+- `src/lib/combat/research-bonuses.ts:applyDoctrineBonus` - Apply permanent stat changes
+
+**Tests:**
+- `src/lib/combat/__tests__/doctrine-bonuses.test.ts` - Test doctrine bonuses apply to all units
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-007-B: Specialization Effect Application
+
+**Description:** Specialization bonuses apply **during combat** as conditional effects (surprise rounds, damage modifiers, immunity, etc.). These are situational and triggered by specific combat conditions.
+
+**Rationale:** Conditional effects create tactical depth and reward situational awareness. Not all specializations apply to every combat.
+
+**Effect Types:**
+| Specialization | Effect Type | Trigger Condition |
+|----------------|-------------|-------------------|
+| Shock Troops | Surprise round | Combat initiation |
+| Siege Engines | Damage modifier | Attacking stationary targets |
+| Shield Arrays | Immunity | Defending against surprise |
+| Minefield Networks | Pre-combat damage | Enemy enters defended sector |
+| Trade Monopoly | N/A | Economic, not combat |
+| Mercenary Contracts | STR bonus | Pay 10,000 cr per battle |
+
+**Example:**
+```
+Shock Troops (surprise round):
+- Attack before enemy initiative
+- Deal 2d8+3 damage before combat begins
+- Then proceed to normal initiative
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.4 - Research-Combat Integration Flow
+
+**Code:**
+- `src/lib/combat/specialization-effects.ts` - Apply conditional combat effects
+
+**Tests:**
+- `src/lib/combat/__tests__/specialization-effects.test.ts` - Test all specialization effects work
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-007-C: Bonus Stacking Mechanics
+
+**Description:** Research bonuses stack multiplicatively with base stats and other modifiers: Base stats + Doctrine + Specialization + Tech Cards. All bonuses apply in sequence.
+
+**Rationale:** Multiplicative stacking creates power scaling and rewards research investment. No diminishing returns or caps.
+
+**Stacking Order:**
+```
+1. Base unit stats (e.g., STR 14)
+2. + Doctrine bonus (e.g., +2 STR from War Machine)
+3. + Specialization effect (e.g., surprise round from Shock Troops)
+4. + Tech Cards (if applicable)
+Final result: All bonuses applied
+```
+
+**Example:**
 ```
 War Machine (+2 STR) + Shock Troops (surprise round):
-- Cruiser base: STR 14 (+2), Damage 2d8+2
-- With doctrine: STR 16 (+3), Damage 2d8+3
-- With surprise: Attack before enemy initiative, deal damage first
+- Base: STR 14, Damage 2d8+2
+- +Doctrine: STR 16, Damage 2d8+3
+- +Specialization: Surprise round (attack first)
 - Result: 2d8+3 surprise damage + normal combat rounds
 ```
 
-**Rationale:** Research directly impacts tactical combat outcomes. Players see immediate value from research investment.
+**Dependencies:** (to be filled by /spec-analyze)
 
-**Source:** Section 2.4 - Research-Combat Integration Flow, Section 3.5 - Combat Integration
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.5 - Combat Integration
 
 **Code:**
-- `src/lib/combat/research-bonuses.ts:applyResearchBonuses` - Apply all bonuses to units
-- `src/lib/combat/specialization-effects.ts` - Specialization conditional effects
-- `src/lib/combat/combat-resolver.ts` - Integrate bonuses into D20 resolution
+- `src/lib/combat/combat-resolver.ts` - Apply bonuses in stacking order
 
 **Tests:**
-- `src/lib/combat/__tests__/research-bonuses.test.ts` - Test doctrine bonuses apply to STR/AC
-- `src/lib/combat/__tests__/specialization-effects.test.ts` - Test all specialization effects work
-- `src/lib/combat/__tests__/research-combat-integration.test.ts` - End-to-end combat with research
+- `src/lib/combat/__tests__/research-combat-integration.test.ts` - End-to-end stacking test
 
 **Status:** Draft
 
