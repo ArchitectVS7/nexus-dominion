@@ -1958,20 +1958,72 @@ spy_points = min(spy_points, max_spy_points)
 
 ---
 
-### REQ-TURN-014: Memory Cleanup Phase
+### REQ-TURN-014: Memory Cleanup Phase (PARENT)
 
-**Description:** Memory Cleanup Phase (Phase 11) runs every 5 turns. Deletes bot memories older than 20 turns, except "important" memories (importance >= 5). Prevents database bloat.
+**Description:** Memory Cleanup Phase (Phase 11) manages bot memory retention. This parent spec tracks the complete memory cleanup system.
+
+**Children:**
+- REQ-TURN-014.1: Cleanup Interval Configuration
+- REQ-TURN-014.2: Memory Age Threshold
+- REQ-TURN-014.3: Important Memory Preservation
 
 **Rationale:** Balance between retention (bots remember significant events) and performance (don't store every routine action).
 
 **Source:** Section 3.11
 
+**Status:** Draft
+
+---
+
+### REQ-TURN-014.1: Cleanup Interval Configuration
+
+**Description:** Memory cleanup runs every 5 turns to prevent database bloat while minimizing performance impact.
+
+**Rationale:** Periodic cleanup balances performance overhead with memory management needs.
+
+**Source:** Section 3.11
+
 **Code:**
-- `src/lib/game/services/phases/memory-cleanup-phase.ts` - `processMemoryCleanup()`
+- `src/lib/game/services/phases/memory-cleanup-phase.ts` - Interval configuration
+
+**Tests:**
+- `src/lib/game/services/__tests__/memory-cleanup-phase.test.ts` - Test 5-turn interval
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-014.2: Memory Age Threshold
+
+**Description:** Deletes bot memories older than 20 turns (except important memories).
+
+**Rationale:** 20-turn window provides sufficient context for bot decision-making without excessive storage.
+
+**Source:** Section 3.11
+
+**Code:**
+- `src/lib/game/services/phases/memory-cleanup-phase.ts` - Age threshold logic
+
+**Tests:**
+- `src/lib/game/services/__tests__/memory-cleanup-phase.test.ts` - Test age-based deletion
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-014.3: Important Memory Preservation
+
+**Description:** Preserves memories with importance >= 5 regardless of age. Important events (wars, treaties, major defeats) are never deleted.
+
+**Rationale:** Critical historical events must be retained for long-term bot behavior patterns.
+
+**Source:** Section 3.11
+
+**Code:**
 - `src/lib/game/ai/memory-manager.ts` - Memory importance scoring
 
 **Tests:**
-- `src/lib/game/services/__tests__/memory-cleanup-phase.test.ts` - Deletion logic, importance preservation
+- `src/lib/game/services/__tests__/memory-cleanup-phase.test.ts` - Test importance preservation
 
 **Status:** Draft
 
