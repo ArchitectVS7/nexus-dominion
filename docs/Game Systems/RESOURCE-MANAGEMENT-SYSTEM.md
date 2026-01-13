@@ -1338,35 +1338,65 @@ Example - Fleet of 20 fighters:
 
 ---
 
-### REQ-RES-006: Population Growth and Decline
+### REQ-RES-006: Population Growth and Decline (Split)
 
-**Description:** Population changes each turn based on food availability:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-006-A through REQ-RES-006-C.
 
-**Growth (food surplus):**
-```
-Population Growth = Current Population × 0.02 × Food Availability Multiplier
-Food Availability Multiplier = min(1.0, Food Surplus / Food Required)
-```
+---
 
-**Decline (food deficit):**
-```
-Population Decline = Current Population × -0.10 (10% loss per turn)
-```
+### REQ-RES-006-A: Population Growth Calculation
 
-**Rationale:** Population growth rewards expansion and food production. Starvation severely punishes food deficits (10× faster decline than growth) to create urgency.
+**Description:** Population grows at 2% per turn when food surplus available. Growth scaled by food availability multiplier, capped at 1.0 to prevent surplus food from accelerating growth beyond base rate.
+
+**Rationale:** Population growth rewards expansion and food production. Food cap prevents runaway growth from excessive food stockpiling.
 
 **Formula:**
 ```
+Population Growth = Current Population × 0.02 × Food Availability Multiplier
+Food Availability Multiplier = min(1.0, Food Surplus / Food Required)
 Food Required = Population × 0.5 food/capita/turn
 
-Growth Example:
+Example:
 - Population: 10,000
 - Food available: 6,000/turn
 - Food required: 5,000/turn
 - Food multiplier: min(1.0, 6,000/5,000) = 1.0 (capped)
 - Growth: 10,000 × 0.02 × 1.0 = +200 people/turn
+```
 
-Decline Example:
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Base growth rate | 2%/turn | With adequate food |
+| Food cap multiplier | 1.0 | Surplus food doesn't accelerate growth |
+
+**Source:** Section 2.3 - Population Growth and Decline
+
+**Code:**
+- `src/lib/game/services/population-service.ts` - `calculatePopulationChange()` function
+- `src/lib/game/services/turn-processor.ts` - Population update phase
+
+**Tests:**
+- `src/lib/game/services/__tests__/population-growth.test.ts` - Growth formula tests
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Growth rate (2%) and food per capita (0.5) require balance testing against desired Turn 100 population targets.
+
+---
+
+### REQ-RES-006-B: Population Decline from Starvation
+
+**Description:** Population declines at 10% per turn when food deficit exists. Decline rate 5× faster than growth rate to create urgency and severe punishment for food shortages.
+
+**Rationale:** Starvation severely punishes food deficits to create urgency and prevent food mismanagement.
+
+**Formula:**
+```
+Population Decline = Current Population × -0.10 (10% loss per turn)
+
+Example:
 - Population: 10,000
 - Food available: 3,000/turn
 - Food required: 5,000/turn
@@ -1378,10 +1408,35 @@ Decline Example:
 
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| Base growth rate | 2%/turn | With adequate food |
-| Starvation decline rate | 10%/turn | Asymmetric (faster decline) |
+| Starvation decline rate | 10%/turn | Asymmetric (5× faster than growth) |
+
+**Source:** Section 2.3 - Population Growth and Decline
+
+**Code:**
+- `src/lib/game/services/population-service.ts` - `calculatePopulationChange()` function
+- `src/lib/game/services/turn-processor.ts` - Population update phase
+
+**Tests:**
+- `src/lib/game/services/__tests__/population-decline.test.ts` - Starvation tests
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Decline rate (10%) requires balance testing against desired Turn 100 population targets.
+
+---
+
+### REQ-RES-006-C: Population Growth Constraints
+
+**Description:** Population growth constrained by minimum floor of 100 (minimum viable population) to prevent extinction. Food cap multiplier of 1.0 prevents surplus food from accelerating growth beyond base rate.
+
+**Rationale:** Population floor prevents extinction scenarios. Food cap prevents runaway growth from excessive stockpiling.
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Population floor | 100 | Minimum viable population (prevents extinction) |
 | Food cap multiplier | 1.0 | Surplus food doesn't accelerate growth |
-| Population floor | 100 | Minimum viable population |
 
 **Source:** Section 2.3 - Population Growth and Decline
 
@@ -1391,11 +1446,8 @@ Decline Example:
 
 **Tests:**
 - `src/lib/game/services/__tests__/population-growth.test.ts` - Growth formula tests
-- `src/lib/game/services/__tests__/population-decline.test.ts` - Starvation tests
 
 **Status:** Draft
-
-> **⚠️ PLACEHOLDER VALUES**: Growth rate (2%), decline rate (10%), and food per capita (0.5) require balance testing against desired Turn 100 population targets.
 
 ---
 
