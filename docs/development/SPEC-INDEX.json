@@ -35,7 +35,13 @@
         { "id": "REQ-BOT-002-06", "title": "Blitzkrieg Archetype", "atomic": true, "line": 1029, "splitFrom": "REQ-BOT-002" },
         { "id": "REQ-BOT-002-07", "title": "Tech Rush Archetype", "atomic": true, "line": 1060, "splitFrom": "REQ-BOT-002" },
         { "id": "REQ-BOT-002-08", "title": "Opportunist Archetype", "atomic": true, "line": 1091, "splitFrom": "REQ-BOT-002" },
-        { "id": "REQ-BOT-003", "title": "Emotional States", "atomic": false, "line": 1122, "splitCandidate": "6 emotional states" },
+        { "id": "REQ-BOT-003", "title": "Emotional States (Split)", "atomic": true, "line": 1124, "parentOf": ["REQ-BOT-003-A", "REQ-BOT-003-B", "REQ-BOT-003-C", "REQ-BOT-003-D", "REQ-BOT-003-E", "REQ-BOT-003-F"] },
+        { "id": "REQ-BOT-003-A", "title": "Confident Emotional State", "atomic": true, "line": 1132, "splitFrom": "REQ-BOT-003" },
+        { "id": "REQ-BOT-003-B", "title": "Arrogant Emotional State", "atomic": true, "line": 1162, "splitFrom": "REQ-BOT-003" },
+        { "id": "REQ-BOT-003-C", "title": "Desperate Emotional State", "atomic": true, "line": 1192, "splitFrom": "REQ-BOT-003" },
+        { "id": "REQ-BOT-003-D", "title": "Vengeful Emotional State", "atomic": true, "line": 1222, "splitFrom": "REQ-BOT-003" },
+        { "id": "REQ-BOT-003-E", "title": "Fearful Emotional State", "atomic": true, "line": 1252, "splitFrom": "REQ-BOT-003" },
+        { "id": "REQ-BOT-003-F", "title": "Triumphant Emotional State", "atomic": true, "line": 1282, "splitFrom": "REQ-BOT-003" },
         { "id": "REQ-BOT-004", "title": "Memory System with Weighted Decay", "atomic": true, "line": 1169 },
         { "id": "REQ-BOT-005", "title": "100 Unique Personas", "atomic": true, "line": 1209 },
         { "id": "REQ-BOT-006", "title": "LLM Integration", "atomic": false, "line": 1238, "splitCandidate": "provider chain + rate limits + prompt" },
@@ -347,9 +353,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 221,
-    "atomicSpecs": 133,
-    "splitCandidates": 87,
+    "totalSpecs": 227,
+    "atomicSpecs": 139,
+    "splitCandidates": 86,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
