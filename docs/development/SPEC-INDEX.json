@@ -184,12 +184,19 @@
         { "id": "REQ-RES-004", "title": "Population Food Consumption", "atomic": false, "line": 1158, "splitCandidate": "consumption + deficit consequences" },
         { "id": "REQ-RES-005", "title": "Military Maintenance Costs", "atomic": false, "line": 1203, "splitCandidate": "ore + petroleum + consequences" },
         { "id": "REQ-RES-006", "title": "Population Growth and Decline", "atomic": false, "line": 1252, "splitCandidate": "growth + decline + cap", "note": "Duplicate of REQ-TURN-006" },
-        { "id": "REQ-RES-007", "title": "Civil Status Calculation Formula", "atomic": false, "line": 1313, "splitCandidate": "5 factors + mapping + transitions", "note": "Duplicate of REQ-TURN-007" },
-        { "id": "REQ-RES-008", "title": "Resource Storage and Negative Balances", "atomic": false, "line": 1367, "splitCandidate": "5 resource consequences", "note": "Conflicts with REQ-SEC-006" },
-        { "id": "REQ-RES-009", "title": "Sector Type Conversion", "atomic": false, "line": 1396, "splitCandidate": "cost + timing + restrictions" },
-        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1429, "splitCandidate": "capacity + overcrowding + starting" },
-        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1464, "splitCandidate": "accumulation + thresholds + timeline" },
-        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 1498, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+        { "id": "REQ-RES-007", "title": "Civil Status Calculation Formula (Split)", "atomic": true, "line": 1313, "parentOf": ["REQ-RES-007-A", "REQ-RES-007-B", "REQ-RES-007-C", "REQ-RES-007-D", "REQ-RES-007-E", "REQ-RES-007-F", "REQ-RES-007-G"], "note": "Duplicate of REQ-TURN-007" },
+        { "id": "REQ-RES-007-A", "title": "Food Security Modifier", "atomic": true, "line": 1336, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-007-B", "title": "Battle Outcome Modifier", "atomic": true, "line": 1366, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-007-C", "title": "Territory Growth Modifier", "atomic": true, "line": 1395, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-007-D", "title": "Education Sector Bonus", "atomic": true, "line": 1424, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-007-E", "title": "Overcrowding Penalty", "atomic": true, "line": 1453, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-007-F", "title": "Civil Status Score to Level Mapping", "atomic": true, "line": 1482, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-007-G", "title": "Civil Status Transition Rules", "atomic": true, "line": 1512, "splitFrom": "REQ-RES-007" },
+        { "id": "REQ-RES-008", "title": "Resource Storage and Negative Balances", "atomic": false, "line": 1546, "splitCandidate": "5 resource consequences", "note": "Conflicts with REQ-SEC-006" },
+        { "id": "REQ-RES-009", "title": "Sector Type Conversion", "atomic": false, "line": 1575, "splitCandidate": "cost + timing + restrictions" },
+        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1608, "splitCandidate": "capacity + overcrowding + starting" },
+        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1643, "splitCandidate": "accumulation + thresholds + timeline" },
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 1677, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
       ]
     },
     "SECTOR": {
@@ -376,9 +383,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 250,
-    "atomicSpecs": 162,
-    "splitCandidates": 81,
+    "totalSpecs": 256,
+    "atomicSpecs": 169,
+    "splitCandidates": 80,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

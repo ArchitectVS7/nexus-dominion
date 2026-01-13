@@ -1310,57 +1310,236 @@ Decline Example:
 
 ---
 
-### REQ-RES-007: Civil Status Calculation Formula
+### REQ-RES-007: Civil Status Calculation Formula (Split)
 
-**Description:** Civil status is calculated each turn based on multiple factors:
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-RES-007-A through REQ-RES-007-G below.
 
+**Overview:** Civil status is calculated each turn based on multiple factors that combine into a numeric score, which maps to status levels (Ecstatic → Rioting) with transition rules limiting volatility.
+
+**Formula Structure:**
 ```
 Civil Status Score = Base Score (100)
-                     + Food Security Modifier (-50 to +20)
-                     + Battle Outcome Modifier (-50 to +25)
-                     + Territory Growth Modifier (-50 to +20)
-                     + Education Sector Bonus (0 to +50)
-                     - Overcrowding Penalty (0 to -20)
+                     + Food Security Modifier (-50 to +20)       [REQ-RES-007-A]
+                     + Battle Outcome Modifier (-50 to +25)      [REQ-RES-007-B]
+                     + Territory Growth Modifier (-50 to +20)    [REQ-RES-007-C]
+                     + Education Sector Bonus (0 to +50)         [REQ-RES-007-D]
+                     - Overcrowding Penalty (0 to -20)           [REQ-RES-007-E]
+
+Score → Status Level Mapping                                     [REQ-RES-007-F]
+Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 ```
 
-**Score to Status Mapping:**
-- Ecstatic: 150+
-- Happy: 120-149
-- Content: 90-119
-- Unhappy: 70-89
-- Angry: 40-69
-- Rioting: 0-39
+**Note:** This spec is marked as a duplicate of REQ-TURN-007. Refer to canonical spec in TURN system for authoritative definition.
 
-**Transitions:** Maximum 1 level change per turn (except Education sectors, which boost +1 level)
+---
 
-**Rationale:** Civil status reflects empire health holistically. Food security is primary driver (essential), battles affect morale (recent events), territory growth shows expansion (progress), Education boosts happiness (luxury), overcrowding causes unrest (infrastructure strain).
+### REQ-RES-007-A: Food Security Modifier
 
-**Formula:**
+**Description:** Food surplus or deficit modifies civil status score based on current food balance relative to consumption needs.
 
-| Factor | Calculation | Range |
-|--------|-------------|-------|
-| Food Security | Surplus ≥20%: +20; Deficit ≥20%: -30; Zero food: -50 | -50 to +20 |
-| Battle Outcomes | +5 major victory, -10 major defeat (last 5 turns) | -50 to +25 |
-| Territory Growth | +2 per sector gained, -5 per sector lost (last 10 turns) | -50 to +20 |
-| Education Bonus | +10 per Education sector (updated each turn) | 0 to +50 |
-| Overcrowding | -20 if population > urban capacity | 0 to -20 |
+**Calculation Rules:**
+- Surplus ≥20%: +20 to score
+- Deficit ≥20%: -30 to score
+- Zero food: -50 to score (maximum penalty)
+- Intermediate values interpolate between thresholds
 
-**Source:** Section 3.1 - Civil Status Calculation
+**Range:** -50 to +20
 
-**Code:**
-- `src/lib/game/services/civil-status.ts` - `calculateCivilStatusScore()` function
-- `src/lib/game/services/civil-status.ts` - `getCivilStatusFromScore()` mapper
+**Rationale:** Food security is the primary driver of civil happiness. Starvation causes maximum unrest, while abundant food provides modest satisfaction.
 
-**Tests:**
-- `src/lib/game/services/__tests__/civil-status-calculation.test.ts` - Score calculation tests
-- `src/lib/game/services/__tests__/civil-status-transitions.test.ts` - Level change tests
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Food Security Factor
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `calculateFoodSecurityModifier()`
+
+**Tests:** TBD - Food surplus, deficit, and zero food scenarios
 
 **Status:** Draft
 
-> **⚠️ PLACEHOLDER VALUES**: All modifiers and thresholds are initial estimates requiring playtesting. Key questions:
-> - Can empires reach Ecstatic organically without Education sectors?
-> - Is Rioting threshold (score < 40) too punishing?
-> - Should territory loss penalty (-5/sector) be reduced?
+> **⚠️ PLACEHOLDER VALUES**: Thresholds (20% surplus/deficit) and modifier values require playtesting.
+
+---
+
+### REQ-RES-007-B: Battle Outcome Modifier
+
+**Description:** Recent combat results affect civil status based on major victories and defeats over the last 5 turns.
+
+**Calculation Rules:**
+- +5 per major victory (last 5 turns)
+- -10 per major defeat (last 5 turns)
+- Tracking window: Rolling 5-turn history
+
+**Range:** -50 to +25
+
+**Rationale:** Recent battles affect morale. Victories boost confidence, defeats damage morale. Asymmetric values reflect loss aversion.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Battle Outcome Factor
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `calculateBattleOutcomeModifier()`
+
+**Tests:** TBD - Victory/defeat tracking, 5-turn window, cumulative scoring
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Victory/defeat values (+5/-10) and window size (5 turns) require playtesting.
+
+---
+
+### REQ-RES-007-C: Territory Growth Modifier
+
+**Description:** Sector gains and losses over the last 10 turns affect civil status, reflecting expansion or contraction.
+
+**Calculation Rules:**
+- +2 per sector gained (last 10 turns)
+- -5 per sector lost (last 10 turns)
+- Tracking window: Rolling 10-turn history
+
+**Range:** -50 to +20
+
+**Rationale:** Territorial expansion signals progress and prosperity, while losses indicate decline. Asymmetric penalties reflect loss aversion.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Territory Growth Factor
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `calculateTerritoryGrowthModifier()`
+
+**Tests:** TBD - Sector gain/loss tracking, 10-turn window, cumulative scoring
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Gain/loss values (+2/-5) and window size (10 turns) require playtesting. Loss penalty may be too harsh.
+
+---
+
+### REQ-RES-007-D: Education Sector Bonus
+
+**Description:** Each Education sector provides a flat bonus to civil status score, representing cultural enrichment and quality of life improvements.
+
+**Calculation Rules:**
+- +10 per Education sector
+- Updated each turn based on current Education sector count
+- No cap (stacks linearly)
+
+**Range:** 0 to +50
+
+**Rationale:** Education sectors represent luxury investment in citizen welfare. They provide both score bonus and special transition boost (see REQ-RES-007-G).
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Education Bonus Factor
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `calculateEducationBonus()`
+
+**Tests:** TBD - Bonus calculation with varying Education sector counts
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Bonus per sector (+10) requires playtesting. Can empires reach Ecstatic without Education sectors?
+
+---
+
+### REQ-RES-007-E: Overcrowding Penalty
+
+**Description:** Population exceeding urban capacity triggers a flat penalty to civil status, representing infrastructure strain and living condition deterioration.
+
+**Calculation Rules:**
+- -20 if population > urban capacity
+- 0 if population ≤ urban capacity
+- Binary threshold (no gradual scaling)
+
+**Range:** 0 to -20
+
+**Rationale:** Overcrowding causes unrest regardless of other factors. Binary threshold creates clear incentive to maintain Urban sectors.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Overcrowding Factor
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `calculateOvercrowdingPenalty()`
+
+**Tests:** TBD - Threshold detection at capacity boundary
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Penalty value (-20) requires playtesting. Consider gradual scaling instead of binary threshold?
+
+---
+
+### REQ-RES-007-F: Civil Status Score to Level Mapping
+
+**Description:** Convert numeric civil status score to discrete status levels (Ecstatic, Happy, Content, Unhappy, Angry, Rioting).
+
+**Status Level Thresholds:**
+- **Ecstatic:** 150+
+- **Happy:** 120-149
+- **Content:** 90-119
+- **Unhappy:** 70-89
+- **Angry:** 40-69
+- **Rioting:** 0-39
+
+**Rationale:** Discrete levels provide clear gameplay feedback and hook for status-based mechanics (production multipliers, diplomatic penalties, etc.).
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Score Mapping
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `getCivilStatusFromScore()`
+
+**Tests:** TBD - Boundary conditions for each status level
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: All thresholds require playtesting. Is Rioting threshold (< 40) too punishing?
+
+---
+
+### REQ-RES-007-G: Civil Status Transition Rules
+
+**Description:** Limit civil status level changes to maximum 1 level per turn to prevent volatility, with exception for Education sector boost.
+
+**Transition Rules:**
+- Maximum 1 level change per turn (up or down)
+- **Exception:** Education sectors grant +1 level boost beyond the normal limit
+- If calculated score would jump multiple levels, cap at current level ±1
+
+**Rationale:** Prevents wild status swings from single events. Education sector exception rewards long-term investment in citizen welfare.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Civil Status Calculation, Transition Rules
+
+**Code:** TBD - `src/lib/game/services/civil-status.ts` - `applyTransitionRules()`
+
+**Tests:** TBD - Multi-level jumps capped, Education override
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Transition limit (1 level) and Education boost require playtesting.
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/game/services/civil-status.ts` - Main civil status service
+- `src/lib/game/services/__tests__/civil-status-calculation.test.ts` - Score calculation tests
+- `src/lib/game/services/__tests__/civil-status-transitions.test.ts` - Level change tests
 
 ---
 
