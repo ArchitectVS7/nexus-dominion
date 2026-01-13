@@ -93,8 +93,12 @@
         { "id": "REQ-DIP-006", "title": "Betrayal Mechanics", "atomic": false, "line": 663, "splitCandidate": "treaty breaking + coalition betrayal + bot rates" },
         { "id": "REQ-DIP-007", "title": "Treaty Duration & Renewal", "atomic": true, "line": 701 },
         { "id": "REQ-DIP-008", "title": "Diplomatic Victory Condition", "atomic": true, "line": 727 },
-        { "id": "REQ-DIP-009", "title": "Shared Intelligence", "atomic": false, "line": 749, "splitCandidate": "4 intel sharing types" },
-        { "id": "REQ-DIP-010", "title": "Reputation Recovery", "atomic": false, "line": 772, "splitCandidate": "fast + slow + permanent scars" }
+        { "id": "REQ-DIP-009", "title": "Shared Intelligence (Split)", "atomic": true, "line": 749, "parentOf": ["REQ-DIP-009-A", "REQ-DIP-009-B", "REQ-DIP-009-C", "REQ-DIP-009-D"] },
+        { "id": "REQ-DIP-009-A", "title": "Allied Territory Visibility", "atomic": true, "line": 763, "splitFrom": "REQ-DIP-009" },
+        { "id": "REQ-DIP-009-B", "title": "Allied Attack Alerts", "atomic": true, "line": 790, "splitFrom": "REQ-DIP-009" },
+        { "id": "REQ-DIP-009-C", "title": "Coalition Chat Visibility", "atomic": true, "line": 817, "splitFrom": "REQ-DIP-009" },
+        { "id": "REQ-DIP-009-D", "title": "Shared Vision of Enemy Units", "atomic": true, "line": 846, "splitFrom": "REQ-DIP-009" },
+        { "id": "REQ-DIP-010", "title": "Reputation Recovery", "atomic": false, "line": 879, "splitCandidate": "fast + slow + permanent scars" }
       ]
     },
     "MARKET": {
@@ -406,9 +410,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 274,
-    "atomicSpecs": 192,
-    "splitCandidates": 75,
+    "totalSpecs": 277,
+    "atomicSpecs": 196,
+    "splitCandidates": 74,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

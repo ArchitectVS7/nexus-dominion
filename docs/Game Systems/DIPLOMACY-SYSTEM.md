@@ -746,26 +746,133 @@ Early termination:
 
 ---
 
-### REQ-DIP-009: Shared Intelligence
+### REQ-DIP-009: Shared Intelligence (Split)
 
-**Description:** Alliances and coalitions provide shared intelligence:
-- See allied territories on starmap (fog of war lifted)
-- Receive alerts when ally attacked
-- View coalition chat (players see bot discussions)
-- Shared vision: See enemy units in allied sectors
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-DIP-009-A through REQ-DIP-009-D below.
 
-**Rationale:** Makes alliances tangibly useful beyond combat bonuses. Coalition chat builds narrative and reveals bot personalities.
+**Overview:** Alliances and coalitions provide four types of shared intelligence: allied territory visibility, attack alerts, coalition chat, and shared vision of enemy units.
 
-**Source:** Section 3.7
+**Intel Sharing Types:**
+- Allied Territory Visibility [REQ-DIP-009-A]
+- Attack Alerts [REQ-DIP-009-B]
+- Coalition Chat [REQ-DIP-009-C]
+- Shared Vision [REQ-DIP-009-D]
 
-**Code:**
-- `src/lib/diplomacy/shared-intel.ts` - Intelligence sharing logic
-- `src/components/game/starmap/Starmap.tsx` - Allied territory visibility
+---
 
-**Tests:**
-- `src/lib/diplomacy/__tests__/shared-intel.test.ts` - Intel sharing
+### REQ-DIP-009-A: Allied Territory Visibility
+
+**Description:** Players can see allied territories on the starmap with fog of war lifted, revealing sector types and development level.
+
+**Visibility Rules:**
+- Fog of war lifted for all allied territories
+- Shows: Sector types, sector count, station presence
+- Does NOT show: Exact unit counts, resource stockpiles, pending operations
+- Updates in real-time as allies gain/lose sectors
+- Applies to: Treaties (Alliance, Non-Aggression) and coalitions
+
+**Rationale:** Makes alliances tangibly useful. Players can coordinate strategy, identify weak allies needing support, and plan joint operations.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Shared Intelligence, Territory Visibility
+
+**Code:** TBD - `src/components/game/starmap/Starmap.tsx` - Allied territory rendering
+
+**Tests:** TBD - Verify fog of war lifted for allies, hidden for non-allies
 
 **Status:** Draft
+
+---
+
+### REQ-DIP-009-B: Allied Attack Alerts
+
+**Description:** Players receive real-time notifications when an allied empire is attacked, including attacker identity and location.
+
+**Alert Rules:**
+- Trigger: When ally is attacked (combat initiated)
+- Message: "[Ally Name] is under attack by [Attacker Name] in [Sector]!"
+- Timing: Immediate (real-time notification)
+- Applies to: Treaties (Alliance only, NOT Non-Aggression) and coalitions
+- Audio: Alert sound for urgency
+
+**Rationale:** Enables coordinated defense and creates dramatic "allies under siege" moments. Builds strategic interdependence.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Shared Intelligence, Attack Alerts
+
+**Code:** TBD - `src/lib/diplomacy/shared-intel.ts` - Attack alert logic
+
+**Tests:** TBD - Verify alerts sent to all allies, not sent to non-allies
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-009-C: Coalition Chat Visibility
+
+**Description:** Human players in coalitions can view bot-to-bot discussions and negotiations, revealing bot personalities and strategies.
+
+**Chat Rules:**
+- Visibility: Human players see all bot messages within their coalition
+- Bots unaware: Bots don't know humans can see their discussions
+- Content: Strategy discussions, betrayal planning, emotional reactions
+- Updates: Real-time chat feed in coalition UI panel
+- One-way: Humans can view but bots don't see human-to-human chats
+
+**Rationale:** Builds narrative and reveals bot personalities. Creates dramatic irony when bots plot betrayal or discuss human player.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Shared Intelligence, Coalition Chat
+
+**Code:** TBD - `src/components/game/diplomacy/CoalitionChat.tsx` - Chat UI
+
+**Tests:** TBD - Verify human players see bot discussions
+
+**Status:** Draft
+
+> **⚠️ DESIGN NOTE**: Coalition chat is one-way (bots → humans visible, humans → bots not visible). This asymmetry is intentional for narrative purposes.
+
+---
+
+### REQ-DIP-009-D: Shared Vision of Enemy Units
+
+**Description:** Players can see enemy unit counts and types in sectors controlled by allied empires.
+
+**Shared Vision Rules:**
+- Trigger: Ally controls a sector
+- Visibility: Exact enemy unit counts and types in that sector
+- Applies to: All allies (treaties and coalitions)
+- Updates: Real-time as units move/engage
+- Limitation: Only in allied-controlled sectors (not neutral or enemy sectors)
+
+**Rationale:** Enables tactical coordination. Players can identify threats, plan joint attacks, and warn allies of impending invasions.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Shared Intelligence, Shared Vision
+
+**Code:** TBD - `src/lib/diplomacy/shared-intel.ts` - Unit visibility logic
+
+**Tests:** TBD - Verify unit visibility in allied sectors only
+
+**Status:** Draft
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/diplomacy/shared-intel.ts` - Intelligence sharing orchestration
+- `src/lib/diplomacy/__tests__/shared-intel.test.ts` - Comprehensive intel sharing tests
 
 ---
 
