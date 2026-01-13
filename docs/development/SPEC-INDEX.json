@@ -297,8 +297,14 @@
         { "id": "REQ-TURN-016", "title": "Bot Messages Phase", "atomic": false, "line": 1443, "splitCandidate": "generation + templates + failure" },
         { "id": "REQ-TURN-017", "title": "Galactic Events Phase", "atomic": false, "line": 1463, "splitCandidate": "triggering + probability + milestone", "note": "Duplicate of REQ-PROG-003" },
         { "id": "REQ-TURN-018", "title": "Alliance Checkpoints Phase", "atomic": false, "line": 1494, "splitCandidate": "formation + join + milestone", "note": "Duplicate of REQ-DIP-005" },
-        { "id": "REQ-TURN-019", "title": "Victory Check Phase", "atomic": false, "line": 1521, "splitCandidate": "6 victory conditions", "note": "Duplicates REQ-VIC-001..006" },
-        { "id": "REQ-TURN-020", "title": "Auto-Save Phase", "atomic": false, "line": 1559, "splitCandidate": "save + rotation + failure" },
+        { "id": "REQ-TURN-019", "title": "Victory Check Phase (Split)", "atomic": true, "line": 1950, "parentOf": ["REQ-TURN-019-01", "REQ-TURN-019-02", "REQ-TURN-019-03", "REQ-TURN-019-04", "REQ-TURN-019-05", "REQ-TURN-019-06"] },
+        { "id": "REQ-TURN-019-01", "title": "Military Victory Check", "atomic": true, "line": 1958, "splitFrom": "REQ-TURN-019" },
+        { "id": "REQ-TURN-019-02", "title": "Economic Victory Check", "atomic": true, "line": 1991, "splitFrom": "REQ-TURN-019" },
+        { "id": "REQ-TURN-019-03", "title": "Diplomatic Victory Check", "atomic": true, "line": 2024, "splitFrom": "REQ-TURN-019" },
+        { "id": "REQ-TURN-019-04", "title": "Research Victory Check", "atomic": true, "line": 2058, "splitFrom": "REQ-TURN-019" },
+        { "id": "REQ-TURN-019-05", "title": "Covert Victory Check", "atomic": true, "line": 2091, "splitFrom": "REQ-TURN-019" },
+        { "id": "REQ-TURN-019-06", "title": "Survival Victory Check", "atomic": true, "line": 2124, "splitFrom": "REQ-TURN-019" },
+        { "id": "REQ-TURN-020", "title": "Auto-Save Phase", "atomic": false, "line": 2157, "splitCandidate": "save + rotation + failure" },
         { "id": "REQ-TURN-021", "title": "Performance Budget", "atomic": false, "line": 1578, "splitCandidate": "4 phase group budgets" }
       ]
     },
@@ -353,9 +359,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 227,
-    "atomicSpecs": 139,
-    "splitCandidates": 86,
+    "totalSpecs": 233,
+    "atomicSpecs": 145,
+    "splitCandidates": 85,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
