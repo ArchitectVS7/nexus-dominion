@@ -158,15 +158,23 @@
       "specs": [
         { "id": "REQ-SEC-001", "title": "Starting Sectors", "atomic": true, "line": 580 },
         { "id": "REQ-SEC-002", "title": "Sector Cost Scaling", "atomic": true, "line": 611 },
-        { "id": "REQ-SEC-003", "title": "Eight Sector Types", "atomic": false, "line": 652, "splitCandidate": "8 sector type definitions" },
-        { "id": "REQ-SEC-004", "title": "Production Timing", "atomic": false, "line": 686, "splitCandidate": "timing + delay + server-side" },
-        { "id": "REQ-SEC-005", "title": "Sector Acquisition Action", "atomic": true, "line": 707 },
-        { "id": "REQ-SEC-006", "title": "Resource Cap Handling", "atomic": false, "line": 728, "splitCandidate": "3 caps + overflow", "note": "Conflicts with REQ-RES-008" },
-        { "id": "REQ-SEC-007", "title": "No Maximum Sector Count", "atomic": true, "line": 758 },
-        { "id": "REQ-SEC-008", "title": "Special Sector Stacking", "atomic": true, "line": 778 },
-        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat", "atomic": false, "line": 797, "splitCandidate": "formula + permanent" },
-        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 827, "splitCandidate": "cap + random selection" },
-        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 853 }
+        { "id": "REQ-SEC-003", "title": "Eight Sector Types (Split)", "atomic": true, "line": 652, "parentOf": ["REQ-SEC-003-01", "REQ-SEC-003-02", "REQ-SEC-003-03", "REQ-SEC-003-04", "REQ-SEC-003-05", "REQ-SEC-003-06", "REQ-SEC-003-07", "REQ-SEC-003-08"] },
+        { "id": "REQ-SEC-003-01", "title": "Food Sector Type", "atomic": true, "line": 660, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-02", "title": "Ore Sector Type", "atomic": true, "line": 692, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-03", "title": "Petroleum Sector Type", "atomic": true, "line": 724, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-04", "title": "Commerce Sector Type", "atomic": true, "line": 756, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-05", "title": "Urban Sector Type", "atomic": true, "line": 788, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-06", "title": "Education Sector Type", "atomic": true, "line": 821, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-07", "title": "Government Sector Type", "atomic": true, "line": 853, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-003-08", "title": "Research Sector Type", "atomic": true, "line": 885, "splitFrom": "REQ-SEC-003" },
+        { "id": "REQ-SEC-004", "title": "Production Timing", "atomic": false, "line": 917, "splitCandidate": "timing + delay + server-side" },
+        { "id": "REQ-SEC-005", "title": "Sector Acquisition Action", "atomic": true, "line": 938 },
+        { "id": "REQ-SEC-006", "title": "Resource Cap Handling", "atomic": false, "line": 959, "splitCandidate": "3 caps + overflow", "note": "Conflicts with REQ-RES-008" },
+        { "id": "REQ-SEC-007", "title": "No Maximum Sector Count", "atomic": true, "line": 1009 },
+        { "id": "REQ-SEC-008", "title": "Special Sector Stacking", "atomic": true, "line": 1028 },
+        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat", "atomic": false, "line": 1048, "splitCandidate": "formula + permanent" },
+        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 1058, "splitCandidate": "cap + random selection" },
+        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1084 }
       ]
     },
     "RESEARCH": {
@@ -322,9 +330,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 199,
-    "atomicSpecs": 109,
-    "splitCandidates": 90,
+    "totalSpecs": 206,
+    "atomicSpecs": 116,
+    "splitCandidates": 89,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

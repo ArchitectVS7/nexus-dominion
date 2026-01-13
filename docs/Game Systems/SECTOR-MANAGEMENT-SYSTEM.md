@@ -649,35 +649,266 @@ Where:
 
 ---
 
-### REQ-SEC-003: Eight Sector Types
+### REQ-SEC-003: Eight Sector Types (Split)
 
-**Description:** Exactly 8 sector types exist: Commerce, Food, Ore, Petroleum, Urban, Education, Government, Research. Each type has distinct production profile and cost.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-SEC-003-01 through REQ-SEC-003-08 for individual sector type definitions.
 
-**Rationale:** Specialization creates strategic depth. 8 types provide variety without overwhelming choice. Each type serves a clear purpose in game systems (military, economy, diplomacy, research).
+**Overview:** Exactly 8 sector types exist, categorized as Resource Producers (4), Infrastructure Providers (2), and Intangible Boosters (2). Each type has distinct production profile, cost, and strategic purpose.
+
+---
+
+### REQ-SEC-003-01: Food Sector Type
+
+**Description:** Food sector produces 160 food/turn and costs 8,000 cr to acquire. Categorized as Resource Producer.
+
+**Rationale:** Primary food production building. Essential for feeding population and preventing starvation. Standard cost makes it accessible for early expansion.
 
 **Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | 160 food/turn |
+| Base Cost | 8,000 cr |
+| Category | Resource Producer |
+| Strategic Purpose | Feed population, prevent starvation |
 
-| Type | Production | Base Cost | Category |
-|------|------------|-----------|----------|
-| Food | 160 food/turn | 8,000 cr | Resource Producer |
-| Ore | 112 ore/turn | 6,000 cr | Resource Producer |
-| Petroleum | 92 petro/turn | 11,500 cr | Resource Producer |
-| Commerce | 8,000 cr/turn | 8,000 cr | Resource Producer |
-| Urban | +1,000 pop cap + 1,000 cr/turn | 8,000 cr | Infrastructure |
-| Education | +5 civil status/turn | 8,000 cr | Intangible Booster |
-| Government | +300 agents/turn | 7,500 cr | Infrastructure |
-| Research | +10 research points/turn | 23,000 cr | Intangible Booster |
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
 **Code:**
-- `src/lib/db/schema.ts` - `sectorTypeEnum` enum definition
-- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION` constant object
-- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS` constant object
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('food')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.food = 160`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.food = 8000`
 
 **Tests:**
-- `src/lib/sectors/__tests__/sector-types.test.ts` - "should have exactly 8 sector types defined"
-- `src/lib/sectors/__tests__/sector-types.test.ts` - "each sector type should have production and cost values"
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Food sector production and cost validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-02: Ore Sector Type
+
+**Description:** Ore sector produces 112 ore/turn and costs 6,000 cr to acquire. Categorized as Resource Producer.
+
+**Rationale:** Primary ore production building. Essential for military unit construction. Lowest acquisition cost encourages military-focused expansion strategies.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | 112 ore/turn |
+| Base Cost | 6,000 cr |
+| Category | Resource Producer |
+| Strategic Purpose | Build military units, construct buildings |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('ore')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.ore = 112`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.ore = 6000`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Ore sector production and cost validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-03: Petroleum Sector Type
+
+**Description:** Petroleum sector produces 92 petroleum/turn and costs 11,500 cr to acquire. Categorized as Resource Producer.
+
+**Rationale:** Primary petroleum production building. Essential for military maintenance and operations. Higher cost reflects strategic importance and environmental trade-offs (pollution).
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | 92 petroleum/turn |
+| Base Cost | 11,500 cr |
+| Category | Resource Producer |
+| Strategic Purpose | Fuel military operations, creates pollution |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('petroleum')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.petroleum = 92`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.petroleum = 11500`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Petroleum sector production and cost validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-04: Commerce Sector Type
+
+**Description:** Commerce sector produces 8,000 credits/turn and costs 8,000 cr to acquire. Categorized as Resource Producer.
+
+**Rationale:** Primary income source. Self-financing after 1 turn. Standard cost (pays for itself) makes it fundamental choice for economic expansion.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | 8,000 credits/turn |
+| Base Cost | 8,000 cr |
+| Category | Resource Producer |
+| Strategic Purpose | Primary income source |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('commerce')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.commerce = 8000`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.commerce = 8000`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Commerce sector production and cost validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-05: Urban Sector Type
+
+**Description:** Urban sector provides +1,000 population capacity and +1,000 credits/turn, costs 8,000 cr to acquire. Categorized as Infrastructure Provider.
+
+**Rationale:** Hybrid building providing both population capacity and income. Essential for empires experiencing population growth. Dual benefits create unique strategic value.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Population Capacity | +1,000 |
+| Credit Production | +1,000 credits/turn |
+| Base Cost | 8,000 cr |
+| Category | Infrastructure Provider |
+| Strategic Purpose | House growing population, bonus income |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('urban')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.urban = { popCap: 1000, credits: 1000 }`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.urban = 8000`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Urban sector dual effects validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-06: Education Sector Type
+
+**Description:** Education sector provides +5 civil status/turn and costs 8,000 cr to acquire. Categorized as Intangible Booster.
+
+**Rationale:** Increases empire happiness and stability. Essential for maintaining high morale during wars or resource scarcity. Intangible benefit creates strategic depth.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | +5 civil status/turn |
+| Base Cost | 8,000 cr |
+| Category | Intangible Booster |
+| Strategic Purpose | Increase happiness, reduce unrest |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('education')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.education = 5`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.education = 8000`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Education sector civil status boost validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-07: Government Sector Type
+
+**Description:** Government sector provides +300 agents/turn and costs 7,500 cr to acquire. Categorized as Infrastructure Provider.
+
+**Rationale:** Enables covert operations system. Lower cost (7,500 cr) encourages intelligence-focused strategies. Essential for Schemer archetype and espionage gameplay.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | +300 agents/turn |
+| Base Cost | 7,500 cr |
+| Category | Infrastructure Provider |
+| Strategic Purpose | Enable covert operations |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('government')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.government = 300`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.government = 7500`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Government sector agent generation validation
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-003-08: Research Sector Type
+
+**Description:** Research sector provides +10 research points/turn and costs 23,000 cr to acquire (most expensive sector). Categorized as Intangible Booster.
+
+**Rationale:** Accelerates tech tree progression. High cost (23,000 cr) creates meaningful trade-off between economic expansion and technological advancement. Strategic advantage justifies premium price.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Production | +10 research points/turn |
+| Base Cost | 23,000 cr (most expensive) |
+| Category | Intangible Booster |
+| Strategic Purpose | Accelerate tech tree progression |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Sector Types and Production
+
+**Code:**
+- `src/lib/db/schema.ts` - `sectorTypeEnum` enum ('research')
+- `src/lib/sectors/sector-types.ts` - `SECTOR_PRODUCTION.research = 10`
+- `src/lib/sectors/sector-types.ts` - `SECTOR_BASE_COSTS.research = 23000`
+
+**Tests:**
+- `src/lib/sectors/__tests__/sector-types.test.ts` - Research sector research point generation validation
 
 **Status:** Draft
 
@@ -1224,8 +1455,9 @@ If sector system causes critical issues:
 ### Dependencies
 
 **Depends On:**
-- **RESOURCE-SYSTEM.md** - Resource caps, consumption rates, storage mechanics
-- **GAME-DESIGN.md** - Turn processing, empire initialization, victory conditions
+- **RESOURCE-MANAGEMENT-SYSTEM.md** - Resource caps, consumption rates, storage mechanics
+- **[PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md)** - System overview, victory conditions
+- **[TURN-PROCESSING-SYSTEM.md](TURN-PROCESSING-SYSTEM.md)** - Turn processing details
 - None (blocking) - Sector system can be implemented independently
 
 **Depended By:**
