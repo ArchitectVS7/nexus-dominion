@@ -735,10 +735,19 @@ When viewing individual units:
 
 ---
 
-### REQ-MIL-004: Maintenance Costs
+### REQ-MIL-004: Maintenance Costs (Split)
 
-**Description:** Completed units cost resources per turn to maintain:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-MIL-004-A through REQ-MIL-004-B.
 
+---
+
+### REQ-MIL-004-A: Unit Maintenance Costs
+
+**Description:** Completed units cost resources per turn to maintain. Each unit type has defined maintenance costs in Credits, Ore, and Petroleum deducted every turn.
+
+**Rationale:** Prevents runaway military growth. Forces economic sustainability for large fleets.
+
+**Maintenance Cost Table:**
 | Unit | Credits/turn | Ore/turn | Petroleum/turn |
 |------|--------------|----------|----------------|
 | Soldiers | 2 | 0 | 0 |
@@ -749,20 +758,61 @@ When viewing individual units:
 | Heavy Cruisers | 50 | 30 | 15 |
 | Carriers | 100 | 50 | 30 |
 
-If empire cannot afford maintenance for 2+ consecutive turns:
-- 10% of military lost per turn
-- Units destroyed in reverse power order (Carriers first)
+**Formula:**
+```
+Total Maintenance = Σ (unit_count × unit_maintenance_cost) for each resource type
+Deducted each turn during maintenance phase
+```
 
-**Rationale:** Prevents runaway military growth. Large fleets must be economically sustainable.
+**Dependencies:** (to be filled by /spec-analyze)
 
-**Source:** Section 2.5, Section 3.4
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.5
 
 **Code:**
-- `src/lib/game/turn-processing/maintenance-phase.ts` - Maintenance calculation
 - `src/lib/units/unit-costs.ts` - Maintenance cost definitions
+- `src/lib/game/turn-processing/maintenance-phase.ts` - Cost calculation
 
 **Tests:**
-- `src/lib/game/turn-processing/__tests__/maintenance.test.ts` - Attrition logic
+- `src/lib/game/turn-processing/__tests__/maintenance.test.ts` - Cost deduction tests
+
+**Status:** Draft
+
+---
+
+### REQ-MIL-004-B: Maintenance Deficit Attrition
+
+**Description:** If empire cannot afford maintenance for 2 or more consecutive turns, military attrition occurs. 10% of total military units are destroyed per turn. Units are destroyed in reverse power order (highest power first) starting with Carriers.
+
+**Rationale:** Creates consequences for unsustainable military expansion. Forces players to maintain economic balance.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Deficit Threshold | 2 consecutive turns | Trigger condition |
+| Attrition Rate | 10% per turn | Of total military |
+| Destruction Order | Reverse power order | Carriers → Heavy Cruisers → Light Cruisers → Stations → Bombers → Fighters → Soldiers |
+
+**Attrition Logic:**
+```
+if (maintenance_deficit_turns >= 2) {
+  units_to_destroy = floor(total_units * 0.10)
+  destroy_units_by_power_order(units_to_destroy, reverse=true)
+}
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4
+
+**Code:**
+- `src/lib/game/turn-processing/maintenance-phase.ts` - Attrition logic
+
+**Tests:**
+- `src/lib/game/turn-processing/__tests__/maintenance.test.ts` - Attrition trigger and selection tests
 
 **Status:** Draft
 

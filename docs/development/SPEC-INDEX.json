@@ -191,7 +191,9 @@
         { "id": "REQ-MIL-002-C", "title": "Multi-Turn Production Times", "atomic": true, "line": 642, "splitFrom": "REQ-MIL-002" },
         { "id": "REQ-MIL-002-D", "title": "Build Cancellation and Refunds", "atomic": true, "line": 677, "splitFrom": "REQ-MIL-002" },
         { "id": "REQ-MIL-003", "title": "Resource Costs", "atomic": true, "line": 709 },
-        { "id": "REQ-MIL-004", "title": "Maintenance Costs", "atomic": false, "line": 627, "splitCandidate": "costs + attrition" },
+        { "id": "REQ-MIL-004", "title": "Maintenance Costs (Split)", "atomic": true, "line": 738, "parentOf": ["REQ-MIL-004-A", "REQ-MIL-004-B"] },
+        { "id": "REQ-MIL-004-A", "title": "Unit Maintenance Costs", "atomic": true, "line": 744, "splitFrom": "REQ-MIL-004" },
+        { "id": "REQ-MIL-004-B", "title": "Maintenance Deficit Attrition", "atomic": true, "line": 784, "splitFrom": "REQ-MIL-004" },
         { "id": "REQ-MIL-005", "title": "Production Time", "atomic": true, "line": 660 },
         { "id": "REQ-MIL-006", "title": "Power Multipliers", "atomic": true, "line": 686, "note": "Potential duplicate of REQ-COMBAT-004" },
         { "id": "REQ-MIL-007", "title": "Cost-to-Power Efficiency", "atomic": true, "line": 717 },
@@ -461,9 +463,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 314,
-    "atomicSpecs": 248,
-    "splitCandidates": 57,
+    "totalSpecs": 316,
+    "atomicSpecs": 251,
+    "splitCandidates": 56,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
