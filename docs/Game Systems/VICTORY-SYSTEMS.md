@@ -992,16 +992,48 @@ economic_victory = (your_networth / second_place_networth) >= 1.5
 **Status:** Draft
 
 ---
+### REQ-VIC-003: Diplomatic Victory (PARENT)
 
-### REQ-VIC-003: Diplomatic Victory
+**Description:** Achieved when a coalition controls 50% of territory. This parent spec tracks the complete diplomatic victory system.
 
-**Description:** Achieved when a coalition controls 50% of territory. All coalition members win.
+**Children:**
+- REQ-VIC-003.1: Coalition Territory Calculation
+- REQ-VIC-003.2: Diplomatic Victory Threshold
+- REQ-VIC-003.3: Shared Victory Mechanics
 
-**Rationale:** Alliance-based victory path enables cooperative strategies. Shared victory (all members win) incentivizes genuine cooperation rather than betrayal. The 50% threshold (vs 60% Conquest) reflects the difficulty of coordinating multiple empires.
+**Rationale:** Alliance-based victory path enables cooperative strategies. Shared victory (all members win) incentivizes genuine cooperation rather than betrayal.
 
-**Formula:**
+**Source:** Section 3.3 - Diplomatic Victory
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-003.1: Coalition Territory Calculation
+
+**Description:** Coalition territory calculated as sum of sectors owned by all coalition members:
 ```typescript
 coalition_territory = sum of sectors owned by all coalition members
+```
+
+**Rationale:** Aggregate territory control measures coalition's collective dominance.
+
+**Source:** Section 3.3 - Diplomatic Victory
+
+**Code:**
+- `src/lib/game/services/core/coalition-service.ts` - Territory aggregation
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Coalition territory sum"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-003.2: Diplomatic Victory Threshold
+
+**Description:** Diplomatic victory achieved when coalition controls 50% of territory:
+```typescript
 diplomatic_victory = (coalition_territory / total_sectors) >= 0.50
 ```
 
@@ -1013,35 +1045,41 @@ diplomatic_victory = (coalition_territory / total_sectors) >= 0.50
 | reputation_required | +50 | Leader must have +50 rep with all members |
 | anti_snowball_trigger | 175 sectors | 70% of threshold (7 VP) |
 
+**Rationale:** 50% threshold (vs 60% Conquest) reflects difficulty of coordinating multiple empires.
+
 **Source:** Section 3.3 - Diplomatic Victory
 
 **Code:**
 - `src/lib/game/services/core/victory-service.ts` - `checkDiplomaticVictory()`
-- `src/lib/game/services/core/coalition-service.ts` - `formCoalition()`
 - `src/lib/game/services/core/coalition-service.ts` - `validateCoalition()`
 
 **Tests:**
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Diplomatic victory at 50% coalition territory"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "All coalition members marked as winners"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Coalition disbanded before victory = no win"
-- `src/lib/game/services/__tests__/coalition-service.test.ts` - "Coalition requires minimum 3 members"
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Diplomatic victory at 50%"
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Fails below 50%"
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Requires minimum 3 members"
 
 **Status:** Draft
 
 ---
 
-### REQ-VIC-004: Research Victory
+### REQ-VIC-003.3: Shared Victory Mechanics
 
-**Description:** Achieved when an empire completes the entire Tier 3 tech tree (Doctrine → Specialization → Capstone + 10 advanced techs).
+**Description:** All coalition members win when diplomatic victory achieved (shared victory).
 
-**Rationale:** Tech rush victory path enables turtle strategies. Completing the full tech tree demonstrates long-term investment in research rather than military/economic expansion. The 10 advanced tech requirement ensures breadth of research, not just rushing to capstone.
+**Rationale:** Shared victory incentivizes genuine cooperation rather than betrayal before victory.
 
-**Formula:**
-```typescript
-research_complete = (capstone_complete === true)
-                    AND (advanced_tech_count >= 10)
+**Source:** Section 3.3 - Diplomatic Victory
 
-research_victory = research_complete === true
+**Code:**
+- `src/lib/game/services/core/coalition-service.ts` - `formCoalition()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "All members win"
+
+**Status:** Draft
+
+---
+
 ```
 
 **Key Values:**
