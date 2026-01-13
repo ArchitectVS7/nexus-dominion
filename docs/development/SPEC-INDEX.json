@@ -294,7 +294,9 @@
         { "id": "REQ-RES-011-A", "title": "Research Point Production Calculation", "atomic": true, "line": 2064, "splitFrom": "REQ-RES-011" },
         { "id": "REQ-RES-011-B", "title": "Tech Tier Unlock Thresholds", "atomic": true, "line": 2098, "splitFrom": "REQ-RES-011" },
         { "id": "REQ-RES-011-C", "title": "Research Timeline Mechanics", "atomic": true, "line": 2131, "splitFrom": "REQ-RES-011" },
-        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 2157, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition (Split)", "atomic": true, "line": 2157, "parentOf": ["REQ-RES-012-A", "REQ-RES-012-B"], "note": "Duplicate of REQ-VIC-002" },
+        { "id": "REQ-RES-012-A", "title": "Empire Networth Calculation", "atomic": true, "line": 2163, "splitFrom": "REQ-RES-012" },
+        { "id": "REQ-RES-012-B", "title": "Economic Victory Threshold", "atomic": true, "line": 2212, "splitFrom": "REQ-RES-012" }
       ]
     },
     "SECTOR": {
@@ -498,9 +500,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 346,
-    "atomicSpecs": 292,
-    "splitCandidates": 45,
+    "totalSpecs": 348,
+    "atomicSpecs": 295,
+    "splitCandidates": 44,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

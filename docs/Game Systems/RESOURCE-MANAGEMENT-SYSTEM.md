@@ -2154,9 +2154,17 @@ Examples:
 
 ---
 
-### REQ-RES-012: Economic Victory Condition
+### REQ-RES-012: Economic Victory Condition (Split)
 
-**Description:** Player achieves Economic Victory when their networth reaches 1.5× (150%) the networth of the 2nd place empire.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-012-A through REQ-RES-012-B.
+
+---
+
+### REQ-RES-012-A: Empire Networth Calculation
+
+**Description:** Empire networth calculated as sum of credits, resource values (at market price), sector values (8,000 average), military unit build costs, and research points (×10 value).
+
+**Rationale:** Networth provides comprehensive measure of empire value across all asset types. Enables comparison between empires with different strategies (military vs economic vs research).
 
 **Networth Calculation:**
 ```
@@ -2167,23 +2175,70 @@ Empire Networth = Credits
                   + (Sectors × 8,000 average value)
                   + (Military Units × Unit Build Cost)
                   + (Research Points × 10)
+
+Example:
+- Credits: 50,000 cr
+- Food: 10,000 × 2 cr = 20,000 cr
+- Ore: 5,000 × 4 cr = 20,000 cr
+- Petroleum: 3,000 × 8 cr = 24,000 cr
+- Sectors: 10 × 8,000 = 80,000 cr
+- Military: 5 units × 1,000 = 5,000 cr
+- Research: 1,000 RP × 10 = 10,000 cr
+Total Networth: 209,000 cr
 ```
 
-**Victory Condition:**
-```
-Player Networth ≥ 1.5 × 2nd Place Networth
-```
+**Key Values:**
 
-**Rationale:** Economic victory rewards empire-building over military conquest. 1.5× threshold is achievable but requires sustained economic focus (Commerce sectors + Ecstatic status).
+| Component | Valuation Method | Notes |
+|-----------|------------------|-------|
+| Credits | Face value | Liquid currency |
+| Resources | Market price | Dynamic valuation |
+| Sectors | 8,000 cr average | Average sector build cost |
+| Military Units | Build cost | Original construction cost |
+| Research Points | 10 cr/RP | Fixed valuation |
 
 **Source:** Section 1.3 - Player Experience (Economic Victory Path)
 
 **Code:**
 - `src/lib/game/services/networth-calculator.ts` - `calculateEmpireNetworth()` function
-- `src/lib/game/services/victory-checker.ts` - Economic victory condition check
 
 **Tests:**
 - `src/lib/game/services/__tests__/networth-calculation.test.ts` - Networth formula tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-012-B: Economic Victory Threshold
+
+**Description:** Player achieves Economic Victory when their networth reaches 1.5× (150%) the networth of the 2nd place empire. Victory condition checked each turn after Turn 50.
+
+**Rationale:** Economic victory rewards empire-building over military conquest. 1.5× threshold is achievable but requires sustained economic focus (Commerce sectors + Ecstatic status). Prevents stalemate by providing clear economic win path.
+
+**Victory Condition:**
+```
+Player Networth ≥ 1.5 × 2nd Place Networth
+
+Example:
+- Player networth: 300,000 cr
+- 2nd place networth: 190,000 cr
+- Threshold: 190,000 × 1.5 = 285,000 cr
+- Victory achieved: 300,000 ≥ 285,000 ✓
+```
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Victory threshold multiplier | 1.5× (150%) | Relative to 2nd place |
+| Minimum turn | Turn 50 | Prevents early victories |
+
+**Source:** Section 1.3 - Player Experience (Economic Victory Path)
+
+**Code:**
+- `src/lib/game/services/victory-checker.ts` - Economic victory condition check
+
+**Tests:**
 - `src/lib/game/services/__tests__/economic-victory.test.ts` - Victory condition tests
 
 **Status:** Draft
