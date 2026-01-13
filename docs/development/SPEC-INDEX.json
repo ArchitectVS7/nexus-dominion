@@ -2603,15 +2603,40 @@
           "id": "REQ-RSCH-011.4",
           "title": "Coalition Intel Summary UI",
           "atomic": true,
-          "line": 3180,
+          "line": 3232,
           "parent": "REQ-RSCH-011"
         },
         {
           "id": "REQ-RSCH-012",
-          "title": "Bot Research Decision Logic",
+          "title": "Bot Research Decision Logic (PARENT)",
           "atomic": false,
-          "line": 3142,
-          "splitCandidate": "archetype preferences + counter-picking + tier logic"
+          "line": 3140,
+          "children": [
+            "REQ-RSCH-012.1",
+            "REQ-RSCH-012.2",
+            "REQ-RSCH-012.3"
+          ]
+        },
+        {
+          "id": "REQ-RSCH-012.1",
+          "title": "Archetype Research Preferences",
+          "atomic": true,
+          "line": 3154,
+          "parent": "REQ-RSCH-012"
+        },
+        {
+          "id": "REQ-RSCH-012.2",
+          "title": "Counter-Picking Logic",
+          "atomic": true,
+          "line": 3227,
+          "parent": "REQ-RSCH-012"
+        },
+        {
+          "id": "REQ-RSCH-012.3",
+          "title": "Bot Tier Intelligence Levels",
+          "atomic": true,
+          "line": 3248,
+          "parent": "REQ-RSCH-012"
         }
       ]
     },
@@ -3441,9 +3466,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 376,
-    "atomicSpecs": 335,
-    "splitCandidates": 32,
+    "totalSpecs": 378,
+    "atomicSpecs": 338,
+    "splitCandidates": 31,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

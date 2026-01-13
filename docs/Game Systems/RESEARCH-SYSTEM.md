@@ -3137,27 +3137,80 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 ---
 
-### REQ-RSCH-012: Bot Research Decision Logic
+### REQ-RSCH-012: Bot Research Decision Logic (PARENT)
 
-**Description:** Bots choose doctrines and specializations based on archetype preferences with variance:
-- 80% follow archetype preference (Warlord → War Machine 90%)
-- 20% counter-pick based on neighbors (if surrounded by War Machine, choose Fortress)
-- Strategic/Elite bots analyze threats and counter-pick specializations
-- Simple/Random bots follow archetype preferences without analysis
-- Opportunist archetype copies strongest neighbor's research path
+**Description:** Bots choose doctrines and specializations based on archetype preferences with variance. This parent spec tracks the complete bot research decision system.
+
+**Children:**
+- REQ-RSCH-012.1: Archetype Research Preferences
+- REQ-RSCH-012.2: Counter-Picking Logic
+- REQ-RSCH-012.3: Bot Tier Intelligence Levels
 
 **Rationale:** Creates diverse bot research paths while maintaining archetype identity. Counter-picking prevents monoculture (all bots choosing same doctrine). Strategic bots create challenge by adapting to threats.
 
 **Source:** Section 4.2 - Bot Decision Logic
 
+**Status:** Draft
+
+---
+
+### REQ-RSCH-012.1: Archetype Research Preferences
+
+**Description:** Each bot archetype has preferred doctrines and specializations that define their research identity:
+- Warlord → War Machine 90% of the time
+- 80% of bots follow their archetype preference
+- Opportunist archetype copies strongest neighbor's research path
+
+**Rationale:** Archetype-based preferences create diverse bot personalities while ensuring recognizable playstyles.
+
+**Source:** Section 4.2 - Bot Decision Logic
+
 **Code:**
-- `src/lib/bots/research-decision.ts` - Bot doctrine/specialization choice logic
 - `src/lib/bots/archetypes/archetype-config.ts` - Archetype research preferences
-- `src/lib/bots/strategic-bot.ts` - Strategic bot threat analysis and counter-picking
 
 **Tests:**
 - `src/lib/bots/__tests__/research-decision.test.ts` - Test archetype preferences work
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-012.2: Counter-Picking Logic
+
+**Description:** Bots have 20% chance to counter-pick based on neighbors:
+- If surrounded by War Machine bots, choose Fortress doctrine
+- Counter-picking creates strategic diversity and prevents monoculture
+- Applies to both doctrine and specialization choices
+
+**Rationale:** Counter-picking prevents all bots from choosing the same doctrine, creating more diverse and interesting strategic landscapes.
+
+**Source:** Section 4.2 - Bot Decision Logic
+
+**Code:**
+- `src/lib/bots/research-decision.ts` - Bot counter-pick analysis
+
+**Tests:**
 - `src/lib/bots/__tests__/counter-picking.test.ts` - Test 20% counter-pick based on neighbors
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-012.3: Bot Tier Intelligence Levels
+
+**Description:** Different bot tiers have varying research decision capabilities:
+- Strategic/Elite bots analyze threats and counter-pick specializations
+- Simple/Random bots follow archetype preferences without analysis
+- Higher tier bots create more challenging adaptive opponents
+
+**Rationale:** Tiered intelligence creates difficulty progression where elite bots pose greater challenge through adaptive research choices.
+
+**Source:** Section 4.2 - Bot Decision Logic
+
+**Code:**
+- `src/lib/bots/strategic-bot.ts` - Strategic bot threat analysis and counter-picking
+
+**Tests:**
 - `src/lib/bots/__tests__/strategic-bot-research.test.ts` - Test strategic bot analysis
 
 **Status:** Draft
