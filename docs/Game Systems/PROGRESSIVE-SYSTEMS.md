@@ -1513,24 +1513,123 @@ Normal Damage = Base Damage × 1.0
 
 ---
 
-### REQ-PROG-006: Event Announcements
+### REQ-PROG-006: Event Announcements (Split)
 
-**Description:** Galactic events announced 1 turn before occurrence (except Supernova):
-- Warning notification: "GALACTIC EVENT INCOMING: [Type]"
-- Active event banner during duration
-- Turn counter showing remaining duration
-- End notification when event concludes
+> **Note:** This spec has been split into atomic sub-specs. See REQ-PROG-006-A through REQ-PROG-006-D.
 
-**Rationale:** Gives players time to react and prepare. Banner ensures visibility during multi-turn events.
+---
 
-**Source:** Section 3.4, 5.3
+### REQ-PROG-006-A: Event Warning Notification
+
+**Description:** Galactic events announced 1 turn before occurrence with warning notification "GALACTIC EVENT INCOMING: [Type]". Exception: Supernova has no warning and occurs immediately without advance notice.
+
+**Rationale:** Gives players time to react and prepare for most events. Supernova exception creates dramatic surprise element.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Warning Timing | 1 turn before event | Advance notice |
+| Warning Message | "GALACTIC EVENT INCOMING: [Type]" | Notification text |
+| Supernova Exception | No warning | Immediate occurrence |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4
 
 **Code:**
-- `src/lib/game/services/events/event-announcements.ts`
-- `src/app/components/EventBanner.tsx`
+- `src/lib/game/services/events/event-announcements.ts` - Warning logic
 
 **Tests:**
-- `src/lib/game/services/events/__tests__/event-announcements.test.ts`
+- `src/lib/game/services/events/__tests__/event-announcements.test.ts` - Warning tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-006-B: Active Event Banner
+
+**Description:** During active galactic event, persistent banner displays on screen showing event type. Banner remains visible throughout entire event duration until event concludes.
+
+**Rationale:** Ensures players aware of active event effects. Persistent visibility prevents confusion about current game state.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Banner Visibility | Throughout event duration | Persistent display |
+| Banner Content | Event type and icon | Clear identification |
+| Display Location | Top of game screen | Prominent position |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 5.3
+
+**Code:**
+- `src/app/components/EventBanner.tsx` - Banner component
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/event-announcements.test.ts` - Banner display tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-006-C: Event Turn Counter
+
+**Description:** Active event banner includes turn counter displaying remaining duration. Counter shows number of turns left until event concludes, decrementing by 1 each turn.
+
+**Rationale:** Provides clear timeline for event effects. Players can plan strategy around known end date.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Counter Format | "X turns remaining" | Clear text format |
+| Update Frequency | Each turn | Decrements by 1 |
+| End State | "Final turn" | Last turn indication |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 5.3
+
+**Code:**
+- `src/app/components/EventBanner.tsx` - Counter display
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/event-announcements.test.ts` - Counter tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-006-D: Event End Notification
+
+**Description:** When galactic event concludes (duration expires), end notification displays informing players event has ended. Notification includes event type that just concluded.
+
+**Rationale:** Clear closure for event. Players know when effects end and normal gameplay resumes.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| End Trigger | Duration reaches 0 | Event completion |
+| End Message | "GALACTIC EVENT ENDED: [Type]" | Notification text |
+| Display Duration | 5 seconds | Auto-dismiss |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-announcements.ts` - End notification logic
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/event-announcements.test.ts` - End notification tests
 
 **Status:** Draft
 

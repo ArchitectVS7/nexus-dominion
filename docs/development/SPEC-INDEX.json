@@ -234,7 +234,11 @@
         { "id": "REQ-PROG-005-A", "title": "Warlord/Blitzkrieg Attack Priority Reduction", "atomic": true, "line": 1419, "splitFrom": "REQ-PROG-005" },
         { "id": "REQ-PROG-005-B", "title": "Bot Damage Reduction", "atomic": true, "line": 1450, "splitFrom": "REQ-PROG-005" },
         { "id": "REQ-PROG-005-C", "title": "Blitzkrieg Rush Delay", "atomic": true, "line": 1486, "splitFrom": "REQ-PROG-005" },
-        { "id": "REQ-PROG-006", "title": "Event Announcements", "atomic": false, "line": 1171, "splitCandidate": "warning + banner + counter + end" }
+        { "id": "REQ-PROG-006", "title": "Event Announcements (Split)", "atomic": true, "line": 1516, "parentOf": ["REQ-PROG-006-A", "REQ-PROG-006-B", "REQ-PROG-006-C", "REQ-PROG-006-D"] },
+        { "id": "REQ-PROG-006-A", "title": "Event Warning Notification", "atomic": true, "line": 1522, "splitFrom": "REQ-PROG-006" },
+        { "id": "REQ-PROG-006-B", "title": "Active Event Banner", "atomic": true, "line": 1551, "splitFrom": "REQ-PROG-006" },
+        { "id": "REQ-PROG-006-C", "title": "Event Turn Counter", "atomic": true, "line": 1580, "splitFrom": "REQ-PROG-006" },
+        { "id": "REQ-PROG-006-D", "title": "Event End Notification", "atomic": true, "line": 1609, "splitFrom": "REQ-PROG-006" }
       ]
     },
     "RESOURCE": {
@@ -477,9 +481,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 326,
-    "atomicSpecs": 265,
-    "splitCandidates": 52,
+    "totalSpecs": 329,
+    "atomicSpecs": 269,
+    "splitCandidates": 51,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
