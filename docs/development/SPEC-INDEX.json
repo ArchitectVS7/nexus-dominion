@@ -112,7 +112,10 @@
         { "id": "REQ-DIP-005", "title": "Automatic Coalition Formation (Split)", "atomic": true, "line": 733, "parentOf": ["REQ-DIP-005-A", "REQ-DIP-005-B"] },
         { "id": "REQ-DIP-005-A", "title": "Automatic Coalition Trigger and Formation", "atomic": true, "line": 739, "splitFrom": "REQ-DIP-005" },
         { "id": "REQ-DIP-005-B", "title": "Leader Debuffs and Restrictions", "atomic": true, "line": 784, "splitFrom": "REQ-DIP-005" },
-        { "id": "REQ-DIP-006", "title": "Betrayal Mechanics", "atomic": false, "line": 663, "splitCandidate": "treaty breaking + coalition betrayal + bot rates" },
+        { "id": "REQ-DIP-006", "title": "Betrayal Mechanics (Split)", "atomic": true, "line": 825, "parentOf": ["REQ-DIP-006-A", "REQ-DIP-006-B", "REQ-DIP-006-C"] },
+        { "id": "REQ-DIP-006-A", "title": "Treaty Breaking Mechanics", "atomic": true, "line": 831, "splitFrom": "REQ-DIP-006" },
+        { "id": "REQ-DIP-006-B", "title": "Coalition Betrayal Mechanics", "atomic": true, "line": 874, "splitFrom": "REQ-DIP-006" },
+        { "id": "REQ-DIP-006-C", "title": "Bot Archetype Betrayal Rates", "atomic": true, "line": 923, "splitFrom": "REQ-DIP-006" },
         { "id": "REQ-DIP-007", "title": "Treaty Duration & Renewal", "atomic": true, "line": 701 },
         { "id": "REQ-DIP-008", "title": "Diplomatic Victory Condition", "atomic": true, "line": 727 },
         { "id": "REQ-DIP-009", "title": "Shared Intelligence (Split)", "atomic": true, "line": 749, "parentOf": ["REQ-DIP-009-A", "REQ-DIP-009-B", "REQ-DIP-009-C", "REQ-DIP-009-D"] },
@@ -447,9 +450,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 304,
-    "atomicSpecs": 233,
-    "splitCandidates": 62,
+    "totalSpecs": 306,
+    "atomicSpecs": 236,
+    "splitCandidates": 61,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

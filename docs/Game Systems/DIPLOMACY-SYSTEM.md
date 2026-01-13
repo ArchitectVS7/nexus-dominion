@@ -822,39 +822,146 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 ---
 
-### REQ-DIP-006: Betrayal Mechanics
+### REQ-DIP-006: Betrayal Mechanics (Split)
 
-**Description:** Empires can betray treaties and coalitions:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-DIP-006-A through REQ-DIP-006-C.
 
-**Treaty Breaking:**
-- Reputation penalty: NAP -15, Alliance -25
-- All treaties with target immediately void
-- "Betrayed" status on target for 50 turns (-20 trust toward betrayer)
+---
 
-**Coalition Betrayal:**
-- Requires explicit "Leave Coalition" action
-- Reputation penalty: -40 with all empires
-- "Pariah" status: Cannot form new treaties for 30 turns
-- Coalition receives notification
+### REQ-DIP-006-A: Treaty Breaking Mechanics
 
-**Bot Betrayal Rates by Archetype:**
-- Schemer: 95% (always betrays after 20 turns)
-- Opportunist: 20% (if coalition weakened)
-- Warlord: 0% (never betrays)
-- Merchant: 5% (if better economic opportunity)
-- Others: <3% (only if trust < -50)
+**Description:** Empires can unilaterally break NAP or Alliance treaties. Breaking a treaty immediately voids all agreements with the target, applies reputation penalties based on treaty type, and marks the target with "Betrayed" status for 50 turns.
 
-**Rationale:** Creates tension in alliances. Schemer archetype makes all treaties risky. Reputation loss discourages frivolous betrayals.
+**Rationale:** Treaty breaking must have meaningful consequences to prevent exploitation. Reputation penalties scale with treaty importance. Betrayed status creates lasting diplomatic damage.
+
+**Treaty Breaking Penalties:**
+| Treaty Type | Reputation Penalty | Notes |
+|-------------|-------------------|-------|
+| NAP | -15 reputation | With target empire |
+| Alliance | -25 reputation | With target empire |
+
+**Betrayed Status Effects:**
+- Duration: 50 turns
+- Effect: Target receives -20 trust toward betrayer
+- Persists through other diplomatic actions
+- Cannot be cleared early
+
+**Breaking Sequence:**
+1. Player/bot initiates treaty break action
+2. All treaties with target immediately void
+3. Reputation penalty applied
+4. Betrayed status applied to target
+5. Notification sent to target
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.3
 
 **Code:**
-- `src/lib/diplomacy/betrayal.ts` - Betrayal actions, penalties
-- `src/lib/bot/archetype-behavior.ts` - Archetype betrayal logic
+- `src/lib/diplomacy/betrayal.ts` - Treaty breaking actions and penalties
+- `src/lib/diplomacy/treaty-manager.ts` - Treaty voiding logic
 
 **Tests:**
-- `src/lib/diplomacy/__tests__/betrayal.test.ts` - Betrayal mechanics
-- `src/lib/bot/__tests__/schemer-betrayal.test.ts` - Schemer archetype behavior
+- `src/lib/diplomacy/__tests__/betrayal.test.ts` - Test NAP and Alliance breaking penalties
+- `src/lib/diplomacy/__tests__/betrayed-status.test.ts` - Verify betrayed status duration
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-006-B: Coalition Betrayal Mechanics
+
+**Description:** Empires can leave coalitions through explicit "Leave Coalition" action. Coalition betrayal results in severe reputation penalties with all empires (not just coalition members) and applies "Pariah" status preventing new treaty formation for 30 turns.
+
+**Rationale:** Coalition betrayal is more severe than treaty breaking because it affects multiple empires and breaks collective trust. Pariah status prevents betrayers from immediately forming new alliances.
+
+**Coalition Betrayal Penalties:**
+| Penalty | Value | Scope |
+|---------|-------|-------|
+| Reputation loss | -40 | All empires globally |
+| Treaty formation ban | 30 turns | Cannot form any treaties |
+| Status name | "Pariah" | Public notification |
+
+**Pariah Status:**
+- Duration: 30 turns
+- Effect: Blocks NAP and Alliance formation
+- Visible to all empires
+- Cannot be cleared early (even with reputation recovery)
+
+**Betrayal Sequence:**
+1. Player/bot initiates "Leave Coalition" action
+2. Reputation penalty applied to all empires
+3. Pariah status applied to betrayer
+4. Coalition receives notification
+5. Betrayer removed from coalition
+
+**Impact on Coalition:**
+- Coalition continues if 3+ members remain
+- Coalition disbands if drops below 3 members
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3
+
+**Code:**
+- `src/lib/diplomacy/betrayal.ts` - Coalition leave actions and global penalties
+- `src/lib/diplomacy/coalitions.ts` - Coalition membership removal
+- `src/lib/diplomacy/pariah-status.ts` - Pariah status enforcement
+
+**Tests:**
+- `src/lib/diplomacy/__tests__/betrayal.test.ts` - Test coalition betrayal penalties
+- `src/lib/diplomacy/__tests__/pariah-status.test.ts` - Verify 30-turn treaty ban
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-006-C: Bot Archetype Betrayal Rates
+
+**Description:** Bot betrayal probability varies by archetype. Schemer bots have deterministic betrayal after 20 turns, while other archetypes have probabilistic betrayal based on conditions.
+
+**Rationale:** Creates tension in alliances with Schemer bots. Other archetypes betray rarely or under specific conditions, making them more reliable but not perfectly trustworthy.
+
+**Betrayal Rates by Archetype:**
+| Archetype | Betrayal Rate | Conditions |
+|-----------|---------------|------------|
+| Schemer | 95% | Guaranteed after 20 turns in treaty/coalition |
+| Opportunist | 20% | Only if coalition weakened or losing |
+| Warlord | 0% | Never betrays (honorable) |
+| Merchant | 5% | Only if better economic opportunity exists |
+| Others | <3% | Only if trust < -50 |
+
+**Schemer Betrayal Timer:**
+- Starts counting when treaty/coalition formed
+- At turn 20: Schemer betrays with 95% probability
+- Turn 21+: Remains at 95% probability each turn until betrayal occurs
+- Warning: No telegraph or warning before betrayal
+
+**Betrayal Decision Logic:**
+1. Check archetype
+2. Evaluate conditions (turn count, coalition strength, trust level, etc.)
+3. Roll probability
+4. Execute betrayal if threshold met
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3
+
+**Code:**
+- `src/lib/bot/archetype-behavior.ts` - Archetype betrayal logic
+- `src/lib/bot/archetypes/schemer.ts` - Schemer 20-turn timer
+- `src/lib/bot/betrayal-decision.ts` - Betrayal probability calculation
+
+**Tests:**
+- `src/lib/bot/__tests__/schemer-betrayal.test.ts` - Test Schemer 20-turn timer
+- `src/lib/bot/__tests__/archetype-betrayal-rates.test.ts` - Verify all archetype rates
+- `src/lib/bot/__tests__/warlord-loyalty.test.ts` - Confirm Warlord never betrays
 
 **Status:** Draft
 
