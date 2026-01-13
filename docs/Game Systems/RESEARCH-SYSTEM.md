@@ -2952,35 +2952,96 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 ---
 
-### REQ-RSCH-010: Galactic News Rumor System
+### REQ-RSCH-010: Galactic News Rumor System (Split)
 
-**Description:** Every 10 turns (Turn 10, 20, 30, 40...), generate 5 rumors:
-- 3 TRUE rumors (accurate information about doctrines, specializations, capstone progress)
-- 2 FALSE rumors (misinformation, outdated intel, or lies)
-- Players cannot tell which are true (50% accuracy overall when mixed)
-- Rumors can be verified via espionage (Investigate Specialization, 5,000 cr)
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-010-A through REQ-RSCH-010-C.
 
-**Rationale:** Provides free (but unreliable) intel. Creates information warfare and decision tension: trust rumors or verify with espionage? False rumors can mislead entire galaxy.
+---
 
-**Key Values:**
+### REQ-RSCH-010-A: Rumor Generation Logic
+
+**Description:** Generate 5 rumors per bulletin: 3 TRUE rumors (accurate information) and 2 FALSE rumors (misinformation). Players cannot distinguish true from false (50% overall accuracy).
+
+**Rationale:** Free but unreliable intel creates information warfare. False rumors mislead galaxy.
+
+**Generation Rules:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| Rumor frequency | Every 10 turns | Turn 10, 20, 30, 40, 50... |
-| Rumors per bulletin | 5 total | 3 true + 2 false |
-| Overall accuracy | 50% | Players can't distinguish |
-| Verification cost | 5,000 cr | Via Investigate operation |
+| True rumors | 3 per bulletin | Accurate information about doctrines, specializations, capstone progress |
+| False rumors | 2 per bulletin | Misinformation, outdated intel, or lies |
+| Overall accuracy | 50% (3/5) | Players can't tell which are true |
+| Display | Mixed randomly | True/false status hidden from players |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.4.5 - Galactic News Rumor System
 
 **Code:**
 - `src/lib/game/galactic-news/rumor-generator.ts` - Generate 3 true + 2 false rumors
-- `src/lib/game/galactic-news/rumor-display.ts` - Display to players (hide true/false status)
-- `src/lib/game/turn-processor/galactic-news-phase.ts` - Trigger every 10 turns
 
 **Tests:**
 - `src/lib/game/__tests__/rumor-generator.test.ts` - Test 3 true + 2 false generation
-- `src/lib/game/__tests__/rumor-frequency.test.ts` - Test triggers every 10 turns
 - `src/lib/game/__tests__/rumor-accuracy.test.ts` - Test 50% accuracy (3/5 true, 2/5 false)
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-010-B: Rumor Frequency
+
+**Description:** Galactic News Rumor bulletin generates every 10 turns (Turn 10, 20, 30, 40, 50...).
+
+**Rationale:** Regular cadence provides predictable intel opportunities throughout game.
+
+**Frequency Rules:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Frequency | Every 10 turns | Turn 10, 20, 30, 40, 50, 60... |
+| First bulletin | Turn 10 | After first doctrines unlock |
+| Last bulletin | No cap | Continues until game end |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.5 - Galactic News Rumor System
+
+**Code:**
+- `src/lib/game/turn-processor/galactic-news-phase.ts` - Trigger every 10 turns
+
+**Tests:**
+- `src/lib/game/__tests__/rumor-frequency.test.ts` - Test triggers every 10 turns
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-010-C: Rumor Verification Method
+
+**Description:** Rumors can be verified via Investigate Specialization espionage operation (5,000 cr). Verification confirms or denies specific rumor accuracy.
+
+**Rationale:** Creates decision tension: trust free (unreliable) rumors vs. pay for certainty.
+
+**Verification Rules:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Verification cost | 5,000 cr | Same as Investigate Specialization operation |
+| Verification method | Espionage operation | Investigate Specialization (REQ-RSCH-009) |
+| Accuracy after verification | 85% | Standard Investigate success rate |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.5 - Galactic News Rumor System
+
+**Code:**
+- `src/lib/game/galactic-news/rumor-display.ts` - Display rumors with verification option
+
+**Tests:**
+- `src/lib/game/__tests__/rumor-verification.test.ts` - Test verification links to Investigate operation
 
 **Status:** Draft
 
