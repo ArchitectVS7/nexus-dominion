@@ -3162,11 +3162,35 @@
         },
         {
           "id": "REQ-TURN-017",
-          "title": "Galactic Events Phase",
+          "title": "Galactic Events Phase (PARENT)",
           "atomic": false,
-          "line": 1463,
-          "splitCandidate": "triggering + probability + milestone",
-          "note": "Duplicate of REQ-PROG-003"
+          "line": 2125,
+          "children": [
+            "REQ-TURN-017.1",
+            "REQ-TURN-017.2",
+            "REQ-TURN-017.3"
+          ]
+        },
+        {
+          "id": "REQ-TURN-017.1",
+          "title": "Event Triggering Logic",
+          "atomic": true,
+          "line": 2139,
+          "parent": "REQ-TURN-017"
+        },
+        {
+          "id": "REQ-TURN-017.2",
+          "title": "Event Probability Calculation",
+          "atomic": true,
+          "line": 2202,
+          "parent": "REQ-TURN-017"
+        },
+        {
+          "id": "REQ-TURN-017.3",
+          "title": "Milestone Gate Requirement",
+          "atomic": true,
+          "line": 2229,
+          "parent": "REQ-TURN-017"
         },
         {
           "id": "REQ-TURN-018",
@@ -3201,49 +3225,49 @@
           "id": "REQ-TURN-019-02",
           "title": "Economic Victory Check",
           "atomic": true,
-          "line": 2183,
+          "line": 2224,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-03",
           "title": "Diplomatic Victory Check",
           "atomic": true,
-          "line": 2216,
+          "line": 2257,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-04",
           "title": "Research Victory Check",
           "atomic": true,
-          "line": 2250,
+          "line": 2291,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-05",
           "title": "Covert Victory Check",
           "atomic": true,
-          "line": 2283,
+          "line": 2324,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-06",
           "title": "Survival Victory Check",
           "atomic": true,
-          "line": 2316,
+          "line": 2357,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-020",
           "title": "Auto-Save Phase",
           "atomic": false,
-          "line": 2349,
+          "line": 2390,
           "splitCandidate": "save + rotation + failure"
         },
         {
           "id": "REQ-TURN-021",
           "title": "Performance Budget (Split)",
           "atomic": true,
-          "line": 2368,
+          "line": 2409,
           "parentOf": [
             "REQ-TURN-021-A",
             "REQ-TURN-021-B",
@@ -3255,28 +3279,28 @@
           "id": "REQ-TURN-021-A",
           "title": "Tier 1 Performance Budget",
           "atomic": true,
-          "line": 2383,
+          "line": 2424,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-B",
           "title": "Bot Decisions Performance Budget",
           "atomic": true,
-          "line": 2410,
+          "line": 2451,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-C",
           "title": "Tier 2 Performance Budget",
           "atomic": true,
-          "line": 2437,
+          "line": 2478,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-D",
           "title": "UI and Animation Performance Budget",
           "atomic": true,
-          "line": 2464,
+          "line": 2505,
           "splitFrom": "REQ-TURN-021"
         }
       ]
@@ -3590,9 +3614,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 387,
-    "atomicSpecs": 353,
-    "splitCandidates": 25,
+    "totalSpecs": 389,
+    "atomicSpecs": 356,
+    "splitCandidates": 24,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

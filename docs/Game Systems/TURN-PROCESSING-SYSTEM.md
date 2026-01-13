@@ -2122,13 +2122,46 @@ new_price = clamp(calculated_price, min_price, max_price)
 
 ---
 
-### REQ-TURN-017: Galactic Events Phase
+### REQ-TURN-017: Galactic Events Phase (PARENT)
 
-**Description:** Galactic Events Phase (Phase 14) triggers random events (asteroid strikes, pirate raids, tech breakthroughs) with probability increasing late-game. Only active if M11 milestone unlocked. Failures log errors but don't block turn.
+**Description:** Galactic Events Phase (Phase 14) triggers random events. This parent spec tracks the complete galactic events system.
+
+**Children:**
+- REQ-TURN-017.1: Event Triggering Logic
+- REQ-TURN-017.2: Event Probability Calculation
+- REQ-TURN-017.3: Milestone Gate Requirement
 
 **Rationale:** Adds variety and unpredictability to mid/late game. Milestone gate prevents overwhelming new players.
 
-**Formula:**
+**Source:** Section 3.14
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-017.1: Event Triggering Logic
+
+**Description:** Random events (asteroid strikes, pirate raids, tech breakthroughs) can trigger each turn. Failures log errors but don't block turn completion.
+
+**Rationale:** Events add variety and unpredictability to gameplay.
+
+**Source:** Section 3.14
+
+**Code:**
+- `src/lib/game/services/phases/galactic-events-phase.ts` - `processGalacticEvents()`
+- `src/lib/game/events/event-pool.ts` - Event definitions and effects
+- `src/lib/game/events/event-selector.ts` - Weighted random selection
+
+**Tests:**
+- `src/lib/game/services/__tests__/galactic-events-phase.test.ts` - Event triggering logic
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-017.2: Event Probability Calculation
+
+**Description:** Event probability increases late-game using formula:
 ```
 event_chance = base_event_chance * (current_turn / max_turns)
 ```
@@ -2139,15 +2172,33 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | base_event_chance | 0.05 | 5% base chance per turn |
 | event_scaling | linear | Scales with turn number (more events late-game) |
 
+**Rationale:** Linear scaling creates increasing drama and unpredictability as game progresses.
+
 **Source:** Section 3.14
 
 **Code:**
-- `src/lib/game/services/phases/galactic-events-phase.ts` - `processGalacticEvents()`
-- `src/lib/game/events/event-pool.ts` - Event definitions and effects
-- `src/lib/game/events/event-selector.ts` - Weighted random selection
+- `src/lib/game/services/phases/galactic-events-phase.ts` - Probability calculation
 
 **Tests:**
-- `src/lib/game/services/__tests__/galactic-events-phase.test.ts` - Event triggering, probability, milestone gate
+- `src/lib/game/services/__tests__/galactic-events-phase.test.ts` - Test probability scaling
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-017.3: Milestone Gate Requirement
+
+**Description:** Galactic Events Phase only active if M11 milestone unlocked. Prevents overwhelming new players with too many systems.
+
+**Rationale:** Milestone gate provides gradual feature introduction, reducing complexity for new players.
+
+**Source:** Section 3.14
+
+**Code:**
+- `src/lib/game/services/phases/galactic-events-phase.ts` - Milestone check
+
+**Tests:**
+- `src/lib/game/services/__tests__/galactic-events-phase.test.ts` - Test milestone gate
 
 **Status:** Draft
 
