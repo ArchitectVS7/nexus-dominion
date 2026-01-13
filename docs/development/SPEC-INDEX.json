@@ -256,7 +256,9 @@
         { "id": "REQ-RES-002-07", "title": "Government Sector Production", "atomic": true, "line": 1061, "splitFrom": "REQ-RES-002" },
         { "id": "REQ-RES-002-08", "title": "Research Sector Production", "atomic": true, "line": 1090, "splitFrom": "REQ-RES-002" },
         { "id": "REQ-RES-003", "title": "Civil Status Income Multiplier", "atomic": true, "line": 1119, "note": "Placeholder values need verification" },
-        { "id": "REQ-RES-004", "title": "Population Food Consumption", "atomic": false, "line": 1158, "splitCandidate": "consumption + deficit consequences" },
+        { "id": "REQ-RES-004", "title": "Population Food Consumption (Split)", "atomic": true, "line": 1158, "parentOf": ["REQ-RES-004-A", "REQ-RES-004-B"] },
+        { "id": "REQ-RES-004-A", "title": "Food Consumption Calculation", "atomic": true, "line": 1164, "splitFrom": "REQ-RES-004" },
+        { "id": "REQ-RES-004-B", "title": "Food Deficit Consequences", "atomic": true, "line": 1203, "splitFrom": "REQ-RES-004" },
         { "id": "REQ-RES-005", "title": "Military Maintenance Costs", "atomic": false, "line": 1203, "splitCandidate": "ore + petroleum + consequences" },
         { "id": "REQ-RES-006", "title": "Population Growth and Decline", "atomic": false, "line": 1252, "splitCandidate": "growth + decline + cap", "note": "Duplicate of REQ-TURN-006" },
         { "id": "REQ-RES-007", "title": "Civil Status Calculation Formula (Split)", "atomic": true, "line": 1313, "parentOf": ["REQ-RES-007-A", "REQ-RES-007-B", "REQ-RES-007-C", "REQ-RES-007-D", "REQ-RES-007-E", "REQ-RES-007-F", "REQ-RES-007-G"], "note": "Duplicate of REQ-TURN-007" },
@@ -481,9 +483,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 329,
-    "atomicSpecs": 269,
-    "splitCandidates": 51,
+    "totalSpecs": 331,
+    "atomicSpecs": 272,
+    "splitCandidates": 50,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

@@ -1155,17 +1155,17 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-RES-004: Population Food Consumption
+### REQ-RES-004: Population Food Consumption (Split)
 
-**Description:** Population consumes food each turn to sustain citizens. Food consumption is calculated as:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-004-A through REQ-RES-004-B.
 
-```
-Food Consumed per Turn = Population × 0.5 food/capita/turn
-```
+---
 
-Food deficit triggers population decline at -10%/turn. Food surplus enables population growth at +2%/turn (capped at 1.0× food availability multiplier).
+### REQ-RES-004-A: Food Consumption Calculation
 
-**Rationale:** Food consumption creates tension between population growth (more workers, more potential) and sustainability. 0.5 food/capita balances population growth with Food sector availability.
+**Description:** Population consumes food each turn to sustain citizens. Food consumption calculated as Population × 0.5 food/capita/turn. Food deducted from empire storage each turn during consumption phase.
+
+**Rationale:** Food consumption creates tension between population growth and sustainability. 0.5 food/capita balances population growth with Food sector availability.
 
 **Formula:**
 ```
@@ -1177,12 +1177,13 @@ Examples:
 ```
 
 **Key Values:**
-
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Food per capita | 0.5 food/person/turn | Base consumption rate |
-| Starvation penalty | -10%/turn | Population decline rate |
-| Civil status penalty | -30 score | Applied when food deficit exists |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2 - Resource Consumption Rates
 
@@ -1192,11 +1193,40 @@ Examples:
 
 **Tests:**
 - `src/lib/game/services/__tests__/population-service.test.ts` - Consumption calculation tests
-- `src/lib/game/services/__tests__/starvation-mechanics.test.ts` - Deficit consequence tests
 
 **Status:** Draft
 
 > **⚠️ PLACEHOLDER VALUE**: Food consumption rate (0.5 food/capita) requires balance testing against Food sector availability and victory condition timelines.
+
+---
+
+### REQ-RES-004-B: Food Deficit Consequences
+
+**Description:** When food storage cannot meet consumption requirements (food deficit), population suffers -10%/turn decline and -30 civil status penalty. Effects apply immediately when deficit detected.
+
+**Rationale:** Creates consequences for unsustainable population growth. Forces players to balance expansion with food production. Food surplus enables growth (+2%/turn), creating incentive to maintain surplus.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Starvation penalty | -10%/turn | Population decline rate |
+| Civil status penalty | -30 score | Applied when food deficit exists |
+| Growth rate (surplus) | +2%/turn | When food surplus available |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2 - Resource Consumption Rates
+
+**Code:**
+- `src/lib/game/services/population-service.ts` - Deficit consequences
+- `src/lib/game/services/civil-status.ts` - Civil status penalty
+
+**Tests:**
+- `src/lib/game/services/__tests__/starvation-mechanics.test.ts` - Deficit consequence tests
+
+**Status:** Draft
 
 ---
 
