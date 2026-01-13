@@ -17,16 +17,25 @@ Welcome to the Nexus Dominion documentation hub. This guide helps you find what 
 |----------|---------|
 | [PRD-EXECUTIVE.md](PRD-EXECUTIVE.md) | Strategic overview, principles, success metrics |
 
+### Tier 0: Vision & Philosophy
+| Document | Scope |
+|----------|-------|
+| [VISION.md](VISION.md) | Design philosophy, principles, and the "why" behind decisions |
+
+### Tier 1: Executive
+| Document | Scope |
+|----------|-------|
+| [PRD-EXECUTIVE.md](PRD-EXECUTIVE.md) | Strategic overview, system index, success metrics |
+
 ### Tier 2: Design Documents
 Detailed specifications for each system.
 
 | Document | Scope |
 |----------|-------|
-| [GAME-DESIGN.md](design/GAME-DESIGN.md) | Consolidated design reference |
-| [COMBAT-SYSTEM.md](design/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
-| [BOT-SYSTEM.md](design/BOT-SYSTEM.md) | AI architecture, personas |
-| [RESEARCH-SYSTEM.md](design/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
-| [FRONTEND-DESIGN.md](design/FRONTEND-DESIGN.md) | UI/UX patterns |
+| [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
+| [BOT-SYSTEM.md](Game Systems/BOT-SYSTEM.md) | AI architecture, personas |
+| [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
+| [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md) | UI/UX patterns |
 
 ### Tier 3: Implementation References
 | Document | Purpose |

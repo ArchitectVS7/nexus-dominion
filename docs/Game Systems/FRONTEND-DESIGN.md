@@ -2206,7 +2206,8 @@ Example - Food shortage:
 
 - **[Frontend Developer Manual](frontend-developer-manual.md)** - Technical implementation, architecture, server actions
 - **[PRD.md](../PRD.md)** - Product requirements and game mechanics
-- **[GAME-DESIGN.md](../core/GAME-DESIGN.md)** - Core game design philosophy
+- **[VISION.md](../VISION.md)** - Design philosophy and UI principles
+- **[PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md)** - System overview and specifications
 
 ---
 

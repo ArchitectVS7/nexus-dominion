@@ -1,0 +1,25 @@
+name: Validate Specifications
+
+on:
+  pull_request:
+    paths:
+      - 'docs/Game Systems/**/*.md'
+      - 'src/**/*.ts'
+      - 'scripts/validate-specs.js'
+      - 'scripts/generate-registry.js'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - run: npm ci
+      - run: npm run validate-specs
+      - run: npm run generate-registry
+      - name: Check for changes
+        run: |
+          if ! git diff --exit-code docs/SPEC-REGISTRY.md; then
+            echo "SPEC-REGISTRY.md is out of date. Run npm run generate-registry"
+            exit 1
+          fi

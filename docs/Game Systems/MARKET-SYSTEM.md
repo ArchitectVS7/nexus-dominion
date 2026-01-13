@@ -1905,27 +1905,95 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 
 ---
 
-### REQ-MKT-012: Market UI Real-Time Updates
+### REQ-MKT-012: Market UI Real-Time Updates (Split)
 
-**Description:** Market dashboard updates prices every 30 seconds when market is active (any transaction in last 60 seconds). Line graphs animate price changes smoothly. Buy/Sell modals calculate totals dynamically as quantity changes.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-MKT-012-A through REQ-MKT-012-C.
 
-**Rationale:** Provides responsive, real-time trading experience. Players see immediate feedback on price impacts.
+---
+
+### REQ-MKT-012-A: Market Dashboard Update Interval
+
+**Description:** Market dashboard updates prices every 30 seconds when market is active. Market is considered active if any transaction occurred in the last 60 seconds. When inactive, updates pause to conserve resources.
+
+**Rationale:** Provides real-time price updates during active trading while minimizing unnecessary polling when market is idle.
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| Update Interval | 30 seconds | When market active |
-| Activity Timeout | 60 seconds | Last transaction |
-| Animation Duration | 500ms | Smooth transitions |
+| Update Interval | 30 seconds | Polling frequency when active |
+| Trigger | Any transaction | Activates update cycle |
 
-**Source:** Section 5.1, 5.2, 5.3
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 5.1
 
 **Code:**
-- `src/app/market/MarketDashboard.tsx` - Real-time updates
+- `src/app/market/MarketDashboard.tsx` - 30s polling logic
+
+**Tests:**
+- `src/app/market/__tests__/MarketDashboard.test.tsx` - Update interval tests
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-012-B: Market Activity Timeout
+
+**Description:** Market is considered "active" if any transaction occurred in the last 60 seconds. After 60 seconds with no transactions, market enters inactive state and price updates pause. First transaction reactivates update cycle.
+
+**Rationale:** Defines activity window for efficient resource management. Prevents unnecessary polling during quiet periods.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Activity Timeout | 60 seconds | Time window for "active" status |
+| Inactive Behavior | Pause updates | Stop polling until next transaction |
+| Reactivation Trigger | Any transaction | Restarts update cycle |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 5.1
+
+**Code:**
+- `src/app/market/MarketDashboard.tsx` - Activity detection
+
+**Tests:**
+- `src/app/market/__tests__/MarketDashboard.test.tsx` - Activity timeout tests
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-012-C: Price Change Animation Duration
+
+**Description:** Line graphs animate price changes smoothly over 500ms transitions. Buy/Sell modals calculate totals dynamically as quantity changes with instant feedback (<50ms).
+
+**Rationale:** Smooth animations provide visual feedback on market changes. Dynamic calculations give immediate price impact visibility.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Animation Duration | 500ms | Smooth price transitions |
+| Graph Update | Animated | Line chart transitions |
+| Modal Calculation | <50ms | Instant feedback |
+| Update Trigger | Quantity change | Real-time totals |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 5.2, 5.3
+
+**Code:**
+- `src/app/market/MarketDashboard.tsx` - Graph animations
 - `src/app/market/BuySellModal.tsx` - Dynamic calculation
 
 **Tests:**
-- `src/app/market/__tests__/MarketDashboard.test.tsx` - UI update tests
+- `src/app/market/__tests__/MarketDashboard.test.tsx` - Animation tests
 
 **Status:** Draft
 

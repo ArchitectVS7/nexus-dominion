@@ -174,7 +174,10 @@
         { "id": "REQ-MKT-009-B", "title": "Private Merchant Information", "atomic": true, "line": 1807, "splitFrom": "REQ-MKT-009" },
         { "id": "REQ-MKT-010", "title": "Base Resource Prices", "atomic": true, "line": 985 },
         { "id": "REQ-MKT-011", "title": "Commerce Research Integration", "atomic": true, "line": 1013 },
-        { "id": "REQ-MKT-012", "title": "Market UI Real-Time Updates", "atomic": false, "line": 1038, "splitCandidate": "interval + timeout + animation" }
+        { "id": "REQ-MKT-012", "title": "Market UI Real-Time Updates (Split)", "atomic": true, "line": 1908, "parentOf": ["REQ-MKT-012-A", "REQ-MKT-012-B", "REQ-MKT-012-C"] },
+        { "id": "REQ-MKT-012-A", "title": "Market Dashboard Update Interval", "atomic": true, "line": 1914, "splitFrom": "REQ-MKT-012" },
+        { "id": "REQ-MKT-012-B", "title": "Market Activity Timeout", "atomic": true, "line": 1942, "splitFrom": "REQ-MKT-012" },
+        { "id": "REQ-MKT-012-C", "title": "Price Change Animation Duration", "atomic": true, "line": 1971, "splitFrom": "REQ-MKT-012" }
       ]
     },
     "MILITARY": {
@@ -458,9 +461,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 311,
-    "atomicSpecs": 244,
-    "splitCandidates": 58,
+    "totalSpecs": 314,
+    "atomicSpecs": 248,
+    "splitCandidates": 57,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

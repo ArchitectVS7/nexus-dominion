@@ -1,0 +1,32 @@
+# Batch Split Session Log
+# Generated: 2026-01-13 06:04:17
+# Command: /spec-split-all --audit-full
+
+## Session Configuration
+- Total Split Candidates: 81
+- Filtered Candidates: 81 (no filters applied)
+- Full Re-Audit: YES (--audit-full flag)
+- Start Time: 2026-01-13 06:04:17
+
+## Priority Queue
+Candidates sorted by estimated item count (high to low):
+
+### High Priority (4+ items)
+1. REQ-RES-007: Civil Status Calculation Formula (5 factors + mapping + transitions)
+2. REQ-RES-008: Resource Storage and Negative Balances (5 resource consequences)
+3. REQ-RSCH-009: Investigate Specialization Operation (5 components)
+4. REQ-TURN-021: Performance Budget (4 phase group budgets)
+5. REQ-VIC-009: Victory Notifications (4 VP threshold notifications)
+6. REQ-COV-008: Schemer Archetype Integration (4 components)
+7. REQ-DIP-009: Shared Intelligence (4 intel sharing types)
+8. REQ-RSCH-008: Specialization Counter-Play (4 counter relationships)
+9. REQ-MKT-003: Transaction Fees (4 fee types)
+10. REQ-MIL-002: Build Queue System (4 mechanics)
+
+### Medium Priority (3 items)
+11-58. [Various 3-component specs]
+
+### Lower Priority (2 items)
+59-81. [Various 2-component specs]
+
+## Processing Log

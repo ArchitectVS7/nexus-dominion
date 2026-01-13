@@ -6,23 +6,13 @@
 
 ---
 
-## Vision & Goals
-
-### What Is Nexus Dominion?
-
-Nexus Dominion is a **1-2 hour single-player turn-based space empire strategy game** where players compete against 10-100 AI bot opponents. It's Solar Realms Elite (1990) reimagined for modern solo play.
+## Vision Statement
 
 > **"Crusader Kings meets Eve Online, simulated."**
+>
+> Nexus Dominion delivers MMO-style emergent drama in a single-player environment. Command your galactic empire, navigate dynamic bot personalities, and achieve victory through military conquest, economic dominance, or diplomatic mastery - all in a 1-2 hour session.
 
-The game delivers MMO-style emergent drama in a controlled, fair environment. Bots fight bots, natural selection creates emergent bosses, and coalitions form organically to stop runaway leaders.
-
-### Target Audience
-
-Single-player enthusiasts who want a rich, deep 4X experience without being steamrolled by power gamers in multiplayer. Players who enjoyed Master of Orion, Stellaris, or Civilization but want sessions that conclude in hours, not days.
-
-### Core Experience Promise
-
-> "Command your empire from the bridge of your flagship. Consolidate your sector, expand through borders and wormholes, form coalitions against rising threats, and achieve victory through military conquest, economic dominance, or diplomatic mastery."
+For the complete design philosophy and principles behind these decisions, see [VISION.md](VISION.md).
 
 ### What Makes This Special
 
@@ -33,6 +23,10 @@ Single-player enthusiasts who want a rich, deep 4X experience without being stea
 | **Progressive Complexity** | Onboarding teaches as you play |
 | **Anti-Snowball Design** | Coalition mechanics prevent runaway victories |
 | **Command Center UI** | LCARS-inspired starmap as hub for all actions |
+
+### Target Audience
+
+Single-player enthusiasts who want a rich, deep 4X experience without being steamrolled by power gamers in multiplayer. Players who enjoyed Master of Orion, Stellaris, or Civilization but want sessions that conclude in hours, not days.
 
 ---
 
@@ -106,37 +100,67 @@ No orphaned backend logic or UI shells without data.
 ### Combat System
 Unified D20 resolution determines battle outcomes. Full invasions resolve across three sequential domains (Space, Orbital, Ground) with cascading bonuses. Defenders receive a 10% home turf advantage. Six dramatic outcomes create varied narratives from decisive victories to pyrrhic defeats.
 
-**Tier 2 Reference:** [COMBAT-SYSTEM.md](design/COMBAT-SYSTEM.md)
+**Tier 2 Reference:** [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md)
 
 ### Bot AI System
 Four-tier intelligence architecture: LLM-powered elite bots, archetype-driven strategic bots, rule-based simple bots, and chaotic random bots. Eight archetypes (Warlord, Diplomat, Merchant, Schemer, Turtle, Blitzkrieg, Tech Rush, Opportunist) combined with emotional states and relationship memory create 100 unique personalities.
 
-**Tier 2 Reference:** [BOT-SYSTEM.md](design/BOT-SYSTEM.md)
+**Tier 2 Reference:** [BOT-SYSTEM.md](Game Systems/BOT-SYSTEM.md)
 
 ### Galaxy Structure
 Ten sectors of 8-10 empires each. Same-sector attacks are free; adjacent sector attacks require border discovery (1.2x cost); distant attacks require wormhole construction (1.5x cost). This creates regional strategy phases: consolidate (Turn 1-20), expand (Turn 21-40), reach (Turn 41-60), dominate (Turn 61+).
 
-**Tier 2 Reference:** [GAME-DESIGN.md](design/GAME-DESIGN.md)
+**Tier 2 Reference:** [SECTOR-MANAGEMENT-SYSTEM.md](Game Systems/SECTOR-MANAGEMENT-SYSTEM.md)
 
 ### Resource Economy
 Five resources (Credits, Food, Ore, Petroleum, Research Points) produced by eight sector types. Civil status multipliers (0.25x rioting to 4.0x ecstatic) affect production. Population grows with food, starves without. Military requires maintenance.
 
-**Tier 2 Reference:** [GAME-DESIGN.md](design/GAME-DESIGN.md)
+**Tier 2 Reference:** [RESOURCE-MANAGEMENT-SYSTEM.md](Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md)
+
+### Market System
+Dynamic galactic market where prices fluctuate based on supply, demand, and random events. Players can profit by selling high and buying low, or manipulate prices to hurt rivals. Merchant archetype bots use predictive insight to dominate trade.
+
+**Tier 2 Reference:** [MARKET-SYSTEM.md](Game Systems/MARKET-SYSTEM.md)
 
 ### Research System
 Three-tier draft structure: Doctrines (Turn 10), Specializations (Turn 30), Capstones (Turn 60). Three strategic paths: War Machine, Fortress, Commerce. Each leads to unique capstone abilities (Dreadnought, Citadel World, Economic Hegemony).
 
-**Tier 2 Reference:** [RESEARCH-SYSTEM.md](design/RESEARCH-SYSTEM.md)
+**Tier 2 Reference:** [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md)
 
 ### Diplomacy System
 Treaties (NAP, Alliance, Coalition) with reputation consequences. Breaking treaties costs reputation; helping weak empires builds it. Low reputation makes bots target you and treaties harder to form.
 
-**Tier 2 Reference:** [GAME-DESIGN.md](design/GAME-DESIGN.md)
+**Tier 2 Reference:** [DIPLOMACY-SYSTEM.md](Game Systems/DIPLOMACY-SYSTEM.md)
+
+### Military System
+Six unit types across three domains (Space, Orbital, Ground). Card-based unit stats with power multipliers ranging from 0.1x (Soldiers) to 12.0x (Carriers). Production queues require multi-turn investment and strategic resource management (Credits, Ore, Petroleum).
+
+**Tier 2 Reference:** [MILITARY-SYSTEM.md](Game Systems/MILITARY-SYSTEM.md)
+
+### Covert Ops System
+Asymmetric warfare for weaker empires. Ten operation types ranging from theft (Steal Credits) to disruption (Sabotage Production) and assassination. Success depends on agent allocation and risk management, with diplomatic consequences for detection.
+
+**Tier 2 Reference:** [COVERT-OPS-SYSTEM.md](Game Systems/COVERT-OPS-SYSTEM.md)
+
+### Syndicate System
+Hidden role mechanics where 10% of empires secretly serve the Syndicate. Players pursue shadow contracts while maintaining a facade of loyalty. Accusation trials and betrayal mechanics turn the endgame into a high-stakes social deduction challenge.
+
+**Tier 2 Reference:** [SYNDICATE-SYSTEM.md](Game Systems/SYNDICATE-SYSTEM.md)
+
+### Turn Processing System
+Atomic 17-phase execution pipeline ensures 100-empire turns process in under 2 seconds. Separates transactional state updates from cosmetic bot logic for robust failure handling. Orchestrates the heartbeat of the galaxy.
+
+**Tier 2 Reference:** [TURN-PROCESSING-SYSTEM.md](Game Systems/TURN-PROCESSING-SYSTEM.md)
+
+### Victory Systems
+Six distinct paths to victory: Conquest, Economic, Diplomatic, Research, Military, and Survival. Anti-snowball mechanics trigger coalition formation when any empire nears victory, ensuring dramatic, contested endgames.
+
+**Tier 2 Reference:** [VICTORY-SYSTEMS.md](Game Systems/VICTORY-SYSTEMS.md)
 
 ### Frontend/UI
 LCARS (Star Trek) inspired design with semi-transparent panels, orange/peach/violet palette, smooth animations. The starmap is the command hub: click neighbors to attack, click sectors to build, click borders to expand.
 
-**Tier 2 Reference:** [FRONTEND-DESIGN.md](design/FRONTEND-DESIGN.md)
+**Tier 2 Reference:** [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md)
 
 ---
 
@@ -195,19 +219,30 @@ Phase 1 (Foundation)      Phase 2 (Core Loop)       Phase 3 (Polish)
 
 ## Document Hierarchy
 
+### Tier 0: Vision & Philosophy
+[VISION.md](VISION.md) - Design philosophy, principles, and the "why" behind decisions
+
 ### Tier 1: Executive (This Document)
-Strategic overview, principles, success metrics
+Strategic overview, system index, success metrics, implementation order
 
 ### Tier 2: Design Documents
 Detailed specifications for each system:
 
 | Document | Scope |
 |----------|-------|
-| [GAME-DESIGN.md](design/GAME-DESIGN.md) | Consolidated design reference |
-| [COMBAT-SYSTEM.md](design/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
-| [BOT-SYSTEM.md](design/BOT-SYSTEM.md) | AI architecture, personas |
-| [RESEARCH-SYSTEM.md](design/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
-| [FRONTEND-DESIGN.md](design/FRONTEND-DESIGN.md) | UI/UX patterns |
+| [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
+| [MILITARY-SYSTEM.md](Game Systems/MILITARY-SYSTEM.md) | Unit types, production, fleet composition |
+| [BOT-SYSTEM.md](Game Systems/BOT-SYSTEM.md) | AI architecture, personas |
+| [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
+| [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md) | UI/UX patterns |
+| [SECTOR-MANAGEMENT-SYSTEM.md](Game Systems/SECTOR-MANAGEMENT-SYSTEM.md) | Galaxy structure, expansion |
+| [RESOURCE-MANAGEMENT-SYSTEM.md](Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md) | Economy, production |
+| [MARKET-SYSTEM.md](Game Systems/MARKET-SYSTEM.md) | Trading, price fluctuation |
+| [DIPLOMACY-SYSTEM.md](Game Systems/DIPLOMACY-SYSTEM.md) | Treaties, reputation |
+| [COVERT-OPS-SYSTEM.md](Game Systems/COVERT-OPS-SYSTEM.md) | Espionage, sabotage |
+| [SYNDICATE-SYSTEM.md](Game Systems/SYNDICATE-SYSTEM.md) | Hidden roles, contracts |
+| [VICTORY-SYSTEMS.md](Game Systems/VICTORY-SYSTEMS.md) | Victory conditions, scoring |
+| [TURN-PROCESSING-SYSTEM.md](Game Systems/TURN-PROCESSING-SYSTEM.md) | Execution pipeline, timing |
 
 ### Tier 3: Implementation References
 

@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Validate specs before allowing commit
+npm run validate-specs
+
+# Regenerate registry if specs changed
+if git diff --cached --name-only | grep -q 'docs/Game Systems/.*\.md'; then
+  npm run generate-registry
+  git add docs/SPEC-REGISTRY.md
+fi
