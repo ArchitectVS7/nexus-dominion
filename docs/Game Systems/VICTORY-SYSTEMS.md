@@ -1363,35 +1363,213 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 ---
 
-### REQ-VIC-008: Anti-Snowball Mechanics
+### REQ-VIC-008: Anti-Snowball Mechanics (Split)
 
-**Description:** When any empire reaches 7+ Victory Points, anti-snowball mechanics activate: coalition offers, combat modifiers, economic penalties, and diplomatic restrictions.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-VIC-008-A through REQ-VIC-008-G below.
 
-**Rationale:** Prevents runaway victories by giving the galaxy coordinated tools to slow down leaders. Preserves competitive balance while still allowing leaders to win if they play well. Thresholds (7 VP = 70% to victory) trigger BEFORE victory inevitable.
+---
+
+### REQ-VIC-008-A: Anti-Snowball Trigger Threshold
+
+**Description:** Anti-snowball mechanics activate when any empire reaches exactly 7 Victory Points (70% to victory) and deactivate when the leader's VP drops below 7. The 7 VP threshold ensures intervention occurs before victory becomes inevitable.
+
+**Rationale:** 7 VP threshold (70% progress) provides sufficient warning time for galaxy to respond while still allowing strong players to close the victory gap. Triggering earlier would punish legitimate progress; later would be too late to prevent snowballing.
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | trigger_threshold | 7 VP | 70% of victory progress |
-| attack_bonus_vs_leader | +10% | All empires gain attack bonus |
-| defense_bonus_vs_leader | +5% | All empires gain defense bonus |
-| market_penalty | +20% | Leader pays more for market purchases |
-| reputation_decay | -2/turn | Leader loses reputation each turn |
-| coalition_offer | Automatic | All empires with NAP/Alliance receive offer |
+| deactivation_threshold | <7 VP | Mechanics lift when leader drops below 7 |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
 **Code:**
 - `src/lib/game/services/core/victory-service.ts` - `checkAntiSnowballTrigger()`
-- `src/lib/game/services/core/coalition-service.ts` - `formAntiLeaderCoalition()`
-- `src/lib/game/services/combat/combat-service.ts` - `applyCombatModifiers()`
-- `src/lib/game/services/market/market-service.ts` - `applyLeaderPenalty()`
 
 **Tests:**
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Anti-snowball triggers at exactly 7 VP"
-- `src/lib/game/services/__tests__/coalition-service.test.ts` - "Coalition offer sent to all eligible empires"
-- `src/lib/game/services/__tests__/combat-service.test.ts` - "Combat modifiers applied vs leader"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Anti-snowball lifts when VP drops below 7"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-008-B: Combat Attack Bonus vs Leader
+
+**Description:** When anti-snowball mechanics are active, all non-leader empires gain +10% attack bonus when attacking the leader (empire with 7+ VP). This bonus applies to all combat domains (space, ground, orbital).
+
+**Rationale:** Attack bonus helps underdogs challenge the leader militarily without making combat trivial. +10% is significant but not overwhelming—leader can still win battles through superior strategy and force composition.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| attack_bonus_vs_leader | +10% | Applied to all attack rolls vs leader |
+| applies_to | All empires except leader | Leader does not receive this bonus |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8 - Anti-Snowball Triggers
+
+**Code:**
+- `src/lib/game/services/combat/combat-service.ts` - `applyCombatModifiers()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/combat-service.test.ts` - "Attack bonus applied when fighting leader"
+- `src/lib/game/services/__tests__/combat-service.test.ts` - "Attack bonus not applied in leader vs leader combat"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-008-C: Combat Defense Bonus vs Leader
+
+**Description:** When anti-snowball mechanics are active, all non-leader empires gain +5% defense bonus when defending against attacks by the leader (empire with 7+ VP). This bonus applies to all combat domains (space, ground, orbital).
+
+**Rationale:** Defense bonus makes it harder for leader to expand aggressively. +5% is intentionally smaller than attack bonus (+10%)—encourages defensive play and coalition formation rather than solo challenges.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| defense_bonus_vs_leader | +5% | Applied to all defense rolls vs leader |
+| applies_to | All empires except leader | Leader does not receive this bonus |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8 - Anti-Snowball Triggers
+
+**Code:**
+- `src/lib/game/services/combat/combat-service.ts` - `applyCombatModifiers()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/combat-service.test.ts` - "Defense bonus applied when defending vs leader"
+- `src/lib/game/services/__tests__/combat-service.test.ts` - "Defense bonus not applied when leader defends"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-008-D: Market Price Penalty for Leader
+
+**Description:** When anti-snowball mechanics are active, the leader (empire with 7+ VP) pays +20% more for all market purchases (buy orders). Market sell prices are unaffected. This penalty applies to all resources (credits, ore, food, petroleum, research points).
+
+**Rationale:** Economic penalty prevents leader from using economic dominance to further snowball. +20% is significant enough to constrain leader's market activity without completely blocking market access. Sell prices unchanged to avoid punishing legitimate trade.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| market_penalty | +20% | Leader pays 1.2x normal buy price |
+| applies_to_purchases | Yes | All buy orders |
+| applies_to_sales | No | Sell orders unaffected |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8 - Anti-Snowball Triggers
+
+**Code:**
+- `src/lib/game/services/market/market-service.ts` - `applyLeaderPenalty()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/market-service.test.ts` - "Leader pays 20% more for market purchases"
+- `src/lib/game/services/__tests__/market-service.test.ts` - "Leader sell prices unaffected"
+- `src/lib/game/services/__tests__/market-service.test.ts` - "Non-leaders unaffected by penalty"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-008-E: Reputation Decay for Leader
+
+**Description:** When anti-snowball mechanics are active, the leader (empire with 7+ VP) automatically loses 2 reputation points per turn. This decay is applied during the turn processing pipeline and represents galactic resentment of the leader's power.
+
+**Rationale:** Reputation decay makes diplomatic victory harder for leaders (requires maintaining alliances) and encourages betrayals. -2/turn is gradual but meaningful—leader must actively invest in diplomacy to counteract decay.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| reputation_decay | -2/turn | Automatic loss per turn |
+| applies_to | Leader only | Empire with 7+ VP |
+| min_reputation | 0 | Decay stops at 0, doesn't go negative |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8 - Anti-Snowball Triggers
+
+**Code:**
+- `src/lib/game/services/core/reputation-service.ts` - `applyLeaderReputationDecay()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/reputation-service.test.ts` - "Leader loses 2 reputation per turn"
+- `src/lib/game/services/__tests__/reputation-service.test.ts` - "Reputation decay stops at 0"
+- `src/lib/game/services/__tests__/reputation-service.test.ts` - "Non-leaders unaffected by decay"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-008-F: Automatic Coalition Offers
+
+**Description:** When an empire reaches 7 VP for the first time, all empires with existing NAP (Non-Aggression Pact) or Alliance treaties automatically receive a coalition offer to join an anti-leader coalition. Coalition offers are sent once per leader threshold crossing (not every turn).
+
+**Rationale:** Automatic coalition offers facilitate coordinated response to leaders without requiring manual coordination. Restricting offers to existing NAP/Alliance partners prevents unrealistic instant alliances—empires must have pre-existing diplomatic relations.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| coalition_offer | Automatic | Sent when leader reaches 7 VP |
+| eligible_empires | NAP or Alliance with any empire | Must have existing diplomatic ties |
+| offer_frequency | Once per threshold crossing | Not sent every turn |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8 - Anti-Snowball Triggers
+
+**Code:**
+- `src/lib/game/services/core/coalition-service.ts` - `formAntiLeaderCoalition()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/coalition-service.test.ts` - "Coalition offer sent to all eligible empires"
+- `src/lib/game/services/__tests__/coalition-service.test.ts` - "Coalition offer not sent to empires without diplomatic ties"
+- `src/lib/game/services/__tests__/coalition-service.test.ts` - "Coalition offer sent only once per threshold crossing"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-008-G: Anti-Snowball Mechanics Coordination
+
+**Description:** Coordinates activation and deactivation of all anti-snowball mechanics (trigger threshold, combat bonuses, market penalty, reputation decay, coalition offers). All mechanics activate simultaneously when leader reaches 7 VP and deactivate together when leader drops below 7 VP.
+
+**Rationale:** Unified coordination ensures consistent anti-snowball behavior—mechanics don't activate/deactivate independently. Prevents edge cases where some mechanics are active while others aren't. Simplifies debugging and testing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8 - Anti-Snowball Triggers
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `checkAntiSnowballTrigger()`
+- `src/lib/game/services/core/anti-snowball-coordinator.ts` - `activateAntiSnowballMechanics()`
+- `src/lib/game/services/core/anti-snowball-coordinator.ts` - `deactivateAntiSnowballMechanics()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "All mechanics activate simultaneously at 7 VP"
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "All mechanics deactivate simultaneously below 7 VP"
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "No partial activation states"
 
 **Status:** Draft
 

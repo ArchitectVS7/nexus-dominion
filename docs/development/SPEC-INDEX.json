@@ -1,7 +1,7 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "generated": "2026-01-12",
-  "totalSpecs": 185,
+  "totalSpecs": 191,
   "systems": {
     "COMBAT": {
       "prefix": "REQ-COMBAT",
@@ -280,8 +280,15 @@
         { "id": "REQ-VIC-007-E", "title": "Military VP Formula", "atomic": true, "line": 1260, "splitFrom": "REQ-VIC-007" },
         { "id": "REQ-VIC-007-F", "title": "Survival VP Formula", "atomic": true, "line": 1293, "splitFrom": "REQ-VIC-007" },
         { "id": "REQ-VIC-007-G", "title": "Total VP Aggregation", "atomic": true, "line": 1326, "splitFrom": "REQ-VIC-007" },
-        { "id": "REQ-VIC-008", "title": "Anti-Snowball Mechanics", "atomic": false, "line": 1366, "splitCandidate": "7 mechanics - CRITICAL SPLIT" },
-        { "id": "REQ-VIC-009", "title": "Victory Notifications", "atomic": false, "line": 1201, "splitCandidate": "4 VP threshold notifications" },
+        { "id": "REQ-VIC-008", "title": "Anti-Snowball Mechanics (Split)", "atomic": true, "line": 1366, "parentOf": ["REQ-VIC-008-A", "REQ-VIC-008-B", "REQ-VIC-008-C", "REQ-VIC-008-D", "REQ-VIC-008-E", "REQ-VIC-008-F", "REQ-VIC-008-G"] },
+        { "id": "REQ-VIC-008-A", "title": "Anti-Snowball Trigger Threshold", "atomic": true, "line": 1372, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-008-B", "title": "Combat Attack Bonus vs Leader", "atomic": true, "line": 1401, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-008-C", "title": "Combat Defense Bonus vs Leader", "atomic": true, "line": 1430, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-008-D", "title": "Market Price Penalty for Leader", "atomic": true, "line": 1459, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-008-E", "title": "Reputation Decay for Leader", "atomic": true, "line": 1490, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-008-F", "title": "Automatic Coalition Offers", "atomic": true, "line": 1521, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-008-G", "title": "Anti-Snowball Mechanics Coordination", "atomic": true, "line": 1552, "splitFrom": "REQ-VIC-008" },
+        { "id": "REQ-VIC-009", "title": "Victory Notifications", "atomic": false, "line": 1578, "splitCandidate": "4 VP threshold notifications" },
         { "id": "REQ-VIC-010", "title": "Victory Achievement Screen", "atomic": false, "line": 1232, "splitCandidate": "freeze + screen + stats" }
       ]
     },
@@ -313,8 +320,8 @@
     "conflictsIdentified": 1
   },
   "splitPriority": [
-    { "id": "REQ-VIC-007", "items": 6, "reason": "6 VP formulas in one spec" },
-    { "id": "REQ-VIC-008", "items": 7, "reason": "7 anti-snowball mechanics" }
+    { "id": "REQ-BOT-002", "items": 8, "reason": "8 archetype definitions" },
+    { "id": "REQ-RSCH-003", "items": 6, "reason": "6 specialization definitions" }
   ],
   "duplicatesToResolve": [
     { "primary": "REQ-COMBAT-004", "duplicate": "REQ-MIL-006", "concept": "Power multipliers" },
