@@ -1105,17 +1105,56 @@ diplomatic_victory = (coalition_territory / total_sectors) >= 0.50
 
 ---
 
-### REQ-VIC-005: Military Victory
+### REQ-VIC-005: Military Victory (PARENT)
 
-**Description:** Achieved when an empire has 2x the military power of all other empires combined.
+**Description:** Achieved when an empire has 2x the military power of all other empires combined. This parent spec tracks the complete military victory system.
 
-**Rationale:** Military supremacy victory demonstrates overwhelming force advantage. The 2x multiplier (vs all others COMBINED) ensures this victory is extremely difficult and typically only achievable late-game when many empires eliminated. Rewards Warlord archetype with War Machine doctrine.
+**Children:**
+- REQ-VIC-005.1: Military Power Calculation
+- REQ-VIC-005.2: Military Victory Threshold
 
-**Formula:**
+**Rationale:** Military supremacy victory demonstrates overwhelming force advantage. The 2x multiplier (vs all others COMBINED) ensures this victory is extremely difficult and typically only achievable late-game.
+
+**Source:** Section 3.5 - Military Victory
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-005.1: Military Power Calculation
+
+**Description:** Military power calculated using formula:
 ```typescript
-your_military = soldiers + (fighters × 4) + (cruisers × 20) + (dreadnoughts × 200)
-sum_all_others = sum of military_power for all empires except you
+military_power = soldiers + (fighters × 4) + (cruisers × 20) + (dreadnoughts × 200)
+```
 
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| soldier_power | 1 | Base unit |
+| fighter_power | 4 | 4x soldier |
+| cruiser_power | 20 | 5x fighter |
+| dreadnought_power | 200 | 10x cruiser |
+
+**Rationale:** Power calculation weights larger units exponentially higher, reflecting their battlefield impact.
+
+**Source:** Section 3.5 - Military Victory
+
+**Code:**
+- `src/lib/game/services/core/military-service.ts` - `calculateMilitaryPower()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/military-service.test.ts` - "Military power calculation includes all unit types"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-005.2: Military Victory Threshold
+
+**Description:** Military victory achieved when empire has 2x the military power of all other empires combined:
+```typescript
+sum_all_others = sum of military_power for all empires except you
 military_victory = your_military >= (sum_all_others × 2)
 ```
 
@@ -1123,23 +1162,19 @@ military_victory = your_military >= (sum_all_others × 2)
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | victory_multiplier | 2.0 | 200% of all others combined |
-| soldier_power | 1 | Base unit |
-| fighter_power | 4 | 4x soldier |
-| cruiser_power | 20 | 5x fighter |
-| dreadnought_power | 200 | 10x cruiser |
 | anti_snowball_trigger | 1.4x | 70% of threshold (7 VP) |
+
+**Rationale:** 2x multiplier ensures this victory requires extreme military dominance.
 
 **Source:** Section 3.5 - Military Victory
 
 **Code:**
 - `src/lib/game/services/core/victory-service.ts` - `checkMilitaryVictory()`
-- `src/lib/game/services/core/military-service.ts` - `calculateMilitaryPower()`
 - `src/lib/game/services/core/victory-service.ts` - `calculateMilitaryVP()`
 
 **Tests:**
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Military victory at exactly 2.0x all others"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Military victory fails at 1.99x"
-- `src/lib/game/services/__tests__/military-service.test.ts` - "Military power calculation includes all unit types"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Auto-win if only empire remaining"
 
 **Status:** Draft

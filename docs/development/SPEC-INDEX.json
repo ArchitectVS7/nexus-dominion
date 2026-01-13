@@ -3429,10 +3429,27 @@
         },
         {
           "id": "REQ-VIC-005",
-          "title": "Military Victory",
+          "title": "Military Victory (PARENT)",
           "atomic": false,
-          "line": 1097,
-          "splitCandidate": "power calc + threshold"
+          "line": 1108,
+          "children": [
+            "REQ-VIC-005.1",
+            "REQ-VIC-005.2"
+          ]
+        },
+        {
+          "id": "REQ-VIC-005.1",
+          "title": "Military Power Calculation",
+          "atomic": true,
+          "line": 1120,
+          "parent": "REQ-VIC-005"
+        },
+        {
+          "id": "REQ-VIC-005.2",
+          "title": "Military Victory Threshold",
+          "atomic": true,
+          "line": 1170,
+          "parent": "REQ-VIC-005"
         },
         {
           "id": "REQ-VIC-006",
@@ -3445,7 +3462,7 @@
           "id": "REQ-VIC-007",
           "title": "Victory Point Calculation (Split)",
           "atomic": true,
-          "line": 1182,
+          "line": 1204,
           "parentOf": [
             "REQ-VIC-007-A",
             "REQ-VIC-007-B",
@@ -3460,56 +3477,56 @@
           "id": "REQ-VIC-007-A",
           "title": "Conquest VP Formula",
           "atomic": true,
-          "line": 1188,
+          "line": 1210,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-B",
           "title": "Economic VP Formula",
           "atomic": true,
-          "line": 1221,
+          "line": 1243,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-C",
           "title": "Diplomatic VP Formula",
           "atomic": true,
-          "line": 1254,
+          "line": 1276,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-D",
           "title": "Research VP Formula",
           "atomic": true,
-          "line": 1287,
+          "line": 1309,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-E",
           "title": "Military VP Formula",
           "atomic": true,
-          "line": 1322,
+          "line": 1344,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-F",
           "title": "Survival VP Formula",
           "atomic": true,
-          "line": 1355,
+          "line": 1377,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-G",
           "title": "Total VP Aggregation",
           "atomic": true,
-          "line": 1388,
+          "line": 1410,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-008",
           "title": "Anti-Snowball Mechanics (Split)",
           "atomic": true,
-          "line": 1428,
+          "line": 1450,
           "parentOf": [
             "REQ-VIC-008-A",
             "REQ-VIC-008-B",
@@ -3524,56 +3541,56 @@
           "id": "REQ-VIC-008-A",
           "title": "Anti-Snowball Trigger Threshold",
           "atomic": true,
-          "line": 1434,
+          "line": 1456,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-B",
           "title": "Combat Attack Bonus vs Leader",
           "atomic": true,
-          "line": 1463,
+          "line": 1485,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-C",
           "title": "Combat Defense Bonus vs Leader",
           "atomic": true,
-          "line": 1492,
+          "line": 1514,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-D",
           "title": "Market Price Penalty for Leader",
           "atomic": true,
-          "line": 1521,
+          "line": 1543,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-E",
           "title": "Reputation Decay for Leader",
           "atomic": true,
-          "line": 1552,
+          "line": 1574,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-F",
           "title": "Automatic Coalition Offers",
           "atomic": true,
-          "line": 1583,
+          "line": 1605,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-G",
           "title": "Anti-Snowball Mechanics Coordination",
           "atomic": true,
-          "line": 1614,
+          "line": 1636,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-009",
           "title": "Victory Notifications (Split)",
           "atomic": true,
-          "line": 1640,
+          "line": 1662,
           "parentOf": [
             "REQ-VIC-009-A",
             "REQ-VIC-009-B",
@@ -3585,35 +3602,35 @@
           "id": "REQ-VIC-009-A",
           "title": "5 VP Milestone Notification",
           "atomic": true,
-          "line": 1654,
+          "line": 1676,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-009-B",
           "title": "7 VP Milestone Notification",
           "atomic": true,
-          "line": 1682,
+          "line": 1704,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-009-C",
           "title": "9 VP Milestone Notification",
           "atomic": true,
-          "line": 1711,
+          "line": 1733,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-009-D",
           "title": "10 VP Victory Notification",
           "atomic": true,
-          "line": 1740,
+          "line": 1762,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-010",
           "title": "Victory Achievement Screen",
           "atomic": false,
-          "line": 1777,
+          "line": 1799,
           "splitCandidate": "freeze + screen + stats"
         }
       ]
@@ -3704,9 +3721,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 396,
-    "atomicSpecs": 367,
-    "splitCandidates": 20,
+    "totalSpecs": 397,
+    "atomicSpecs": 369,
+    "splitCandidates": 19,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
