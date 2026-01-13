@@ -1410,32 +1410,104 @@ if (manual_checkpoints.length >= 3) {
 
 ---
 
-### REQ-PROG-005: Bot Tutorial Passivity
+### REQ-PROG-005: Bot Tutorial Passivity (Split)
 
-**Description:** During tutorial phase (Turns 1-10), bot aggression reduced:
-- Warlord/Blitzkrieg attack priority: 0.9 → 0.3
-- All bot attack damage: -50%
-- Blitzkrieg rush delayed to Turn 15+
+> **Note:** This spec has been split into atomic sub-specs. See REQ-PROG-005-A through REQ-PROG-005-C.
 
-Returns to normal after Turn 10 or if player skips tutorial.
+---
 
-**Rationale:** New players need time to learn without being immediately crushed by aggressive bots. Creates breathing room for onboarding.
+### REQ-PROG-005-A: Warlord/Blitzkrieg Attack Priority Reduction
+
+**Description:** During tutorial phase (Turns 1-10), Warlord and Blitzkrieg archetype attack priority reduced from 0.9 to 0.3. Returns to normal 0.9 after Turn 10 or if player skips tutorial.
+
+**Rationale:** Reduces likelihood of aggressive early attacks on new players. Warlord/Blitzkrieg archetypes most likely to attack early, so priority reduction creates breathing room for learning.
 
 **Key Values:**
-| Parameter | Tutorial Value | Normal Value |
-|-----------|---------------|--------------|
-| Warlord Attack Priority | 0.3 | 0.9 |
-| Bot Damage Modifier | 0.5× | 1.0× |
-| Blitzkrieg Rush Turn | 15+ | 5-10 |
+| Parameter | Tutorial Value | Normal Value | Notes |
+|-----------|---------------|--------------|-------|
+| Warlord Attack Priority | 0.3 | 0.9 | During Turns 1-10 |
+| Blitzkrieg Attack Priority | 0.3 | 0.9 | During Turns 1-10 |
+| Tutorial Duration | Turns 1-10 | N/A | Or until skip |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1
 
 **Code:**
-- `src/lib/bots/tutorial-mode.ts` - Passive behavior
-- `src/lib/bots/archetypes/` - Per-archetype adjustments
+- `src/lib/bots/tutorial-mode.ts` - Priority adjustment logic
+- `src/lib/bots/archetypes/warlord.ts` - Warlord priority override
+- `src/lib/bots/archetypes/blitzkrieg.ts` - Blitzkrieg priority override
 
 **Tests:**
-- `src/lib/bots/__tests__/tutorial-mode.test.ts`
+- `src/lib/bots/__tests__/tutorial-mode.test.ts` - Priority reduction tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-005-B: Bot Damage Reduction
+
+**Description:** During tutorial phase (Turns 1-10), all bot attack damage reduced by 50% (0.5× damage modifier). Returns to normal 1.0× damage after Turn 10 or if player skips tutorial.
+
+**Rationale:** Softens impact when bots do attack. New players can survive early mistakes without being immediately eliminated. Creates forgiving learning environment.
+
+**Key Values:**
+| Parameter | Tutorial Value | Normal Value | Notes |
+|-----------|---------------|--------------|-------|
+| Bot Damage Modifier | 0.5× | 1.0× | Applies to all bots |
+| Tutorial Duration | Turns 1-10 | N/A | Or until skip |
+| Affected Bots | All archetypes | N/A | Universal reduction |
+
+**Formula:**
+```
+Tutorial Damage = Base Damage × 0.5
+Normal Damage = Base Damage × 1.0
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 4.1
+
+**Code:**
+- `src/lib/bots/tutorial-mode.ts` - Damage modifier
+- `src/lib/combat/damage-calculation.ts` - Apply tutorial modifier
+
+**Tests:**
+- `src/lib/bots/__tests__/tutorial-mode.test.ts` - Damage reduction tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-005-C: Blitzkrieg Rush Delay
+
+**Description:** During tutorial phase (Turns 1-10), Blitzkrieg archetype early rush timing delayed from Turn 5-10 to Turn 15+. Returns to normal Turn 5-10 timing after Turn 10 or if player skips tutorial.
+
+**Rationale:** Prevents overwhelming early aggression from Blitzkrieg's signature rush strategy. Gives new players time to establish defenses before facing coordinated early-game assault.
+
+**Key Values:**
+| Parameter | Tutorial Value | Normal Value | Notes |
+|-----------|---------------|--------------|-------|
+| Blitzkrieg Rush Timing | Turn 15+ | Turn 5-10 | Delayed during tutorial |
+| Tutorial Duration | Turns 1-10 | N/A | Or until skip |
+| Affected Archetype | Blitzkrieg only | N/A | Specific to rush archetype |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 4.1
+
+**Code:**
+- `src/lib/bots/tutorial-mode.ts` - Rush timing override
+- `src/lib/bots/archetypes/blitzkrieg.ts` - Rush delay logic
+
+**Tests:**
+- `src/lib/bots/__tests__/tutorial-mode.test.ts` - Rush delay tests
 
 **Status:** Draft
 

@@ -230,7 +230,10 @@
         { "id": "REQ-PROG-004-B", "title": "Tutorial Objectives and Success Criteria", "atomic": true, "line": 1324, "splitFrom": "REQ-PROG-004" },
         { "id": "REQ-PROG-004-C", "title": "Tutorial Completion Rewards", "atomic": true, "line": 1354, "splitFrom": "REQ-PROG-004" },
         { "id": "REQ-PROG-004-D", "title": "Skip Tutorial Option", "atomic": true, "line": 1383, "splitFrom": "REQ-PROG-004" },
-        { "id": "REQ-PROG-005", "title": "Bot Tutorial Passivity", "atomic": false, "line": 1140, "splitCandidate": "3 passivity adjustments" },
+        { "id": "REQ-PROG-005", "title": "Bot Tutorial Passivity (Split)", "atomic": true, "line": 1413, "parentOf": ["REQ-PROG-005-A", "REQ-PROG-005-B", "REQ-PROG-005-C"] },
+        { "id": "REQ-PROG-005-A", "title": "Warlord/Blitzkrieg Attack Priority Reduction", "atomic": true, "line": 1419, "splitFrom": "REQ-PROG-005" },
+        { "id": "REQ-PROG-005-B", "title": "Bot Damage Reduction", "atomic": true, "line": 1450, "splitFrom": "REQ-PROG-005" },
+        { "id": "REQ-PROG-005-C", "title": "Blitzkrieg Rush Delay", "atomic": true, "line": 1486, "splitFrom": "REQ-PROG-005" },
         { "id": "REQ-PROG-006", "title": "Event Announcements", "atomic": false, "line": 1171, "splitCandidate": "warning + banner + counter + end" }
       ]
     },
@@ -474,9 +477,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 324,
-    "atomicSpecs": 262,
-    "splitCandidates": 53,
+    "totalSpecs": 326,
+    "atomicSpecs": 265,
+    "splitCandidates": 52,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
