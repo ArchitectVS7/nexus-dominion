@@ -52,7 +52,11 @@
         { "id": "REQ-BOT-007", "title": "Decision Audit System", "atomic": true, "line": 1292 },
         { "id": "REQ-BOT-008", "title": "Coalition AI Behavior", "atomic": false, "line": 1341, "splitCandidate": "formation + behavior + betrayal" },
         { "id": "REQ-BOT-009", "title": "Behavioral Telegraphing", "atomic": true, "line": 1381 },
-        { "id": "REQ-BOT-010", "title": "Endgame Behavior", "atomic": false, "line": 1412, "splitCandidate": "4 turn threshold behaviors" }
+        { "id": "REQ-BOT-010", "title": "Endgame Behavior (Split)", "atomic": true, "line": 1668, "parentOf": ["REQ-BOT-010-A", "REQ-BOT-010-B", "REQ-BOT-010-C", "REQ-BOT-010-D"] },
+        { "id": "REQ-BOT-010-A", "title": "Late Campaign Threshold (Turn 150+)", "atomic": true, "line": 1676, "splitFrom": "REQ-BOT-010" },
+        { "id": "REQ-BOT-010-B", "title": "Dominant Leader Threshold (50% Dominance)", "atomic": true, "line": 1705, "splitFrom": "REQ-BOT-010" },
+        { "id": "REQ-BOT-010-C", "title": "Final Three Threshold (3 Empires Remaining)", "atomic": true, "line": 1736, "splitFrom": "REQ-BOT-010" },
+        { "id": "REQ-BOT-010-D", "title": "Victory Imminent Threshold (55%+ Territory)", "atomic": true, "line": 1765, "splitFrom": "REQ-BOT-010" }
       ]
     },
     "COVERT": {
@@ -372,9 +376,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 246,
-    "atomicSpecs": 158,
-    "splitCandidates": 82,
+    "totalSpecs": 250,
+    "atomicSpecs": 162,
+    "splitCandidates": 81,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
