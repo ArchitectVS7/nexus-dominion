@@ -1,0 +1,344 @@
+{
+  "system": "BOT",
+  "file": "docs/Game Systems/BOT-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 18,
+  "note": "REQ-BOT-002 has been split into 8 archetype sub-specs (REQ-BOT-002-01 through REQ-BOT-002-08)",
+  "specs": {
+    "REQ-BOT-001": {
+      "title": "Four-Tier Intelligence System",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines 4-tier bot intelligence architecture (Tier 1 LLM, Tier 2 Strategic, Tier 3 Simple, Tier 4 Random). No hard dependencies; can implement independently."
+    },
+    "REQ-BOT-002": {
+      "title": "Archetype System Overview (Split)",
+      "dependencies": ["REQ-BOT-002-01", "REQ-BOT-002-02", "REQ-BOT-002-03", "REQ-BOT-002-04", "REQ-BOT-002-05", "REQ-BOT-002-06", "REQ-BOT-002-07", "REQ-BOT-002-08"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-002-01 through REQ-BOT-002-08",
+          "reason": "Parent spec; all 8 archetype sub-specs must be defined"
+        }
+      ],
+      "notes": "Meta-spec defining decision priority formula. Each archetype has unique decision matrix with priorities for Attack/Defense/Alliance/Economy/Covert actions."
+    },
+    "REQ-BOT-002-01": {
+      "title": "Warlord Archetype",
+      "dependencies": ["REQ-COMBAT-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-001",
+          "reason": "War Economy passive (-20% military cost when at war) references military cost calculation; can hardcode cost values initially"
+        }
+      ],
+      "notes": "Aggressive military-focused archetype. Priority: Attack 0.9, Defense 0.5, Alliance 0.3, Economy 0.4, Covert 0.5. Commander: INT 12, WIS 14, CHA 8."
+    },
+    "REQ-BOT-002-02": {
+      "title": "Diplomat Archetype",
+      "dependencies": ["REQ-BOT-008"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-008",
+          "reason": "Coalition AI Behavior defines alliance formation logic; Diplomat's Trade Network passive (+10% income per active alliance) depends on alliance tracking"
+        }
+      ],
+      "notes": "Alliance-seeking mediator. Priority: Alliance 0.95, Attack 0.2, Defense 0.6, Economy 0.5, Covert 0.2. Commander: INT 13, WIS 14, CHA 18."
+    },
+    "REQ-BOT-002-03": {
+      "title": "Merchant Archetype",
+      "dependencies": ["REQ-RES-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-002",
+          "reason": "Market Insight passive (sees next turn prices) requires market price system; can implement with static prices initially"
+        }
+      ],
+      "notes": "Economic domination focused. Priority: Economy 0.95, Alliance 0.7, Attack 0.3, Defense 0.4, Covert 0.4. Commander: INT 14, WIS 13, CHA 15."
+    },
+    "REQ-BOT-002-04": {
+      "title": "Schemer Archetype",
+      "dependencies": ["REQ-BOT-008", "REQ-BOT-009"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-008",
+          "reason": "Schemer forms alliances for deception; requires coalition system for betrayal mechanics"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-009",
+          "reason": "Shadow Network passive (-50% covert cost) implies covert operations; requires covert ops system or stubs"
+        }
+      ],
+      "notes": "Deceptive tactics focused. Priority: Covert 0.9, Alliance 0.8, Attack 0.6, Defense 0.3, Economy 0.5. Commander: INT 13, WIS 15, CHA 16."
+    },
+    "REQ-BOT-002-05": {
+      "title": "Turtle Archetype",
+      "dependencies": ["REQ-COMBAT-005"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-005",
+          "reason": "Fortification passive (2× defensive structure power) requires defensive structure system; can define multiplier without implementation"
+        }
+      ],
+      "notes": "Defensive buildup focused. Priority: Defense 0.95, Economy 0.7, Attack 0.1, Alliance 0.5, Covert 0.3. Commander: INT 14, WIS 16, CHA 10."
+    },
+    "REQ-BOT-002-06": {
+      "title": "Blitzkrieg Archetype",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Fast early expansion focused. Priority: Attack 0.95, Defense 0.2, Alliance 0.2, Economy 0.5, Covert 0.4. Commander: INT 12, WIS 10, CHA 12. No passive ability."
+    },
+    "REQ-BOT-002-07": {
+      "title": "Tech Rush Archetype",
+      "dependencies": ["REQ-RES-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-003",
+          "reason": "Tech Rush prioritizes research; requires research/tech system for meaningful behavior differentiation"
+        }
+      ],
+      "notes": "Research-prioritized for late-game power. Priority: Economy 0.6, Defense 0.5, Attack 0.3, Alliance 0.4, Covert 0.3. Commander: INT 17, WIS 12, CHA 10. No passive ability."
+    },
+    "REQ-BOT-002-08": {
+      "title": "Opportunist Archetype",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Adaptive vulture strategy. Priority: Attack 0.7, Economy 0.6, Defense 0.4, Alliance 0.4, Covert 0.5. Commander: INT 13, WIS 14, CHA 11. No passive ability."
+    },
+    "REQ-BOT-003": {
+      "title": "Emotional States System",
+      "dependencies": ["REQ-BOT-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-002",
+          "reason": "Emotions modify decision weights from archetype priorities; can define emotions independently but effects need priority system"
+        }
+      ],
+      "notes": "6 emotional states (Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant) mechanically modify decision quality, alliance formation, aggression, and negotiation by ±5% to ±50%."
+    },
+    "REQ-BOT-004": {
+      "title": "Memory System with Weighted Decay",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Relationship memory with event weighting (1-100) and decay resistance levels. 20% of negative events become permanent scars. Events: captured sector (80, HIGH), saved (90, HIGH), broken alliance (70, HIGH), won battle (40, MEDIUM), trade (10, LOW), message (1, VERY LOW)."
+    },
+    "REQ-BOT-005": {
+      "title": "100 Unique Personas",
+      "dependencies": ["REQ-BOT-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-002",
+          "reason": "Each persona assigned to archetype; can create personas with stub archetype initially"
+        }
+      ],
+      "notes": "100 unique bot personas with voice characteristics and 30-45 message templates per persona. Stored in data/personas.json. Includes archetype assignment, personality quirks, vocabulary preferences, catchphrases."
+    },
+    "REQ-BOT-006": {
+      "title": "LLM Integration",
+      "dependencies": ["REQ-BOT-002", "REQ-BOT-005"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-002",
+          "reason": "LLM system prompts reference archetype personality descriptions; requires archetype definitions"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-005",
+          "reason": "LLM bots use persona data for voice; can use generic descriptions initially"
+        }
+      ],
+      "notes": "Tier 1 bots use LLM API with fallback chain: Groq → Together AI → OpenAI → Tier 2 scripted. Rate limits: 5000 calls/game, 50/turn, 500/hour, $50/day cap. Response includes reasoning, actions, messages, coalition decisions."
+    },
+    "REQ-BOT-007": {
+      "title": "Decision Audit System",
+      "dependencies": ["REQ-BOT-001"],
+      "blockers": [],
+      "notes": "All bot decisions logged with context: decision type/data, reasoning, LLM response, pre-decision state (resources, military, relationships, emotion), outcome. Post-game analysis view + optional 'God Mode' during game."
+    },
+    "REQ-BOT-008": {
+      "title": "Coalition AI Behavior",
+      "dependencies": ["REQ-BOT-002"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-002",
+          "reason": "Coalition formation logic depends on archetype-specific trust/alliance thresholds (Diplomat >30, Warlord top 20%, Schemer any, Turtle defensive only)"
+        }
+      ],
+      "notes": "Coalition formation after turn 10 with archetype-specific logic. Honor defense pacts (loyalty > 0.5), coordinate attacks, share intelligence. Betrayal: Schemer after 20 turns, others if trust < -50. Leave if attacked, leader eliminated, or better opportunity."
+    },
+    "REQ-BOT-009": {
+      "title": "Behavioral Telegraphing",
+      "dependencies": ["REQ-BOT-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-002",
+          "reason": "Telegraph patterns vary by archetype; requires priority system to understand telegraph rates"
+        }
+      ],
+      "notes": "Archetype-specific intent telegraphing: Warlord 70% (2-3 turn warning), Diplomat 80% (3-5 turns), Schemer 30% (1 turn), Merchant 60% (2 turns), Blitzkrieg 40% (1 turn), Turtle 90% (5+ turns). Methods: direct messages, military buildup, coalition chat, emotional state changes."
+    },
+    "REQ-BOT-010": {
+      "title": "Endgame Behavior",
+      "dependencies": ["REQ-VICTORY-001", "REQ-BOT-006"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-VICTORY-001",
+          "reason": "Endgame behavior triggered by victory thresholds (60% sectors, 50% dominance, last 3 empires, 55%+ territory)"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-006",
+          "reason": "Tier 1 bots generate dramatic monologues in endgame; can use scripted endgame messages without LLM"
+        }
+      ],
+      "notes": "Turn 150+: +10% aggression, increased alliances, dramatic Tier 1 messages. Leader at 50%: automatic defensive coalition. Last 3 empires: maximum drama. Victory imminent: global announcements, last alliance proposals, dramatic monologues."
+    }
+  },
+  "summary": {
+    "totalDependencies": 22,
+    "intraSystemDependencies": 15,
+    "crossSystemDependencies": 7,
+    "hardBlockers": 6,
+    "softBlockers": 11,
+    "topDependedOnSpecs": [
+      "REQ-BOT-002 (depended on by 6 specs: REQ-BOT-003, REQ-BOT-005, REQ-BOT-006, REQ-BOT-008, REQ-BOT-009, REQ-BOT-010)",
+      "REQ-BOT-008 (depended on by 2 specs: REQ-BOT-002-02, REQ-BOT-002-04)",
+      "REQ-BOT-006 (depended on by 1 spec: REQ-BOT-010)"
+    ],
+    "crossSystemReferences": [
+      {
+        "toSystem": "COMBAT",
+        "count": 2,
+        "specs": ["REQ-COMBAT-001", "REQ-COMBAT-005"],
+        "reason": "Archetype passives reference military costs and defensive structures"
+      },
+      {
+        "toSystem": "RESOURCE",
+        "count": 2,
+        "specs": ["REQ-RES-002", "REQ-RES-003"],
+        "reason": "Merchant sees market prices; Tech Rush prioritizes research/tech resources"
+      },
+      {
+        "toSystem": "VICTORY",
+        "count": 1,
+        "specs": ["REQ-VICTORY-001"],
+        "reason": "Endgame behavior triggered by victory condition thresholds"
+      }
+    ],
+    "archetype_dependencies": {
+      "REQ-BOT-002-01_Warlord": {
+        "onSpecs": ["REQ-COMBAT-001"],
+        "type": "SOFT",
+        "note": "War Economy passive needs military cost system"
+      },
+      "REQ-BOT-002-02_Diplomat": {
+        "onSpecs": ["REQ-BOT-008"],
+        "type": "SOFT",
+        "note": "Trade Network passive needs alliance tracking"
+      },
+      "REQ-BOT-002-03_Merchant": {
+        "onSpecs": ["REQ-RES-002"],
+        "type": "SOFT",
+        "note": "Market Insight passive needs market system"
+      },
+      "REQ-BOT-002-04_Schemer": {
+        "onSpecs": ["REQ-BOT-008", "REQ-BOT-009"],
+        "type": "HARD/SOFT",
+        "note": "Shadow Network passive and betrayal mechanics need covert ops"
+      },
+      "REQ-BOT-002-05_Turtle": {
+        "onSpecs": ["REQ-COMBAT-005"],
+        "type": "SOFT",
+        "note": "Fortification passive needs defensive structure system"
+      },
+      "REQ-BOT-002-06_Blitzkrieg": {
+        "onSpecs": [],
+        "type": "NONE",
+        "note": "No external dependencies; no passive ability"
+      },
+      "REQ-BOT-002-07_Tech_Rush": {
+        "onSpecs": ["REQ-RES-003"],
+        "type": "SOFT",
+        "note": "Tech prioritization needs research system"
+      },
+      "REQ-BOT-002-08_Opportunist": {
+        "onSpecs": [],
+        "type": "NONE",
+        "note": "No external dependencies; no passive ability"
+      }
+    },
+    "implementationWaves": {
+      "wave0_foundations": [
+        "REQ-BOT-001",
+        "REQ-BOT-002-06_Blitzkrieg",
+        "REQ-BOT-002-08_Opportunist"
+      ],
+      "wave1_archetypes": [
+        "REQ-BOT-002",
+        "REQ-BOT-002-01_Warlord",
+        "REQ-BOT-002-02_Diplomat",
+        "REQ-BOT-002-03_Merchant",
+        "REQ-BOT-002-04_Schemer",
+        "REQ-BOT-002-05_Turtle",
+        "REQ-BOT-002-07_Tech_Rush"
+      ],
+      "wave2_personas_and_emotions": [
+        "REQ-BOT-003_Emotional_States",
+        "REQ-BOT-004_Memory_System",
+        "REQ-BOT-005_100_Personas"
+      ],
+      "wave3_advanced_ai": [
+        "REQ-BOT-006_LLM_Integration",
+        "REQ-BOT-007_Decision_Audit"
+      ],
+      "wave4_coalition_and_endgame": [
+        "REQ-BOT-008_Coalition_Behavior",
+        "REQ-BOT-009_Telegraphing",
+        "REQ-BOT-010_Endgame_Behavior"
+      ]
+    },
+    "criticalPath": [
+      "REQ-BOT-001 (foundational tier system)",
+      "REQ-BOT-002 + archetypes (decision engine)",
+      "REQ-BOT-003 (emotional modifiers)",
+      "REQ-BOT-004 (memory and decay)",
+      "REQ-BOT-006 (LLM for elite bots)",
+      "REQ-BOT-008 (coalitions)",
+      "REQ-BOT-010 (endgame drama)"
+    ],
+    "softDependenciesWithHardcodeable_Workarounds": [
+      "REQ-COMBAT-001: War Economy passive can use hardcoded military cost multiplier",
+      "REQ-COMBAT-005: Fortification passive can use hardcoded defensive structure multiplier",
+      "REQ-RES-002: Market Insight can use hardcoded next-turn prices",
+      "REQ-RES-003: Tech Rush can use hardcoded research points allocation",
+      "REQ-BOT-006: LLM can fall back to Tier 2 scripted behavior on API failure"
+    ],
+    "hardBlockersRequiringExternalSystems": [
+      "REQ-COMBAT-001: Warlord War Economy passive (soft - can hardcode)",
+      "REQ-BOT-008: Coalition formation requires alliance system logic",
+      "REQ-VICTORY-001: Endgame triggers require victory condition tracking"
+    ]
+  },
+  "criticalNotes": {
+    "note1_archetype_subsplits": "REQ-BOT-002 (parent) has been split into 8 atomic sub-specs for individual archetypes. All 8 must be analyzed and tracked independently.",
+    "note2_fallback_chains": "REQ-BOT-006 (LLM) has graceful fallback chain: Groq → Together → OpenAI → Tier 2 scripted. Allows progressive implementation.",
+    "note3_passive_abilities": "5 of 8 archetypes have passive abilities with mechanical effects. These create soft dependencies on external systems but can be implemented with hardcoded values initially.",
+    "note4_coalition_nexus": "REQ-BOT-008 (Coalitions) is critical nexus: used by Diplomat (REQ-BOT-002-02), Schemer (REQ-BOT-002-04), and Endgame (REQ-BOT-010). Should be prioritized.",
+    "note5_emotion_integration": "REQ-BOT-003 (Emotions) modifies all archetype decision matrices (±5% to ±50% effects). Should integrate late but is foundational to behavior realism.",
+    "note6_victory_sync": "REQ-BOT-010 (Endgame) depends on REQ-VICTORY-001 for trigger thresholds. Coordinate implementation timing.",
+    "note7_testing_gaps": "Many specs marked 'TBD' for tests. Testing strategy should cover archetype-specific behaviors, emotion state transitions, coalition logic, and LLM fallback chains."
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "system": "RESOURCE",
+  "file": "docs/Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 12,
+  "specs": {
+    "REQ-RES-001": {
+      "title": "Five Resource Types",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines Credits, Food, Ore, Petroleum, Research Points. No dependencies."
+    },
+    "REQ-RES-002": {
+      "title": "Sector Production Rates",
+      "dependencies": ["REQ-RES-001", "REQ-RES-003", "REQ-SEC-001", "REQ-SEC-002"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Requires sector type definitions (Food, Ore, Petroleum, Commerce, Urban, Education, Government, Research sectors)"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-003",
+          "reason": "Production formula includes civil status multiplier; can implement with 1.0× multiplier initially"
+        }
+      ],
+      "notes": "Defines base production rates per sector type. Critical dependency on SECTOR system for sector type enumeration."
+    },
+    "REQ-RES-003": {
+      "title": "Civil Status Income Multiplier",
+      "dependencies": ["REQ-RES-007"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-007",
+          "reason": "Multiplier values depend on civil status levels from calculation formula; can hardcode statuses initially"
+        }
+      ],
+      "notes": "Defines 2.5× (Ecstatic) to 0.25× (Rioting) multipliers. Can be implemented independently with hardcoded civil status values."
+    },
+    "REQ-RES-004": {
+      "title": "Population Food Consumption",
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [],
+      "notes": "Formula: Population × 0.5 food/capita/turn. Simple calculation, no hard blockers."
+    },
+    "REQ-RES-005": {
+      "title": "Military Maintenance Costs",
+      "dependencies": ["REQ-RES-001", "REQ-MIL-001", "REQ-MIL-002"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-001",
+          "reason": "Requires military unit definitions with ore/petroleum build costs to calculate 5%/3% maintenance"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-002",
+          "reason": "Requires unit roster tracking to sum maintenance costs across all units"
+        }
+      ],
+      "notes": "Maintenance formula: Σ(Unit Ore Cost × 5%) + Σ(Unit Petroleum Cost × 3%). Cannot implement without unit cost data."
+    },
+    "REQ-RES-006": {
+      "title": "Population Growth and Decline",
+      "dependencies": ["REQ-RES-004"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-004",
+          "reason": "Growth rate depends on food availability calculation; can implement with fixed population initially"
+        }
+      ],
+      "notes": "Formula: +2% growth (surplus) or -10% decline (deficit). Can be implemented standalone with food consumption dependency."
+    },
+    "REQ-RES-007": {
+      "title": "Civil Status Calculation Formula",
+      "dependencies": ["REQ-RES-004", "REQ-RES-010", "REQ-COMBAT-001", "REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-004",
+          "reason": "Food security modifier requires food consumption calculation; can use simplified formula initially"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Battle outcome modifier requires combat results tracking; can skip battle modifier initially"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-001",
+          "reason": "Territory growth modifier requires sector gain/loss tracking; can skip territory modifier initially"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-010",
+          "reason": "Overcrowding penalty requires urban capacity calculation; can skip overcrowding check initially"
+        }
+      ],
+      "notes": "Complex formula with 5 factors. All blockers are SOFT - can implement incrementally starting with food security only."
+    },
+    "REQ-RES-008": {
+      "title": "Resource Storage and Negative Balances",
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [],
+      "notes": "Defines no hard caps, negative balance consequences. Can be implemented standalone once resource types exist."
+    },
+    "REQ-RES-009": {
+      "title": "Sector Type Conversion",
+      "dependencies": ["REQ-SEC-001", "REQ-SEC-002", "REQ-RES-010"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Requires sector database and type definitions to perform conversion"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-010",
+          "reason": "Cannot convert Urban sectors restriction depends on Urban capacity mechanics; can hardcode restriction"
+        }
+      ],
+      "notes": "Conversion cost = 50% of target sector cost. Requires sector management system."
+    },
+    "REQ-RES-010": {
+      "title": "Urban Sectors and Population Capacity",
+      "dependencies": ["REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Requires Urban sector type definition and sector counting capability"
+        }
+      ],
+      "notes": "Formula: Capacity = Urban Sectors × 10,000. Simple once sector system exists."
+    },
+    "REQ-RES-011": {
+      "title": "Research Point Accumulation",
+      "dependencies": ["REQ-RES-001", "REQ-RES-003", "REQ-RSCH-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-001",
+          "reason": "Tier unlock thresholds depend on research tech tree structure; can accumulate points without unlocks"
+        }
+      ],
+      "notes": "Formula: (Research Sectors × 100 RP) × Civil Status Multiplier. Accumulation can work independently of tech tree."
+    },
+    "REQ-RES-012": {
+      "title": "Economic Victory Condition",
+      "dependencies": ["REQ-RES-001", "REQ-VIC-001", "REQ-MKT-002", "REQ-MIL-001", "REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-VIC-001",
+          "reason": "Requires victory checking framework and victory condition registration"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-MKT-002",
+          "reason": "Networth calculation uses market prices; can use fixed prices initially"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-MIL-001",
+          "reason": "Networth includes military unit values; can skip military from networth initially"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-001",
+          "reason": "Networth includes sector values (× 8,000); can use sector count approximation"
+        }
+      ],
+      "notes": "Victory condition: Player Networth ≥ 1.5 × 2nd Place Networth. Complex networth calculation with many components."
+    }
+  },
+  "summary": {
+    "totalDependencies": 28,
+    "intraSystemDependencies": 10,
+    "crossSystemDependencies": 18,
+    "hardBlockers": 7,
+    "softBlockers": 11,
+    "topDependedOnSpecs": [
+      "REQ-RES-001 (depended on by 5 specs)",
+      "REQ-SEC-001 (depended on by 5 specs)",
+      "REQ-RES-004 (depended on by 2 specs)",
+      "REQ-RES-003 (depended on by 2 specs)"
+    ],
+    "crossSystemReferences": [
+      { "toSystem": "SECTOR", "count": 9, "specs": ["REQ-SEC-001", "REQ-SEC-002"] },
+      { "toSystem": "COMBAT", "count": 1, "specs": ["REQ-COMBAT-001"] },
+      { "toSystem": "MILITARY", "count": 4, "specs": ["REQ-MIL-001", "REQ-MIL-002"] },
+      { "toSystem": "VICTORY", "count": 1, "specs": ["REQ-VIC-001"] },
+      { "toSystem": "RESEARCH", "count": 1, "specs": ["REQ-RSCH-001"] },
+      { "toSystem": "MARKET", "count": 1, "specs": ["REQ-MKT-002"] }
+    ],
+    "implementationWaves": {
+      "wave0_foundations": ["REQ-RES-001", "REQ-RES-008"],
+      "wave1_basic_mechanics": ["REQ-RES-002", "REQ-RES-003", "REQ-RES-004", "REQ-RES-006"],
+      "wave2_civil_status": ["REQ-RES-007", "REQ-RES-010"],
+      "wave3_advanced": ["REQ-RES-009", "REQ-RES-011"],
+      "wave4_integration": ["REQ-RES-005", "REQ-RES-012"]
+    }
+  }
+}

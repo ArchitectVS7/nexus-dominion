@@ -1,0 +1,741 @@
+{
+  "system": "TURN",
+  "file": "docs/Game Systems/TURN-PROCESSING-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 21,
+  "totalSubSpecs": 18,
+  "note": "REQ-TURN-001 has been split into 18 sub-specs (REQ-TURN-001-01 through REQ-TURN-001-18)",
+  "specs": {
+    "REQ-TURN-001": {
+      "title": "Turn Processing Pipeline (Split into 18 sub-specs)",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Meta-spec describing the overall two-tier architecture. Split into atomic sub-specs REQ-TURN-001-01 through REQ-TURN-001-18.",
+      "tier": "Meta"
+    },
+    "REQ-TURN-001-01": {
+      "title": "Tier Structure Definition",
+      "description": "Two tiers: Tier 1 (Transactional, 8 phases) for critical empire state with all-or-nothing atomicity; Tier 2 (Non-Transactional, 9 phases) for non-critical systems with graceful degradation.",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational architectural spec defining transaction boundaries and failure modes.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-02": {
+      "title": "Income Phase",
+      "description": "Phase 1 (Tier 1): Generate resources (credits, ore, food) based on formula: income = base_rate * sector_count * civil_multiplier. Civil status multipliers: Happy (1.2), Content (1.0), Unrest (0.8), Rebellion (0.5).",
+      "dependencies": ["REQ-SEC-001", "REQ-RES-002", "REQ-RES-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Requires sector management system to count empire sectors and determine sector types"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-002",
+          "reason": "Requires sector production rate definitions (base_credits_per_sector, base_ore_per_sector, etc.)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-003",
+          "reason": "Requires civil status multiplier calculation formula for income modulation"
+        }
+      ],
+      "notes": "Critical resource generation phase. Atomic execution required. Civil status link incentivizes morale maintenance.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-03": {
+      "title": "Auto-Production Phase",
+      "description": "Phase 2 (Tier 1): Process automatic crafting buildings (e.g., Ore Refinery: 100 raw ore → 50 refined ore). Only processes if sufficient input resources available. Does not allow negative balances.",
+      "dependencies": ["REQ-CRAFT-001", "REQ-RES-008"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-CRAFT-001",
+          "reason": "Requires crafting recipe definitions and building types; can stub with hardcoded recipes"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-008",
+          "reason": "Requires resource storage constraints; can start with unlimited storage"
+        }
+      ],
+      "notes": "Enables resource transformation chains. Non-negative balance enforcement is critical.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-04": {
+      "title": "Population Phase",
+      "description": "Phase 3 (Tier 1): Calculate population growth or starvation. Growth: min(surplus_food / 10, population * 0.05) if food_balance >= 0. Starvation: deaths = abs(deficit) * 0.1 if food_balance < 0, with civil status degradation.",
+      "dependencies": ["REQ-RES-004", "REQ-RES-006"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-004",
+          "reason": "Requires food consumption formula (population * 1 food/capita/turn)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-006",
+          "reason": "Requires population growth/decline formula implementation"
+        }
+      ],
+      "notes": "Cascading effects: starvation triggers population loss AND civil status degradation. Starvation is severe penalty.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-05": {
+      "title": "Civil Status Phase",
+      "description": "Phase 4 (Tier 1): Recalculate morale based on food balance, military losses, raids, diplomacy. Morale thresholds: 80-100 (Happy, 1.2x), 50-79 (Content, 1.0x), 20-49 (Unrest, 0.8x, no war declaration), 0-19 (Rebellion, 0.5x, 10% secession chance).",
+      "dependencies": ["REQ-RES-007", "REQ-COMBAT-001", "REQ-DIP-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-007",
+          "reason": "Requires civil status calculation formula with morale modifiers"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Military loss modifier requires combat results tracking; can skip initially"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-DIP-001",
+          "reason": "Diplomatic incident modifiers; can skip initially"
+        }
+      ],
+      "notes": "Complex formula with multiple modifiers. Rebellion state severely penalizes economy and enables secession. Creates strategic depth.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-06": {
+      "title": "Research Phase",
+      "description": "Phase 5 (Tier 1): Allocate research points from research sectors toward active research projects. Completion unlocks doctrines/specializations/capstones. Formula: research_points_earned = base_research_rate * civil_status_multiplier.",
+      "dependencies": ["REQ-RSCH-001", "REQ-RES-011"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RSCH-001",
+          "reason": "Requires tech tree, research projects, and completion thresholds"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-011",
+          "reason": "Requires research point accumulation formula and resource sector definitions"
+        }
+      ],
+      "notes": "Core progression mechanic. Atomic execution prevents partial research states. Civil status link means low morale slows tech advancement.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-07": {
+      "title": "Build Queue Phase",
+      "description": "Phase 6 (Tier 1): Advance unit construction in build queue. Decrements turns_remaining by 1 for each item. When turns_remaining reaches 0, unit is added to empire and removed from queue. Processes in FIFO order.",
+      "dependencies": ["REQ-MIL-002", "REQ-MIL-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-002",
+          "reason": "Requires unit roster and build queue system"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-003",
+          "reason": "Requires unit build time definitions and production mechanics"
+        }
+      ],
+      "notes": "Critical military mechanic. Cost paid at queue time, not completion. FIFO ordering ensures fairness.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-08": {
+      "title": "Covert Phase",
+      "description": "Phase 7 (Tier 1): Generate spy points for empires based on intelligence/covert sector count. Formula: spy_points_earned = base_spy_rate * num_spy_sectors * civil_status_multiplier. Points capped at 500 max. Processes active covert operations per REQ-COV-006.",
+      "dependencies": ["REQ-COV-001", "REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-COV-001",
+          "reason": "Requires covert operation system and spy point mechanics"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Requires spy/intelligence sector type definitions"
+        }
+      ],
+      "notes": "Spy point generation is automated. Cap at 500 prevents infinite hoarding. Operation resolution critical for fairness.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-09": {
+      "title": "Crafting Phase",
+      "description": "Phase 8 (Tier 1): Process manual crafting queue (player-initiated resource transformations). Decrements turns_remaining for each recipe. When ready, consumes input resources and produces outputs if sufficient inputs available.",
+      "dependencies": ["REQ-CRAFT-002", "REQ-RES-008"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-CRAFT-002",
+          "reason": "Requires crafting queue system and recipe execution logic"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-008",
+          "reason": "Requires negative balance prevention and resource constraints"
+        }
+      ],
+      "notes": "Separates manual crafting (Phase 8) from automatic production (Phase 2). Enables complex resource transformation chains. Atomic execution prevents partial recipes.",
+      "tier": "1"
+    },
+    "REQ-TURN-001-10": {
+      "title": "Bot Decisions Phase",
+      "description": "Phase 9 (Tier 2): Execute AI decision-making for all bot empires. Bots evaluate strategic options (build, research, diplomacy, covert, market) based on archetype, emotional state, memory. Failures log errors but don't block turn.",
+      "dependencies": ["REQ-BOT-001", "REQ-BOT-002", "REQ-BOT-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-001",
+          "reason": "Requires bot decision-making framework and evaluation logic"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-002",
+          "reason": "Requires bot archetype system (aggressive, defensive, diplomatic, etc.)"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-003",
+          "reason": "Requires bot emotional state and memory systems"
+        }
+      ],
+      "notes": "Non-transactional phase. Bots have access to full updated Tier 1 state. Graceful failure prevents bot bugs from breaking game.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-11": {
+      "title": "Emotional Decay Phase",
+      "description": "Phase 10 (Tier 2): Reduce bot emotional intensity toward neutral over time. Decay rates per emotion: Anger -5/turn, Gratitude -3/turn, Fear -2/turn. Emotions clamp at 0 (neutral). Non-critical, graceful failure.",
+      "dependencies": ["REQ-BOT-004"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-004",
+          "reason": "Requires bot emotion system with decay rates; can stub with fixed rates"
+        }
+      ],
+      "notes": "Prevents permanent grudges/alliances. Creates dynamic relationships. Non-critical for turn integrity.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-12": {
+      "title": "Memory Cleanup Phase",
+      "description": "Phase 11 (Tier 2): Prune bot memories every 5 turns. Deletes memories older than 20 turns EXCEPT importance >= 5. Prevents database bloat. Runs conditionally: if turn % 5 == 0. Non-critical, graceful failure.",
+      "dependencies": ["REQ-BOT-005"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-005",
+          "reason": "Requires bot memory system with importance scoring; can stub"
+        }
+      ],
+      "notes": "Performance optimization. Balances retention (remember significant events) vs. bloat (don't store routine actions). Runs every 5 turns, not every turn.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-13": {
+      "title": "Market Phase",
+      "description": "Phase 12 (Tier 2): Update resource prices based on supply/demand dynamics. Formula: price_change = (demand - supply) / supply * 0.5, clamped to [0.5, 2.0]. Non-critical, graceful failure.",
+      "dependencies": ["REQ-MKT-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-MKT-001",
+          "reason": "Requires market system and price calculation logic"
+        }
+      ],
+      "notes": "Dynamic economy responds to trading behavior. Min/max clamps prevent extreme price swings. Non-critical for turn integrity.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-14": {
+      "title": "Bot Messages Phase",
+      "description": "Phase 13 (Tier 2): Generate bot communication messages (threats, offers, taunts) based on emotional state and archetype. Uses message templates with variable substitution ({player_name}, {sector_id}). Non-critical, graceful failure.",
+      "dependencies": ["REQ-BOT-006"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-BOT-006",
+          "reason": "Requires message template system and personality flavor; can use hardcoded templates"
+        }
+      ],
+      "notes": "Cosmetic flavor. Generation failures logged but don't block turn. Adds immersion and personality.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-15": {
+      "title": "Galactic Events Phase",
+      "description": "Phase 14 (Tier 2): Trigger random galactic events (asteroid strikes, pirate raids, tech breakthroughs) at milestone turns (turn % 11 == 0) with probability increasing late-game. Only active if M11 milestone unlocked. Non-critical, graceful failure.",
+      "dependencies": ["REQ-EVT-001", "REQ-MILE-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-EVT-001",
+          "reason": "Requires galactic event system with event definitions and effects"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-MILE-001",
+          "reason": "Requires milestone system; events only trigger if M11 unlocked"
+        }
+      ],
+      "notes": "Adds late-game variety and unpredictability. Milestone gate prevents overwhelming new players. Only triggers every 11 turns.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-16": {
+      "title": "Alliance Checkpoints Phase",
+      "description": "Phase 15 (Tier 2): Evaluate coalition formation at milestone turns (turn % 11 == 0). If leader has 7+ victory points, potential coalition of 3-5 weaker empires forms (80% chance per bot). Only active if M11 milestone unlocked. Non-critical, graceful failure.",
+      "dependencies": ["REQ-DIP-002", "REQ-VIC-001", "REQ-MILE-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-DIP-002",
+          "reason": "Requires alliance/coalition system"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-VIC-001",
+          "reason": "Requires victory point calculation to assess leader dominance"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-MILE-001",
+          "reason": "Requires milestone system; checkpoints only trigger if M11 unlocked"
+        }
+      ],
+      "notes": "Anti-snowball mechanic. Prevents runaway victories by organizing resistance. Runs every 11 turns.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-17": {
+      "title": "Victory Check Phase",
+      "description": "Phase 16 (Tier 2): Evaluate all 6 victory conditions (Military: 70% sectors, Economic: 100k credits, Diplomatic: 80% alliances, Research: 100% tech tree, Covert: 5 eliminations, Survival: 1 empire left). First to meet any condition wins. Game locks. Non-critical, graceful failure.",
+      "dependencies": ["REQ-VIC-002", "REQ-VIC-003", "REQ-MIL-001", "REQ-RSCH-002", "REQ-DIP-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-VIC-002",
+          "reason": "Requires victory condition evaluation framework"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-VIC-003",
+          "reason": "Requires specific victory condition implementations; can stub each condition"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-MIL-001",
+          "reason": "Requires military unit count for Military victory (70% sector control)"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Requires tech tree completion tracking for Research victory"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-DIP-001",
+          "reason": "Requires alliance tracking for Diplomatic victory (80% of empires)"
+        }
+      ],
+      "notes": "Multiple victory paths increase replayability. Evaluated after all empire updates for fairness. Game state locks on victory.",
+      "tier": "2"
+    },
+    "REQ-TURN-001-18": {
+      "title": "Auto-Save Phase",
+      "description": "Phase 17 (Tier 2): Persist game state to database/storage with rotation policy (keep last 10 saves). On failure, logs error and warns player but does not block turn completion. Saves to `saves/game_{game_id}_turn_{turn_number}.json`.",
+      "dependencies": ["REQ-PERSIST-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-PERSIST-001",
+          "reason": "Requires persistence/save system; can stub with memory-only saves initially"
+        }
+      ],
+      "notes": "Provides crash recovery points. Non-critical for turn processing. Failure doesn't block turn completion.",
+      "tier": "2"
+    },
+    "REQ-TURN-002": {
+      "title": "Turn Increment",
+      "description": "Turn number increments by 1 after all phases complete successfully. If Tier 1 fails (transaction rollback), turn number does NOT increment. Ensures consistent game clock.",
+      "dependencies": ["REQ-TURN-001-01"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-001-01",
+          "reason": "Requires Tier 1 structure definition and rollback semantics"
+        }
+      ],
+      "notes": "Failed turns don't advance game clock. Critical for consistency and debugging.",
+      "tier": "Meta"
+    },
+    "REQ-TURN-003": {
+      "title": "Victory Check Timing",
+      "description": "Victory conditions are checked after all turn processing completes (Phase 16), before turn number increments. Ensures all empires' end-of-turn states are evaluated fairly and simultaneously.",
+      "dependencies": ["REQ-TURN-001-17", "REQ-TURN-002"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-001-17",
+          "reason": "Requires Victory Check Phase implementation"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-002",
+          "reason": "Requires Turn Increment spec for timing coordination"
+        }
+      ],
+      "notes": "Ensures fair simultaneous evaluation. Player shouldn't win/lose mid-turn.",
+      "tier": "Meta"
+    },
+    "REQ-TURN-004": {
+      "title": "Income Phase Execution",
+      "description": "Duplicate of REQ-TURN-001-02. Income Phase (Phase 1) generates resources (credits, ore, food) for all empires using formula: income = base_rate * sector_count * civil_multiplier.",
+      "dependencies": ["REQ-TURN-001-02"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-02.",
+      "tier": "1"
+    },
+    "REQ-TURN-005": {
+      "title": "Auto-Production Phase",
+      "description": "Duplicate of REQ-TURN-001-03. Auto-Production Phase (Phase 2) processes crafting buildings generating derived resources.",
+      "dependencies": ["REQ-TURN-001-03"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-03.",
+      "tier": "1"
+    },
+    "REQ-TURN-006": {
+      "title": "Population Phase",
+      "description": "Duplicate of REQ-TURN-001-04. Population Phase (Phase 3) calculates population growth or starvation based on food balance.",
+      "dependencies": ["REQ-TURN-001-04"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-04.",
+      "tier": "1"
+    },
+    "REQ-TURN-007": {
+      "title": "Civil Status Phase",
+      "description": "Duplicate of REQ-TURN-001-05. Civil Status Phase (Phase 4) calculates morale based on food balance, military losses, raids, diplomacy.",
+      "dependencies": ["REQ-TURN-001-05"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-05.",
+      "tier": "1"
+    },
+    "REQ-TURN-008": {
+      "title": "Research Phase",
+      "description": "Duplicate of REQ-TURN-001-06. Research Phase (Phase 5) allocates research points to active research projects.",
+      "dependencies": ["REQ-TURN-001-06"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-06.",
+      "tier": "1"
+    },
+    "REQ-TURN-009": {
+      "title": "Build Queue Phase",
+      "description": "Duplicate of REQ-TURN-001-07. Build Queue Phase (Phase 6) advances unit construction in the build queue.",
+      "dependencies": ["REQ-TURN-001-07"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-07.",
+      "tier": "1"
+    },
+    "REQ-TURN-010": {
+      "title": "Covert Phase",
+      "description": "Duplicate of REQ-TURN-001-08. Covert Phase (Phase 7) generates spy points and processes active covert operations.",
+      "dependencies": ["REQ-TURN-001-08"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-08.",
+      "tier": "1"
+    },
+    "REQ-TURN-011": {
+      "title": "Crafting Phase",
+      "description": "Duplicate of REQ-TURN-001-09. Crafting Phase (Phase 8) processes the crafting queue for manual recipes.",
+      "dependencies": ["REQ-TURN-001-09"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-09.",
+      "tier": "1"
+    },
+    "REQ-TURN-012": {
+      "title": "Bot Decisions Phase",
+      "description": "Duplicate of REQ-TURN-001-10. Bot Decisions Phase (Phase 9) executes AI decision-making for all bot empires.",
+      "dependencies": ["REQ-TURN-001-10"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-10.",
+      "tier": "2"
+    },
+    "REQ-TURN-013": {
+      "title": "Emotional Decay Phase",
+      "description": "Duplicate of REQ-TURN-001-11. Emotional Decay Phase (Phase 10) reduces bot emotional intensity over time.",
+      "dependencies": ["REQ-TURN-001-11"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-11.",
+      "tier": "2"
+    },
+    "REQ-TURN-014": {
+      "title": "Memory Cleanup Phase",
+      "description": "Duplicate of REQ-TURN-001-12. Memory Cleanup Phase (Phase 11) prunes old bot memories every 5 turns.",
+      "dependencies": ["REQ-TURN-001-12"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-12.",
+      "tier": "2"
+    },
+    "REQ-TURN-015": {
+      "title": "Market Phase",
+      "description": "Duplicate of REQ-TURN-001-13. Market Phase (Phase 12) updates market prices based on supply/demand dynamics.",
+      "dependencies": ["REQ-TURN-001-13"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-13.",
+      "tier": "2"
+    },
+    "REQ-TURN-016": {
+      "title": "Bot Messages Phase",
+      "description": "Duplicate of REQ-TURN-001-14. Bot Messages Phase (Phase 13) generates bot communication messages.",
+      "dependencies": ["REQ-TURN-001-14"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-14.",
+      "tier": "2"
+    },
+    "REQ-TURN-017": {
+      "title": "Galactic Events Phase",
+      "description": "Duplicate of REQ-TURN-001-15. Galactic Events Phase (Phase 14) triggers random galactic events at milestone turns.",
+      "dependencies": ["REQ-TURN-001-15"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-15.",
+      "tier": "2"
+    },
+    "REQ-TURN-018": {
+      "title": "Alliance Checkpoints Phase",
+      "description": "Duplicate of REQ-TURN-001-16. Alliance Checkpoints Phase (Phase 15) evaluates coalition formation at milestone turns.",
+      "dependencies": ["REQ-TURN-001-16"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-16.",
+      "tier": "2"
+    },
+    "REQ-TURN-019": {
+      "title": "Victory Check Phase",
+      "description": "Duplicate of REQ-TURN-001-17. Victory Check Phase (Phase 16) evaluates all 6 victory conditions.",
+      "dependencies": ["REQ-TURN-001-17"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-17.",
+      "tier": "2"
+    },
+    "REQ-TURN-020": {
+      "title": "Auto-Save Phase",
+      "description": "Duplicate of REQ-TURN-001-18. Auto-Save Phase (Phase 17) persists game state to database/storage.",
+      "dependencies": ["REQ-TURN-001-18"],
+      "blockers": [],
+      "notes": "This spec appears to be a duplicate reference. Core logic is in REQ-TURN-001-18.",
+      "tier": "2"
+    },
+    "REQ-TURN-021": {
+      "title": "Performance Budget",
+      "description": "Turn processing must complete in <2 seconds (2000ms) for 100 empires on target hardware (modern desktop, 8GB RAM, SSD). Budget breakdown: Tier 1 (800ms), Bot AI (400ms), Tier 2 (300ms), UI/Animations (500ms).",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Non-functional requirement. Performance targets: Tier 1 <800ms, Tier 2 <300ms, total turn <2s including UI.",
+      "tier": "NFR"
+    }
+  },
+  "summary": {
+    "totalDependencies": 42,
+    "intraSystemDependencies": 24,
+    "crossSystemDependencies": 18,
+    "hardBlockers": 24,
+    "softBlockers": 18,
+    "tier1Specs": 9,
+    "tier2Specs": 10,
+    "metaSpecs": 3,
+    "nfrSpecs": 1,
+    "topDependedOnSpecs": [
+      "REQ-TURN-001-01 (depended on by 2 specs: REQ-TURN-002)",
+      "REQ-TURN-001-17 (depended on by 2 specs: REQ-TURN-003, REQ-VIC checks)",
+      "REQ-TURN-002 (depended on by 1 spec: REQ-TURN-003)",
+      "REQ-BOT-001 (depended on by multiple bot phases)"
+    ],
+    "crossSystemReferences": [
+      {
+        "toSystem": "RESOURCE",
+        "count": 5,
+        "specs": ["REQ-RES-002", "REQ-RES-003", "REQ-RES-004", "REQ-RES-006", "REQ-RES-007", "REQ-RES-008", "REQ-RES-011"]
+      },
+      {
+        "toSystem": "SECTOR",
+        "count": 3,
+        "specs": ["REQ-SEC-001"]
+      },
+      {
+        "toSystem": "MILITARY",
+        "count": 3,
+        "specs": ["REQ-MIL-001", "REQ-MIL-002", "REQ-MIL-003"]
+      },
+      {
+        "toSystem": "COMBAT",
+        "count": 1,
+        "specs": ["REQ-COMBAT-001"]
+      },
+      {
+        "toSystem": "DIPLOMACY",
+        "count": 3,
+        "specs": ["REQ-DIP-001", "REQ-DIP-002"]
+      },
+      {
+        "toSystem": "RESEARCH",
+        "count": 2,
+        "specs": ["REQ-RSCH-001", "REQ-RSCH-002"]
+      },
+      {
+        "toSystem": "COVERT",
+        "count": 1,
+        "specs": ["REQ-COV-001"]
+      },
+      {
+        "toSystem": "CRAFTING",
+        "count": 2,
+        "specs": ["REQ-CRAFT-001", "REQ-CRAFT-002"]
+      },
+      {
+        "toSystem": "BOT",
+        "count": 6,
+        "specs": ["REQ-BOT-001", "REQ-BOT-002", "REQ-BOT-003", "REQ-BOT-004", "REQ-BOT-005", "REQ-BOT-006"]
+      },
+      {
+        "toSystem": "MARKET",
+        "count": 1,
+        "specs": ["REQ-MKT-001"]
+      },
+      {
+        "toSystem": "VICTORY",
+        "count": 3,
+        "specs": ["REQ-VIC-001", "REQ-VIC-002", "REQ-VIC-003"]
+      },
+      {
+        "toSystem": "EVENTS",
+        "count": 1,
+        "specs": ["REQ-EVT-001"]
+      },
+      {
+        "toSystem": "MILESTONE",
+        "count": 1,
+        "specs": ["REQ-MILE-001"]
+      },
+      {
+        "toSystem": "PERSISTENCE",
+        "count": 1,
+        "specs": ["REQ-PERSIST-001"]
+      }
+    ],
+    "implementationPhases": {
+      "phase0_foundations": {
+        "description": "Tier 1 foundation specs",
+        "specs": ["REQ-TURN-001-01", "REQ-TURN-002"],
+        "rationale": "Establish two-tier architecture and basic turn increment logic"
+      },
+      "phase1_core_resources": {
+        "description": "Resource generation and basic economics",
+        "specs": ["REQ-TURN-001-02", "REQ-TURN-001-04", "REQ-TURN-001-05"],
+        "rationale": "Income, Population, Civil Status are foundation mechanics. Requires REQ-RES and REQ-SEC systems",
+        "blocking": ["REQ-RES-002", "REQ-RES-003", "REQ-RES-004", "REQ-SEC-001"]
+      },
+      "phase2_production": {
+        "description": "Auto-production and build queue",
+        "specs": ["REQ-TURN-001-03", "REQ-TURN-001-07"],
+        "rationale": "Enable resource transformation and unit production",
+        "blocking": ["REQ-CRAFT-001", "REQ-MIL-002", "REQ-MIL-003"]
+      },
+      "phase3_progression": {
+        "description": "Research and covert operations",
+        "specs": ["REQ-TURN-001-06", "REQ-TURN-001-08"],
+        "rationale": "Core progression mechanics",
+        "blocking": ["REQ-RSCH-001", "REQ-COV-001"]
+      },
+      "phase4_advanced_tier1": {
+        "description": "Crafting phase completes Tier 1",
+        "specs": ["REQ-TURN-001-09"],
+        "rationale": "Complete Tier 1 with manual crafting",
+        "blocking": ["REQ-CRAFT-002"]
+      },
+      "phase5_tier2_non_critical": {
+        "description": "All non-transactional Tier 2 phases",
+        "specs": [
+          "REQ-TURN-001-10", "REQ-TURN-001-11", "REQ-TURN-001-12",
+          "REQ-TURN-001-13", "REQ-TURN-001-14", "REQ-TURN-001-15",
+          "REQ-TURN-001-16", "REQ-TURN-001-17", "REQ-TURN-001-18"
+        ],
+        "rationale": "Non-critical features. Can be stubbed or deferred. Requires Tier 1 complete",
+        "blocking": [
+          "REQ-BOT-001", "REQ-BOT-002", "REQ-BOT-003", "REQ-BOT-004", "REQ-BOT-005", "REQ-BOT-006",
+          "REQ-MKT-001", "REQ-VIC-002", "REQ-VIC-003", "REQ-EVT-001", "REQ-MILE-001", "REQ-PERSIST-001"
+        ]
+      },
+      "phase6_meta_and_nfr": {
+        "description": "Meta specs and performance requirements",
+        "specs": ["REQ-TURN-003", "REQ-TURN-021"],
+        "rationale": "Validate timing coordination and performance characteristics across full system"
+      }
+    },
+    "criticalPathDependencies": [
+      {
+        "chain": "REQ-TURN-001-02 (Income) → REQ-RES-002 (Sector Production)",
+        "type": "HARD",
+        "reason": "Cannot generate income without knowing sector production rates"
+      },
+      {
+        "chain": "REQ-TURN-001-05 (Civil Status) → REQ-RES-007 (Civil Status Formula)",
+        "type": "HARD",
+        "reason": "Civil Status Phase depends on completed formula implementation"
+      },
+      {
+        "chain": "REQ-TURN-001-07 (Build Queue) → REQ-MIL-002 (Unit Roster)",
+        "type": "HARD",
+        "reason": "Cannot process build queue without unit roster system"
+      },
+      {
+        "chain": "REQ-TURN-003 (Victory Timing) → REQ-TURN-002 (Turn Increment) → REQ-TURN-001-01 (Tiers)",
+        "type": "HARD",
+        "reason": "Victory timing coordination depends on turn increment and tier structure"
+      }
+    ],
+    "keystoneIntraSystemSpecs": [
+      "REQ-TURN-001-01: Architectural foundation (two-tier structure)",
+      "REQ-TURN-002: Game clock (turn increment logic)",
+      "REQ-TURN-001-02: Resource generation (income phase - foundation of economy)"
+    ],
+    "tierBreakdown": {
+      "tier1_transactional": {
+        "count": 8,
+        "specs": [
+          "REQ-TURN-001-02 (Income)",
+          "REQ-TURN-001-03 (Auto-Production)",
+          "REQ-TURN-001-04 (Population)",
+          "REQ-TURN-001-05 (Civil Status)",
+          "REQ-TURN-001-06 (Research)",
+          "REQ-TURN-001-07 (Build Queue)",
+          "REQ-TURN-001-08 (Covert)",
+          "REQ-TURN-001-09 (Crafting)"
+        ],
+        "failureMode": "ROLLBACK entire tier on ANY failure",
+        "characteristics": "Atomic, all-or-nothing, critical empire state"
+      },
+      "tier2_non_transactional": {
+        "count": 9,
+        "specs": [
+          "REQ-TURN-001-10 (Bot Decisions)",
+          "REQ-TURN-001-11 (Emotional Decay)",
+          "REQ-TURN-001-12 (Memory Cleanup)",
+          "REQ-TURN-001-13 (Market)",
+          "REQ-TURN-001-14 (Bot Messages)",
+          "REQ-TURN-001-15 (Galactic Events)",
+          "REQ-TURN-001-16 (Alliance Checkpoints)",
+          "REQ-TURN-001-17 (Victory Check)",
+          "REQ-TURN-001-18 (Auto-Save)"
+        ],
+        "failureMode": "LOG error, CONTINUE processing",
+        "characteristics": "Non-critical, graceful degradation, can fail independently"
+      }
+    },
+    "performanceBudget": {
+      "tier1_phases": "800ms (Phases 1-8)",
+      "botDecisions": "400ms (Phase 9)",
+      "tier2_phases": "300ms (Phases 10-17)",
+      "ui_animations": "500ms",
+      "totalTarget": "2000ms",
+      "notes": "Performance target for 100 empires on target hardware (modern desktop, 8GB RAM, SSD)"
+    }
+  }
+}

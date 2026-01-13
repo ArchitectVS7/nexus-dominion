@@ -1,0 +1,427 @@
+{
+  "system": "UI",
+  "file": "docs/Game Systems/FRONTEND-DESIGN.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 13,
+  "specs": {
+    "REQ-UI-001": {
+      "title": "Boardgame + LCARS Aesthetic",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational design philosophy - defines visual language (glass panels, LCARS colors, typography). No dependencies on other systems."
+    },
+    "REQ-UI-002": {
+      "title": "Star Map as Hub",
+      "dependencies": ["REQ-UI-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-UI-001",
+          "reason": "Architectural decision independent of design philosophy; can implement without LCARS styling initially"
+        }
+      ],
+      "notes": "Core navigation pattern: /game/starmap is primary route, all other screens are overlays. Maintains boardgame metaphor (board always visible). Critical for spatial awareness and game feel."
+    },
+    "REQ-UI-003": {
+      "title": "Overlay Panel System",
+      "dependencies": ["REQ-UI-002"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-UI-002",
+          "reason": "Overlay system depends on star map as hub architecture for proper positioning and behavior"
+        }
+      ],
+      "notes": "Implements right/left/bottom/center positioned panels with slide-in animations. Uses Framer Motion for animations. Requires backdrop dimming and Suspense boundaries for server-rendered data."
+    },
+    "REQ-UI-004": {
+      "title": "Card + Details Sidebar Pattern",
+      "dependencies": ["REQ-UI-001"],
+      "blockers": [],
+      "notes": "Horizontal split layout (1/3 selection + 2/3 details) eliminating scroll friction. Pattern: resources on left (scrollable), trade interface on right (fixed height, action button always visible). Applies to Market, Military Building, Sectors, Research, Diplomacy."
+    },
+    "REQ-UI-005": {
+      "title": "Collapsible Phase Indicator",
+      "dependencies": ["REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-001",
+          "reason": "Phase indicator requires turn system data (current turn, phase, time remaining) from TURN system"
+        }
+      ],
+      "notes": "Sticky header showing Turn N/Max, Phase N/6, current phase name, time remaining. Auto-expands first 5 turns. Expanded state shows phase description, available actions (as links), End Turn button. Solves critical UX issue: players didn't know which phase they were in."
+    },
+    "REQ-UI-006": {
+      "title": "Actionable Guidance System",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Converts passive warnings into actionable prompts with severity levels (critical/warning/opportunity/info). Each alert includes 1-3 action buttons linking to relevant screens. Critical alerts block turn end. Solves UX issue: players saw warnings but didn't know how to fix them."
+    },
+    "REQ-UI-007": {
+      "title": "Strategic Visual Language",
+      "dependencies": ["REQ-UI-001"],
+      "blockers": [],
+      "notes": "Three-tier feedback system: Anticipation (preview before action), Payoff (success feedback), Threat (critical alerts). Uses animations, colors, icons. Makes game feel meaningful vs. administrative. GSAP timelines for complex sequences (combat, turn transitions)."
+    },
+    "REQ-UI-008": {
+      "title": "React Query Data Layer",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Server state management using React Query hooks. All async data operations go through query layer for predictable data flow and caching."
+    },
+    "REQ-UI-009": {
+      "title": "Zustand Client State",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Client-only state management using Zustand stores. UI state, UI preferences, ephemeral data. Independent of other systems."
+    },
+    "REQ-UI-010": {
+      "title": "CSS + GSAP Hybrid Animation",
+      "dependencies": ["REQ-UI-001"],
+      "blockers": [],
+      "notes": "CSS transitions for micro-interactions (100-300ms), GSAP timelines for complex sequences (3+ steps, combat, turn transitions). Only animate transform/opacity (GPU-accelerated). Respect prefers-reduced-motion. Performance critical."
+    },
+    "REQ-UI-011": {
+      "title": "D3.js Star Map Visualization",
+      "dependencies": ["REQ-UI-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-UI-002",
+          "reason": "Star map visualization needs hub architecture to function as central view. Can prototype visualization independently but requires routing framework for full implementation"
+        }
+      ],
+      "notes": "Force-directed graph visualization using D3.js. Nodes = empires (nebula clouds with glow), edges = treaties/threats. Force simulation with charge, center, collision. Interactions: click empire → detail overlay, zoom, pan. Requires intel system for visibility levels."
+    },
+    "REQ-UI-012": {
+      "title": "Keyboard Navigation",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Global keyboard shortcuts: M (starmap), B (military), T (trade/market), R (research), D (diplomacy), ESC (close), Space (toggle phase). All interactive elements keyboard-accessible. Tab navigation standard."
+    },
+    "REQ-UI-013": {
+      "title": "WCAG AA Color Contrast",
+      "dependencies": ["REQ-UI-001"],
+      "blockers": [],
+      "notes": "All text meets WCAG AA contrast (4.5:1 normal, 3:1 large). Don't rely on color alone (use icons + color). Ensures accessibility and readability in various lighting conditions."
+    }
+  },
+  "summary": {
+    "totalDependencies": 8,
+    "intraSystemDependencies": 3,
+    "crossSystemDependencies": 5,
+    "hardBlockers": 2,
+    "softBlockers": 3,
+    "topDependedOnSpecs": [
+      "REQ-UI-001 (depended on by 4 specs)",
+      "REQ-UI-002 (depended on by 2 specs)"
+    ],
+    "crossSystemReferences": [
+      {
+        "toSystem": "TURN",
+        "count": 1,
+        "specs": ["REQ-TURN-001"]
+      }
+    ],
+    "implementationWaves": {
+      "wave0_foundations": [
+        "REQ-UI-001",
+        "REQ-UI-012",
+        "REQ-UI-013"
+      ],
+      "wave1_architecture": [
+        "REQ-UI-002",
+        "REQ-UI-008",
+        "REQ-UI-009"
+      ],
+      "wave2_components": [
+        "REQ-UI-003",
+        "REQ-UI-004",
+        "REQ-UI-010"
+      ],
+      "wave3_features": [
+        "REQ-UI-005",
+        "REQ-UI-006",
+        "REQ-UI-007",
+        "REQ-UI-011"
+      ]
+    }
+  },
+  "detailedAnalysis": {
+    "architecturalDecisions": [
+      {
+        "decision": "Star Map as Central Hub",
+        "spec": "REQ-UI-002",
+        "rationale": "Physical boardgames keep the board always visible. Digital implementations often bury maps in navigation, breaking boardgame feel. Star map must remain visible (dimmed) behind overlays to maintain spatial context and strategic awareness.",
+        "implications": [
+          "All routes redirect to /game/starmap with query parameters",
+          "Panels slide over dimmed star map backdrop",
+          "ESC key returns to clean star map",
+          "No full-page navigation for game screens"
+        ]
+      },
+      {
+        "decision": "Horizontal Split Layout Pattern",
+        "spec": "REQ-UI-004",
+        "rationale": "Original vertical stacking forced scrolling, hiding action buttons below fold. UX analysis identified as major friction point. Horizontal split eliminates scroll requirement and keeps actions visible.",
+        "implications": [
+          "Resource lists on left (1/3, scrollable)",
+          "Details and actions on right (2/3, fixed height)",
+          "Action buttons anchored to bottom",
+          "Better use of widescreen displays"
+        ]
+      },
+      {
+        "decision": "Overlay-Based Navigation",
+        "spec": "REQ-UI-003",
+        "rationale": "Maintains boardgame metaphor (picking up cards), preserves spatial context, faster navigation (no full page transitions), smoother UX.",
+        "implications": [
+          "Server-rendered overlays with Suspense",
+          "Query parameter routing (?panel=military)",
+          "Smooth slide-in animations via Framer Motion",
+          "All overlays closeable with ESC or backdrop click"
+        ]
+      }
+    ],
+    "criticalFeatures": [
+      {
+        "feature": "Phase Indicator",
+        "spec": "REQ-UI-005",
+        "status": "CRITICAL",
+        "reason": "UX analysis showed players couldn't learn game mechanics without understanding turn timing. Phase indicator teaches when events occur and guides actions. Auto-expands first 5 turns (tutorial effect).",
+        "blockingOn": ["REQ-TURN-001"]
+      },
+      {
+        "feature": "Actionable Guidance",
+        "spec": "REQ-UI-006",
+        "status": "CRITICAL",
+        "reason": "Game felt overwhelming. Players saw warnings ('low food') but didn't know how to fix them. Actionable prompts convert passive notifications to guided solutions with direct action buttons.",
+        "blockingOn": []
+      },
+      {
+        "feature": "Star Map as Hub",
+        "spec": "REQ-UI-002",
+        "status": "CRITICAL",
+        "reason": "Foundational to entire UI architecture. Breaks boardgame feel if violated. Every other navigation pattern depends on this.",
+        "blockingOn": []
+      }
+    ],
+    "uiComponents": {
+      "foundational": [
+        {
+          "component": "GlassPanel",
+          "dependsOn": ["REQ-UI-001"],
+          "usage": "Base container for all UI panels. Implements glass-morphism effect (semi-transparent, blur, light border).",
+          "required_properties": ["title", "accentColor", "children", "actions"]
+        },
+        {
+          "component": "Card",
+          "dependsOn": ["REQ-UI-001"],
+          "usage": "Individual data cards with title, subtitle, interactive states, action buttons.",
+          "required_properties": ["title", "subtitle", "accentColor", "interactive", "selected"]
+        },
+        {
+          "component": "OverlayPanel",
+          "dependsOn": ["REQ-UI-003"],
+          "usage": "Wrapper for all overlay screens (military, market, research, diplomacy).",
+          "required_properties": ["isOpen", "position", "size", "title", "onClose"]
+        }
+      ],
+      "dataDisplay": [
+        {
+          "component": "DataRow",
+          "purpose": "Single label-value display with optional icon and tooltip",
+          "usage": "Empire stats, resource counts, calculations"
+        },
+        {
+          "component": "ResourceBar",
+          "purpose": "Progress bar with current/max, change indicator, color coding (low/critical/normal)",
+          "usage": "Food, population, resources"
+        },
+        {
+          "component": "WinProbabilityBar",
+          "purpose": "Victory probability visualization",
+          "usage": "Combat interface"
+        }
+      ],
+      "interactive": [
+        {
+          "component": "PhaseIndicator",
+          "dependsOn": ["REQ-UI-005"],
+          "purpose": "Sticky header showing turn/phase/time with collapsible expanded state",
+          "usage": "Page header for all game screens"
+        },
+        {
+          "component": "ActionPrompt",
+          "dependsOn": ["REQ-UI-006"],
+          "purpose": "Alert component with severity levels and action buttons",
+          "usage": "Warnings, opportunities, guidance"
+        }
+      ]
+    },
+    "techStackIntegration": [
+      {
+        "technology": "Next.js 14 App Router",
+        "usage": "Server-rendered overlays with query params, Suspense boundaries for data loading",
+        "criticalFor": ["REQ-UI-003"]
+      },
+      {
+        "technology": "Tailwind CSS",
+        "usage": "All styling, LCARS color palette, custom extensions (glass-morphism, border-radius)",
+        "criticalFor": ["REQ-UI-001", "REQ-UI-010"]
+      },
+      {
+        "technology": "Framer Motion",
+        "usage": "Overlay slide-in animations, smooth transitions, AnimatePresence for enter/exit",
+        "criticalFor": ["REQ-UI-003", "REQ-UI-010"]
+      },
+      {
+        "technology": "D3.js",
+        "usage": "Force-directed graph for star map, SVG rendering, interactive zoom/pan",
+        "criticalFor": ["REQ-UI-011"]
+      },
+      {
+        "technology": "GSAP",
+        "usage": "Complex animation timelines for combat sequences, turn transitions, particle effects",
+        "criticalFor": ["REQ-UI-007", "REQ-UI-010"]
+      },
+      {
+        "technology": "React Query",
+        "usage": "Server state management, query caching, mutation handling",
+        "criticalFor": ["REQ-UI-008"]
+      },
+      {
+        "technology": "Zustand",
+        "usage": "Client-only state (UI visibility, preferences, ephemeral data)",
+        "criticalFor": ["REQ-UI-009"]
+      },
+      {
+        "technology": "Lucide React",
+        "usage": "All icons in UI components and data displays",
+        "criticalFor": ["REQ-UI-001", "REQ-UI-013"]
+      }
+    ],
+    "implementationSequence": [
+      {
+        "phase": "Foundation",
+        "duration": "Week 1",
+        "specs": ["REQ-UI-001", "REQ-UI-012", "REQ-UI-013"],
+        "tasks": [
+          "Set up Tailwind config with LCARS palette",
+          "Import fonts (Orbitron, Exo 2, Roboto Mono)",
+          "Create GlassPanel and Card base components",
+          "Implement keyboard shortcut handler"
+        ]
+      },
+      {
+        "phase": "Architecture",
+        "duration": "Week 2",
+        "specs": ["REQ-UI-002", "REQ-UI-008", "REQ-UI-009"],
+        "tasks": [
+          "Set up route structure (/game/starmap as hub)",
+          "Implement React Query query client",
+          "Create Zustand stores for UI state",
+          "Set up redirect logic from /game/*"
+        ]
+      },
+      {
+        "phase": "Components",
+        "duration": "Week 3-4",
+        "specs": ["REQ-UI-003", "REQ-UI-004", "REQ-UI-010"],
+        "tasks": [
+          "Implement OverlayPanel with Framer Motion",
+          "Create Card + Details Sidebar pattern component",
+          "Set up Tailwind animation utilities",
+          "Implement CSS transition classes"
+        ]
+      },
+      {
+        "phase": "Features",
+        "duration": "Week 5-6",
+        "specs": ["REQ-UI-005", "REQ-UI-006", "REQ-UI-007", "REQ-UI-011"],
+        "tasks": [
+          "Implement PhaseIndicator component (requires TURN data)",
+          "Create ActionPrompt component",
+          "Set up D3.js star map visualization",
+          "Implement GSAP animation timelines"
+        ]
+      }
+    ],
+    "dependencies": {
+      "hardBlockers": [
+        {
+          "blocker": "REQ-UI-002",
+          "blockedSpecs": ["REQ-UI-003", "REQ-UI-011"],
+          "reason": "Star Map as Hub architecture is prerequisite for overlay routing and star map as primary view"
+        },
+        {
+          "blocker": "REQ-TURN-001",
+          "blockedSpecs": ["REQ-UI-005"],
+          "reason": "Phase indicator requires turn system to provide current turn, phase, time remaining data"
+        }
+      ],
+      "softBlockers": [
+        {
+          "blocker": "REQ-UI-001",
+          "blockedSpecs": ["REQ-UI-002"],
+          "reason": "Star map hub architecture can be implemented without LCARS aesthetic; visual polish added later"
+        },
+        {
+          "blocker": "REQ-UI-002",
+          "blockedSpecs": ["REQ-UI-011"],
+          "reason": "Star map visualization can prototype independently but requires hub architecture for full integration"
+        },
+        {
+          "blocker": "REQ-UI-001",
+          "blockedSpecs": ["REQ-UI-010"],
+          "reason": "Animation strategy can be defined without full design system; refined with LCARS theme"
+        }
+      ]
+    },
+    "externalIntegrations": [
+      {
+        "system": "TURN",
+        "integration": "REQ-UI-005 depends on REQ-TURN-001",
+        "details": "Phase indicator needs: current turn number, max turns, current phase object (order, name, description), time remaining, available actions for phase"
+      },
+      {
+        "system": "GAME_STATE",
+        "integration": "All overlays need empire/game state data",
+        "details": "Via React Query hooks. Market needs commodity prices, Military needs unit roster and sector info, Research needs tech tree state, Diplomacy needs empire relations."
+      }
+    ],
+    "uiPrinciples": [
+      {
+        "principle": "Star Map Always Visible",
+        "source": "REQ-UI-002",
+        "description": "Board game metaphor: never put the board away. Players maintain spatial context and strategic awareness."
+      },
+      {
+        "principle": "No Scrolling to Take Action",
+        "source": "REQ-UI-004",
+        "description": "Action buttons never below fold. Horizontal layout keeps everything visible at once."
+      },
+      {
+        "principle": "Teach Through Interface",
+        "source": "REQ-UI-005",
+        "description": "Phase indicator auto-expands first 5 turns, teaching players game mechanics through UI design."
+      },
+      {
+        "principle": "Actionable Over Passive",
+        "source": "REQ-UI-006",
+        "description": "Every warning includes solution buttons. Convert 'low food' to 'Buy Food [Button]'."
+      },
+      {
+        "principle": "Visual Weight Matters",
+        "source": "REQ-UI-007",
+        "description": "Make actions feel meaningful through visual feedback. Every decision should have emotional impact."
+      },
+      {
+        "principle": "Performance First",
+        "source": "REQ-UI-010",
+        "description": "Only animate GPU-accelerated properties (transform, opacity). Respect reduced-motion preference."
+      }
+    ]
+  }
+}

@@ -1,0 +1,373 @@
+{
+  "system": "RESEARCH",
+  "file": "docs/Game Systems/RESEARCH-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 18,
+  "specs": {
+    "REQ-RSCH-001": {
+      "title": "Three-Tier Research Structure",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines 3-tier draft system (Doctrine, Specialization, Capstone) with RP thresholds. No dependencies on other systems."
+    },
+    "REQ-RSCH-002": {
+      "title": "Doctrine System (Tier 1)",
+      "dependencies": ["REQ-RSCH-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-001",
+          "reason": "Requires tier system framework; can implement doctrines independently with hardcoded thresholds"
+        }
+      ],
+      "notes": "Defines 3 doctrines: War Machine (+2 STR, -10% income), Fortress (+4 AC, -5% attack), Commerce (+2 CHA, +20% sell). All are independent mechanics."
+    },
+    "REQ-RSCH-003": {
+      "title": "Specialization System Overview",
+      "dependencies": ["REQ-RSCH-001", "REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-001",
+          "reason": "Requires tier system and RP thresholds"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Specializations unlock based on doctrine choice; can implement independently"
+        }
+      ],
+      "notes": "Parent spec for REQ-RSCH-003-A through REQ-RSCH-003-F. Defines Tier 2 mechanics: hidden specializations, reveal conditions (combat, espionage, alliance)."
+    },
+    "REQ-RSCH-003-A": {
+      "title": "Shock Troops Specialization",
+      "dependencies": ["REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Unlocked by War Machine doctrine; can implement combat mechanic independently"
+        }
+      ],
+      "notes": "War Machine specialization: surprise round (attack before initiative). Countered by Shield Arrays (REQ-RSCH-003-C)."
+    },
+    "REQ-RSCH-003-B": {
+      "title": "Siege Engines Specialization",
+      "dependencies": ["REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Unlocked by War Machine doctrine; can implement combat mechanic independently"
+        }
+      ],
+      "notes": "War Machine specialization: +50% damage vs stationary targets, treat AC as 10. Countered by Minefield Networks (REQ-RSCH-003-D)."
+    },
+    "REQ-RSCH-003-C": {
+      "title": "Shield Arrays Specialization",
+      "dependencies": ["REQ-RSCH-002", "REQ-RSCH-003-A"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Unlocked by Fortress doctrine; can implement independently"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003-A",
+          "reason": "Counters Shock Troops; requires Shock Troops implemented to verify counter works"
+        }
+      ],
+      "notes": "Fortress specialization: immunity to surprise rounds (negates Shock Troops). Countered by Siege Engines (REQ-RSCH-003-B)."
+    },
+    "REQ-RSCH-003-D": {
+      "title": "Minefield Networks Specialization",
+      "dependencies": ["REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Unlocked by Fortress doctrine; can implement independently"
+        }
+      ],
+      "notes": "Fortress specialization: pre-combat CON save DC 15 or lose 10% HP. Countered by Shock Troops (REQ-RSCH-003-A) which clears mines in surprise round."
+    },
+    "REQ-RSCH-003-E": {
+      "title": "Trade Monopoly Specialization",
+      "dependencies": ["REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Unlocked by Commerce doctrine; can implement economics mechanic independently"
+        }
+      ],
+      "notes": "Commerce specialization: buy -20%, sell +30% (economic only, no combat effect). Pure economic bonus."
+    },
+    "REQ-RSCH-003-F": {
+      "title": "Mercenary Contracts Specialization",
+      "dependencies": ["REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Unlocked by Commerce doctrine; can implement independently"
+        }
+      ],
+      "notes": "Commerce specialization: pay 10,000 cr for +2 STR per battle. Converts economic resources into temporary military advantage."
+    },
+    "REQ-RSCH-004": {
+      "title": "Capstone System (Tier 3)",
+      "dependencies": ["REQ-RSCH-001", "REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-001",
+          "reason": "Requires tier system and RP threshold (15,000 RP); can implement capstone mechanics independently"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Capstone unlocks depend on doctrine choice; can hardcode doctrines"
+        }
+      ],
+      "notes": "Tier 3 auto-unlocks at 15,000 RP: War Machine→Dreadnought (STR 20, HP 200, 4d12+5), Fortress→Citadel World (AC 25), Commerce→Economic Hegemony (50% #2 income)."
+    },
+    "REQ-RSCH-005": {
+      "title": "Research Point Economy",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Research sectors generate 100 RP/turn. RP accumulates toward thresholds (1k, 5k, 15k). Progress hidden from enemies. No cross-system dependencies."
+    },
+    "REQ-RSCH-006": {
+      "title": "Research Information Visibility",
+      "dependencies": ["REQ-RSCH-002", "REQ-RSCH-003", "REQ-RSCH-004"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Doctrine choices are public; must implement doctrine system first"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003",
+          "reason": "Specializations are hidden by default; visibility rules depend on specialization system"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-004",
+          "reason": "Capstone unlocks are public announcements; must implement capstone system"
+        }
+      ],
+      "notes": "Asymmetric visibility: PUBLIC (doctrines, capstones, sector count), HIDDEN (RP totals, progress %, specializations). Revealed via combat, espionage, alliance, rumors."
+    },
+    "REQ-RSCH-007": {
+      "title": "Research-Combat Integration",
+      "dependencies": ["REQ-RSCH-002", "REQ-RSCH-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Doctrine bonuses (STR/AC modifiers) must be defined; can implement combat integration without specialization"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003",
+          "reason": "Specialization conditional effects must be defined; can defer specialization integration"
+        }
+      ],
+      "notes": "Applies research bonuses to combat: doctrine bonuses modify unit STR/AC, specialization bonuses trigger conditional combat effects. Integrates with D20 system."
+    },
+    "REQ-RSCH-008": {
+      "title": "Specialization Counter-Play",
+      "dependencies": ["REQ-RSCH-003-A", "REQ-RSCH-003-B", "REQ-RSCH-003-C", "REQ-RSCH-003-D"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003-A",
+          "reason": "Shock Troops must exist to verify counters work"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003-B",
+          "reason": "Siege Engines must exist to verify counters work"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003-C",
+          "reason": "Shield Arrays must exist to verify counters work"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003-D",
+          "reason": "Minefield Networks must exist to verify counters work"
+        }
+      ],
+      "notes": "Rock-paper-scissors counter relationships: Shield Arrays > Shock Troops, Siege Engines > Shield Arrays, Minefield Networks > Siege Engines, Shock Troops > Minefield Networks."
+    },
+    "REQ-RSCH-009": {
+      "title": "Investigate Specialization Operation",
+      "dependencies": ["REQ-RSCH-003", "REQ-RSCH-006"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003",
+          "reason": "Specialization system must exist to investigate; can implement operation independently"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-006",
+          "reason": "Relies on visibility rules; can implement investigation without full visibility framework"
+        }
+      ],
+      "notes": "Espionage operation: 5,000 cr cost, 85% success, reveals target specialization. Failure costs credits and -10 reputation. Integrated into Phase 5 Covert Operations."
+    },
+    "REQ-RSCH-010": {
+      "title": "Galactic News Rumor System",
+      "dependencies": ["REQ-RSCH-002", "REQ-RSCH-003", "REQ-RSCH-004"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Rumors include doctrine info; requires doctrine system for realistic rumors"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003",
+          "reason": "Rumors include specialization speculation; requires specialization system"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-004",
+          "reason": "Rumors include capstone progress; can generate generic rumors without capstone system"
+        }
+      ],
+      "notes": "Every 10 turns: 5 rumors (3 true, 2 false). Triggered in turn processor (Phase timing TBD). Players cannot distinguish true from false (50% accuracy)."
+    },
+    "REQ-RSCH-011": {
+      "title": "Alliance Intel Sharing",
+      "dependencies": ["REQ-RSCH-003", "REQ-RSCH-006"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003",
+          "reason": "Specializations shared with allies; requires specialization system"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-006",
+          "reason": "Visibility rules change for coalition members; requires visibility framework"
+        }
+      ],
+      "notes": "Coalition members auto-share research intel: your specialization revealed to allies, see allied specializations. Integrated with coalition mechanics."
+    },
+    "REQ-RSCH-012": {
+      "title": "Bot Research Decision Logic",
+      "dependencies": ["REQ-RSCH-002", "REQ-RSCH-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Bots must choose doctrines; can implement with archetype preferences"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-003",
+          "reason": "Bots must choose specializations; requires specialization system for full implementation"
+        }
+      ],
+      "notes": "Bot decision logic: 80% follow archetype preference, 20% counter-pick based on neighbors. Strategic bots analyze threats. Integrated with bot AI system."
+    }
+  },
+  "summary": {
+    "totalDependencies": 32,
+    "intraSystemDependencies": 32,
+    "crossSystemDependencies": 0,
+    "hardBlockers": 0,
+    "softBlockers": 29,
+    "topDependedOnSpecs": [
+      "REQ-RSCH-001 (depended on by 4 specs: 002, 003, 004, 005)",
+      "REQ-RSCH-002 (depended on by 8 specs: 003, 003-A, 003-B, 003-C, 003-D, 003-E, 003-F, 007, 012)",
+      "REQ-RSCH-003 (depended on by 6 specs: 006, 007, 008, 009, 010, 011)",
+      "REQ-RSCH-006 (depended on by 3 specs: 009, 011)"
+    ],
+    "crossSystemReferences": [],
+    "specializationHierarchy": {
+      "tier2_specializations": 6,
+      "warfare_specializations": [
+        "REQ-RSCH-003-A (Shock Troops)",
+        "REQ-RSCH-003-B (Siege Engines)"
+      ],
+      "defense_specializations": [
+        "REQ-RSCH-003-C (Shield Arrays)",
+        "REQ-RSCH-003-D (Minefield Networks)"
+      ],
+      "economic_specializations": [
+        "REQ-RSCH-003-E (Trade Monopoly)",
+        "REQ-RSCH-003-F (Mercenary Contracts)"
+      ],
+      "counterplay_matrix": {
+        "shock_troops_vs": "Shield Arrays negates surprise round",
+        "siege_engines_vs": "Shield Arrays ignores AC (bypass shields)",
+        "minefield_networks_vs": "Siege Engines pre-combat damage",
+        "shock_troops_clears": "Minefield Networks in surprise round"
+      }
+    },
+    "implementationWaves": {
+      "wave0_foundations": [
+        "REQ-RSCH-001 (Three-Tier Research Structure)",
+        "REQ-RSCH-005 (Research Point Economy)"
+      ],
+      "wave1_tier1_mechanics": [
+        "REQ-RSCH-002 (Doctrine System - War Machine, Fortress, Commerce)"
+      ],
+      "wave2_tier1_integration": [
+        "REQ-RSCH-006 (Research Information Visibility)",
+        "REQ-RSCH-007 (Research-Combat Integration)"
+      ],
+      "wave3_tier2_specializations": [
+        "REQ-RSCH-003 (Specialization System Overview)",
+        "REQ-RSCH-003-A (Shock Troops)",
+        "REQ-RSCH-003-B (Siege Engines)",
+        "REQ-RSCH-003-C (Shield Arrays)",
+        "REQ-RSCH-003-D (Minefield Networks)",
+        "REQ-RSCH-003-E (Trade Monopoly)",
+        "REQ-RSCH-003-F (Mercenary Contracts)"
+      ],
+      "wave4_tier2_advanced": [
+        "REQ-RSCH-008 (Specialization Counter-Play)",
+        "REQ-RSCH-009 (Investigate Specialization Operation)",
+        "REQ-RSCH-011 (Alliance Intel Sharing)"
+      ],
+      "wave5_tier3_endgame": [
+        "REQ-RSCH-004 (Capstone System)"
+      ],
+      "wave6_systems_integration": [
+        "REQ-RSCH-010 (Galactic News Rumor System)",
+        "REQ-RSCH-012 (Bot Research Decision Logic)"
+      ]
+    },
+    "keyInsights": {
+      "self_contained": true,
+      "notes": "RESEARCH system is fully self-contained with no hard dependencies on other game systems. All combat integration points are marked as SOFT blockers since combat bonuses can be implemented independently. Intelligence gameplay (espionage, alliance sharing, rumors) drives strategic depth without requiring external systems.",
+      "combat_integration_points": [
+        "REQ-RSCH-007: Combat bonuses apply to D20 system (STR/AC modifiers)",
+        "REQ-RSCH-003-A: Surprise round mechanic requires D20 combat resolver",
+        "REQ-RSCH-003-B: AC bypass mechanics requires D20 combat resolver",
+        "REQ-RSCH-003-D: CON save mechanics requires D20 combat resolver"
+      ],
+      "intelligence_gameplay": [
+        "REQ-RSCH-006: Asymmetric visibility creates info asymmetry",
+        "REQ-RSCH-009: Espionage reveals hidden specializations",
+        "REQ-RSCH-010: Rumors provide unreliable intel (50% accuracy)",
+        "REQ-RSCH-011: Coalition members auto-share intel"
+      ],
+      "strategic_layers": {
+        "layer1_early_game": "REQ-RSCH-002 doctrine choice defines playstyle",
+        "layer2_mid_game": "REQ-RSCH-003 specialization selection creates hidden advantage",
+        "layer3_late_game": "REQ-RSCH-004 capstone unlocks change game dynamics",
+        "layer4_intelligence": "REQ-RSCH-006/009/010/011 intel systems create deduction gameplay"
+      }
+    }
+  }
+}

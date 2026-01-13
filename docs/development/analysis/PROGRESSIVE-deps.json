@@ -1,0 +1,167 @@
+{
+  "system": "PROGRESSIVE",
+  "file": "docs/Game Systems/PROGRESSIVE-SYSTEMS.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 6,
+  "specs": {
+    "REQ-PROG-001": {
+      "title": "Feature Unlocks",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Turn-based feature unlock schedule: Diplomacy (Turn 20), Black Market (Turn 50), Nuclear Weapons (Turn 100). Can be implemented as standalone unlock gate system."
+    },
+    "REQ-PROG-002": {
+      "title": "Game Checkpoints",
+      "dependencies": ["REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-TURN-001",
+          "reason": "Checkpoints triggered at turn thresholds (every 20 turns); turn system provides trigger points. Can implement with manual timestamps as workaround."
+        }
+      ],
+      "notes": "Save/load system with auto-checkpoints (every 20 turns), manual saves (max 3), cloud storage, 7/30-day retention. Core infrastructure for long campaign games."
+    },
+    "REQ-PROG-003": {
+      "title": "Galactic Events",
+      "dependencies": ["REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-001",
+          "reason": "Event triggers evaluated each turn (3% chance per turn); requires turn processing system to execute trigger checks and apply effects"
+        }
+      ],
+      "notes": "8 event types (Supernova, Plague, Golden Age, Rebellion, Wormhole Collapse, Tech Breakthrough, Galactic War, Resource Boom) affecting all empires. Average 1 event per 30 turns."
+    },
+    "REQ-PROG-004": {
+      "title": "Tutorial Sequence",
+      "dependencies": ["REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-TURN-001",
+          "reason": "Tutorial progresses across Turns 1-10; turn system marks tutorial phase boundaries. Can implement with manual progression tracking."
+        }
+      ],
+      "notes": "10-turn guided onboarding teaching core mechanics (sectors, building, military, resources, trading, borders, combat). Success criteria and rewards per turn. Skip option after Turn 3."
+    },
+    "REQ-PROG-005": {
+      "title": "Bot Tutorial Passivity",
+      "dependencies": ["REQ-BOT-001", "REQ-PROG-004", "REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-001",
+          "reason": "Requires bot archetype system to apply per-archetype behavior modifiers (Warlord: 0.9→0.3, Blitzkrieg: delay rush to Turn 15+)"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-PROG-004",
+          "reason": "Uses tutorial phase detection (Turns 1-10); can hardcode turn range if tutorial spec not available"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-TURN-001",
+          "reason": "Applies modifiers during tutorial phase; turn counter determines active phase"
+        }
+      ],
+      "notes": "Reduced bot aggression during tutorial: 50% damage reduction, lowered attack priority (0.3), delayed rush attacks. Returns to normal after Turn 10 or tutorial skip."
+    },
+    "REQ-PROG-006": {
+      "title": "Event Announcements",
+      "dependencies": ["REQ-PROG-003", "REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-PROG-003",
+          "reason": "Announces galactic events 1 turn before trigger; requires event system to exist to generate announcements"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-TURN-001",
+          "reason": "Announcement timing keyed to turn processing; turn counter determines when to display warnings"
+        }
+      ],
+      "notes": "Notifications 1 turn before event (except Supernova), active event banner during duration with turn counter, end summary. Creates anticipation and player reaction time."
+    }
+  },
+  "summary": {
+    "totalDependencies": 12,
+    "intraSystemDependencies": 2,
+    "crossSystemDependencies": 10,
+    "hardBlockers": 2,
+    "softBlockers": 7,
+    "topDependedOnSpecs": [
+      "REQ-TURN-001 (depended on by 5 specs)",
+      "REQ-PROG-003 (depended on by 1 spec)",
+      "REQ-BOT-001 (depended on by 1 spec)"
+    ],
+    "crossSystemReferences": [
+      { "toSystem": "TURN", "count": 5, "specs": ["REQ-TURN-001"] },
+      { "toSystem": "BOT", "count": 1, "specs": ["REQ-BOT-001"] }
+    ],
+    "intraSystemReferences": [
+      { "fromSpec": "REQ-PROG-006", "toSpec": "REQ-PROG-003", "relationship": "requires" },
+      { "fromSpec": "REQ-PROG-005", "toSpec": "REQ-PROG-004", "relationship": "uses" }
+    ],
+    "implementationWaves": {
+      "wave0_turn_system_required": "REQ-TURN-001 must be implemented first - gates all progressive features",
+      "wave1_foundational": [
+        "REQ-PROG-001 (Feature Unlocks - no external deps)",
+        "REQ-PROG-002 (Checkpoints - soft dep on turns, can implement with timestamps)"
+      ],
+      "wave2_core_systems": [
+        "REQ-PROG-004 (Tutorial - uses turn phase, can implement standalone)"
+      ],
+      "wave3_complex_mechanics": [
+        "REQ-PROG-003 (Galactic Events - hard dep on turn triggers)"
+      ],
+      "wave4_integrations": [
+        "REQ-PROG-005 (Bot Tutorial Passivity - requires BOT system)",
+        "REQ-PROG-006 (Event Announcements - requires Galactic Events)"
+      ]
+    },
+    "criticalPath": {
+      "blockingSpecs": ["REQ-TURN-001"],
+      "reason": "5 of 6 progressive specs depend on turn system. Turn processing is the gating factor.",
+      "recommendation": "Prioritize REQ-TURN-001 to unblock progressive feature implementation. Features 1-2 can proceed in parallel with turn system. Feature 3 must wait for turn system completion."
+    },
+    "keyObservations": [
+      "Progressive system is heavily integrated with turn system - 83% of specs depend on REQ-TURN-001",
+      "Bot system integration only required for tutorial passivity (REQ-PROG-005), not core progressive features",
+      "Two specs can be implemented immediately (unlocks, checkpoints) while waiting for turn system",
+      "Event system and announcements tightly coupled (REQ-PROG-006 requires REQ-PROG-003)",
+      "No circular dependencies detected - clear implementation order possible",
+      "Tutorial and bot passivity linked - bots adjust behavior when tutorial is active"
+    ],
+    "riskAssessment": {
+      "highRisk": [
+        {
+          "spec": "REQ-PROG-003",
+          "risk": "Hard blocker on turn system. Galactic events cannot function without turn processing.",
+          "mitigation": "Implement turn system first. Can stub events with placeholder triggers during turn system work."
+        }
+      ],
+      "mediumRisk": [
+        {
+          "spec": "REQ-PROG-005",
+          "risk": "Requires bot archetype system (REQ-BOT-001). May not exist or may have different design.",
+          "mitigation": "Verify bot system exists before implementing. Could stub with global damage multiplier if per-bot modifiers don't exist."
+        }
+      ],
+      "lowRisk": [
+        {
+          "spec": "REQ-PROG-001",
+          "risk": "Minimal - simple gate system.",
+          "mitigation": "No blockers identified."
+        },
+        {
+          "spec": "REQ-PROG-002",
+          "risk": "Soft turn dependency can be worked around with timestamps.",
+          "mitigation": "Can implement checkpoint save/load independently."
+        }
+      ]
+    }
+  }
+}

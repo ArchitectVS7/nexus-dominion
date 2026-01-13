@@ -1,0 +1,329 @@
+{
+  "system": "COMBAT",
+  "file": "docs/Game Systems/COMBAT-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 12,
+  "specs": {
+    "REQ-COMBAT-001": {
+      "title": "D20 Attack Resolution",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines d20 + modifier >= defense formula. No dependencies."
+    },
+    "REQ-COMBAT-002": {
+      "title": "Attacker Win Rate",
+      "dependencies": ["REQ-COMBAT-001", "REQ-COMBAT-003", "REQ-COMBAT-004"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Balance metric depends on D20 resolution mechanics; can model conceptually first"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-003",
+          "reason": "Defender advantage affects win rate calculation; must run Monte Carlo with all factors"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-004",
+          "reason": "Power multipliers affect force balance; needed for accurate Monte Carlo validation"
+        }
+      ],
+      "notes": "Balance target: attacker wins 47.6% with equal forces. Requires Monte Carlo simulation with defender advantage and unit multipliers."
+    },
+    "REQ-COMBAT-003": {
+      "title": "Defender Advantage",
+      "dependencies": ["REQ-COMBAT-001"],
+      "blockers": [],
+      "notes": "Defender receives 1.10x (10%) power bonus in own territory. Applied in power calculation, independent of other combat specs."
+    },
+    "REQ-COMBAT-004": {
+      "title": "Unit Power Multipliers",
+      "dependencies": ["REQ-MIL-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-001",
+          "reason": "Multipliers are defined for military unit types (Soldiers, Fighters, Stations, Cruisers, Carriers)"
+        }
+      ],
+      "notes": "Soldiers 0.1×, Fighters 1×, Bombers 2×, Stations 3× (6× defending), Light/Heavy Cruisers 4×/8×, Carriers 12×. Must coordinate with MILITARY-SYSTEM specs."
+    },
+    "REQ-COMBAT-005": {
+      "title": "Diversity Bonus",
+      "dependencies": ["REQ-COMBAT-001", "REQ-MIL-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-MIL-001",
+          "reason": "Needs to count distinct unit types in fleet; requires unit type definitions"
+        }
+      ],
+      "notes": "Fleet with 4+ distinct unit types receives +15% power bonus. Encourages balanced composition over mono-unit strategies."
+    },
+    "REQ-COMBAT-006": {
+      "title": "Station Defense Multiplier",
+      "dependencies": ["REQ-COMBAT-004", "REQ-MIL-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-COMBAT-004",
+          "reason": "Station defense multiplier (2.0×) is contextual application of power multiplier system"
+        }
+      ],
+      "notes": "Stations have 2.0× multiplier when defending (power 6 instead of 3). Represents defensive installation nature."
+    },
+    "REQ-COMBAT-007": {
+      "title": "Protection Period",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "New players cannot be attacked for 20 turns. Independent design decision, no system dependencies."
+    },
+    "REQ-COMBAT-008": {
+      "title": "Six Dramatic Outcomes",
+      "dependencies": ["REQ-COMBAT-001", "REQ-COMBAT-002", "REQ-COMBAT-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Outcome determination depends on d20 roll and power differential"
+        }
+      ],
+      "notes": "Six outcome types based on roll result and power ratio: Decisive Victory/Victory/Pyrrhic (attacker and defender). Creates narrative variety."
+    },
+    "REQ-COMBAT-009": {
+      "title": "Multi-Domain Resolution",
+      "dependencies": ["REQ-COMBAT-001", "REQ-COMBAT-003", "REQ-MIL-001", "REQ-MIL-009"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Each domain requires D20 combat resolution"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-009",
+          "reason": "Requires units assigned to SPACE/ORBITAL/GROUND domains for multi-domain combat"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-003",
+          "reason": "Domain bonuses stack with defender advantage; must be integrated into power calculation"
+        }
+      ],
+      "notes": "Full Invasions resolve: SPACE -> ORBITAL -> GROUND sequentially. Winners receive +2 bonus to next domain. Cascading tactical impact."
+    },
+    "REQ-COMBAT-010": {
+      "title": "Three Battle Types",
+      "dependencies": ["REQ-COMBAT-001", "REQ-COMBAT-009", "REQ-SYND-003", "REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SYND-003",
+          "reason": "Covert Strike battle type uses syndicate/commando forces; requires syndicate contract system for flavor"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-001",
+          "reason": "Capture mechanics depend on sector system; can implement battle types without sector capture initially"
+        }
+      ],
+      "notes": "Three types: Full Invasion (multi-domain, can capture), Covert Strike (ground only, no capture), Blockade (economic, no combat). Strategic alternatives to direct conquest."
+    },
+    "REQ-COMBAT-011": {
+      "title": "Unit Rarity Tiers",
+      "dependencies": ["REQ-MIL-001", "REQ-RSCH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-001",
+          "reason": "Tier I units must be defined in military system as baseline available Turn 1"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-001",
+          "reason": "Tier II unlocked via research; requires research system definitions but can use placeholder unlocks"
+        }
+      ],
+      "notes": "Three tiers with stat ranges: I (8-12), II (12-16), III (16-20). Tier I available Turn 1, II via research, III rare draft Turn 50+. Creates power progression."
+    },
+    "REQ-COMBAT-012": {
+      "title": "Morale & Surrender",
+      "dependencies": ["REQ-COMBAT-001", "REQ-COMBAT-008"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Morale checks use d20 rolls; part of D20 system"
+        }
+      ],
+      "notes": "Morale checks at 50%+ losses (d20+WIS vs DC 15). Surrender offers at 75%+ losses (Attacker CHA vs Defender WIS). Prevents total annihilation."
+    }
+  },
+  "summary": {
+    "totalDependencies": 18,
+    "intraSystemDependencies": 11,
+    "crossSystemDependencies": 7,
+    "hardBlockers": 4,
+    "softBlockers": 10,
+    "topDependedOnSpecs": [
+      "REQ-COMBAT-001 (depended on by 8 specs)",
+      "REQ-COMBAT-003 (depended on by 3 specs)",
+      "REQ-COMBAT-004 (depended on by 2 specs)",
+      "REQ-MIL-001 (depended on by 4 specs)"
+    ],
+    "crossSystemReferences": [
+      {
+        "toSystem": "MILITARY",
+        "count": 4,
+        "specs": ["REQ-MIL-001", "REQ-MIL-009"]
+      },
+      {
+        "toSystem": "RESEARCH",
+        "count": 1,
+        "specs": ["REQ-RSCH-001"]
+      },
+      {
+        "toSystem": "SECTOR",
+        "count": 1,
+        "specs": ["REQ-SEC-001"]
+      },
+      {
+        "toSystem": "SYNDICATE",
+        "count": 1,
+        "specs": ["REQ-SYND-003"]
+      }
+    ],
+    "implementationWaves": {
+      "wave0_foundations": [
+        "REQ-COMBAT-001",
+        "REQ-COMBAT-003",
+        "REQ-COMBAT-007"
+      ],
+      "wave1_mechanics": [
+        "REQ-COMBAT-002",
+        "REQ-COMBAT-004",
+        "REQ-COMBAT-006",
+        "REQ-COMBAT-008"
+      ],
+      "wave2_advanced": [
+        "REQ-COMBAT-005",
+        "REQ-COMBAT-009",
+        "REQ-COMBAT-010"
+      ],
+      "wave3_progression": [
+        "REQ-COMBAT-011",
+        "REQ-COMBAT-012"
+      ]
+    },
+    "blockingAnalysis": {
+      "hardBlockers": [
+        {
+          "blocker": "REQ-COMBAT-004",
+          "blockedSpecs": ["REQ-COMBAT-006"],
+          "reason": "Station defense multiplier requires unit power multiplier system"
+        },
+        {
+          "blocker": "REQ-COMBAT-001",
+          "blockedSpecs": ["REQ-COMBAT-009"],
+          "reason": "Multi-domain needs D20 roll resolution for each domain"
+        },
+        {
+          "blocker": "REQ-MIL-001",
+          "blockedSpecs": ["REQ-COMBAT-004", "REQ-COMBAT-011"],
+          "reason": "Unit type definitions required for power multipliers and tier organization"
+        },
+        {
+          "blocker": "REQ-MIL-009",
+          "blockedSpecs": ["REQ-COMBAT-009"],
+          "reason": "Domain assignment system needed for multi-domain combat resolution"
+        }
+      ],
+      "softBlockers": [
+        {
+          "blocker": "REQ-COMBAT-001",
+          "blockedSpecs": ["REQ-COMBAT-002", "REQ-COMBAT-012"],
+          "reason": "Can model balance conceptually; implement with D20 system"
+        },
+        {
+          "blocker": "REQ-COMBAT-003",
+          "blockedSpecs": ["REQ-COMBAT-002", "REQ-COMBAT-009"],
+          "reason": "Can hard-code bonus; refine during Monte Carlo validation"
+        },
+        {
+          "blocker": "REQ-MIL-001",
+          "blockedSpecs": ["REQ-COMBAT-005", "REQ-COMBAT-010"],
+          "reason": "Unit type definitions helpful but can use placeholder logic"
+        },
+        {
+          "blocker": "REQ-RSCH-001",
+          "blockedSpecs": ["REQ-COMBAT-011"],
+          "reason": "Can hard-code tier unlocks initially; connect to research system later"
+        },
+        {
+          "blocker": "REQ-SYND-003",
+          "blockedSpecs": ["REQ-COMBAT-010"],
+          "reason": "Covert Strike flavor depends on Syndicate; mechanics work independently"
+        },
+        {
+          "blocker": "REQ-SEC-001",
+          "blockedSpecs": ["REQ-COMBAT-010"],
+          "reason": "Sector capture mechanics enhance but not required for battle types"
+        }
+      ]
+    },
+    "criticality": {
+      "mustHaveFirst": [
+        "REQ-COMBAT-001 - All other combat specs depend on D20 formula"
+      ],
+      "canParallelize": [
+        "REQ-COMBAT-003 (Defender Advantage) - Independent power bonus",
+        "REQ-COMBAT-007 (Protection Period) - Independent design rule",
+        "REQ-COMBAT-008 (Outcomes) - Can implement alongside REQ-COMBAT-001"
+      ],
+      "waitForDependencies": [
+        "REQ-COMBAT-004 (Unit Multipliers) - Requires REQ-MIL-001 from MILITARY system",
+        "REQ-COMBAT-009 (Multi-Domain) - Requires REQ-MIL-009 domain assignment",
+        "REQ-COMBAT-011 (Unit Tiers) - Requires REQ-MIL-001 base units"
+      ]
+    },
+    "integrationPoints": [
+      {
+        "system": "MILITARY",
+        "integrationSpecs": ["REQ-MIL-001", "REQ-MIL-002", "REQ-MIL-004", "REQ-MIL-006", "REQ-MIL-009"],
+        "reason": "COMBAT uses unit types, power multipliers, domain assignment from MILITARY. MILITARY specs reference COMBAT for power calculations."
+      },
+      {
+        "system": "RESEARCH",
+        "integrationSpecs": ["REQ-RSCH-001"],
+        "reason": "Unit tier unlocks (Tier II/III) depend on research progression"
+      },
+      {
+        "system": "SECTOR",
+        "integrationSpecs": ["REQ-SEC-001", "REQ-SEC-009", "REQ-SEC-010"],
+        "reason": "Full Invasions capture sectors; covert strikes damage infrastructure. SECTOR specs define sector destruction/capture"
+      },
+      {
+        "system": "SYNDICATE",
+        "integrationSpecs": ["REQ-SYND-003"],
+        "reason": "Covert Strikes can use Syndicate contracts as alternative to direct invasion"
+      },
+      {
+        "system": "TURN",
+        "integrationSpecs": ["REQ-TURN-001"],
+        "reason": "Combat resolution happens during turn processing; likely in dedicated combat phase"
+      },
+      {
+        "system": "BOT",
+        "integrationSpecs": ["REQ-BOT-002-01 through REQ-BOT-002-08"],
+        "reason": "Bot combat decisions depend on unit stats, combat outcomes, commander INT/WIS/CHA from COMBAT system"
+      },
+      {
+        "system": "RESOURCE",
+        "integrationSpecs": ["REQ-RES-001", "REQ-RES-005"],
+        "reason": "Unit maintenance costs depend on COMBAT-defined unit types; RESOURCE specs reference COMBAT for military costs"
+      }
+    ]
+  }
+}

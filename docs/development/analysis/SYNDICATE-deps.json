@@ -1,0 +1,486 @@
+{
+  "system": "SYNDICATE",
+  "file": "docs/Game Systems/SYNDICATE-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 12,
+  "specs": {
+    "REQ-SYND-001": {
+      "title": "Hidden Role Assignment",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec: assigns Loyalist/Syndicate roles at game start (90/10 split, archetype weighting). No dependencies—is a prerequisite for all other Syndicate specs."
+    },
+    "REQ-SYND-002": {
+      "title": "The Revelation Moment",
+      "dependencies": ["REQ-SYND-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Triggers at Turn 50 or first contract completion (REQ-SYND-003). Must verify Syndicate roles exist from REQ-SYND-001."
+        }
+      ],
+      "notes": "Narrative turning point: reveals Syndicate exists to all players. Unlocks accusation system (REQ-SYND-007) and activates Suspicious Activity Feed (REQ-SYND-012) for Loyalists."
+    },
+    "REQ-SYND-003": {
+      "title": "Syndicate Contract System",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-004", "REQ-SYND-006"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Only accessible to Syndicate players; assigned in REQ-SYND-001"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-004",
+          "reason": "Contracts are tier-gated by Trust level (REQ-SYND-004). Cannot unlock Tier 2+ contracts without trust progression."
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-006",
+          "reason": "Each contract generates suspicion (REQ-SYND-006). Suspicion calculations must be available before contracts complete."
+        }
+      ],
+      "notes": "3 active contracts at any time, tier-gated by Trust. Completing contract reveals new option. Contract effects visible in Suspicious Activity Feed (REQ-SYND-012). Triggers Revelation Moment if first completed before Turn 50 (REQ-SYND-002)."
+    },
+    "REQ-SYND-004": {
+      "title": "Trust Progression System",
+      "dependencies": ["REQ-SYND-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Trust only applies to Syndicate players; assigned in REQ-SYND-001"
+        }
+      ],
+      "notes": "8 levels (0-35,000 points) unlock Black Market tiers (REQ-SYND-005) and contract tiers (REQ-SYND-003). Earned via contracts, Black Market purchases, WMDs. Decays if inactive 10 turns."
+    },
+    "REQ-SYND-005": {
+      "title": "Black Market System",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-004"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Black Market exclusive to Syndicate players; Loyalists see denial message"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-004",
+          "reason": "All items gated by Trust level (1-8). WMDs (Trust 6+) gate restricted weapons."
+        }
+      ],
+      "notes": "Catalog: components, advanced systems, restricted weapons (WMDs), intelligence services. Prices are 1.25×-2.0× base depending on Trust. WMD purchases add 50 trust, increase suspicion (REQ-SYND-006) significantly."
+    },
+    "REQ-SYND-006": {
+      "title": "Suspicion System",
+      "dependencies": ["REQ-SYND-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Suspicion tracking applies to all empires; tracks Syndicate player detection risk"
+        }
+      ],
+      "notes": "Tracks per-empire suspicion (0-100). Affected by: contracts (15-100), Black Market purchases, WMD use. Triggers: bot accusations (>60), Coordinator monitoring (>75), higher accusation success (REQ-SYND-007). Can reduce via clean turns, alliances, charity."
+    },
+    "REQ-SYND-007": {
+      "title": "Accusation System",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-002", "REQ-SYND-006", "REQ-SYND-011"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Accusation trial determines if accused is Syndicate (assigned in REQ-SYND-001)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-002",
+          "reason": "Accusation system unlocks after Revelation Moment (Turn 50)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-006",
+          "reason": "Resolution affected by suspicion score; high suspicion increases guilty vote bias (+20%)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-011",
+          "reason": "Accuser must spend 25 Intel Points (from REQ-SYND-011) to create accusation"
+        }
+      ],
+      "notes": "Process: accuser spends 25 Intel Points, public announcement, voting 3 turns. Outcomes: Guilty+Syndicate = outed (loses hidden status, -25% trust), Guilty+Loyalist = false accusation (accuser penalized -10k cr, -20 standing), Innocent = no change. Outed Syndicate gains 'Desperate' status (+20% combat, -20% income)."
+    },
+    "REQ-SYND-008": {
+      "title": "The Coordinator (NPC Faction)",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-007", "REQ-SYND-011"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Coordinator validates if target is truly Syndicate; requires loyalty assignment"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-007",
+          "reason": "Coordinator standing affects accusation success; coordinates with accusation system"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-011",
+          "reason": "Coordinator reports cost 15 Intel Points (from REQ-SYND-011)"
+        }
+      ],
+      "notes": "Services: Intel Validation (15 Intel + 5k cr, reveals next contract if target is Syndicate), Protection (+10% funding), Whistleblower betrayal (+25k cr, +25% funding, but trust reset to 0, Black Market revoked, Syndicate hostile with 5% assassination per turn). Defector new victory: survive Turn 200."
+    },
+    "REQ-SYND-009": {
+      "title": "Syndicate Victory Conditions",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Victory only applies to Syndicate players; role assigned in REQ-SYND-001"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-003",
+          "reason": "Contract Mastery victory: complete 3 contracts (REQ-SYND-003). Chaos victory: 2+ contracts by Turn 200."
+        }
+      ],
+      "notes": "Three conditions: (1) Contract Mastery (3 contracts before Turn 200, hidden='Shadow Victory', outed='Defiant Victory'), (2) Chaos Victory (Turn 200 reached, 2+ contracts, no standard victory), (3) Perfect Game (3 contracts + never detected + 'Shadow Master' achievement). Victory screen reveals operative identity, contracts, suspicion survived, trust level."
+    },
+    "REQ-SYND-010": {
+      "title": "Bot Syndicate Integration",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-003", "REQ-SYND-004", "REQ-SYND-007", "REQ-SYND-011"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Bots assigned roles (50% Schemer Syndicate) in REQ-SYND-001"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-003",
+          "reason": "Syndicate bot decision logic: contract selection, stay-hidden priorities"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SYND-004",
+          "reason": "Bot decision logic can reference trust levels; not strictly required initially"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-007",
+          "reason": "Loyalist bot accusation logic: threshold-based (Diplomat >40 suspicion, Warlord >70, Turtle never)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-011",
+          "reason": "Bot uses Intel Points for accusations and investigations"
+        }
+      ],
+      "notes": "Syndicate bots prioritize low-suspicion contracts until 2 VP, then go for victory. Loyalist bots accuse based on archetype thresholds. Schemer paradox: 50% Syndicate/50% Loyalist creates permanent suspicion. 70+ message templates for events."
+    },
+    "REQ-SYND-011": {
+      "title": "Intel Point Economy",
+      "dependencies": ["REQ-SYND-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Intel Points apply to Loyalist players; Syndicate assignment in REQ-SYND-001"
+        }
+      ],
+      "notes": "Loyalist only: earn 5 Intel per turn (max 50 stored). Spend: Investigation (10 pts, reveals suspect links), Accusation (25 pts), Coordinator Report (15 pts). Bonuses: +10 pts per successful Coordinator report, +15 pts per successful accusation. Feeds into REQ-SYND-007 (accusation cost) and REQ-SYND-008 (Coordinator cost)."
+    },
+    "REQ-SYND-012": {
+      "title": "Suspicious Activity Feed",
+      "dependencies": ["REQ-SYND-001", "REQ-SYND-002", "REQ-SYND-003", "REQ-SYND-006"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-001",
+          "reason": "Feed only visible to Loyalist players; determined in REQ-SYND-001"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-002",
+          "reason": "Feed activates after Revelation Moment (Turn 50)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-003",
+          "reason": "Feed generated from contract effects (production drops, market crashes, etc.)"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SYND-006",
+          "reason": "Investigation reveals suspicion increase linked to event (from REQ-SYND-006 tracking)"
+        }
+      ],
+      "notes": "Shows unexplained events (production drops, market anomalies, accidents, Black Market activity). Event data: turn, affected empire, description. Investigation (10 Intel) reveals source, increases suspect suspicion. Generates Suspicious Activity from contract effects in REQ-SYND-003."
+    }
+  },
+  "summary": {
+    "totalDependencies": 23,
+    "intraSystemDependencies": 19,
+    "crossSystemDependencies": 4,
+    "hardBlockers": 21,
+    "softBlockers": 1,
+    "topDependedOnSpecs": [
+      "REQ-SYND-001 (Hidden Role Assignment) - depended on by 10 specs (all other SYNDICATE specs)",
+      "REQ-SYND-003 (Syndicate Contract System) - depended on by 3 specs (REQ-SYND-009, REQ-SYND-010, REQ-SYND-012)",
+      "REQ-SYND-006 (Suspicion System) - depended on by 3 specs (REQ-SYND-003, REQ-SYND-007, REQ-SYND-012)",
+      "REQ-SYND-007 (Accusation System) - depended on by 1 spec (REQ-SYND-008)",
+      "REQ-SYND-011 (Intel Point Economy) - depended on by 3 specs (REQ-SYND-007, REQ-SYND-008, REQ-SYND-010)"
+    ],
+    "crossSystemReferences": [
+      {
+        "toSystem": "VICTORY",
+        "count": 1,
+        "specs": [],
+        "reasons": ["REQ-SYND-009 mentions 'standard victory conditions' (see VICTORY-SYSTEMS.md)"]
+      },
+      {
+        "toSystem": "BOT",
+        "count": 1,
+        "specs": [],
+        "reasons": ["REQ-SYND-010 integrates with existing bot archetypes and messaging system"]
+      },
+      {
+        "toSystem": "RESEARCH",
+        "count": 1,
+        "specs": [],
+        "reasons": ["REQ-SYND-005 mentions Tech Espionage (15k cr) in Black Market, but no hard blocker"]
+      },
+      {
+        "toSystem": "MARKET",
+        "count": 1,
+        "specs": [],
+        "reasons": ["REQ-SYND-003 'Market Manipulation' contract, REQ-SYND-012 'market anomalies' in Activity Feed"]
+      }
+    ],
+    "implementationWaves": {
+      "wave0_foundations": [
+        "REQ-SYND-001"
+      ],
+      "wave1_core_systems": [
+        "REQ-SYND-004",
+        "REQ-SYND-005",
+        "REQ-SYND-006",
+        "REQ-SYND-011"
+      ],
+      "wave2_gameplay_mechanics": [
+        "REQ-SYND-003",
+        "REQ-SYND-012"
+      ],
+      "wave3_narrative_reveal": [
+        "REQ-SYND-002"
+      ],
+      "wave4_accusation_tribunal": [
+        "REQ-SYND-007",
+        "REQ-SYND-008"
+      ],
+      "wave5_victory_and_bots": [
+        "REQ-SYND-009",
+        "REQ-SYND-010"
+      ]
+    },
+    "criticalPath": [
+      {
+        "wave": 0,
+        "specs": ["REQ-SYND-001"],
+        "rationale": "Hidden Role Assignment is the foundational spec. All other SYNDICATE specs depend on role assignment. Must implement first."
+      },
+      {
+        "wave": 1,
+        "specs": ["REQ-SYND-004 (Trust), REQ-SYND-005 (Black Market), REQ-SYND-006 (Suspicion), REQ-SYND-011 (Intel)"],
+        "rationale": "Core economy systems. Trust gates contracts/Black Market, Suspicion impacts accusations, Intel drives Loyalist gameplay. These can be parallelized after Wave 0."
+      },
+      {
+        "wave": 2,
+        "specs": ["REQ-SYND-003 (Contracts), REQ-SYND-012 (Activity Feed)"],
+        "rationale": "Core gameplay loop. Contracts generate events visible in Activity Feed. Depends on Trust (REQ-SYND-004), Suspicion (REQ-SYND-006), roles (REQ-SYND-001)."
+      },
+      {
+        "wave": 3,
+        "specs": ["REQ-SYND-002 (Revelation)"],
+        "rationale": "Narrative turning point. Unlocks accusation system (Wave 4) and activates Suspicious Activity Feed (Wave 2). Triggers after contracts exist (Wave 2)."
+      },
+      {
+        "wave": 4,
+        "specs": ["REQ-SYND-007 (Accusations), REQ-SYND-008 (Coordinator)"],
+        "rationale": "High-stakes PvP mechanics. Depends on Revelation (Wave 3), Suspicion (Wave 1), Intel (Wave 1). Can be parallelized after Wave 3."
+      },
+      {
+        "wave": 5,
+        "specs": ["REQ-SYND-009 (Victory), REQ-SYND-010 (Bot AI)"],
+        "rationale": "End-game and bot integration. Victory checks contracts (Wave 2), Bot AI uses contracts/accusations (Waves 2, 4). Can be parallelized after all prerequisites complete."
+      }
+    ],
+    "blockingDependencies": {
+      "REQ-SYND-001": "Blocks: All 11 other SYNDICATE specs (REQ-SYND-002 through REQ-SYND-012) - foundational",
+      "REQ-SYND-002": "Blocks: REQ-SYND-007 (accusation system unlocks), REQ-SYND-012 (Activity Feed activates)",
+      "REQ-SYND-003": "Blocks: REQ-SYND-009 (contract completion), REQ-SYND-010 (bot contract logic), REQ-SYND-012 (feeds events)",
+      "REQ-SYND-004": "Blocks: REQ-SYND-003 (tier gating), REQ-SYND-005 (trust gates items)",
+      "REQ-SYND-006": "Blocks: REQ-SYND-003 (suspicion generation), REQ-SYND-007 (accusation success bias), REQ-SYND-012 (investigation reveals suspicion)",
+      "REQ-SYND-011": "Blocks: REQ-SYND-007 (accusation cost 25 Intel), REQ-SYND-008 (report cost 15 Intel), REQ-SYND-010 (bot decisions)"
+    },
+    "externalDependencies": {
+      "VICTORY-SYSTEMS": {
+        "type": "SOFT",
+        "reason": "REQ-SYND-009 mentions 'standard victory conditions' for Loyalists (Conquest, Economic, Research, Military, Coalition, Survival). Syndicate Victory is alternative path, not blocking implementation but needed for context."
+      },
+      "BOT-SYSTEM": {
+        "type": "SOFT",
+        "reason": "REQ-SYND-010 integrates with existing bot archetypes, messaging system, and decision logic. Can be implemented if bot system exists; bots default to non-Syndicate if system not ready."
+      },
+      "MARKET-SYSTEM": {
+        "type": "SOFT",
+        "reason": "REQ-SYND-003 'Market Manipulation' contract, REQ-SYND-012 'market anomalies' assume market system exists. Can substitute with simplified market if needed."
+      },
+      "RESEARCH-SYSTEM": {
+        "type": "SOFT",
+        "reason": "REQ-SYND-005 Black Market includes 'Research Espionage' (5k cr). Optional for initial implementation."
+      }
+    },
+    "notesOnArchitecture": [
+      "REQ-SYND-001 (Hidden Role Assignment) is the single point of failure. All other specs depend on it. Implementation MUST ensure roles are assigned before any other Syndicate logic runs.",
+      "SYNDICATE system is largely self-contained: 19 of 23 dependencies are intra-system (within SYNDICATE). Only 4 soft external dependencies (VICTORY, BOT, MARKET, RESEARCH).",
+      "Trust progression (REQ-SYND-004) is the 'currency' that gates access to Black Market (REQ-SYND-005) and contracts (REQ-SYND-003). It's the primary progression system for Syndicate players.",
+      "Suspicion system (REQ-SYND-006) is the primary risk metric. Affects contract generation, accusation success, bot behavior (REQ-SYND-010), and intel investigations.",
+      "Intel Points (REQ-SYND-011) are the primary currency for Loyalist gameplay: investigation, accusations, Coordinator reports.",
+      "Accusation System (REQ-SYND-007) and Coordinator (REQ-SYND-008) are the PvP mechanics that create drama and tension.",
+      "Activity Feed (REQ-SYND-012) is the information bridge: shows contract effects to Loyalists without revealing source (until investigation).",
+      "Bot Integration (REQ-SYND-010) depends on most other SYNDICATE specs being implemented first for realistic AI behavior."
+    ],
+    "implementationComplexity": {
+      "REQ-SYND-001": "Low - Simple role assignment at game start. Probabilistic distribution (90/10 split, archetype weighting).",
+      "REQ-SYND-002": "Low - Single event trigger, modal display, system unlock.",
+      "REQ-SYND-003": "High - Contract generation, tier gating, completion tracking, effect application, Suspicious Activity generation.",
+      "REQ-SYND-004": "Medium - Trust level tracking, exponential thresholds, decay calculation.",
+      "REQ-SYND-005": "Medium - Item catalog, price multiplier calculation, access control, purchase tracking.",
+      "REQ-SYND-006": "Medium - Suspicion scoring formula, threshold triggers, reduction mechanics.",
+      "REQ-SYND-007": "High - Accusation workflow, voting system, resolution logic with outcome branches, trial UI.",
+      "REQ-SYND-008": "Medium - NPC faction logic, report validation, betrayal consequences.",
+      "REQ-SYND-009": "Medium - Victory condition checks, achievement unlocking, end-game narrative screen.",
+      "REQ-SYND-010": "Very High - Archetype-specific AI decision trees, message templates (70+), accusation logic, voting strategy.",
+      "REQ-SYND-011": "Low - Simple Intel point accumulation, spending, capping, bonus awards.",
+      "REQ-SYND-012": "Medium - Event generation from contracts, investigation mechanics, source revelation."
+    },
+    "riskFactors": [
+      {
+        "risk": "REQ-SYND-001 Design Flaw",
+        "impact": "HIGH",
+        "mitigation": "If role distribution (90/10) creates poor game feel, entire system cascades. Recommend pre-playtesting with distribution variations (85/15, 80/20) before implementation."
+      },
+      {
+        "risk": "Suspicion Formula Imbalance",
+        "impact": "HIGH",
+        "mitigation": "REQ-SYND-006 drives accusation success (REQ-SYND-007) and bot behavior (REQ-SYND-010). If suspicion inflation/deflation broken, entire PvP system fails. Requires extensive tuning."
+      },
+      {
+        "risk": "Bot Integration Complexity",
+        "impact": "MEDIUM",
+        "mitigation": "REQ-SYND-010 is highest complexity spec (Very High). Recommend implementing without bots initially, add bot AI in post-Beta phase."
+      },
+      {
+        "risk": "Accusation Meta-Gaming",
+        "impact": "MEDIUM",
+        "mitigation": "REQ-SYND-007 (accusations) + REQ-SYND-008 (Coordinator reports) could be exploited by players to coordinate false accusations. Recommend monitoring and potential cooldown mechanics."
+      },
+      {
+        "risk": "Cross-System Coupling",
+        "impact": "MEDIUM",
+        "mitigation": "Market Manipulation (REQ-SYND-003) and other contracts assume external systems exist. If MARKET-SYSTEM not implemented, contracts fail. Recommend stub implementations of external systems."
+      }
+    ],
+    "recommendedImplementationOrder": [
+      {
+        "order": 1,
+        "spec": "REQ-SYND-001",
+        "estimatedHours": 4,
+        "rationale": "Foundational. Must implement first before any other SYNDICATE logic."
+      },
+      {
+        "order": 2,
+        "spec": "REQ-SYND-004",
+        "estimatedHours": 6,
+        "rationale": "Trust is the core progression system for Syndicate players. Unlock Black Market (REQ-SYND-005) and contracts (REQ-SYND-003)."
+      },
+      {
+        "order": 3,
+        "spec": "REQ-SYND-006",
+        "estimatedHours": 8,
+        "rationale": "Suspicion system affects contracts, accusations, bots. Must implement before gameplay mechanics can proceed."
+      },
+      {
+        "order": 4,
+        "spec": "REQ-SYND-011",
+        "estimatedHours": 4,
+        "rationale": "Intel Points for Loyalists. Simple to implement, enables accusation system (REQ-SYND-007)."
+      },
+      {
+        "order": 5,
+        "spec": "REQ-SYND-005",
+        "estimatedHours": 8,
+        "rationale": "Black Market. Depends on Trust (REQ-SYND-004). Provides Syndicate players resource/power advantage."
+      },
+      {
+        "order": 6,
+        "spec": "REQ-SYND-003",
+        "estimatedHours": 12,
+        "rationale": "Contracts. Core gameplay loop for Syndicate players. Highest complexity in implementation (contract generation, effects, completion, rewards)."
+      },
+      {
+        "order": 7,
+        "spec": "REQ-SYND-012",
+        "estimatedHours": 8,
+        "rationale": "Activity Feed. Depends on contract effects (REQ-SYND-003). Provides information to Loyalists."
+      },
+      {
+        "order": 8,
+        "spec": "REQ-SYND-002",
+        "estimatedHours": 4,
+        "rationale": "Revelation Moment. Narrative event. Unlocks accusation system (REQ-SYND-007)."
+      },
+      {
+        "order": 9,
+        "spec": "REQ-SYND-007",
+        "estimatedHours": 16,
+        "rationale": "Accusation System. High complexity (voting, resolution branches, UI). Depends on Revelation (REQ-SYND-002)."
+      },
+      {
+        "order": 10,
+        "spec": "REQ-SYND-008",
+        "estimatedHours": 8,
+        "rationale": "Coordinator NPC. Depends on Accusation System (REQ-SYND-007). Provides late-game options."
+      },
+      {
+        "order": 11,
+        "spec": "REQ-SYND-009",
+        "estimatedHours": 8,
+        "rationale": "Victory Conditions. Depends on contracts (REQ-SYND-003). End-game condition checking and narrative screen."
+      },
+      {
+        "order": 12,
+        "spec": "REQ-SYND-010",
+        "estimatedHours": 40,
+        "rationale": "Bot Integration. Highest complexity. Recommend implementing late, after all player-facing systems stable. Can parallelize message templates with other specs."
+      }
+    ],
+    "estimatedTotalHours": 128,
+    "implementationNotes": [
+      "REQ-SYND-001 (Hidden Role Assignment) has zero internal dependencies and is blocking all other specs. This is a unique architecture that creates a tree of dependencies rooted in role assignment.",
+      "Waves can be parallelized more aggressively than suggested if multiple developers available. Wave 1 core systems (REQ-SYND-004, 005, 006, 011) are independently implementable after Wave 0.",
+      "REQ-SYND-003 (Contracts) and REQ-SYND-012 (Activity Feed) are tightly coupled but can be implemented with stubs (e.g., Activity Feed can stub contract effects until REQ-SYND-003 complete).",
+      "REQ-SYND-010 (Bot Integration) is recommended as post-Beta work due to very high complexity (40 estimated hours). Can launch without sophisticated bot AI, add dramatic bot behavior in later patch.",
+      "SYNDICATE system has minimal external dependencies compared to VICTORY system. Only 4 soft cross-system references (VICTORY, BOT, MARKET, RESEARCH).",
+      "Hard blockers: 21/23 dependencies are HARD, indicating SYNDICATE specs are very interdependent. System must be implemented as coherent unit, not piecemeal.",
+      "Total complexity: 128 estimated hours. Recommend 3-4 weeks for two developers working in parallel (Wave 0: 1 dev, Waves 1-2: both devs parallel, Waves 3-4: both devs sequential, Wave 5: 1 dev with other features).",
+      "Testing strategy: Unit tests for Trust, Suspicion, Intel Point calculations (Waves 0-1). Integration tests for Contract workflow, Accusations, Victory checks (Waves 2-4). E2E tests for full game with Syndicate player (Waves 5-6)."
+    ]
+  }
+}

@@ -1,0 +1,334 @@
+{
+  "system": "MARKET",
+  "file": "docs/Game Systems/MARKET-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 12,
+  "specs": {
+    "REQ-MKT-001": {
+      "title": "Resource Trading",
+      "dependencies": ["REQ-RES-001", "REQ-RES-008"],
+      "blockers": [],
+      "notes": "Foundational spec - enables buy/sell mechanics. Requires resource types and storage. No hard blockers."
+    },
+    "REQ-MKT-002": {
+      "title": "Dynamic Pricing",
+      "dependencies": ["REQ-RES-001", "REQ-MKT-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-MKT-001",
+          "reason": "Pricing calculation is independent but benefits from transaction history; can be implemented with synthetic data initially"
+        }
+      ],
+      "notes": "Price formula: Base × Supply Modifier × Demand Modifier × Event Modifier × Leader Penalty. Requires resource types and market history tracking."
+    },
+    "REQ-MKT-003": {
+      "title": "Transaction Fees",
+      "dependencies": ["REQ-RES-001", "REQ-MKT-001", "REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-002",
+          "reason": "Commerce Tier 2 research provides -2% discount; can skip research bonus initially, just implement 2% buy / 5% sell fees"
+        }
+      ],
+      "notes": "Buy fee 2% (min 100), Sell fee 5% (min 250), Bulk discount -1% per 10k units (max -3%), Research bonus -2%. Fees can be implemented standalone."
+    },
+    "REQ-MKT-004": {
+      "title": "Market Limits",
+      "dependencies": ["REQ-RES-001", "REQ-RES-002", "REQ-MKT-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-002",
+          "reason": "Reserve requirement (10% of sector production) requires sector production calculation"
+        }
+      ],
+      "notes": "Max transaction 50k units/turn, reserve requirement 10% of production, price floor 50% base, ceiling 200% base. Critical dependency on sector production system."
+    },
+    "REQ-MKT-005": {
+      "title": "Market Events",
+      "dependencies": ["REQ-MKT-002"],
+      "blockers": [],
+      "notes": "Random events (Bumper Harvest, Famine, Ore Shortage, etc.) trigger 1-4% per turn, lasting 8-20 turns, modifying prices by ±15% to ±40%. Can be implemented independently."
+    },
+    "REQ-MKT-006": {
+      "title": "Anti-Snowball Leader Penalty",
+      "dependencies": ["REQ-MKT-002", "REQ-VIC-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-VIC-001",
+          "reason": "Requires Victory Point (VP) tracking system to determine if empire has 7+ VP for penalty application"
+        }
+      ],
+      "notes": "Empires with 7+ VP pay 1.2× multiplier on buy prices only. Hard dependency on VP tracking system."
+    },
+    "REQ-MKT-007": {
+      "title": "Merchant Market Insight",
+      "dependencies": ["REQ-MKT-002", "REQ-BOT-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-001",
+          "reason": "Merchant archetype passive ability requires bot archetype system definition"
+        }
+      ],
+      "notes": "Merchant sees next turn predictions (±10%), large bot orders (>10k units), upcoming events (50% chance, 2 turns early). Requires bot system."
+    },
+    "REQ-MKT-008": {
+      "title": "Bot Archetype Trading",
+      "dependencies": ["REQ-MKT-001", "REQ-MKT-002", "REQ-BOT-001", "REQ-MIL-001", "REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-001",
+          "reason": "Requires bot archetype definitions (Merchant, Warlord, Turtle, Schemer, etc.) and trading priority system"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-MIL-001",
+          "reason": "Warlord bot buys Ore 2 turns before attacks; requires military system and attack planning"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-001",
+          "reason": "Bot decisions depend on sector analysis; can use simple heuristics without detailed sector info"
+        }
+      ],
+      "notes": "Each archetype has distinct trading behavior. Hard blockers on bot system and military attack planning."
+    },
+    "REQ-MKT-009": {
+      "title": "Market History & Transparency",
+      "dependencies": ["REQ-MKT-001", "REQ-MKT-007"],
+      "blockers": [],
+      "notes": "Public: current prices, 20-turn history, active events, market volume. Private (Merchant only): predictions, large orders, event detection. Can be implemented independently."
+    },
+    "REQ-MKT-010": {
+      "title": "Base Resource Prices",
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [],
+      "notes": "Food 30 cr/unit, Ore 50 cr/unit, Petroleum 80 cr/unit. Foundational constants. No blockers."
+    },
+    "REQ-MKT-011": {
+      "title": "Commerce Research Integration",
+      "dependencies": ["REQ-MKT-003", "REQ-RSCH-002"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RSCH-002",
+          "reason": "Requires Commerce tech tree with Tier 2 unlock definition and tracking"
+        }
+      ],
+      "notes": "Commerce Tier 2 provides -2% fee discount. Hard dependency on research system."
+    },
+    "REQ-MKT-012": {
+      "title": "Market UI Real-Time Updates",
+      "dependencies": ["REQ-MKT-002", "REQ-MKT-005"],
+      "blockers": [],
+      "notes": "Dashboard updates every 30s, line graphs animate smoothly, modals calculate dynamically. Can be implemented independently once market data exists."
+    }
+  },
+  "summary": {
+    "totalDependencies": 24,
+    "intraSystemDependencies": 12,
+    "crossSystemDependencies": 12,
+    "hardBlockers": 6,
+    "softBlockers": 5,
+    "topDependedOnSpecs": [
+      "REQ-MKT-002 (depended on by 5 specs)",
+      "REQ-MKT-001 (depended on by 5 specs)",
+      "REQ-RES-001 (depended on by 4 specs)",
+      "REQ-BOT-001 (depended on by 2 specs)"
+    ],
+    "crossSystemReferences": [
+      { "toSystem": "RESOURCE", "count": 3, "specs": ["REQ-RES-001", "REQ-RES-002", "REQ-RES-008"] },
+      { "toSystem": "SECTOR", "count": 2, "specs": ["REQ-SEC-001"] },
+      { "toSystem": "BOT", "count": 2, "specs": ["REQ-BOT-001"] },
+      { "toSystem": "VICTORY", "count": 1, "specs": ["REQ-VIC-001"] },
+      { "toSystem": "RESEARCH", "count": 1, "specs": ["REQ-RSCH-002"] },
+      { "toSystem": "MILITARY", "count": 1, "specs": ["REQ-MIL-001"] }
+    ],
+    "criticalDependencyChain": [
+      "REQ-RES-001 → REQ-MKT-001 → REQ-MKT-002 → REQ-MKT-005/006/012",
+      "REQ-RES-002 → REQ-MKT-004 (reserve requirement calculation)",
+      "REQ-BOT-001 → REQ-MKT-007/008 (archetype-specific trading)",
+      "REQ-VIC-001 → REQ-MKT-006 (leader penalty anti-snowball)",
+      "REQ-RSCH-002 → REQ-MKT-003/011 (Commerce Tier 2 discount)"
+    ],
+    "implementationWaves": {
+      "wave0_foundations": [
+        "REQ-MKT-010",
+        "REQ-MKT-001"
+      ],
+      "wave1_pricing_and_fees": [
+        "REQ-MKT-002",
+        "REQ-MKT-003",
+        "REQ-MKT-009"
+      ],
+      "wave2_market_mechanics": [
+        "REQ-MKT-004",
+        "REQ-MKT-005"
+      ],
+      "wave3_advanced_features": [
+        "REQ-MKT-006",
+        "REQ-MKT-007",
+        "REQ-MKT-011"
+      ],
+      "wave4_bot_integration": [
+        "REQ-MKT-008"
+      ],
+      "wave5_ui_and_polish": [
+        "REQ-MKT-012"
+      ]
+    },
+    "blockerAnalysis": {
+      "hardBlockers": [
+        {
+          "blocker": "REQ-RES-002",
+          "blocking": ["REQ-MKT-004"],
+          "reason": "Reserve requirement formula depends on sector production rates"
+        },
+        {
+          "blocker": "REQ-VIC-001",
+          "blocking": ["REQ-MKT-006"],
+          "reason": "Leader penalty requires VP tracking and threshold checking (7+ VP)"
+        },
+        {
+          "blocker": "REQ-BOT-001",
+          "blocking": ["REQ-MKT-007", "REQ-MKT-008"],
+          "reason": "Merchant passive and archetype-specific trading behaviors require bot system definition"
+        },
+        {
+          "blocker": "REQ-MIL-001",
+          "blocking": ["REQ-MKT-008"],
+          "reason": "Warlord bot trading depends on military attack planning (2-turn advance purchase)"
+        },
+        {
+          "blocker": "REQ-RSCH-002",
+          "blocking": ["REQ-MKT-003", "REQ-MKT-011"],
+          "reason": "Commerce research Tier 2 provides fee discount; must be defined before implementation"
+        }
+      ],
+      "softBlockers": [
+        {
+          "blocker": "REQ-MKT-001",
+          "blocking": ["REQ-MKT-002"],
+          "reason": "Can implement pricing with synthetic transaction history initially"
+        },
+        {
+          "blocker": "REQ-RSCH-002",
+          "blocking": ["REQ-MKT-003"],
+          "reason": "Can implement base fees without research bonus, add bonus later"
+        },
+        {
+          "blocker": "REQ-SEC-001",
+          "blocking": ["REQ-MKT-008"],
+          "reason": "Can implement bot trading with simple heuristics without detailed sector analysis"
+        }
+      ]
+    },
+    "recommendedImplementationPath": [
+      {
+        "phase": 1,
+        "name": "Foundation Setup",
+        "specs": ["REQ-MKT-010", "REQ-MKT-001"],
+        "duration": "M12",
+        "prerequisites": ["REQ-RES-001"],
+        "deliverables": ["Constants for base prices", "Buy/sell transaction logic", "Market history tracking"]
+      },
+      {
+        "phase": 2,
+        "name": "Pricing Engine",
+        "specs": ["REQ-MKT-002", "REQ-MKT-003", "REQ-MKT-009"],
+        "duration": "M12",
+        "prerequisites": ["REQ-MKT-001"],
+        "deliverables": ["Dynamic price calculation", "Fee calculation", "Market history retrieval"]
+      },
+      {
+        "phase": 3,
+        "name": "Market Mechanics",
+        "specs": ["REQ-MKT-004", "REQ-MKT-005"],
+        "duration": "M13",
+        "prerequisites": ["REQ-RES-002 (soft), REQ-MKT-002"],
+        "deliverables": ["Transaction limits & validation", "Market events system", "Event triggering & effects"]
+      },
+      {
+        "phase": 4,
+        "name": "Advanced Features",
+        "specs": ["REQ-MKT-006", "REQ-MKT-007", "REQ-MKT-011"],
+        "duration": "M14-M15",
+        "prerequisites": ["REQ-VIC-001, REQ-BOT-001, REQ-RSCH-002"],
+        "deliverables": ["Leader penalty calculation", "Merchant Insight predictions", "Research discount integration"]
+      },
+      {
+        "phase": 5,
+        "name": "Bot Integration",
+        "specs": ["REQ-MKT-008"],
+        "duration": "M15",
+        "prerequisites": ["REQ-BOT-001, REQ-MIL-001"],
+        "deliverables": ["Per-archetype trading logic", "Decision trees", "Transaction execution"]
+      },
+      {
+        "phase": 6,
+        "name": "UI & Polish",
+        "specs": ["REQ-MKT-012"],
+        "duration": "M16",
+        "prerequisites": ["All market systems"],
+        "deliverables": ["Market dashboard", "Buy/sell modals", "Real-time updates"]
+      }
+    ],
+    "riskAssessment": {
+      "highRisk": [
+        {
+          "spec": "REQ-MKT-008",
+          "risk": "Bot archetype trading behavior complexity",
+          "mitigation": "Implement simplified AI decision trees first, add sophistication iteratively based on playtesting"
+        },
+        {
+          "spec": "REQ-MKT-006",
+          "risk": "Anti-snowball balancing may be contentious with winning players",
+          "mitigation": "Playtest extensively, consider adjustable multiplier (1.1x to 1.3x) for balance"
+        }
+      ],
+      "mediumRisk": [
+        {
+          "spec": "REQ-MKT-005",
+          "risk": "Market events RNG may feel unfair if impactful",
+          "mitigation": "Display event predictions, allow players to prepare; ensure events are announced 1-2 turns before impact"
+        },
+        {
+          "spec": "REQ-MKT-007",
+          "risk": "Merchant prediction accuracy tuning (±10%) may be too forgiving or too harsh",
+          "mitigation": "Playtesting to verify Merchants achieve 18-22% win rate target"
+        }
+      ],
+      "lowRisk": [
+        {
+          "spec": "REQ-MKT-002",
+          "risk": "Price calculation formula complexity",
+          "mitigation": "Well-specified formula; implement with comprehensive unit tests"
+        }
+      ]
+    },
+    "testingRequirements": {
+      "unitTests": [
+        { "spec": "REQ-MKT-002", "file": "src/lib/market/__tests__/pricing.test.ts", "cases": ["Supply modifier calc", "Demand modifier calc", "Event modifier application", "Leader penalty application", "Price clamping"] },
+        { "spec": "REQ-MKT-003", "file": "src/lib/market/__tests__/fees.test.ts", "cases": ["Buy fee calculation", "Sell fee calculation", "Bulk discount application", "Research discount stacking", "Minimum fee enforcement"] },
+        { "spec": "REQ-MKT-004", "file": "src/lib/market/__tests__/limits.test.ts", "cases": ["Max transaction validation", "Reserve requirement calculation", "Reserve enforcement on sales", "Price floor/ceiling clamping"] },
+        { "spec": "REQ-MKT-005", "file": "src/lib/market/__tests__/events.test.ts", "cases": ["Event triggering RNG", "Event duration tracking", "Multiple event exclusion", "Event modifier application"] },
+        { "spec": "REQ-MKT-001", "file": "src/lib/market/__tests__/market-service.test.ts", "cases": ["Buy transaction execution", "Sell transaction execution", "Insufficient credit rejection", "Insufficient resource rejection"] }
+      ],
+      "integrationTests": [
+        { "spec": "REQ-MKT-008", "file": "src/lib/bots/__tests__/market-behavior.test.ts", "cases": ["Merchant archetype trading", "Warlord pre-attack purchasing", "Turtle defensive stockpiling", "Schemer price manipulation"] },
+        { "spec": "REQ-MKT-006", "file": "src/lib/market/__tests__/leader-penalty.test.ts", "cases": ["7+ VP penalty application", "VP threshold transitions", "Buy price only penalty", "No sell price penalty"] }
+      ],
+      "balanceTests": [
+        "Monte Carlo simulation: 10,000 game iterations, 100 empires, 200 turns each",
+        "Merchant archetype win rate: target 18-22% Economic victory wins",
+        "Price volatility: ±15% per turn average, ±30% extreme swings",
+        "Bot market participation: 40-60% of total transaction volume"
+      ]
+    }
+  }
+}

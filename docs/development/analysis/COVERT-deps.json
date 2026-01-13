@@ -1,0 +1,189 @@
+{
+  "system": "COVERT",
+  "file": "docs/Game Systems/COVERT-OPS-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 12,
+  "specs": {
+    "REQ-COV-001": {
+      "title": "Ten Operation Types",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines 10 covert operation types (Reconnaissance, Steal Credits, Steal Research, Sabotage Production, Incite Rebellion, Assassinate Leader, Steal Military Plans, Sabotage Infrastructure, Frame Another Empire, Recruit Defectors). No dependencies."
+    },
+    "REQ-COV-002": {
+      "title": "Reconnaissance Intel Levels",
+      "dependencies": ["REQ-COV-001"],
+      "blockers": [],
+      "notes": "Defines 4 intel levels (0-3) with progressive information revelation. Intel decays by 1 level every 20 turns. Soft dependency on turn processor for decay timing but can be implemented standalone."
+    },
+    "REQ-COV-003": {
+      "title": "Success Rate Formula",
+      "dependencies": ["REQ-COV-001", "REQ-COV-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COV-002",
+          "reason": "Success formula uses Intel Level modifier; can hardcode Intel Level 0 initially"
+        }
+      ],
+      "notes": "Base 60% success rate with modifiers for agent counts, intel level, security research, archetype bonuses, distance. Clamped between 15-85%."
+    },
+    "REQ-COV-004": {
+      "title": "Detection Mechanics",
+      "dependencies": ["REQ-COV-001", "REQ-COV-002", "REQ-DIP-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-DIP-001",
+          "reason": "Detection results in reputation changes, diplomatic incidents, and potential war declarations. Requires reputation system."
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COV-002",
+          "reason": "Detection formula uses Intel Level; can hardcode initial Intel Level"
+        }
+      ],
+      "notes": "Separate detection roll from success. Detection base risk per operation, modified by intel, target agents, target security, archetype. Results in -15 reputation, reparations demands, or retaliation options."
+    },
+    "REQ-COV-005": {
+      "title": "Agent Economy",
+      "dependencies": ["REQ-SEC-001", "REQ-RES-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Agent production comes from Government sector type. Requires sector type definitions and sector tracking."
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-001",
+          "reason": "Agents are a resource produced and consumed. Requires resource management framework."
+        }
+      ],
+      "notes": "Government sectors produce 300 agents/turn. Agents accumulate in pool with no cap. Operations consume agents. Schemer archetype gets 50% cost reduction via Shadow Network passive."
+    },
+    "REQ-COV-006": {
+      "title": "Phase 5 Processing Order",
+      "dependencies": ["REQ-COV-001", "REQ-COV-003", "REQ-COV-004", "REQ-COV-005"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-COV-003",
+          "reason": "Phase 5 processing must resolve success/failure for each operation"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-COV-004",
+          "reason": "Phase 5 processing must resolve detection and diplomatic consequences"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-COV-005",
+          "reason": "Phase 5 processing must deduct agent costs from pools"
+        }
+      ],
+      "notes": "Covert ops processed in Phase 5 (between Diplomacy Phase 4 and Combat Phase 6). Operations processed in reverse empire strength order (strongest first) to balance weak-first combat advantage."
+    },
+    "REQ-COV-007": {
+      "title": "Steal Credits Operation",
+      "dependencies": ["REQ-COV-001", "REQ-COV-003", "REQ-COV-004", "REQ-RES-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RES-001",
+          "reason": "Must transfer credits between empires. Requires resource management system."
+        }
+      ],
+      "notes": "Cost: 200 agents. Steals 5-15% of target credits (1d10+5 roll). Capped at 100k credits. Detection risk: 25% base. Auto-fails if target has <10k credits (50% agent refund)."
+    },
+    "REQ-COV-008": {
+      "title": "Schemer Archetype Integration",
+      "dependencies": ["REQ-COV-001", "REQ-COV-005", "REQ-ARCH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-ARCH-001",
+          "reason": "Schemer archetype must be defined with covert priority 0.9 and Shadow Network passive (50% agent cost reduction)."
+        }
+      ],
+      "notes": "Schemer has highest covert priority (0.9). Shadow Network passive reduces all operation costs by 50%. Builds 3-5 Government sectors by Turn 30. Launches 2-3 operations per turn when unlocked. Prioritizes high-impact ops (Assassinate, Frame, Recruit Defectors)."
+    },
+    "REQ-COV-009": {
+      "title": "Assassinate Leader Operation",
+      "dependencies": ["REQ-COV-001", "REQ-COV-003", "REQ-COV-004"],
+      "blockers": [],
+      "notes": "Cost: 400 agents. Reduces all target stats by 10% for 5 turns. Detection risk: 50% base. Unlocks at Turn 30. Cannot stack multiple assassinations on same empire. Requires effect system to track temporary stat penalties."
+    },
+    "REQ-COV-010": {
+      "title": "Frame Another Empire Operation",
+      "dependencies": ["REQ-COV-001", "REQ-COV-003", "REQ-COV-004", "REQ-DIP-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-DIP-001",
+          "reason": "Framing creates false diplomatic incidents. Target's reputation with blamed empire drops -15. If detected, perpetrator takes -20 reputation hit with both empires. Requires reputation system and incident resolution."
+        }
+      ],
+      "notes": "Cost: 300 agents. Detection risk: 35% base. Unlocks at Turn 30. Makes target believe Empire X attacked them. Requires Empire X to be known to target (same sector, adjacent, or wormhole-connected). Cannot frame enemy during active war."
+    },
+    "REQ-COV-011": {
+      "title": "Intel Decay System",
+      "dependencies": ["REQ-COV-002"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-COV-002",
+          "reason": "Decay logic depends on intel level tracking; can hardcode decay timing"
+        }
+      ],
+      "notes": "Intel levels decay by 1 every 20 turns. Prevents one-time reconnaissance from providing permanent intel. Players must perform reconnaissance periodically to maintain current intelligence."
+    },
+    "REQ-COV-012": {
+      "title": "Operation Failure Resource Refunds",
+      "dependencies": ["REQ-COV-001", "REQ-COV-005", "REQ-RES-001"],
+      "blockers": [],
+      "notes": "Auto-fail thresholds: Steal Credits (<10k target credits), Steal Research (<500 RP banked), Recruit Defectors (<10k population). 50% of agent cost refunded on auto-fail. Prevents player frustration from wasting agents on impossible operations."
+    }
+  },
+  "summary": {
+    "totalDependencies": 24,
+    "intraSystemDependencies": 14,
+    "crossSystemDependencies": 10,
+    "hardBlockers": 9,
+    "softBlockers": 4,
+    "topDependedOnSpecs": [
+      "REQ-COV-001 (depended on by 9 specs)",
+      "REQ-COV-003 (depended on by 5 specs)",
+      "REQ-COV-004 (depended on by 4 specs)",
+      "REQ-COV-005 (depended on by 3 specs)"
+    ],
+    "crossSystemReferences": [
+      { "toSystem": "SECTOR", "count": 1, "specs": ["REQ-SEC-001"], "reason": "Government sector type definition for agent production" },
+      { "toSystem": "RESOURCE", "count": 3, "specs": ["REQ-RES-001"], "reason": "Agent resource type and credit transfers" },
+      { "toSystem": "DIPLOMACY", "count": 2, "specs": ["REQ-DIP-001"], "reason": "Reputation system, incidents, incident resolution for detection consequences and framing" },
+      { "toSystem": "ARCHETYPE", "count": 1, "specs": ["REQ-ARCH-001"], "reason": "Schemer archetype definition with Shadow Network passive and covert priority" }
+    ],
+    "implementationWaves": {
+      "wave0_foundations": ["REQ-COV-001"],
+      "wave1_basic_mechanics": ["REQ-COV-003", "REQ-COV-004", "REQ-COV-002"],
+      "wave2_economy_and_integration": ["REQ-COV-005", "REQ-COV-006", "REQ-COV-012"],
+      "wave3_operations": ["REQ-COV-007", "REQ-COV-009", "REQ-COV-010"],
+      "wave4_specialist_and_advanced": ["REQ-COV-008", "REQ-COV-011"]
+    },
+    "criticalPath": [
+      "REQ-COV-001 (Define operation types)",
+      "REQ-COV-003 (Success rate formula)",
+      "REQ-COV-004 (Detection mechanics)",
+      "REQ-COV-005 (Agent economy)",
+      "REQ-COV-006 (Phase 5 processing)"
+    ],
+    "implementationNotes": {
+      "hardBlockerAnalysis": "System has 9 hard blockers distributed across SECTOR (1), RESOURCE (2), DIPLOMACY (2), and ARCHETYPE (1). Most critical blocker is REQ-DIP-001 (used by 2 specs: Detection and Framing). REQ-SEC-001 and REQ-RES-001 must be fully implemented before agent economy can work.",
+      "softBlockerAnalysis": "4 soft blockers are all optional optimizations. Intel decay and success formula can work with hardcoded Intel Level 0 initially. All soft blockers can be addressed post-v1.0.",
+      "readinessIndicators": "COVERT system is medium-dependency. Cannot start implementation until SECTOR and RESOURCE systems are mature. DIPLOMACY system required for meaningful detection consequences. ARCHETYPE system required for Schemer-specific mechanics.",
+      "phaseRecommendation": "Implement in wave order: (0) Define 10 ops, (1) Core formulas, (2) Agent economy + queue, (3) Individual operations, (4) Schemer + decay. This sequence ensures foundation before dependencies.",
+      "testingStrategy": "Unit tests for Waves 0-1 can run independently. Wave 2+ require mocks/stubs for cross-system dependencies. Integration tests for Waves 3-4 require full RESOURCE, SECTOR, DIPLOMACY systems.",
+      "riskFactors": "High risk if DIPLOMACY system changes reputation mechanics (affects REQ-COV-004, REQ-COV-010). Medium risk if SECTOR adds new types changing Government sector definition. Low risk if ARCHETYPE adds new archetypes (backward compatible with Schemer)."
+    }
+  }
+}

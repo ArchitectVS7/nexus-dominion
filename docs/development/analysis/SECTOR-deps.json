@@ -1,0 +1,145 @@
+{
+  "system": "SECTOR",
+  "file": "docs/Game Systems/SECTOR-MANAGEMENT-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 11,
+  "specs": {
+    "REQ-SEC-001": {
+      "title": "Starting Sectors",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines starting configuration (5 sectors: Food, Ore, Petroleum, Commerce, Urban). No dependencies."
+    },
+    "REQ-SEC-002": {
+      "title": "Sector Cost Scaling",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Pure formula: Cost = 8000 × (1 + Current_Count × 0.1)^1.5. Can be implemented standalone."
+    },
+    "REQ-SEC-003": {
+      "title": "Eight Sector Types",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Defines 8 sector types with production profiles. Foundational definition for all sector mechanics."
+    },
+    "REQ-SEC-004": {
+      "title": "Production Timing",
+      "dependencies": ["REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-001",
+          "reason": "Production occurs at turn boundary; requires turn processing system to trigger resource generation"
+        }
+      ],
+      "notes": "Production timing is coupled to turn processing. Cannot work without turn system."
+    },
+    "REQ-SEC-005": {
+      "title": "Sector Acquisition Action",
+      "dependencies": ["REQ-SEC-002", "REQ-SEC-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-002",
+          "reason": "Uses cost scaling formula; can implement with fixed cost initially"
+        }
+      ],
+      "notes": "Core acquisition mechanic. Mostly self-contained once sector types are defined."
+    },
+    "REQ-SEC-006": {
+      "title": "Resource Cap Handling",
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-RES-001",
+          "reason": "Caps depend on resource type definitions; can implement with hardcoded resource names"
+        }
+      ],
+      "notes": "Defines caps: Food 10,000, Ore 5,000, Petroleum 3,000, Credits unlimited. Simple once resources exist."
+    },
+    "REQ-SEC-007": {
+      "title": "No Maximum Sector Count",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Design decision - no hard cap on sectors. Implementation is just absence of validation."
+    },
+    "REQ-SEC-008": {
+      "title": "Special Sector Stacking",
+      "dependencies": ["REQ-SEC-003"],
+      "blockers": [],
+      "notes": "Multiple sectors of same type stack additively. Simple summation logic."
+    },
+    "REQ-SEC-009": {
+      "title": "Sector Destruction in Combat",
+      "dependencies": ["REQ-COMBAT-001", "REQ-COMBAT-008"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Requires combat resolution framework to trigger sector destruction on defeat"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-COMBAT-008",
+          "reason": "Overkill bonus depends on dramatic outcome system; can implement base loss without overkill"
+        }
+      ],
+      "notes": "Formula: 1-3 sectors lost on combat defeat. Tightly coupled to combat system."
+    },
+    "REQ-SEC-010": {
+      "title": "Sector Capture on Conquest",
+      "dependencies": ["REQ-VIC-001", "REQ-SEC-009"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-VIC-001",
+          "reason": "Requires conquest victory condition or total defeat detection to trigger sector transfer"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-009",
+          "reason": "Uses similar sector transfer mechanics; can implement independently"
+        }
+      ],
+      "notes": "Formula: Transfer 50% of sectors on conquest. Requires victory system to detect conquest condition."
+    },
+    "REQ-SEC-011": {
+      "title": "Research Sector Unlock",
+      "dependencies": ["REQ-RSCH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-RSCH-001",
+          "reason": "Research sectors locked until Tech Tier 2; requires tech tree tier tracking"
+        }
+      ],
+      "notes": "Gate mechanic - Research sectors unavailable until player reaches Research Tier 2."
+    }
+  },
+  "summary": {
+    "totalDependencies": 11,
+    "intraSystemDependencies": 3,
+    "crossSystemDependencies": 8,
+    "hardBlockers": 4,
+    "softBlockers": 4,
+    "topDependedOnSpecs": [
+      "REQ-SEC-003 (depended on by 2 specs)",
+      "REQ-SEC-002 (depended on by 1 spec)"
+    ],
+    "crossSystemReferences": [
+      { "toSystem": "TURN", "count": 1, "specs": ["REQ-TURN-001"] },
+      { "toSystem": "RESOURCE", "count": 1, "specs": ["REQ-RES-001"] },
+      { "toSystem": "COMBAT", "count": 2, "specs": ["REQ-COMBAT-001", "REQ-COMBAT-008"] },
+      { "toSystem": "VICTORY", "count": 1, "specs": ["REQ-VIC-001"] },
+      { "toSystem": "RESEARCH", "count": 1, "specs": ["REQ-RSCH-001"] }
+    ],
+    "implementationWaves": {
+      "wave0_foundations": ["REQ-SEC-001", "REQ-SEC-002", "REQ-SEC-003", "REQ-SEC-007"],
+      "wave1_basic_mechanics": ["REQ-SEC-005", "REQ-SEC-008"],
+      "wave2_resource_integration": ["REQ-SEC-004", "REQ-SEC-006"],
+      "wave3_combat_integration": ["REQ-SEC-009"],
+      "wave4_advanced": ["REQ-SEC-010", "REQ-SEC-011"]
+    }
+  }
+}

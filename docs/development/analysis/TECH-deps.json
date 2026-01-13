@@ -1,0 +1,370 @@
+{
+  "system": "TECH CARD SYSTEM",
+  "file": "docs/Game Systems/TECH-CARD-SYSTEM.md",
+  "analyzedAt": "2026-01-12T00:00:00Z",
+  "totalSpecs": 9,
+  "specs": {
+    "REQ-TECH-001": {
+      "title": "Tech Card Draft System",
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Foundational spec - defines 3-tier card system (12 T1, 20 T2, 8 T3) with turn-based draft events. No technical dependencies, but requires database schema and service layer."
+    },
+    "REQ-TECH-002": {
+      "title": "Hidden Objectives (T1 Cards)",
+      "dependencies": ["REQ-TECH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TECH-001",
+          "reason": "T1 cards defined by draft system; uses T1 card pool (12 unique objectives)"
+        }
+      ],
+      "notes": "Turn 1 draft: draw 3, keep 1 (secret until game end). 12 scoring conditions with VP rewards (0-10 VP). Requires game-end reveal orchestration."
+    },
+    "REQ-TECH-003": {
+      "title": "Public Draft Cards (T2)",
+      "dependencies": ["REQ-TECH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TECH-001",
+          "reason": "T2 cards defined by draft system; uses T2 card pool (20 tactical cards)"
+        }
+      ],
+      "notes": "Turn 10, 20, 30, 40: draw 3, pick 1 (public announcement). 20 cards across 5 categories with combat effects. Requires public notification system."
+    },
+    "REQ-TECH-004": {
+      "title": "Legendary Cards (T3)",
+      "dependencies": ["REQ-TECH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TECH-001",
+          "reason": "T3 cards defined by draft system; uses T3 card pool (8 legendary cards)"
+        }
+      ],
+      "notes": "Turn 50+: 30% chance per draft slot, galaxy-wide announcements. 8 game-changing abilities with hybrid usage model (one-use, permanent, limited). Requires manual activation UI."
+    },
+    "REQ-TECH-005": {
+      "title": "Bot Tech Card Integration",
+      "dependencies": ["REQ-TECH-002", "REQ-TECH-003", "REQ-TECH-004", "REQ-BOT-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-BOT-001",
+          "reason": "Bots need archetype system to make tech card decisions; 8 archetypes with specific preferences"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-TECH-003",
+          "reason": "Bot draft announcements enhance gameplay; can implement decisions without messaging initially"
+        }
+      ],
+      "notes": "Each archetype (Warlord, Turtle, Diplomat, Merchant, Tech Rush, Schemer, Blitzkrieg, Opportunist) has T1/T2/T3 preferences. Bots announce picks with personality. Strategic bots analyze synergies."
+    },
+    "REQ-TECH-006": {
+      "title": "End Game Hidden Objective Reveal",
+      "dependencies": ["REQ-TECH-002", "REQ-VICT-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TECH-002",
+          "reason": "Reveal screen displays all players' hidden T1 objectives with VP calculations"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-VICT-001",
+          "reason": "Bonus VP added to final score; requires Victory Conditions system for scoring context"
+        }
+      ],
+      "notes": "At game end: simultaneous reveal of all hidden objectives, VP calculation displayed, final scores updated. Creates post-game 'aha!' moments. Requires UI component."
+    },
+    "REQ-TECH-007": {
+      "title": "Tech Card Catalog (40 Cards Total)",
+      "dependencies": ["REQ-TECH-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TECH-001",
+          "reason": "Card catalog is the concrete pool for draft system; 40 cards total (12 T1, 20 T2, 8 T3)"
+        }
+      ],
+      "notes": "Database seed: tech_card_templates table with all 40 card definitions. Each card has name, effect, cost, counter. Foundation for all draft events."
+    },
+    "REQ-TECH-008": {
+      "title": "Tech Card Counter-Play System",
+      "dependencies": ["REQ-TECH-001", "REQ-COMBAT-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Counter-play resolved during combat; requires D20 combat resolution integration"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-TECH-001",
+          "reason": "Each card lists counter(s); database schema includes counter_cards field"
+        }
+      ],
+      "notes": "Rock-paper-scissors dynamics: Shield Arrays counters Shock Troops + Plasma Torpedoes, Scanner Arrays counters Cloaking Field, etc. Requires combat modifier application."
+    },
+    "REQ-TECH-009": {
+      "title": "Draft Timing & Combat Integration",
+      "dependencies": ["REQ-TECH-001", "REQ-COMBAT-001", "REQ-RSCH-001", "REQ-TURN-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-TURN-001",
+          "reason": "Draft events triggered at specific turns (1, 10, 20, 30, 40, 50+); requires turn processor integration"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-COMBAT-001",
+          "reason": "Tech card bonuses applied during combat; D20 modifiers stack with Research bonuses"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-RSCH-001",
+          "reason": "Cards synergize with Research doctrines multiplicatively; requires research system context for balance"
+        }
+      ],
+      "notes": "Research (+2 STR) + Tech Cards (+2 first round) = +4 effective STR. Automatic activation except Legendary (manual activation prevents save-syndrome). Combat flow: Surprise check → Modifiers → Initiative → Combat."
+    }
+  },
+  "summary": {
+    "totalDependencies": 12,
+    "intraSystemDependencies": 8,
+    "crossSystemDependencies": 4,
+    "hardBlockers": 10,
+    "softBlockers": 5,
+    "topDependedOnSpecs": [
+      "REQ-TECH-001 (depended on by 8 specs)",
+      "REQ-COMBAT-001 (depended on by 2 specs)",
+      "REQ-TURN-001 (depended on by 1 spec)",
+      "REQ-RSCH-001 (depended on by 1 spec)"
+    ],
+    "crossSystemReferences": [
+      {
+        "toSystem": "COMBAT",
+        "count": 2,
+        "specs": ["REQ-COMBAT-001"],
+        "reason": "Tech cards modify combat: counter-play resolution, modifier stacking with research, integration into turn processor"
+      },
+      {
+        "toSystem": "RESEARCH",
+        "count": 1,
+        "specs": ["REQ-RSCH-001"],
+        "reason": "Tech card synergy: War Machine (+2 STR) + Plasma Torpedoes (+2 first round) = multiplicative stacking"
+      },
+      {
+        "toSystem": "BOT",
+        "count": 1,
+        "specs": ["REQ-BOT-001"],
+        "reason": "Bots have archetype-based tech card preferences; announce picks with personality; make strategic decisions"
+      },
+      {
+        "toSystem": "TURN",
+        "count": 1,
+        "specs": ["REQ-TURN-001"],
+        "reason": "Draft events triggered at specific turns (1, 10, 20, 30, 40, 50+); turn processor schedules draft modals"
+      },
+      {
+        "toSystem": "VICTORY",
+        "count": 1,
+        "specs": ["REQ-VICT-001"],
+        "reason": "Hidden objectives add VP to final score; victory calculation includes tech card bonuses"
+      }
+    ],
+    "implementationWaves": {
+      "wave0_database": [
+        "REQ-TECH-007 - Card catalog seed (all 40 cards defined)"
+      ],
+      "wave1_foundations": [
+        "REQ-TECH-001 - Draft system infrastructure",
+        "REQ-TECH-002 - T1 hidden objectives",
+        "REQ-TECH-003 - T2 tactical cards"
+      ],
+      "wave2_integration": [
+        "REQ-TECH-008 - Counter-play resolution",
+        "REQ-TECH-009 - Turn scheduling and combat integration",
+        "REQ-TECH-005 - Bot decision-making"
+      ],
+      "wave3_endgame": [
+        "REQ-TECH-004 - T3 legendary cards",
+        "REQ-TECH-006 - Hidden objective reveal"
+      ]
+    },
+    "blockingAnalysis": {
+      "hardBlockers": [
+        {
+          "blocker": "REQ-TECH-001",
+          "blockedSpecs": ["REQ-TECH-002", "REQ-TECH-003", "REQ-TECH-004", "REQ-TECH-007"],
+          "reason": "All card tiers defined by draft system; must establish infrastructure first"
+        },
+        {
+          "blocker": "REQ-TECH-002",
+          "blockedSpecs": ["REQ-TECH-006"],
+          "reason": "End-game reveal requires hidden objective tracking from T1 draft"
+        },
+        {
+          "blocker": "REQ-COMBAT-001",
+          "blockedSpecs": ["REQ-TECH-008", "REQ-TECH-009"],
+          "reason": "Tech card effects applied in combat; counter-play and modifier stacking need D20 resolution"
+        },
+        {
+          "blocker": "REQ-TURN-001",
+          "blockedSpecs": ["REQ-TECH-009"],
+          "reason": "Draft events triggered by turn processor; requires turn scheduling infrastructure"
+        },
+        {
+          "blocker": "REQ-BOT-001",
+          "blockedSpecs": ["REQ-TECH-005"],
+          "reason": "Bot archetype system needed for tech card decision logic"
+        }
+      ],
+      "softBlockers": [
+        {
+          "blocker": "REQ-RSCH-001",
+          "blockedSpecs": ["REQ-TECH-009"],
+          "reason": "Can hard-code synergy multipliers; refine balance during playtesting with research system"
+        },
+        {
+          "blocker": "REQ-TECH-003",
+          "blockedSpecs": ["REQ-TECH-005"],
+          "reason": "Bot messaging enhances draft drama; core decision logic independent"
+        },
+        {
+          "blocker": "REQ-VICT-001",
+          "blockedSpecs": ["REQ-TECH-006"],
+          "reason": "Reveal screen integrates with victory calculation; can implement reveal without victory context"
+        }
+      ]
+    },
+    "criticality": {
+      "mustHaveFirst": [
+        "REQ-TECH-001 - Draft system foundation; all other specs depend on it",
+        "REQ-TECH-007 - Card catalog must be seeded before any draft can occur"
+      ],
+      "canParallelize": [
+        "REQ-TECH-002 (T1 Hidden Objectives) - Independent tier with Turn 1 activation",
+        "REQ-TECH-003 (T2 Tactical Cards) - Independent tier with Turn 10+ activation",
+        "REQ-TECH-004 (T3 Legendary Cards) - Independent tier with Turn 50+ availability"
+      ],
+      "waitForDependencies": [
+        "REQ-TECH-005 (Bot Integration) - Requires REQ-BOT-001 archetype system",
+        "REQ-TECH-008 (Counter-Play) - Requires REQ-COMBAT-001 D20 resolution",
+        "REQ-TECH-009 (Draft Timing & Combat) - Requires REQ-TURN-001 turn processor",
+        "REQ-TECH-006 (Reveal) - Requires REQ-TECH-002 hidden objective tracking"
+      ]
+    },
+    "integrationPoints": [
+      {
+        "system": "COMBAT",
+        "integrationSpecs": ["REQ-COMBAT-001", "REQ-COMBAT-008", "REQ-COMBAT-009"],
+        "reason": "Tech cards modify combat resolution: modifiers (+2 damage), counter-play (Shield Arrays negates Shock Troops), integration into multi-domain combat. Cards activate automatically unless Legendary (manual activation)."
+      },
+      {
+        "system": "RESEARCH",
+        "integrationSpecs": ["REQ-RSCH-001"],
+        "reason": "Multiplicative synergy: War Machine doctrine (+2 STR) + Plasma Torpedoes (+2 first round) = +4 STR opening. Both systems provide permanent (Research) and tactical (Tech Cards) bonuses."
+      },
+      {
+        "system": "BOT",
+        "integrationSpecs": ["REQ-BOT-001", "REQ-BOT-002"],
+        "reason": "Bots use archetype preferences for tech card drafts (Warlord → Plasma Torpedoes, Turtle → Shield Arrays). Bots announce picks with personality messages. Strategic bots analyze synergies and counter-pick."
+      },
+      {
+        "system": "TURN",
+        "integrationSpecs": ["REQ-TURN-001"],
+        "reason": "Turn processor triggers draft events at fixed turns (1, 10, 20, 30, 40, 50+). Draft modals pause game and require player/bot decision."
+      },
+      {
+        "system": "VICTORY",
+        "integrationSpecs": ["REQ-VICT-001"],
+        "reason": "Hidden objectives add bonus VP at game end (0-10 VP per objective). Final score = base VP + hidden objective bonuses."
+      },
+      {
+        "system": "UI/UX",
+        "integrationSpecs": [],
+        "reason": "Multiple UI components: TechCardHand (player cards), DraftModal (selection), CardDetailPanel (mechanics), EnemyCardDisplay (known enemy cards), HiddenObjectiveReveal (end-game screen), CombatCardEffects (active during combat). Emoji icons (💥 Plasma, 🛡️ Shield, ⚡ Ion, etc.) for visual clarity."
+      }
+    ],
+    "dataFlow": {
+      "draftInitiation": "Turn processor detects draft turn → TechCardService.generateDraftEvent() → random card selection from tier pool → present modal to players/bots",
+      "draftExecution": "Player/bot selects card → draftTechCard() server action → add to empire_tech_cards → announce to all players → trigger bot reactions",
+      "combatIntegration": "Combat resolution starts → CombatService checks for active tech cards → apply modifiers to D20 calculation → resolve counter-play → combat proceeds normally",
+      "endGameReveal": "Game ends (turn limit or victory) → scoreHiddenObjectives() calculates VP for each player → HiddenObjectiveReveal component displays all objectives simultaneously → final scores updated"
+    },
+    "databaseSchema": {
+      "tables": [
+        "tech_card_templates - Static definitions (40 cards: name, tier, effect, cost, counter_cards)",
+        "empire_tech_cards - Player/bot hands (empire_id, card_id, acquired_turn, is_active)",
+        "tech_card_draft_events - Draft history (game_id, turn, tier, cards_offered, draft_order, selections)",
+        "tech_card_usage_log - Combat usage (game_id, combat_id, card_id, effect_applied, modifiers)"
+      ],
+      "keyRelationships": [
+        "Empire → Cards (many-to-many via empire_tech_cards)",
+        "Draft Events → Games (many-to-one)",
+        "Usage Log → Combats (many-to-one)"
+      ]
+    },
+    "riskFactors": [
+      {
+        "risk": "Balance variance between Research + Tech Card combinations",
+        "mitigation": "Monte Carlo simulation: 10,000 games testing War Machine + Plasma Torpedoes (target 55-60% win rate, not 70%+)"
+      },
+      {
+        "risk": "Legendary cards (T3) enable runaway leaders",
+        "mitigation": "Desperate bots prioritize comeback cards when losing. Limited one-use effects prevent spam. 30% draft chance prevents guaranteed acquisition."
+      },
+      {
+        "risk": "Analysis paralysis during draft: 3 cards × 4 players × 2 min = 8 min per draft event",
+        "mitigation": "Design goal: card effects understandable in 10 seconds. Visual icons and clear text. Draft timer optional (full turn available to decide)."
+      },
+      {
+        "risk": "Hidden objectives reveal frustration: 'I wish I'd known what Varkus was planning'",
+        "mitigation": "Design intent is post-game discussion, not frustration. Hidden objectives add 3-6 VP average (not game-winning). Visible choices (public drafts) enable counter-play."
+      }
+    ],
+    "testingStrategy": {
+      "unitTests": [
+        "Draft event generation: correct cards offered, no duplicates within event",
+        "Draft order calculation: d20 + CHA modifier applied correctly",
+        "Card activation in combat: modifiers applied to D20 calculation",
+        "Counter-play resolution: Shield Arrays negates Shock Troops surprise round",
+        "Hidden objective scoring: VP calculated for each objective type",
+        "Legendary card effects: Planet Cracker removes planet, Dyson Swarm doubles income"
+      ],
+      "integrationTests": [
+        "Full draft sequence: Turn 1 → 10 → 20 → 30 → 40 → 50+ (all tiers drafted)",
+        "Bot decision-making: archetype preferences applied, strategic synergies detected",
+        "Combat with multiple cards: modifiers stack correctly with Research bonuses",
+        "End-game reveal: all objectives shown, VP calculations correct, final scores updated",
+        "Public announcements: all players notified of draft picks and legendary card usage"
+      ],
+      "balanceTests": [
+        "1000-game simulation: no card combo >65% win rate",
+        "No card picked >40% of the time (draft variety)",
+        "Hidden objective avg 3-6 VP ±1 VP",
+        "War Machine + Plasma Torpedoes: 55-60% win rate target"
+      ],
+      "userAcceptance": [
+        "Card effects understandable in 10 seconds",
+        "Draft takes <2 minutes per player",
+        "Hidden objectives create 'aha!' moments at game end",
+        "Legendary cards feel epic but not overpowered"
+      ]
+    },
+    "developmentTimeline": {
+      "phase": "Beta 3 Implementation (6-8 weeks)",
+      "week1_2": "Database schema + TechCardService + card seeding",
+      "week3": "Draft system + modal UI + public announcements",
+      "week4": "Combat integration + modifier stacking + counter-play",
+      "week5": "Bot decision logic + personality messages + reactions",
+      "week6": "Hidden objectives + end-game scoring + reveal screen",
+      "week7": "Legendary cards + manual activation + galaxy announcements",
+      "week8": "Balance playtesting + card adjustments + UI polish"
+    }
+  }
+}
