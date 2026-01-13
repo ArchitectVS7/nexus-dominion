@@ -3366,45 +3366,61 @@
         },
         {
           "id": "REQ-VIC-002",
-          "title": "Economic Victory",
+          "title": "Economic Victory (PARENT)",
           "atomic": false,
           "line": 919,
-          "splitCandidate": "networth + threshold",
-          "note": "Duplicate of REQ-RES-012"
+          "children": [
+            "REQ-VIC-002.1",
+            "REQ-VIC-002.2"
+          ]
+        },
+        {
+          "id": "REQ-VIC-002.1",
+          "title": "Networth Calculation Formula",
+          "atomic": true,
+          "line": 931,
+          "parent": "REQ-VIC-002"
+        },
+        {
+          "id": "REQ-VIC-002.2",
+          "title": "Economic Victory Threshold",
+          "atomic": true,
+          "line": 983,
+          "parent": "REQ-VIC-002"
         },
         {
           "id": "REQ-VIC-003",
           "title": "Diplomatic Victory",
           "atomic": false,
-          "line": 961,
+          "line": 984,
           "splitCandidate": "territory + threshold + shared"
         },
         {
           "id": "REQ-VIC-004",
           "title": "Research Victory",
           "atomic": false,
-          "line": 998,
+          "line": 1021,
           "splitCandidate": "capstone + advanced tech"
         },
         {
           "id": "REQ-VIC-005",
           "title": "Military Victory",
           "atomic": false,
-          "line": 1035,
+          "line": 1058,
           "splitCandidate": "power calc + threshold"
         },
         {
           "id": "REQ-VIC-006",
           "title": "Survival Victory",
           "atomic": false,
-          "line": 1076,
+          "line": 1099,
           "splitCandidate": "score + turn limit + tiebreaker"
         },
         {
           "id": "REQ-VIC-007",
           "title": "Victory Point Calculation (Split)",
           "atomic": true,
-          "line": 1120,
+          "line": 1143,
           "parentOf": [
             "REQ-VIC-007-A",
             "REQ-VIC-007-B",
@@ -3419,56 +3435,56 @@
           "id": "REQ-VIC-007-A",
           "title": "Conquest VP Formula",
           "atomic": true,
-          "line": 1126,
+          "line": 1149,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-B",
           "title": "Economic VP Formula",
           "atomic": true,
-          "line": 1159,
+          "line": 1182,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-C",
           "title": "Diplomatic VP Formula",
           "atomic": true,
-          "line": 1192,
+          "line": 1215,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-D",
           "title": "Research VP Formula",
           "atomic": true,
-          "line": 1225,
+          "line": 1248,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-E",
           "title": "Military VP Formula",
           "atomic": true,
-          "line": 1260,
+          "line": 1283,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-F",
           "title": "Survival VP Formula",
           "atomic": true,
-          "line": 1293,
+          "line": 1316,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-007-G",
           "title": "Total VP Aggregation",
           "atomic": true,
-          "line": 1326,
+          "line": 1349,
           "splitFrom": "REQ-VIC-007"
         },
         {
           "id": "REQ-VIC-008",
           "title": "Anti-Snowball Mechanics (Split)",
           "atomic": true,
-          "line": 1366,
+          "line": 1389,
           "parentOf": [
             "REQ-VIC-008-A",
             "REQ-VIC-008-B",
@@ -3483,56 +3499,56 @@
           "id": "REQ-VIC-008-A",
           "title": "Anti-Snowball Trigger Threshold",
           "atomic": true,
-          "line": 1372,
+          "line": 1395,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-B",
           "title": "Combat Attack Bonus vs Leader",
           "atomic": true,
-          "line": 1401,
+          "line": 1424,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-C",
           "title": "Combat Defense Bonus vs Leader",
           "atomic": true,
-          "line": 1430,
+          "line": 1453,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-D",
           "title": "Market Price Penalty for Leader",
           "atomic": true,
-          "line": 1459,
+          "line": 1482,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-E",
           "title": "Reputation Decay for Leader",
           "atomic": true,
-          "line": 1490,
+          "line": 1513,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-F",
           "title": "Automatic Coalition Offers",
           "atomic": true,
-          "line": 1521,
+          "line": 1544,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-008-G",
           "title": "Anti-Snowball Mechanics Coordination",
           "atomic": true,
-          "line": 1552,
+          "line": 1575,
           "splitFrom": "REQ-VIC-008"
         },
         {
           "id": "REQ-VIC-009",
           "title": "Victory Notifications (Split)",
           "atomic": true,
-          "line": 1578,
+          "line": 1601,
           "parentOf": [
             "REQ-VIC-009-A",
             "REQ-VIC-009-B",
@@ -3544,35 +3560,35 @@
           "id": "REQ-VIC-009-A",
           "title": "5 VP Milestone Notification",
           "atomic": true,
-          "line": 1592,
+          "line": 1615,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-009-B",
           "title": "7 VP Milestone Notification",
           "atomic": true,
-          "line": 1620,
+          "line": 1643,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-009-C",
           "title": "9 VP Milestone Notification",
           "atomic": true,
-          "line": 1649,
+          "line": 1672,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-009-D",
           "title": "10 VP Victory Notification",
           "atomic": true,
-          "line": 1678,
+          "line": 1701,
           "splitFrom": "REQ-VIC-009"
         },
         {
           "id": "REQ-VIC-010",
           "title": "Victory Achievement Screen",
           "atomic": false,
-          "line": 1715,
+          "line": 1738,
           "splitCandidate": "freeze + screen + stats"
         }
       ]
@@ -3663,9 +3679,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 393,
-    "atomicSpecs": 362,
-    "splitCandidates": 22,
+    "totalSpecs": 394,
+    "atomicSpecs": 364,
+    "splitCandidates": 21,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

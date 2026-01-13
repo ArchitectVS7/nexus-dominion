@@ -916,17 +916,57 @@ conquest_victory = conquest_progress >= 0.60
 
 ---
 
-### REQ-VIC-002: Economic Victory
+### REQ-VIC-002: Economic Victory (PARENT)
 
-**Description:** Achieved when an empire has 1.5x the networth of the second-place empire.
+**Description:** Achieved when an empire has 1.5x the networth of the second-place empire. This parent spec tracks the complete economic victory system.
 
-**Rationale:** Rewards builder/trader playstyle. Dynamic threshold (based on 2nd place) ensures competition remains relevant throughout the game. The 1.5x multiplier requires clear economic dominance, not just marginal lead.
+**Children:**
+- REQ-VIC-002.1: Networth Calculation Formula
+- REQ-VIC-002.2: Economic Victory Threshold
 
-**Formula:**
+**Rationale:** Rewards builder/trader playstyle. Dynamic threshold (based on 2nd place) ensures competition remains relevant throughout the game.
+
+**Source:** Section 3.2 - Economic Victory
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-002.1: Networth Calculation Formula
+
+**Description:** Empire networth calculated using formula:
 ```typescript
 networth = credits + (food × 10) + (ore × 12) + (petroleum × 15)
            + (sectors × 500) + (military_power × 10)
+```
 
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| food_value | 10 | credits per food |
+| ore_value | 12 | credits per ore |
+| petroleum_value | 15 | credits per petroleum |
+| sector_value | 500 | credits per sector |
+| military_value | 10 | credits per power point |
+
+**Rationale:** Networth aggregates all empire assets into single comparable metric.
+
+**Source:** Section 3.2 - Economic Victory
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateNetworth()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Networth calculation includes all resources"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-002.2: Economic Victory Threshold
+
+**Description:** Economic victory achieved when networth reaches 1.5x second-place empire:
+```typescript
 economic_victory = (your_networth / second_place_networth) >= 1.5
 ```
 
@@ -934,24 +974,19 @@ economic_victory = (your_networth / second_place_networth) >= 1.5
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | victory_multiplier | 1.5 | 150% of 2nd place |
-| food_value | 10 | credits per food |
-| ore_value | 12 | credits per ore |
-| petroleum_value | 15 | credits per petroleum |
-| sector_value | 500 | credits per sector |
-| military_value | 10 | credits per power point |
 | anti_snowball_trigger | 1.05x | 70% of threshold (7 VP) |
+
+**Rationale:** 1.5x multiplier requires clear economic dominance, not just marginal lead. Dynamic threshold ensures competition remains relevant.
 
 **Source:** Section 3.2 - Economic Victory
 
 **Code:**
 - `src/lib/game/services/core/victory-service.ts` - `checkEconomicVictory()`
-- `src/lib/game/services/core/victory-service.ts` - `calculateNetworth()`
 - `src/lib/game/services/core/victory-service.ts` - `calculateEconomicVP()`
 
 **Tests:**
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Economic victory at exactly 1.5x"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Economic victory fails at 1.49x"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Networth calculation includes all resources"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Second place updated when empire eliminated"
 
 **Status:** Draft
