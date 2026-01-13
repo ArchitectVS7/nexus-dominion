@@ -60,5 +60,5 @@ docs/.docusaurus/
 **/debug-log.md
 
 # Claude temporary files
-tmpclaude-*-cwd
+tmpclaude*
 nul
