@@ -94,8 +94,13 @@
       "file": "docs/Game Systems/MARKET-SYSTEM.md",
       "specs": [
         { "id": "REQ-MKT-001", "title": "Resource Trading", "atomic": true, "line": 711 },
-        { "id": "REQ-MKT-002", "title": "Dynamic Pricing", "atomic": false, "line": 730, "splitCandidate": "5 price modifiers" },
-        { "id": "REQ-MKT-003", "title": "Transaction Fees", "atomic": false, "line": 768, "splitCandidate": "buy + sell + bulk + research bonus" },
+        { "id": "REQ-MKT-002", "title": "Dynamic Pricing (Split)", "atomic": true, "line": 730, "parentOf": ["REQ-MKT-002-A", "REQ-MKT-002-B", "REQ-MKT-002-C", "REQ-MKT-002-D", "REQ-MKT-002-E"] },
+        { "id": "REQ-MKT-002-A", "title": "Base Price and Bounds", "atomic": true, "line": 743, "splitFrom": "REQ-MKT-002" },
+        { "id": "REQ-MKT-002-B", "title": "Supply Modifier", "atomic": true, "line": 774, "splitFrom": "REQ-MKT-002" },
+        { "id": "REQ-MKT-002-C", "title": "Demand Modifier", "atomic": true, "line": 808, "splitFrom": "REQ-MKT-002" },
+        { "id": "REQ-MKT-002-D", "title": "Event Modifier", "atomic": true, "line": 842, "splitFrom": "REQ-MKT-002" },
+        { "id": "REQ-MKT-002-E", "title": "Leader Penalty and Price Decay", "atomic": true, "line": 874, "splitFrom": "REQ-MKT-002" },
+        { "id": "REQ-MKT-003", "title": "Transaction Fees", "atomic": false, "line": 905, "splitCandidate": "buy + sell + bulk + research bonus" },
         { "id": "REQ-MKT-004", "title": "Market Limits", "atomic": false, "line": 805, "splitCandidate": "max transaction + reserve + clamping" },
         { "id": "REQ-MKT-005", "title": "Market Events (Split)", "atomic": true, "line": 840, "parentOf": ["REQ-MKT-005-01", "REQ-MKT-005-02", "REQ-MKT-005-03", "REQ-MKT-005-04", "REQ-MKT-005-05", "REQ-MKT-005-06", "REQ-MKT-005-07", "REQ-MKT-005-08", "REQ-MKT-005-09"] },
         { "id": "REQ-MKT-005-01", "title": "Bumper Harvest Event", "atomic": true, "line": 848, "splitFrom": "REQ-MKT-005" },
@@ -363,9 +368,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 237,
-    "atomicSpecs": 149,
-    "splitCandidates": 84,
+    "totalSpecs": 242,
+    "atomicSpecs": 154,
+    "splitCandidates": 83,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
