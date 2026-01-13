@@ -28,7 +28,7 @@
 
 > **"Crusader Kings meets Eve Online, simulated."**
 
-Nexus Dominion isn't "Solar Realms with 100 AI players" - it's a **simulated MMO galaxy** designed for solo play:
+Nexus Dominion aims for a **simulated MMO experience** designed for solo play:
 
 - **Bots fight bots** - Natural selection occurs. 100 empires become 80, then 60, then fewer.
 - **Emergent bosses** - Victors accumulate power. A bot that eliminated 5 others IS the boss, organically.
@@ -137,7 +137,7 @@ For detailed mechanics, see the [PRD-EXECUTIVE.md](PRD-EXECUTIVE.md). This secti
 
 We replaced sequential 3-phase combat with unified D20 resolution. One roll determines victor, casualties, and territory captured. The result is dramatic, fast-paced battles with clear outcomes.
 
-The original Solar Realms Elite principle that "ground war is hardest" is preserved through defender advantage, not through sequential phases that the attacker almost never survives.
+**DEV NOTE** This seems outdated and needs to be updated with the current combat system
 
 ### Bot Personality Philosophy
 
@@ -180,29 +180,6 @@ No path should be objectively superior. Bots pursue different paths based on per
 
 ---
 
-## What's Different from Solar Realms Elite
-
-### Improvements
-
-1. **Strategic Geography** - 10 sectors vs flat list of 100 empires
-2. **Combat Balance** - 47.6% attacker win rate vs 1.2% in original
-3. **Onboarding** - Progressive tutorial vs "figure it out" BBS culture
-4. **Anti-Snowball** - Formalized coalition mechanics vs runaway leaders
-5. **Visual Design** - LCARS UI vs text-only interface
-6. **Single Player Focus** - Designed for solo play vs multiplayer-only
-
-### What We Kept
-
-1. **100 Empires** - Massive galaxy scale creates epic scope
-2. **Turn-Based** - No real-time stress, plan at your pace
-3. **Bot Personalities** - Distinct behaviors create relationships
-4. **6 Victory Paths** - Multiple ways to win
-5. **Economic Complexity** - Resource management matters
-6. **The Vibe** - That "I'm commanding an empire" feeling
-
-Solar Realms Elite was lightning in a bottle. We're not trying to replace it - we're asking "what if that game was designed for 2026 sensibilities while keeping its soul?"
-
----
 
 ## Why This Game Matters
 
@@ -216,12 +193,9 @@ Single-player 4X games have largely moved toward either:
 
 We're threading the needle: **epic scope, session length**. Command a galactic empire, experience dramatic rivalries and climactic battles, achieve victory or go down swinging - all before bedtime.
 
----
+**DEV NOTE** While I likley said a game session could last 1-2 hours, I never made this a constraint or a pillar of design philosophy. This is something that crept in and took hold, that we are now wiedling as a differentiator. With the intention of making a "Virtual MMO", we may want to last weeks, not hours. I am expressing concern for this. I do want a single game session to be a thing, as I have tried to make the game design more boardgame like in look and feel. At the same time, I don't thinl forcing a turn or time limit really meets the MMO-like intent.
 
-## Document History
 
-- **v2.0** (January 2026): Refactored from GAME-DESIGN.md to focus on philosophy only
-- **v1.0** (January 2026): Consolidated from VISION.md and PRD.md
 
 ---
 
