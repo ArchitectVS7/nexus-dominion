@@ -1210,18 +1210,33 @@ Examples:
 
 ---
 
-### REQ-SEC-010: Sector Capture on Conquest
+### REQ-SEC-010: Sector Capture on Conquest (Split)
 
-**Description:** When an empire is completely conquered (reaches 0 networth or surrenders), victor may claim up to 50% of conquered empire's sectors. Sectors transferred randomly from conquered portfolio.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-SEC-010-A through REQ-SEC-010-B.
 
-**Rationale:** Rewards conquest without creating unstoppable snowball. 50% cap ensures even total victory doesn't double empire size instantly. Randomness prevents "only take best sectors" optimization.
+---
+
+### REQ-SEC-010-A: Conquest Sector Transfer Cap
+
+**Description:** When an empire is completely conquered (reaches 0 networth or surrenders), victor may claim up to 50% of conquered empire's sectors. Transfer capped to prevent excessive snowballing.
+
+**Rationale:** Rewards conquest without creating unstoppable snowball. 50% cap ensures even total victory doesn't double empire size instantly.
 
 **Formula:**
 ```
 sectors_transferred = floor(conquered_empire_sectors × 0.5)
 
-Sectors selected randomly from conquered empire's portfolio.
+Examples:
+- Conquered empire has 10 sectors → victor claims 5 sectors max
+- Conquered empire has 25 sectors → victor claims 12 sectors max
+- Conquered empire has 1 sector → victor claims 0 sectors (floor(0.5) = 0)
 ```
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Sector transfer cap | 50% | Maximum percentage of sectors transferred |
 
 **Source:** Section 3.4 - Sector Destruction and Capture
 
@@ -1230,6 +1245,23 @@ Sectors selected randomly from conquered empire's portfolio.
 
 **Tests:**
 - `src/lib/conquest/__tests__/sector-transfer.test.ts` - "should transfer at most 50% of sectors"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-010-B: Random Sector Selection
+
+**Description:** Sectors transferred from conquered empire selected randomly from conquered portfolio. Prevents victor from cherry-picking only valuable sectors.
+
+**Rationale:** Randomness prevents "only take best sectors" optimization and maintains strategic uncertainty.
+
+**Source:** Section 3.4 - Sector Destruction and Capture
+
+**Code:**
+- `src/lib/conquest/sector-transfer.ts` - `transferSectors(victor, conquered): Promise<Sector[]>`
+
+**Tests:**
 - `src/lib/conquest/__tests__/sector-transfer.test.ts` - "sectors should be randomly selected"
 
 **Status:** Draft

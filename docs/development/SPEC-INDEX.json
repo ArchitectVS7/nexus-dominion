@@ -329,8 +329,10 @@
         { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat (Split)", "atomic": true, "line": 1148, "parentOf": ["REQ-SEC-009-A", "REQ-SEC-009-B"] },
         { "id": "REQ-SEC-009-A", "title": "Sector Destruction Formula", "atomic": true, "line": 1154, "splitFrom": "REQ-SEC-009" },
         { "id": "REQ-SEC-009-B", "title": "Permanent Sector Removal", "atomic": true, "line": 1195, "splitFrom": "REQ-SEC-009" },
-        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 1213, "splitCandidate": "cap + random selection" },
-        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1239 }
+        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest (Split)", "atomic": true, "line": 1213, "parentOf": ["REQ-SEC-010-A", "REQ-SEC-010-B"] },
+        { "id": "REQ-SEC-010-A", "title": "Conquest Sector Transfer Cap", "atomic": true, "line": 1219, "splitFrom": "REQ-SEC-010" },
+        { "id": "REQ-SEC-010-B", "title": "Random Sector Selection", "atomic": true, "line": 1253, "splitFrom": "REQ-SEC-010" },
+        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1271 }
       ]
     },
     "RESEARCH": {
@@ -509,9 +511,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 357,
-    "atomicSpecs": 307,
-    "splitCandidates": 41,
+    "totalSpecs": 359,
+    "atomicSpecs": 310,
+    "splitCandidates": 40,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
