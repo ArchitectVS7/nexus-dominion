@@ -160,7 +160,10 @@
         { "id": "REQ-MKT-005-08", "title": "Free Trade Event", "atomic": true, "line": 1051, "splitFrom": "REQ-MKT-005" },
         { "id": "REQ-MKT-005-09", "title": "Event Exclusion Rules", "atomic": true, "line": 1080, "splitFrom": "REQ-MKT-005" },
         { "id": "REQ-MKT-006", "title": "Anti-Snowball Leader Penalty", "atomic": true, "line": 1109 },
-        { "id": "REQ-MKT-007", "title": "Merchant Market Insight", "atomic": false, "line": 902, "splitCandidate": "prediction + visibility + detection" },
+        { "id": "REQ-MKT-007", "title": "Merchant Market Insight (Split)", "atomic": true, "line": 1472, "parentOf": ["REQ-MKT-007-A", "REQ-MKT-007-B", "REQ-MKT-007-C"] },
+        { "id": "REQ-MKT-007-A", "title": "Price Prediction", "atomic": true, "line": 1478, "splitFrom": "REQ-MKT-007" },
+        { "id": "REQ-MKT-007-B", "title": "Large Bot Order Visibility", "atomic": true, "line": 1521, "splitFrom": "REQ-MKT-007" },
+        { "id": "REQ-MKT-007-C", "title": "Market Event Detection", "atomic": true, "line": 1565, "splitFrom": "REQ-MKT-007" },
         { "id": "REQ-MKT-008", "title": "Bot Archetype Trading (Split)", "atomic": true, "line": 1307, "parentOf": ["REQ-MKT-008-A", "REQ-MKT-008-B", "REQ-MKT-008-C", "REQ-MKT-008-D"] },
         { "id": "REQ-MKT-008-A", "title": "Merchant Trading Behavior", "atomic": true, "line": 1315, "splitFrom": "REQ-MKT-008" },
         { "id": "REQ-MKT-008-B", "title": "Warlord Trading Behavior", "atomic": true, "line": 1348, "splitFrom": "REQ-MKT-008" },
@@ -453,9 +456,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 308,
-    "atomicSpecs": 239,
-    "splitCandidates": 60,
+    "totalSpecs": 310,
+    "atomicSpecs": 242,
+    "splitCandidates": 59,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

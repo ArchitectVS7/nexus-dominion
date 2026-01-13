@@ -1469,11 +1469,17 @@ Buy Price = Base Price × (Modifiers) × (1.2 if VP >= 7 else 1.0)
 
 ---
 
-### REQ-MKT-007: Merchant Market Insight
+### REQ-MKT-007: Merchant Market Insight (Split)
 
-**Description:** Merchant archetype (and their coalition allies) see next turn price predictions with ±10% accuracy, large bot orders (>10k units), and upcoming market events (50% chance, 2 turns early).
+> **Note:** This spec has been split into atomic sub-specs. See REQ-MKT-007-A through REQ-MKT-007-C.
 
-**Rationale:** Makes Merchant archetype viable. Rewards economic specialization with information advantage.
+---
+
+### REQ-MKT-007-A: Price Prediction
+
+**Description:** Merchant archetype (and their coalition allies) see next turn price predictions with ±10% accuracy for all resources. The prediction shows what the price will be after all market modifiers are applied next turn.
+
+**Rationale:** Provides Merchant archetype with information advantage for strategic buying/selling. The ±10% variance prevents perfect prediction while still being useful. Coalition sharing spreads benefit to allies.
 
 **Formula:**
 ```
@@ -1481,20 +1487,127 @@ Predicted Price = Next Turn Price + random(-10%, +10%)
 ```
 
 **Key Values:**
-| Feature | Value | Notes |
-|---------|-------|-------|
-| Prediction Accuracy | ±10% | Random variance |
-| Large Order Threshold | 10,000 units | Bot trades |
-| Event Detection Chance | 50% | 2 turns early |
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Prediction accuracy | ±10% | Random variance from true value |
+| Visibility | All resources | Food, Ore, Petroleum |
+| Who sees it | Merchant + coalition allies | Shared benefit |
+| Timing | Next turn only | Not multi-turn lookahead |
+
+**Display:**
+- Shown in market UI as "Predicted: X credits (~±10%)"
+- Refreshes each turn with new prediction
+- Warning indicator if price expected to change significantly
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5, 4.1, 5.1
 
 **Code:**
-- `src/lib/market/insights.ts` - `predictNextPrice()`, `detectBotOrders()`
+- `src/lib/market/insights.ts` - `predictNextPrice()`
+- `src/lib/market/price-calculator.ts` - Next turn price simulation
 - `src/lib/bots/archetypes/merchant.ts` - Passive ability
 
 **Tests:**
-- `src/lib/market/__tests__/insights.test.ts` - Prediction accuracy tests
+- `src/lib/market/__tests__/insights.test.ts` - Test ±10% variance distribution
+- `src/lib/market/__tests__/price-prediction.test.ts` - Verify accuracy over multiple turns
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-007-B: Large Bot Order Visibility
+
+**Description:** Merchant archetype (and their coalition allies) can see large bot orders above 10,000 unit threshold before they execute. Shows which bot, resource type, and approximate size of pending orders.
+
+**Rationale:** Allows Merchant to anticipate market movements from bot activity. Creates strategic opportunities to front-run large orders or avoid being on wrong side of price movements.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Visibility threshold | 10,000 units | Minimum order size to show |
+| Who sees it | Merchant + coalition allies | Shared benefit |
+| Information shown | Bot name, resource, size range | Not exact quantity |
+| Timing | Current turn | Orders queued for execution |
+
+**Display Information:**
+- Bot identity: "Empire X is placing large order"
+- Resource: "Food/Ore/Petroleum"
+- Size range: "10k-20k", "20k-50k", "50k+"
+- Direction: "buying" or "selling"
+
+**Size Range Buckets:**
+- Small large: 10,000-19,999 units
+- Medium large: 20,000-49,999 units
+- Very large: 50,000 units (max transaction)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.5, 4.1, 5.1
+
+**Code:**
+- `src/lib/market/insights.ts` - `detectBotOrders()`
+- `src/lib/bots/trade-queue.ts` - Bot order detection
+- `src/lib/bots/archetypes/merchant.ts` - Passive ability
+
+**Tests:**
+- `src/lib/market/__tests__/insights.test.ts` - Test 10k threshold detection
+- `src/lib/market/__tests__/bot-order-visibility.test.ts` - Verify size range bucketing
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-007-C: Market Event Detection
+
+**Description:** Merchant archetype (and their coalition allies) have 50% chance to detect upcoming market events 2 turns before they trigger. Provides advance warning to position for price swings.
+
+**Rationale:** Creates strategic depth for economic players. Early warning allows preparation but isn't guaranteed, maintaining uncertainty. 2-turn advance gives time to act without being too overpowered.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Detection chance | 50% | Per event |
+| Advance warning | 2 turns | Before event triggers |
+| Who sees it | Merchant + coalition allies | Shared benefit |
+| Information shown | Event type only | Not exact turn or magnitude |
+
+**Detection Logic:**
+```
+When market event generated (for turn T):
+  If Merchant exists:
+    Roll d100
+    If roll <= 50:
+      Reveal event to Merchant + allies at turn T-2
+```
+
+**Display Information:**
+- Event type: "Bumper Harvest", "Famine", etc.
+- Warning: "Detecting potential market event in ~2 turns"
+- No guarantee event will occur (creates uncertainty)
+
+**Event Types Detectable:**
+- All market events from REQ-MKT-005 (Bumper Harvest, Famine, etc.)
+- Detection rolls separately for each event
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.5, 4.1, 5.1
+
+**Code:**
+- `src/lib/market/insights.ts` - `detectMarketEvent()`
+- `src/lib/market/events.ts` - Event detection integration
+- `src/lib/bots/archetypes/merchant.ts` - Passive ability
+
+**Tests:**
+- `src/lib/market/__tests__/insights.test.ts` - Test 50% detection rate over many events
+- `src/lib/market/__tests__/event-detection.test.ts` - Verify 2-turn advance warning
 
 **Status:** Draft
 
