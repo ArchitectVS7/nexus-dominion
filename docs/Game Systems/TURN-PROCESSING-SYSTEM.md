@@ -2029,15 +2029,29 @@ spy_points = min(spy_points, max_spy_points)
 
 ---
 
-### REQ-TURN-015: Market Phase
+### REQ-TURN-015: Market Phase (PARENT)
 
-**Description:** Market Phase (Phase 12) updates resource prices based on supply/demand from previous turn:
-```
-price_change = (demand - supply) / supply * volatility_factor
-new_price = clamp(old_price * (1 + price_change), min_price, max_price)
-```
+**Description:** Market Phase (Phase 12) updates resource prices based on supply/demand. This parent spec tracks the complete market price system.
+
+**Children:**
+- REQ-TURN-015.1: Price Change Formula
+- REQ-TURN-015.2: Price Clamping Limits
 
 **Rationale:** Dynamic economy responds to player/bot trading behavior. Prevents price manipulation via min/max clamps.
+
+**Source:** Section 3.12
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-015.1: Price Change Formula
+
+**Description:** Resource prices update based on supply/demand formula:
+```
+price_change = (demand - supply) / supply * volatility_factor
+new_price = old_price * (1 + price_change)
+```
 
 **Formula:**
 ```
@@ -2048,23 +2062,47 @@ price_change = (demand - supply) / supply * 0.5
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | volatility_factor | 0.5 | Dampens price swings (50% of raw change) |
-| min_price | 0.5 | Prevents prices from going too low |
-| max_price | 2.0 | Prevents prices from going too high |
+
+**Rationale:** Supply/demand dynamics create responsive market economy.
 
 **Source:** Section 3.12
 
 **Code:**
-- `src/lib/game/services/phases/market-phase.ts` - `processMarket()`
 - `src/lib/game/market/price-calculator.ts` - Supply/demand formula
 
 **Tests:**
-- `src/lib/game/services/__tests__/market-phase.test.ts` - Price updates, clamping, edge cases (zero supply)
+- `src/lib/game/services/__tests__/market-phase.test.ts` - Test price calculation, zero supply edge case
 
 **Status:** Draft
 
 ---
 
-### REQ-TURN-016: Bot Messages Phase
+### REQ-TURN-015.2: Price Clamping Limits
+
+**Description:** Prices are clamped to prevent extreme values:
+```
+new_price = clamp(calculated_price, min_price, max_price)
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| min_price | 0.5 | Prevents prices from going too low |
+| max_price | 2.0 | Prevents prices from going too high |
+
+**Rationale:** Prevents price manipulation and extreme market volatility.
+
+**Source:** Section 3.12
+
+**Code:**
+- `src/lib/game/services/phases/market-phase.ts` - `processMarket()` with clamping
+
+**Tests:**
+- `src/lib/game/services/__tests__/market-phase.test.ts` - Test clamping enforcement
+
+**Status:** Draft
+
+---
 
 **Description:** Bot Messages Phase (Phase 13) generates diplomatic messages based on bot decisions from Phase 9. Messages use archetype-specific templates with personality flavor. Failures log errors but don't block turn.
 
