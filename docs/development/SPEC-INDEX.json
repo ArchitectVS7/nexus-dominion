@@ -326,9 +326,11 @@
         { "id": "REQ-SEC-006-D", "title": "Credits Unlimited Storage", "atomic": true, "line": 1084, "splitFrom": "REQ-SEC-006" },
         { "id": "REQ-SEC-007", "title": "No Maximum Sector Count", "atomic": true, "line": 1109 },
         { "id": "REQ-SEC-008", "title": "Special Sector Stacking", "atomic": true, "line": 1129 },
-        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat", "atomic": false, "line": 1148, "splitCandidate": "formula + permanent" },
-        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 1178, "splitCandidate": "cap + random selection" },
-        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1204 }
+        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat (Split)", "atomic": true, "line": 1148, "parentOf": ["REQ-SEC-009-A", "REQ-SEC-009-B"] },
+        { "id": "REQ-SEC-009-A", "title": "Sector Destruction Formula", "atomic": true, "line": 1154, "splitFrom": "REQ-SEC-009" },
+        { "id": "REQ-SEC-009-B", "title": "Permanent Sector Removal", "atomic": true, "line": 1195, "splitFrom": "REQ-SEC-009" },
+        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 1213, "splitCandidate": "cap + random selection" },
+        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1239 }
       ]
     },
     "RESEARCH": {
@@ -507,9 +509,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 355,
-    "atomicSpecs": 304,
-    "splitCandidates": 42,
+    "totalSpecs": 357,
+    "atomicSpecs": 307,
+    "splitCandidates": 41,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

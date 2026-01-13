@@ -1145,11 +1145,17 @@ Where:
 
 ---
 
-### REQ-SEC-009: Sector Destruction in Combat
+### REQ-SEC-009: Sector Destruction in Combat (Split)
 
-**Description:** When an empire loses a combat encounter, they may lose 1-3 sectors (destroyed, not transferred). Formula: `sectors_lost = floor(1 + random(0, 2) + overkill_bonus)`. Destroyed sectors are removed from game permanently.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-SEC-009-A through REQ-SEC-009-B.
 
-**Rationale:** Consequences for military defeat without eliminating empire entirely. Random component adds tension. Overkill bonus (TBD) rewards decisive victories. Sectors destroyed rather than transferred to prevent excessive snowballing.
+---
+
+### REQ-SEC-009-A: Sector Destruction Formula
+
+**Description:** When an empire loses a combat encounter, they lose 1-3 sectors based on formula with base loss (1), random component (0-2), and overkill bonus (0-1 if attacker deals 2x+ required damage).
+
+**Rationale:** Consequences for military defeat without eliminating empire entirely. Random component adds tension. Overkill bonus rewards decisive victories.
 
 **Formula:**
 ```
@@ -1159,16 +1165,45 @@ Where:
   Base loss: 1 sector (guaranteed)
   Random: 0-2 additional sectors
   Overkill bonus: 0-1 (if attacker deals 2x+ required damage)
+
+Examples:
+- Narrow defeat: 1 + 0 + 0 = 1 sector lost
+- Average defeat: 1 + 1 + 0 = 2 sectors lost
+- Decisive defeat (overkill): 1 + 2 + 1 = 4 sectors lost (capped at 3)
 ```
+
+**Key Values:**
+
+| Component | Value | Notes |
+|-----------|-------|-------|
+| Base sector loss | 1 | Guaranteed minimum |
+| Random additional | 0-2 | Adds uncertainty |
+| Overkill bonus | 0-1 | Rewards decisive victories |
 
 **Source:** Section 3.4 - Sector Destruction and Capture
 
 **Code:**
 - `src/lib/combat/aftermath.ts` - `applyCombatLosses(loser: Empire, overkill: number): void`
-- `src/lib/db/sectors.ts` - `destroySectors(empireId, count): Promise<void>`
 
 **Tests:**
 - `src/lib/combat/__tests__/aftermath.test.ts` - "loser should lose 1-3 sectors"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-009-B: Permanent Sector Removal
+
+**Description:** Destroyed sectors are removed from game permanently (not transferred to victor). Sectors deleted from database, preventing snowballing from sector transfers.
+
+**Rationale:** Sectors destroyed rather than transferred to prevent excessive snowballing. Limits economic growth from conquest alone.
+
+**Source:** Section 3.4 - Sector Destruction and Capture
+
+**Code:**
+- `src/lib/db/sectors.ts` - `destroySectors(empireId, count): Promise<void>`
+
+**Tests:**
 - `src/lib/combat/__tests__/aftermath.test.ts` - "destroyed sectors should be removed from database"
 
 **Status:** Draft
