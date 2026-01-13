@@ -1,0 +1,313 @@
+{
+  "version": "1.1",
+  "generated": "2026-01-12",
+  "totalSpecs": 179,
+  "systems": {
+    "COMBAT": {
+      "prefix": "REQ-COMBAT",
+      "file": "docs/Game Systems/COMBAT-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-COMBAT-001", "title": "D20 Attack Resolution", "atomic": true, "line": 393 },
+        { "id": "REQ-COMBAT-002", "title": "Attacker Win Rate", "atomic": true, "line": 416 },
+        { "id": "REQ-COMBAT-003", "title": "Defender Advantage", "atomic": true, "line": 432 },
+        { "id": "REQ-COMBAT-004", "title": "Unit Power Multipliers", "atomic": true, "line": 448 },
+        { "id": "REQ-COMBAT-005", "title": "Diversity Bonus", "atomic": true, "line": 470 },
+        { "id": "REQ-COMBAT-006", "title": "Station Defense Multiplier", "atomic": true, "line": 486 },
+        { "id": "REQ-COMBAT-007", "title": "Protection Period", "atomic": true, "line": 502 },
+        { "id": "REQ-COMBAT-008", "title": "Six Dramatic Outcomes", "atomic": true, "line": 518 },
+        { "id": "REQ-COMBAT-009", "title": "Multi-Domain Resolution", "atomic": false, "line": 540, "splitCandidate": "3 domains + victory bonuses" },
+        { "id": "REQ-COMBAT-010", "title": "Three Battle Types", "atomic": true, "line": 556 },
+        { "id": "REQ-COMBAT-011", "title": "Unit Rarity Tiers", "atomic": true, "line": 575 },
+        { "id": "REQ-COMBAT-012", "title": "Morale & Surrender", "atomic": false, "line": 594, "splitCandidate": "morale + surrender mechanics" }
+      ]
+    },
+    "BOT": {
+      "prefix": "REQ-BOT",
+      "file": "docs/Game Systems/BOT-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-BOT-001", "title": "Four-Tier Intelligence", "atomic": false, "line": 808, "splitCandidate": "4 intelligence tiers" },
+        { "id": "REQ-BOT-002", "title": "Eight Archetypes", "atomic": false, "line": 847, "splitCandidate": "8 archetype definitions" },
+        { "id": "REQ-BOT-003", "title": "Emotional States", "atomic": false, "line": 913, "splitCandidate": "6 emotional states" },
+        { "id": "REQ-BOT-004", "title": "Memory System with Weighted Decay", "atomic": true, "line": 960 },
+        { "id": "REQ-BOT-005", "title": "100 Unique Personas", "atomic": true, "line": 1000 },
+        { "id": "REQ-BOT-006", "title": "LLM Integration", "atomic": false, "line": 1029, "splitCandidate": "provider chain + rate limits + prompt" },
+        { "id": "REQ-BOT-007", "title": "Decision Audit System", "atomic": true, "line": 1083 },
+        { "id": "REQ-BOT-008", "title": "Coalition AI Behavior", "atomic": false, "line": 1132, "splitCandidate": "formation + behavior + betrayal" },
+        { "id": "REQ-BOT-009", "title": "Behavioral Telegraphing", "atomic": true, "line": 1172 },
+        { "id": "REQ-BOT-010", "title": "Endgame Behavior", "atomic": false, "line": 1203, "splitCandidate": "4 turn threshold behaviors" }
+      ]
+    },
+    "COVERT": {
+      "prefix": "REQ-COV",
+      "file": "docs/Game Systems/COVERT-OPS-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-COV-001", "title": "Ten Operation Types", "atomic": true, "line": 884 },
+        { "id": "REQ-COV-002", "title": "Reconnaissance Intel Levels", "atomic": true, "line": 917 },
+        { "id": "REQ-COV-003", "title": "Success Rate Formula", "atomic": true, "line": 950 },
+        { "id": "REQ-COV-004", "title": "Detection Mechanics", "atomic": false, "line": 984, "splitCandidate": "detection + diplomatic consequences" },
+        { "id": "REQ-COV-005", "title": "Agent Economy", "atomic": false, "line": 1024, "splitCandidate": "production + consumption + discount" },
+        { "id": "REQ-COV-006", "title": "Phase 5 Processing Order", "atomic": true, "line": 1060 },
+        { "id": "REQ-COV-007", "title": "Steal Credits Operation", "atomic": true, "line": 1092 },
+        { "id": "REQ-COV-008", "title": "Schemer Archetype Integration", "atomic": false, "line": 1117, "splitCandidate": "priority + passive + decision + sectors" },
+        { "id": "REQ-COV-009", "title": "Assassinate Leader Operation", "atomic": true, "line": 1144 },
+        { "id": "REQ-COV-010", "title": "Frame Another Empire Operation", "atomic": true, "line": 1172 },
+        { "id": "REQ-COV-011", "title": "Intel Decay System", "atomic": true, "line": 1201 },
+        { "id": "REQ-COV-012", "title": "Operation Failure Resource Refunds", "atomic": true, "line": 1228 }
+      ]
+    },
+    "DIPLOMACY": {
+      "prefix": "REQ-DIP",
+      "file": "docs/Game Systems/DIPLOMACY-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-DIP-001", "title": "Treaty Types", "atomic": true, "line": 526 },
+        { "id": "REQ-DIP-002", "title": "Coalition System", "atomic": false, "line": 547, "splitCandidate": "formation + benefits + dissolution" },
+        { "id": "REQ-DIP-003", "title": "Reputation System", "atomic": true, "line": 570 },
+        { "id": "REQ-DIP-004", "title": "Trust Score Calculation", "atomic": true, "line": 610 },
+        { "id": "REQ-DIP-005", "title": "Automatic Coalition Formation", "atomic": false, "line": 634, "splitCandidate": "auto-formation + leader debuffs" },
+        { "id": "REQ-DIP-006", "title": "Betrayal Mechanics", "atomic": false, "line": 663, "splitCandidate": "treaty breaking + coalition betrayal + bot rates" },
+        { "id": "REQ-DIP-007", "title": "Treaty Duration & Renewal", "atomic": true, "line": 701 },
+        { "id": "REQ-DIP-008", "title": "Diplomatic Victory Condition", "atomic": true, "line": 727 },
+        { "id": "REQ-DIP-009", "title": "Shared Intelligence", "atomic": false, "line": 749, "splitCandidate": "4 intel sharing types" },
+        { "id": "REQ-DIP-010", "title": "Reputation Recovery", "atomic": false, "line": 772, "splitCandidate": "fast + slow + permanent scars" }
+      ]
+    },
+    "MARKET": {
+      "prefix": "REQ-MKT",
+      "file": "docs/Game Systems/MARKET-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-MKT-001", "title": "Resource Trading", "atomic": true, "line": 711 },
+        { "id": "REQ-MKT-002", "title": "Dynamic Pricing", "atomic": false, "line": 730, "splitCandidate": "5 price modifiers" },
+        { "id": "REQ-MKT-003", "title": "Transaction Fees", "atomic": false, "line": 768, "splitCandidate": "buy + sell + bulk + research bonus" },
+        { "id": "REQ-MKT-004", "title": "Market Limits", "atomic": false, "line": 805, "splitCandidate": "max transaction + reserve + clamping" },
+        { "id": "REQ-MKT-005", "title": "Market Events", "atomic": false, "line": 840, "splitCandidate": "8 event types" },
+        { "id": "REQ-MKT-006", "title": "Anti-Snowball Leader Penalty", "atomic": true, "line": 872 },
+        { "id": "REQ-MKT-007", "title": "Merchant Market Insight", "atomic": false, "line": 902, "splitCandidate": "prediction + visibility + detection" },
+        { "id": "REQ-MKT-008", "title": "Bot Archetype Trading", "atomic": false, "line": 933, "splitCandidate": "4 archetype behaviors" },
+        { "id": "REQ-MKT-009", "title": "Market History & Transparency", "atomic": false, "line": 958, "splitCandidate": "public + private info types" },
+        { "id": "REQ-MKT-010", "title": "Base Resource Prices", "atomic": true, "line": 985 },
+        { "id": "REQ-MKT-011", "title": "Commerce Research Integration", "atomic": true, "line": 1013 },
+        { "id": "REQ-MKT-012", "title": "Market UI Real-Time Updates", "atomic": false, "line": 1038, "splitCandidate": "interval + timeout + animation" }
+      ]
+    },
+    "MILITARY": {
+      "prefix": "REQ-MIL",
+      "file": "docs/Game Systems/MILITARY-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-MIL-001", "title": "Six Unit Types", "atomic": true, "line": 548, "note": "Title says 6, lists 7 units" },
+        { "id": "REQ-MIL-002", "title": "Build Queue System", "atomic": false, "line": 574, "splitCandidate": "queue + upfront + multi-turn + cancel" },
+        { "id": "REQ-MIL-003", "title": "Resource Costs", "atomic": true, "line": 598 },
+        { "id": "REQ-MIL-004", "title": "Maintenance Costs", "atomic": false, "line": 627, "splitCandidate": "costs + attrition" },
+        { "id": "REQ-MIL-005", "title": "Production Time", "atomic": true, "line": 660 },
+        { "id": "REQ-MIL-006", "title": "Power Multipliers", "atomic": true, "line": 686, "note": "Potential duplicate of REQ-COMBAT-004" },
+        { "id": "REQ-MIL-007", "title": "Cost-to-Power Efficiency", "atomic": true, "line": 717 },
+        { "id": "REQ-MIL-008", "title": "Composition Bonus", "atomic": true, "line": 750, "note": "Potential duplicate of REQ-COMBAT-005" },
+        { "id": "REQ-MIL-009", "title": "Domain Assignment", "atomic": true, "line": 768 },
+        { "id": "REQ-MIL-010", "title": "No Unit Caps", "atomic": true, "line": 793 }
+      ]
+    },
+    "PROGRESSIVE": {
+      "prefix": "REQ-PROG",
+      "file": "docs/Game Systems/PROGRESSIVE-SYSTEMS.md",
+      "specs": [
+        { "id": "REQ-PROG-001", "title": "Feature Unlocks", "atomic": false, "line": 751, "splitCandidate": "3 unlocks + veteran override" },
+        { "id": "REQ-PROG-002", "title": "Game Checkpoints", "atomic": false, "line": 782, "splitCandidate": "auto + manual + cloud" },
+        { "id": "REQ-PROG-003", "title": "Galactic Events", "atomic": false, "line": 814, "splitCandidate": "probability + 8 types + duration + restrictions" },
+        { "id": "REQ-PROG-004", "title": "Tutorial Sequence", "atomic": false, "line": 846, "splitCandidate": "sequence + objectives + rewards + skip" },
+        { "id": "REQ-PROG-005", "title": "Bot Tutorial Passivity", "atomic": false, "line": 877, "splitCandidate": "3 passivity adjustments" },
+        { "id": "REQ-PROG-006", "title": "Event Announcements", "atomic": false, "line": 908, "splitCandidate": "warning + banner + counter + end" }
+      ]
+    },
+    "RESOURCE": {
+      "prefix": "REQ-RES",
+      "file": "docs/Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-RES-001", "title": "Five Resource Types", "atomic": true, "line": 851 },
+        { "id": "REQ-RES-002", "title": "Sector Production Rates", "atomic": false, "line": 877, "splitCandidate": "8 sector production types" },
+        { "id": "REQ-RES-003", "title": "Civil Status Income Multiplier", "atomic": true, "line": 913, "note": "Placeholder values need verification" },
+        { "id": "REQ-RES-004", "title": "Population Food Consumption", "atomic": false, "line": 952, "splitCandidate": "consumption + deficit consequences" },
+        { "id": "REQ-RES-005", "title": "Military Maintenance Costs", "atomic": false, "line": 997, "splitCandidate": "ore + petroleum + consequences" },
+        { "id": "REQ-RES-006", "title": "Population Growth and Decline", "atomic": false, "line": 1046, "splitCandidate": "growth + decline + cap", "note": "Duplicate of REQ-TURN-006" },
+        { "id": "REQ-RES-007", "title": "Civil Status Calculation Formula", "atomic": false, "line": 1107, "splitCandidate": "5 factors + mapping + transitions", "note": "Duplicate of REQ-TURN-007" },
+        { "id": "REQ-RES-008", "title": "Resource Storage and Negative Balances", "atomic": false, "line": 1161, "splitCandidate": "5 resource consequences", "note": "Conflicts with REQ-SEC-006" },
+        { "id": "REQ-RES-009", "title": "Sector Type Conversion", "atomic": false, "line": 1190, "splitCandidate": "cost + timing + restrictions" },
+        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1223, "splitCandidate": "capacity + overcrowding + starting" },
+        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1258, "splitCandidate": "accumulation + thresholds + timeline" },
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 1292, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+      ]
+    },
+    "SECTOR": {
+      "prefix": "REQ-SEC",
+      "file": "docs/Game Systems/SECTOR-MANAGEMENT-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-SEC-001", "title": "Starting Sectors", "atomic": true, "line": 580 },
+        { "id": "REQ-SEC-002", "title": "Sector Cost Scaling", "atomic": true, "line": 611 },
+        { "id": "REQ-SEC-003", "title": "Eight Sector Types", "atomic": false, "line": 652, "splitCandidate": "8 sector type definitions" },
+        { "id": "REQ-SEC-004", "title": "Production Timing", "atomic": false, "line": 686, "splitCandidate": "timing + delay + server-side" },
+        { "id": "REQ-SEC-005", "title": "Sector Acquisition Action", "atomic": true, "line": 707 },
+        { "id": "REQ-SEC-006", "title": "Resource Cap Handling", "atomic": false, "line": 728, "splitCandidate": "3 caps + overflow", "note": "Conflicts with REQ-RES-008" },
+        { "id": "REQ-SEC-007", "title": "No Maximum Sector Count", "atomic": true, "line": 758 },
+        { "id": "REQ-SEC-008", "title": "Special Sector Stacking", "atomic": true, "line": 778 },
+        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat", "atomic": false, "line": 797, "splitCandidate": "formula + permanent" },
+        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 827, "splitCandidate": "cap + random selection" },
+        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 853 }
+      ]
+    },
+    "RESEARCH": {
+      "prefix": "REQ-RSCH",
+      "file": "docs/Game Systems/RESEARCH-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-RSCH-001", "title": "Three-Tier Research Structure", "atomic": false, "line": 1846, "splitCandidate": "3 tier definitions" },
+        { "id": "REQ-RSCH-002", "title": "Doctrine System (Tier 1)", "atomic": false, "line": 1870, "splitCandidate": "3 doctrine definitions" },
+        { "id": "REQ-RSCH-003", "title": "Specialization System (Tier 2)", "atomic": false, "line": 1907, "splitCandidate": "6 specialization definitions" },
+        { "id": "REQ-RSCH-004", "title": "Capstone System (Tier 3)", "atomic": false, "line": 1942, "splitCandidate": "3 capstone definitions" },
+        { "id": "REQ-RSCH-005", "title": "Research Point Economy", "atomic": false, "line": 1983, "splitCandidate": "generation + accumulation + visibility" },
+        { "id": "REQ-RSCH-006", "title": "Research Information Visibility", "atomic": false, "line": 2016, "splitCandidate": "public + hidden + reveal methods" },
+        { "id": "REQ-RSCH-007", "title": "Research-Combat Integration", "atomic": false, "line": 2054, "splitCandidate": "doctrine + specialization + stacking" },
+        { "id": "REQ-RSCH-008", "title": "Specialization Counter-Play", "atomic": false, "line": 2089, "splitCandidate": "4 counter relationships" },
+        { "id": "REQ-RSCH-009", "title": "Investigate Specialization Operation", "atomic": false, "line": 2125, "splitCandidate": "cost + rate + processing + results + failure" },
+        { "id": "REQ-RSCH-010", "title": "Galactic News Rumor System", "atomic": false, "line": 2153, "splitCandidate": "generation + frequency + verification" },
+        { "id": "REQ-RSCH-011", "title": "Alliance Intel Sharing", "atomic": false, "line": 2187, "splitCandidate": "spec reveal + ally reveal + RP sharing + UI" },
+        { "id": "REQ-RSCH-012", "title": "Bot Research Decision Logic", "atomic": false, "line": 2212, "splitCandidate": "archetype preferences + counter-picking + tier logic" }
+      ]
+    },
+    "SYNDICATE": {
+      "prefix": "REQ-SYND",
+      "file": "docs/Game Systems/SYNDICATE-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-SYND-001", "title": "Hidden Role Assignment", "atomic": true, "line": 665 },
+        { "id": "REQ-SYND-002", "title": "The Revelation Moment", "atomic": true, "line": 702 },
+        { "id": "REQ-SYND-003", "title": "Syndicate Contract System", "atomic": true, "line": 730 },
+        { "id": "REQ-SYND-004", "title": "Trust Progression System", "atomic": true, "line": 774 },
+        { "id": "REQ-SYND-005", "title": "Black Market System", "atomic": true, "line": 820 },
+        { "id": "REQ-SYND-006", "title": "Suspicion System", "atomic": true, "line": 858 },
+        { "id": "REQ-SYND-007", "title": "Accusation System", "atomic": true, "line": 903 },
+        { "id": "REQ-SYND-008", "title": "The Coordinator (NPC Faction)", "atomic": true, "line": 949 },
+        { "id": "REQ-SYND-009", "title": "Syndicate Victory Conditions", "atomic": true, "line": 983 },
+        { "id": "REQ-SYND-010", "title": "Bot Syndicate Integration", "atomic": true, "line": 1030 },
+        { "id": "REQ-SYND-011", "title": "Intel Point Economy", "atomic": true, "line": 1080 },
+        { "id": "REQ-SYND-012", "title": "Suspicious Activity Feed", "atomic": true, "line": 1112 }
+      ]
+    },
+    "TECH": {
+      "prefix": "REQ-TECH",
+      "file": "docs/Game Systems/TECH-CARD-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-TECH-001", "title": "Tech Card Draft System", "atomic": true, "line": 737 },
+        { "id": "REQ-TECH-002", "title": "Hidden Objectives (T1 Cards)", "atomic": true, "line": 760 },
+        { "id": "REQ-TECH-003", "title": "Public Draft Cards (T2)", "atomic": true, "line": 783 },
+        { "id": "REQ-TECH-004", "title": "Legendary Cards (T3)", "atomic": true, "line": 808 },
+        { "id": "REQ-TECH-005", "title": "Bot Tech Card Integration", "atomic": true, "line": 833 },
+        { "id": "REQ-TECH-006", "title": "End Game Hidden Objective Reveal", "atomic": true, "line": 858 },
+        { "id": "REQ-TECH-007", "title": "Tech Card Catalog (40 Cards Total)", "atomic": true, "line": 881 },
+        { "id": "REQ-TECH-008", "title": "Tech Card Counter-Play System", "atomic": true, "line": 913 },
+        { "id": "REQ-TECH-009", "title": "Draft Timing & Combat Integration", "atomic": true, "line": 940 }
+      ]
+    },
+    "TURN": {
+      "prefix": "REQ-TURN",
+      "file": "docs/Game Systems/TURN-PROCESSING-SYSTEM.md",
+      "specs": [
+        { "id": "REQ-TURN-001", "title": "Turn Processing Pipeline (Split)", "atomic": true, "line": 1037, "parentOf": ["REQ-TURN-001-01", "REQ-TURN-001-02", "REQ-TURN-001-03", "REQ-TURN-001-04", "REQ-TURN-001-05", "REQ-TURN-001-06", "REQ-TURN-001-07", "REQ-TURN-001-08", "REQ-TURN-001-09", "REQ-TURN-001-10", "REQ-TURN-001-11", "REQ-TURN-001-12", "REQ-TURN-001-13", "REQ-TURN-001-14", "REQ-TURN-001-15", "REQ-TURN-001-16", "REQ-TURN-001-17", "REQ-TURN-001-18"] },
+        { "id": "REQ-TURN-001-01", "title": "Tier Structure Definition", "atomic": true, "line": 1043, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-02", "title": "Income Phase", "atomic": true, "line": 1068, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-03", "title": "Auto-Production Phase", "atomic": true, "line": 1109, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-04", "title": "Population Phase", "atomic": true, "line": 1132, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-05", "title": "Civil Status Phase", "atomic": true, "line": 1176, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-06", "title": "Research Phase", "atomic": true, "line": 1206, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-07", "title": "Build Queue Phase", "atomic": true, "line": 1228, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-08", "title": "Covert Phase", "atomic": true, "line": 1250, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-09", "title": "Crafting Phase", "atomic": true, "line": 1272, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-10", "title": "Bot Decisions Phase", "atomic": true, "line": 1294, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-11", "title": "Emotional Decay Phase", "atomic": true, "line": 1316, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-12", "title": "Memory Cleanup Phase", "atomic": true, "line": 1338, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-13", "title": "Market Phase", "atomic": true, "line": 1366, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-14", "title": "Bot Messages Phase", "atomic": true, "line": 1388, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-15", "title": "Galactic Events Phase", "atomic": true, "line": 1410, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-16", "title": "Alliance Checkpoints Phase", "atomic": true, "line": 1437, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-17", "title": "Victory Check Phase", "atomic": true, "line": 1464, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-001-18", "title": "Auto-Save Phase", "atomic": true, "line": 1486, "splitFrom": "REQ-TURN-001" },
+        { "id": "REQ-TURN-002", "title": "Turn Increment", "atomic": true, "line": 1508 },
+        { "id": "REQ-TURN-003", "title": "Victory Check Timing", "atomic": true, "line": 1097 },
+        { "id": "REQ-TURN-004", "title": "Income Phase Execution", "atomic": false, "line": 1115, "splitCandidate": "formula + multiplier" },
+        { "id": "REQ-TURN-005", "title": "Auto-Production Phase", "atomic": true, "line": 1157 },
+        { "id": "REQ-TURN-006", "title": "Population Phase", "atomic": false, "line": 1176, "splitCandidate": "growth + starvation + civil impact", "note": "Duplicate of REQ-RES-006" },
+        { "id": "REQ-TURN-007", "title": "Civil Status Phase", "atomic": false, "line": 1220, "splitCandidate": "morale + mapping + effects", "note": "Duplicate of REQ-RES-007" },
+        { "id": "REQ-TURN-008", "title": "Research Phase", "atomic": true, "line": 1251 },
+        { "id": "REQ-TURN-009", "title": "Build Queue Phase", "atomic": true, "line": 1277 },
+        { "id": "REQ-TURN-010", "title": "Covert Phase", "atomic": false, "line": 1296, "splitCandidate": "generation + cap" },
+        { "id": "REQ-TURN-011", "title": "Crafting Phase", "atomic": true, "line": 1326 },
+        { "id": "REQ-TURN-012", "title": "Bot Decisions Phase", "atomic": false, "line": 1344, "splitCandidate": "evaluation + prioritization + failure" },
+        { "id": "REQ-TURN-013", "title": "Emotional Decay Phase", "atomic": false, "line": 1365, "splitCandidate": "3 emotion decay rates" },
+        { "id": "REQ-TURN-014", "title": "Memory Cleanup Phase", "atomic": false, "line": 1389, "splitCandidate": "interval + threshold + preservation" },
+        { "id": "REQ-TURN-015", "title": "Market Phase", "atomic": false, "line": 1408, "splitCandidate": "formula + clamping", "note": "Duplicate of REQ-MKT-002" },
+        { "id": "REQ-TURN-016", "title": "Bot Messages Phase", "atomic": false, "line": 1443, "splitCandidate": "generation + templates + failure" },
+        { "id": "REQ-TURN-017", "title": "Galactic Events Phase", "atomic": false, "line": 1463, "splitCandidate": "triggering + probability + milestone", "note": "Duplicate of REQ-PROG-003" },
+        { "id": "REQ-TURN-018", "title": "Alliance Checkpoints Phase", "atomic": false, "line": 1494, "splitCandidate": "formation + join + milestone", "note": "Duplicate of REQ-DIP-005" },
+        { "id": "REQ-TURN-019", "title": "Victory Check Phase", "atomic": false, "line": 1521, "splitCandidate": "6 victory conditions", "note": "Duplicates REQ-VIC-001..006" },
+        { "id": "REQ-TURN-020", "title": "Auto-Save Phase", "atomic": false, "line": 1559, "splitCandidate": "save + rotation + failure" },
+        { "id": "REQ-TURN-021", "title": "Performance Budget", "atomic": false, "line": 1578, "splitCandidate": "4 phase group budgets" }
+      ]
+    },
+    "VICTORY": {
+      "prefix": "REQ-VIC",
+      "file": "docs/Game Systems/VICTORY-SYSTEMS.md",
+      "specs": [
+        { "id": "REQ-VIC-001", "title": "Conquest Victory", "atomic": true, "line": 884 },
+        { "id": "REQ-VIC-002", "title": "Economic Victory", "atomic": false, "line": 919, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-RES-012" },
+        { "id": "REQ-VIC-003", "title": "Diplomatic Victory", "atomic": false, "line": 961, "splitCandidate": "territory + threshold + shared" },
+        { "id": "REQ-VIC-004", "title": "Research Victory", "atomic": false, "line": 998, "splitCandidate": "capstone + advanced tech" },
+        { "id": "REQ-VIC-005", "title": "Military Victory", "atomic": false, "line": 1035, "splitCandidate": "power calc + threshold" },
+        { "id": "REQ-VIC-006", "title": "Survival Victory", "atomic": false, "line": 1076, "splitCandidate": "score + turn limit + tiebreaker" },
+        { "id": "REQ-VIC-007", "title": "Victory Point Calculation", "atomic": false, "line": 1120, "splitCandidate": "6 category formulas - CRITICAL SPLIT" },
+        { "id": "REQ-VIC-008", "title": "Anti-Snowball Mechanics", "atomic": false, "line": 1167, "splitCandidate": "7 mechanics - CRITICAL SPLIT" },
+        { "id": "REQ-VIC-009", "title": "Victory Notifications", "atomic": false, "line": 1201, "splitCandidate": "4 VP threshold notifications" },
+        { "id": "REQ-VIC-010", "title": "Victory Achievement Screen", "atomic": false, "line": 1232, "splitCandidate": "freeze + screen + stats" }
+      ]
+    },
+    "UI": {
+      "prefix": "REQ-UI",
+      "file": "docs/Game Systems/FRONTEND-DESIGN.md",
+      "specs": [
+        { "id": "REQ-UI-001", "title": "Boardgame + LCARS Aesthetic", "atomic": true, "line": 1889 },
+        { "id": "REQ-UI-002", "title": "Star Map as Hub", "atomic": true, "line": 1916 },
+        { "id": "REQ-UI-003", "title": "Overlay Panel System", "atomic": true, "line": 1937 },
+        { "id": "REQ-UI-004", "title": "Card + Details Sidebar Pattern", "atomic": true, "line": 1967 },
+        { "id": "REQ-UI-005", "title": "Collapsible Phase Indicator", "atomic": true, "line": 1996 },
+        { "id": "REQ-UI-006", "title": "Actionable Guidance System", "atomic": true, "line": 2022 },
+        { "id": "REQ-UI-007", "title": "Strategic Visual Language", "atomic": true, "line": 2048 },
+        { "id": "REQ-UI-008", "title": "React Query Data Layer", "atomic": true, "line": 2081 },
+        { "id": "REQ-UI-009", "title": "Zustand Client State", "atomic": true, "line": 2097 },
+        { "id": "REQ-UI-010", "title": "CSS + GSAP Hybrid Animation", "atomic": true, "line": 2113 },
+        { "id": "REQ-UI-011", "title": "D3.js Star Map Visualization", "atomic": true, "line": 2136 },
+        { "id": "REQ-UI-012", "title": "Keyboard Navigation", "atomic": true, "line": 2159 },
+        { "id": "REQ-UI-013", "title": "WCAG AA Color Contrast", "atomic": true, "line": 2184 }
+      ]
+    }
+  },
+  "summary": {
+    "totalSpecs": 179,
+    "atomicSpecs": 86,
+    "splitCandidates": 93,
+    "duplicatesIdentified": 8,
+    "conflictsIdentified": 1
+  },
+  "splitPriority": [
+    { "id": "REQ-VIC-007", "items": 6, "reason": "6 VP formulas in one spec" },
+    { "id": "REQ-VIC-008", "items": 7, "reason": "7 anti-snowball mechanics" },
+    { "id": "REQ-BOT-002", "items": 8, "reason": "8 archetype definitions" },
+    { "id": "REQ-RSCH-003", "items": 6, "reason": "6 specialization definitions" }
+  ],
+  "duplicatesToResolve": [
+    { "primary": "REQ-COMBAT-004", "duplicate": "REQ-MIL-006", "concept": "Power multipliers" },
+    { "primary": "REQ-COMBAT-005", "duplicate": "REQ-MIL-008", "concept": "Composition/diversity bonus" },
+    { "primary": "REQ-VIC-002", "duplicate": "REQ-RES-012", "concept": "Economic victory" },
+    { "primary": "REQ-RES-006", "duplicate": "REQ-TURN-006", "concept": "Population growth/decline" },
+    { "primary": "REQ-RES-007", "duplicate": "REQ-TURN-007", "concept": "Civil status calculation" },
+    { "primary": "REQ-MKT-002", "duplicate": "REQ-TURN-015", "concept": "Market price updates" },
+    { "primary": "REQ-PROG-003", "duplicate": "REQ-TURN-017", "concept": "Galactic events" },
+    { "primary": "REQ-DIP-005", "duplicate": "REQ-TURN-018", "concept": "Auto-coalition formation" }
+  ],
+  "conflictsToResolve": [
+    { "specs": ["REQ-SEC-006", "REQ-RES-008"], "issue": "Resource caps vs no hard caps" }
+  ]
+}

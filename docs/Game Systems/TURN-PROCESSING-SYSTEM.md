@@ -1034,32 +1034,21 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-TURN-001: Turn Processing Pipeline
+### REQ-TURN-001: Turn Processing Pipeline (Split)
 
-**Description:** Each turn consists of two processing tiers executed in order:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-TURN-001-01 through REQ-TURN-001-18 below.
 
-**Tier 1 - Transactional (atomic, all-or-nothing):**
-1. Income Phase - Resources generated (with civil status multiplier)
-2. Tier 1 Auto-Production - Crafting system resource generation
-3. Population Phase - Growth/starvation based on food
-4. Civil Status Phase - Morale evaluated
-5. Research Phase - Research points allocated
-6. Build Queue Phase - Unit construction progresses
-7. Covert Phase - Spy points generated
-8. Crafting Phase - Crafting queue processed
+---
 
-**Tier 2 - Non-Transactional (can fail gracefully):**
-9. Bot Decisions - AI makes strategic choices
-10. Emotional Decay - Bot emotions cool down
-11. Memory Cleanup - Old memories pruned (every 5 turns)
-12. Market Phase - Prices update
-13. Bot Messages - Communication generated
-14. Galactic Events - Random events trigger (M11)
-15. Alliance Checkpoints - Coalition evaluations (M11)
-16. Victory Check - Win/loss conditions evaluated
-17. Auto-Save - Game state persisted
+### REQ-TURN-001-01: Tier Structure Definition
+
+**Description:** Turn processing consists of two tiers executed in order: Tier 1 (Transactional, atomic, all-or-nothing) contains 8 phases for critical empire state updates that must succeed or rollback. Tier 2 (Non-Transactional) contains 9 phases for non-critical systems that can fail gracefully without affecting empire state.
 
 **Rationale:** Two-tier structure ensures critical empire state is atomic (transaction rollback on failure) while allowing non-critical systems to fail gracefully.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.2, Section 2.1
 
@@ -1071,6 +1060,446 @@ This section contains formal requirements for spec-driven development. Each spec
 **Tests:**
 - `src/lib/game/services/__tests__/turn-processor.test.ts` - Full pipeline integration test
 - `src/lib/game/services/__tests__/tier1-rollback.test.ts` - Transaction rollback validation
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-02: Income Phase
+
+**Description:** Phase 1 (Tier 1) generates resources for all empires based on formula: `income = base_rate * sector_count * civil_multiplier`. Each resource type (credits, ore, food) has a base rate per sector, multiplied by civil status multiplier (Happy: 1.2, Content: 1.0, Unrest: 0.8, Rebellion: 0.5).
+
+**Rationale:** Resource generation is foundation of game economy. Civil status link incentivizes maintaining morale.
+
+**Formula:**
+```
+credits_income = 100 * num_sectors * civil_status_multiplier
+ore_income = 50 * num_sectors * civil_status_multiplier
+food_income = 75 * num_sectors * civil_status_multiplier
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| base_credits_per_sector | 100 | Base credit generation per sector |
+| base_ore_per_sector | 50 | Base ore generation per sector |
+| base_food_per_sector | 75 | Base food generation per sector |
+| civil_status_multiplier (Happy) | 1.2 | +20% income bonus |
+| civil_status_multiplier (Content) | 1.0 | Normal income |
+| civil_status_multiplier (Unrest) | 0.8 | -20% income penalty |
+| civil_status_multiplier (Rebellion) | 0.5 | -50% income penalty |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1
+
+**Code:**
+- `src/lib/game/services/phases/income-phase.ts` - `processIncomePhase()`
+- `src/lib/game/services/civil-status.ts` - `getCivilStatusMultiplier()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/income-phase.test.ts` - Verify income calculation with various civil statuses
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-03: Auto-Production Phase
+
+**Description:** Phase 2 (Tier 1) processes crafting buildings that automatically generate derived resources (e.g., Ore Refinery: 100 raw ore → 50 refined ore). Only processes if empire has sufficient input resources. Does not allow negative resource balances.
+
+**Rationale:** Enables resource transformation chains for Tech Wars expansion. Automated to reduce micromanagement.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/game/services/phases/auto-production-phase.ts` - `processAutoProduction()`
+- `src/lib/game/services/crafting/crafting-recipes.ts` - Recipe definitions
+
+**Tests:**
+- `src/lib/game/services/__tests__/auto-production-phase.test.ts` - Verify production, insufficient resources edge case
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-04: Population Phase
+
+**Description:** Phase 3 (Tier 1) calculates population growth or starvation based on food balance. If surplus food exists, population grows (max 5% per turn). If food deficit exists, population dies (10% of deficit) and civil status degrades.
+
+**Rationale:** Food is critical resource for empire sustainability. Starvation has cascading negative effects (population loss + morale drop).
+
+**Formula:**
+```
+food_consumed = population * 1
+food_balance = food_income - food_consumed
+
+if food_balance >= 0:
+  growth = min(food_balance / 10, population * 0.05)
+  population += growth
+else:
+  deaths = abs(food_balance) * 0.1
+  population -= deaths
+  civil_status degrades
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| food_per_capita | 1 | Each person consumes 1 food/turn |
+| food_per_growth | 10 | 10 food required to add 1 population |
+| max_growth_rate | 0.05 | Max 5% population growth per turn |
+| starvation_death_rate | 0.1 | 10% of deficit translates to deaths |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3
+
+**Code:**
+- `src/lib/game/services/phases/population-phase.ts` - `processPopulation()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/population-phase.test.ts` - Growth, starvation, edge cases (zero population)
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-05: Civil Status Phase
+
+**Description:** Phase 4 (Tier 1) calculates morale based on food balance, military losses, raids, and diplomacy. Morale thresholds determine civil status: 80-100 (Happy, 1.2x income), 50-79 (Content, 1.0x income), 20-49 (Unrest, 0.8x income, cannot declare wars), 0-19 (Rebellion, 0.5x income, 10% secession chance).
+
+**Rationale:** Morale creates strategic depth—military losses and starvation weaken economy. Rebellion is severe penalty for neglecting empire health.
+
+**Key Values:**
+| Morale Range | Civil Status | Income Multiplier | Special Effects |
+|--------------|--------------|-------------------|-----------------|
+| 80-100 | Happy | 1.2 | +5 morale/turn |
+| 50-79 | Content | 1.0 | Stable |
+| 20-49 | Unrest | 0.8 | Cannot declare new wars |
+| 0-19 | Rebellion | 0.5 | 10% secession chance/turn |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4
+
+**Code:**
+- `src/lib/game/services/phases/civil-status-phase.ts` - `processCivilStatus()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/civil-status-phase.test.ts` - Morale calculation, threshold mapping, secession chance
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-06: Research Phase
+
+**Description:** Phase 5 (Tier 1) allocates research points to active research projects. Research sectors generate points, which accumulate toward unlocking doctrines, specializations, or capstones.
+
+**Rationale:** Research progression is core to strategic depth. Must be atomic to prevent partial research state.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.5
+
+**Code:**
+- `src/lib/game/services/phases/research-phase.ts` - `processResearch()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/research-phase.test.ts` - Point accumulation, threshold unlocks
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-07: Build Queue Phase
+
+**Description:** Phase 6 (Tier 1) advances unit construction in the build queue. Multi-turn units progress by 1 turn. Completed units are added to empire military. Queue processes in order (FIFO).
+
+**Rationale:** Build queue is critical military mechanic. Must be atomic to prevent partial unit construction.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.6
+
+**Code:**
+- `src/lib/game/services/phases/build-queue-phase.ts` - `processBuildQueue()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/build-queue-phase.test.ts` - Queue progression, unit completion
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-08: Covert Phase
+
+**Description:** Phase 7 (Tier 1) generates spy points for empires based on covert sector count and processes active covert operations. Operations are resolved in Phase 5 processing order (REQ-COV-006).
+
+**Rationale:** Covert operations are critical for intelligence gathering and disruption. Must be atomic for fair resolution.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7
+
+**Code:**
+- `src/lib/game/services/phases/covert-phase.ts` - `processCovert()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/covert-phase.test.ts` - Spy point generation, operation resolution
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-09: Crafting Phase
+
+**Description:** Phase 8 (Tier 1) processes the crafting queue for manual recipes (player-initiated resource transformations). Consumes input resources and produces output resources if empire has sufficient inputs.
+
+**Rationale:** Crafting completes the resource transformation system. Must be atomic to prevent partial recipe execution.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.8
+
+**Code:**
+- `src/lib/game/services/phases/crafting-phase.ts` - `processCrafting()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/crafting-phase.test.ts` - Queue processing, recipe execution
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-10: Bot Decisions Phase
+
+**Description:** Phase 9 (Tier 2) executes AI decision-making for all bot empires. Bots evaluate strategic options based on archetype, emotional state, and memory, then execute decisions (build units, research, diplomacy, covert ops, market trades).
+
+**Rationale:** Bot decisions are non-critical for turn integrity. Failures should log errors but not block turn processing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.9
+
+**Code:**
+- `src/lib/game/services/phases/bot-decisions-phase.ts` - `processBotDecisions()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/bot-decisions-phase.test.ts` - Decision evaluation, prioritization, failure handling
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-11: Emotional Decay Phase
+
+**Description:** Phase 10 (Tier 2) reduces bot emotional intensity over time. Emotions cool down toward neutral state at decay rates specific to each emotion type (anger, fear, joy, trust, etc.).
+
+**Rationale:** Emotional decay prevents permanent grudges/alliances. Non-critical for turn processing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.10
+
+**Code:**
+- `src/lib/game/services/phases/emotional-decay-phase.ts` - `processEmotionalDecay()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/emotional-decay-phase.test.ts` - Decay calculation per emotion type
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-12: Memory Cleanup Phase
+
+**Description:** Phase 11 (Tier 2) prunes old bot memories every 5 turns. Removes memories below weight threshold to prevent memory bloat. Preserves critical memories (wars, betrayals, alliances).
+
+**Rationale:** Memory cleanup maintains performance. Non-critical for turn integrity.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| cleanup_interval | 5 | Cleanup runs every 5 turns |
+| weight_threshold | 0.1 | Memories below this weight are pruned |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.11
+
+**Code:**
+- `src/lib/game/services/phases/memory-cleanup-phase.ts` - `processMemoryCleanup()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/memory-cleanup-phase.test.ts` - Interval check, threshold pruning, preservation logic
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-13: Market Phase
+
+**Description:** Phase 12 (Tier 2) updates market prices for all resources based on supply/demand dynamics. Prices adjust using formula with clamping to prevent extreme swings.
+
+**Rationale:** Market updates are non-critical. Price calculation failures should not block turn processing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.12
+
+**Code:**
+- `src/lib/game/services/phases/market-phase.ts` - `processMarket()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/market-phase.test.ts` - Price adjustment formulas, clamping
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-14: Bot Messages Phase
+
+**Description:** Phase 13 (Tier 2) generates bot communication messages (threats, offers, taunts, requests) based on emotional state and archetype. Uses message templates with variable substitution.
+
+**Rationale:** Bot messages add flavor but are non-critical. Generation failures should not block turn processing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.13
+
+**Code:**
+- `src/lib/game/services/phases/bot-messages-phase.ts` - `processBotMessages()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/bot-messages-phase.test.ts` - Message generation, template substitution, failure handling
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-15: Galactic Events Phase
+
+**Description:** Phase 14 (Tier 2) triggers random galactic events at milestone turns (M11: turn % 11 == 0). Events include market crashes, cosmic storms, peace summits, etc. Each event has probability, duration, and game-wide effects.
+
+**Rationale:** Galactic events add variety but are non-critical. Event failures should not block turn processing.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| milestone_interval | 11 | Events trigger on turn % 11 == 0 |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.14
+
+**Code:**
+- `src/lib/game/services/phases/galactic-events-phase.ts` - `processGalacticEvents()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/galactic-events-phase.test.ts` - Milestone triggering, probability rolls, event effects
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-16: Alliance Checkpoints Phase
+
+**Description:** Phase 15 (Tier 2) evaluates coalition formation criteria at milestone turns (M11: turn % 11 == 0). If conditions met (leader threshold, multiple strong players), auto-coalition forms against leader.
+
+**Rationale:** Alliance checkpoints prevent runaway victories. Non-critical for turn integrity.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| milestone_interval | 11 | Checkpoints trigger on turn % 11 == 0 |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.15
+
+**Code:**
+- `src/lib/game/services/phases/alliance-checkpoints-phase.ts` - `processAllianceCheckpoints()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/alliance-checkpoints-phase.test.ts` - Milestone check, formation logic
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-17: Victory Check Phase
+
+**Description:** Phase 16 (Tier 2) evaluates all 6 victory conditions (conquest, economic, diplomatic, research, military, survival) after turn processing completes. If any empire meets victory criteria, game ends and victory screen displays.
+
+**Rationale:** Victory check must occur after all empires' end-of-turn states are finalized. Non-critical for turn processing but critical for game flow.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.16
+
+**Code:**
+- `src/lib/game/services/phases/victory-check-phase.ts` - `checkVictory()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-check-phase.test.ts` - All 6 victory condition checks
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-001-18: Auto-Save Phase
+
+**Description:** Phase 17 (Tier 2) persists game state to database/storage with rotation policy (keep last N saves). On failure, logs error but does not block turn completion.
+
+**Rationale:** Auto-save provides recovery points. Non-critical for turn processing integrity.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.17
+
+**Code:**
+- `src/lib/game/services/phases/auto-save-phase.ts` - `processAutoSave()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/auto-save-phase.test.ts` - Save operation, rotation, failure handling
 
 **Status:** Draft
 
