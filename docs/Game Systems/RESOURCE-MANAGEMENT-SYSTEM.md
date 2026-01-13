@@ -859,6 +859,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Five resources create strategic depth without overwhelming cognitive load. Each resource has clear production sources and consumption uses, enabling informed player decisions and bot AI specialization.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 1.1 - The Five Resource Types
 
 **Code:**
@@ -888,6 +892,13 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Base food production balances starting empire needs with strategic expansion incentives.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Food resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -895,9 +906,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Resource Type | Food |
 | Multiplier | Civil Status (0.25× - 2.5×) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -917,6 +926,13 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Ore production rate balances military unit production needs with strategic resource management.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Ore resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -924,9 +940,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Resource Type | Ore |
 | Multiplier | Civil Status (0.25× - 2.5×) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -946,6 +960,13 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Petroleum production rate supports military maintenance while requiring strategic resource planning.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Petroleum resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -953,9 +974,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Resource Type | Petroleum |
 | Multiplier | Civil Status (0.25× - 2.5×) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -975,6 +994,13 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** High base income makes commerce sectors primary economic engine. Self-financing after 1 turn (8,000 cr cost).
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Credits resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -982,9 +1008,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Resource Type | Credits |
 | Multiplier | Civil Status (0.25× - 2.5×) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -1004,6 +1028,14 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Hybrid sector providing both income and infrastructure. Lower credit production than Commerce but adds strategic population capacity.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Credits resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier for credits)
+- REQ-RES-010-A (HARD: Provides population capacity)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1012,9 +1044,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Population Bonus | +1,000 capacity (not multiplied) |
 | Multiplier | Civil Status (credits only) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -1034,6 +1064,13 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Intangible benefit improving empire morale. Essential for maintaining high civil status during resource scarcity or war.
 
+
+**Dependencies:**
+- REQ-RES-007-F (HARD: Affects civil status levels)
+- REQ-RES-007-G (HARD: Grants +1 level transition boost)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1042,9 +1079,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Cap | Ecstatic (maximum level) |
 | Multiplier | None (produces civil status) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -1064,6 +1099,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Spy point production enables covert operations. Lower cost (7,500 cr) encourages intelligence-focused strategies.
 
+
+**Dependencies:**
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1071,9 +1112,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Resource Type | Spy Points |
 | Multiplier | Civil Status (0.25× - 2.5×) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -1093,6 +1132,14 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Research point production accelerates tech progression. High cost (23,000 cr) creates strategic trade-off between expansion and research.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Research Points resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+- REQ-RES-011-A (SOFT: Forward reference to RP calculation)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1100,9 +1147,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Resource Type | Research Points |
 | Multiplier | Civil Status (0.25× - 2.5×) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
@@ -1128,6 +1173,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Creates meaningful consequences for empire management. A 10× difference between Ecstatic and Rioting incentivizes happiness maintenance without requiring complex mechanics.
 
+
+**Dependencies:**
+- REQ-RES-007-F (HARD: Requires civil status level definitions)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Civil Status | Multiplier | Example (8,000 cr Commerce) |
@@ -1167,6 +1218,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Food consumption creates tension between population growth and sustainability. 0.5 food/capita balances population growth with Food sector availability.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Food resource definition)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Food Required = Population × 0.5 food/capita/turn
@@ -1181,9 +1238,7 @@ Examples:
 |-----------|-------|-------|
 | Food per capita | 0.5 food/person/turn | Base consumption rate |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2 - Resource Consumption Rates
 
@@ -1206,6 +1261,14 @@ Examples:
 
 **Rationale:** Creates consequences for unsustainable population growth. Forces players to balance expansion with food production. Food surplus enables growth (+2%/turn), creating incentive to maintain surplus.
 
+
+**Dependencies:**
+- REQ-RES-004-A (HARD: Requires consumption calculation to detect deficit)
+- REQ-RES-006-B (HARD: Triggers population decline)
+- REQ-RES-007-A (HARD: Applies -30 civil status penalty)
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1213,9 +1276,7 @@ Examples:
 | Civil status penalty | -30 score | Applied when food deficit exists |
 | Growth rate (surplus) | +2%/turn | When food surplus available |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2 - Resource Consumption Rates
 
@@ -1242,6 +1303,12 @@ Examples:
 
 **Rationale:** Prevents infinite military growth without economic support. Encourages balancing military power with resource production.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Ore resource definition)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Ore Maintenance per Turn = Σ(Unit Ore Cost × 5%)
@@ -1280,6 +1347,12 @@ Example - Fleet of 20 fighters:
 
 **Rationale:** Prevents infinite military growth without economic support. Encourages balancing military power with resource production.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Petroleum resource definition)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Petroleum Fuel per Turn = Σ(Unit Petroleum Cost × 3%)
@@ -1318,6 +1391,15 @@ Example - Fleet of 20 fighters:
 
 **Rationale:** Prevents infinite military growth without economic support. Encourages balancing military power with resource production.
 
+
+**Dependencies:**
+- REQ-RES-005-A (HARD: Requires ore maintenance calculation)
+- REQ-RES-005-B (HARD: Requires petroleum fuel calculation)
+- REQ-RES-008-D (HARD: Ore deficit consequences)
+- REQ-RES-008-E (HARD: Petroleum deficit consequences)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Parameter | Value | Notes |
@@ -1350,6 +1432,12 @@ Example - Fleet of 20 fighters:
 
 **Rationale:** Population growth rewards expansion and food production. Food cap prevents runaway growth from excessive food stockpiling.
 
+
+**Dependencies:**
+- REQ-RES-004-A (HARD: Growth depends on food surplus)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Population Growth = Current Population × 0.02 × Food Availability Multiplier
@@ -1392,6 +1480,12 @@ Example:
 
 **Rationale:** Starvation severely punishes food deficits to create urgency and prevent food mismanagement.
 
+
+**Dependencies:**
+- REQ-RES-004-A (HARD: Decline triggered by food deficit)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Population Decline = Current Population × -0.10 (10% loss per turn)
@@ -1431,6 +1525,12 @@ Example:
 
 **Rationale:** Population floor prevents extinction scenarios. Food cap prevents runaway growth from excessive stockpiling.
 
+
+**Dependencies:**
+- REQ-RES-006-A (SOFT: Provides constraints on growth rate)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Parameter | Value | Notes |
@@ -1488,9 +1588,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Food security is the primary driver of civil happiness. Starvation causes maximum unrest, while abundant food provides modest satisfaction.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-004-A (HARD: Requires food consumption to calculate surplus/deficit)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Food Security Factor
 
@@ -1517,9 +1621,11 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Recent battles affect morale. Victories boost confidence, defeats damage morale. Asymmetric values reflect loss aversion.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Battle Outcome Factor
 
@@ -1546,9 +1652,11 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Territorial expansion signals progress and prosperity, while losses indicate decline. Asymmetric penalties reflect loss aversion.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Territory Growth Factor
 
@@ -1575,9 +1683,11 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Education sectors represent luxury investment in citizen welfare. They provide both score bonus and special transition boost (see REQ-RES-007-G).
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Education Bonus Factor
 
@@ -1604,9 +1714,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Overcrowding causes unrest regardless of other factors. Binary threshold creates clear incentive to maintain Urban sectors.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-010-A (HARD: Requires population capacity calculation)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Overcrowding Factor
 
@@ -1634,9 +1748,17 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Discrete levels provide clear gameplay feedback and hook for status-based mechanics (production multipliers, diplomatic penalties, etc.).
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-007-A (HARD: Requires all modifier calculations)
+- REQ-RES-007-B (HARD: Requires all modifier calculations)
+- REQ-RES-007-C (HARD: Requires all modifier calculations)
+- REQ-RES-007-D (HARD: Requires all modifier calculations)
+- REQ-RES-007-E (HARD: Requires all modifier calculations)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Score Mapping
 
@@ -1661,9 +1783,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Prevents wild status swings from single events. Education sector exception rewards long-term investment in citizen welfare.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-007-F (HARD: Requires level mapping to enforce transitions)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.1 - Civil Status Calculation, Transition Rules
 
@@ -1713,9 +1839,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Aligns with "consequence over limits" philosophy. Players aren't artificially constrained by arbitrary caps, but face meaningful trade-offs in resource allocation.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-001 (HARD: Applies to all resource types)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.2 - Resource Storage and Limits, Storage Policy
 
@@ -1739,9 +1869,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Prevents overspending without punishing empire morale. Represents credit freeze rather than bankruptcy.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-001 (HARD: Applies to Credits resource)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.2 - Resource Storage and Limits, Credits Consequence
 
@@ -1765,9 +1899,15 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Starvation has severe consequences: population loss (emigration, death) and massive unrest. Most punishing resource deficit.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-001 (HARD: Applies to Food resource)
+- REQ-RES-006-B (HARD: Triggers population decline)
+- REQ-RES-007-A (HARD: Applies -30 civil status penalty)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.2 - Resource Storage and Limits, Food Consequence
 
@@ -1793,9 +1933,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Represents equipment failure, ammunition shortages, and lack of spare parts. Military force becomes decorative.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-001 (HARD: Applies to Ore resource)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.2 - Resource Storage and Limits, Ore Consequence
 
@@ -1821,9 +1965,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Fuel shortage limits mobility and expansion but doesn't completely cripple the military (unlike Ore). Strategic positioning remains viable.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-001 (HARD: Applies to Petroleum resource)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.2 - Resource Storage and Limits, Petroleum Consequence
 
@@ -1847,9 +1995,13 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Unlike physical resources, "negative research" is nonsensical. Zero RP simply means no progress. No additional penalties needed.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RES-001 (HARD: Applies to Research Points resource)
+
+
+**Blockers:** None
+
 
 **Source:** Section 3.2 - Resource Storage and Limits, Research Points Handling
 
@@ -1879,6 +2031,10 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 **Rationale:** Enables strategic pivots (early Food sectors → late Commerce sectors) without requiring sector destruction and rebuild. 50% cost represents infrastructure reuse discount.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Conversion Formula:**
 ```
 Conversion Cost = Target Sector Build Cost × 0.5
@@ -1913,6 +2069,12 @@ Examples:
 
 **Rationale:** Enables strategic pivots without timing penalty. Conversion represents repurposing existing infrastructure, not new construction.
 
+
+**Dependencies:**
+- REQ-RES-009-A (SOFT: Requires cost calculation)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Parameter | Value | Notes |
@@ -1938,6 +2100,12 @@ Examples:
 
 **Rationale:** Urban sectors provide population housing capacity. Preventing conversion protects population from displacement and ensures intentional population capacity planning.
 
+
+**Dependencies:**
+- REQ-RES-010-A (HARD: Urban sectors protected due to population capacity)
+
+
+**Blockers:** None
 **Restrictions:**
 - Cannot convert Urban sectors (protects population capacity)
 - Cannot convert sectors to Urban (must build new for population growth)
@@ -1968,6 +2136,10 @@ Examples:
 
 **Rationale:** Forces infrastructure investment alongside population growth. Prevents runaway population without corresponding sector expansion.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Population Capacity = Urban Sectors × 10,000 people
@@ -2002,6 +2174,13 @@ Examples:
 
 **Rationale:** Forces infrastructure investment alongside population growth. Creates urgency to build Urban sectors before overcrowding occurs.
 
+
+**Dependencies:**
+- REQ-RES-010-A (HARD: Requires capacity calculation)
+- REQ-RES-007-E (SOFT: Forward reference to civil status penalty)
+
+
+**Blockers:** None
 **Formula:**
 ```
 if (Population > Capacity):
@@ -2038,6 +2217,12 @@ Growth Dynamics Example:
 
 **Rationale:** Provides baseline population capacity. Population growth requires Urban sector expansion to avoid overcrowding.
 
+
+**Dependencies:**
+- REQ-RES-010-A (HARD: Starting conditions use capacity calculation)
+
+
+**Blockers:** None
 **Starting Conditions:**
 - 1 Urban sector (10,000 capacity)
 - 10,000 population (at capacity)
@@ -2067,6 +2252,13 @@ Growth Dynamics Example:
 
 **Rationale:** Research sectors are expensive (23,000 credits) but necessary for tech victory. Civil status multiplier creates strategic choice between happiness and research speed.
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires Research Points resource definition)
+- REQ-RES-003 (HARD: Subject to civil status multiplier)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Research Points per Turn = (Research Sectors × 100 RP) × Civil Status Multiplier
@@ -2101,6 +2293,12 @@ Examples:
 
 **Rationale:** Progressive tech unlocks create meaningful mid-game and late-game milestones. Thresholds calibrated to require sustained research investment.
 
+
+**Dependencies:**
+- REQ-RES-011-A (HARD: Requires RP production to reach thresholds)
+
+
+**Blockers:** None
 **Tier Unlock Thresholds:**
 ```
 - Tier 1 (Doctrine): 1,000 RP
@@ -2134,6 +2332,13 @@ Examples:
 
 **Rationale:** Multiple paths to Tier 3 create strategic choices. Fast path (3 sectors + Ecstatic) requires heavy investment. Slow path (1 sector + Content) more economical but slower.
 
+
+**Dependencies:**
+- REQ-RES-011-A (SOFT: Timeline examples use production rates)
+- REQ-RES-011-B (SOFT: Timeline examples use thresholds)
+
+
+**Blockers:** None
 **Timeline Examples:**
 ```
 - 1 Research sector, Content status (100 RP/turn): ~150 turns to Tier 3 (15,000 RP)
@@ -2166,6 +2371,12 @@ Examples:
 
 **Rationale:** Networth provides comprehensive measure of empire value across all asset types. Enables comparison between empires with different strategies (military vs economic vs research).
 
+
+**Dependencies:**
+- REQ-RES-001 (HARD: Requires all resource types for calculation)
+
+
+**Blockers:** None
 **Networth Calculation:**
 ```
 Empire Networth = Credits
@@ -2215,6 +2426,12 @@ Total Networth: 209,000 cr
 
 **Rationale:** Economic victory rewards empire-building over military conquest. 1.5× threshold is achievable but requires sustained economic focus (Commerce sectors + Ecstatic status). Prevents stalemate by providing clear economic win path.
 
+
+**Dependencies:**
+- REQ-RES-012-A (HARD: Requires networth calculation)
+
+
+**Blockers:** None
 **Victory Condition:**
 ```
 Player Networth ≥ 1.5 × 2nd Place Networth

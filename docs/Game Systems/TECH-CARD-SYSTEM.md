@@ -744,6 +744,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Provides strategic depth through draft choices while avoiding supply chain micromanagement. Every card directly affects combat, creating visible drama and bot reactions.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 1.1 - Three-Tier Card System
 
 **Code:**
@@ -767,6 +771,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Creates Lord of Waterdeep-style hidden incentives. Players don't know each other's objectives, creating post-game reveals and strategic misdirection.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.1 - Tier 1: Hidden Objectives
 
 **Code:**
@@ -791,6 +799,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Creates draft drama ("The Warlord just drafted Plasma Torpedoes!"), encourages counter-picking, and makes tech choices visible to opponents.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.2 - Tier 2: Tactical Cards
 
 **Code:**
@@ -816,6 +828,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Creates dramatic moments and galaxy-wide reactions. These are "boss abilities" that shift the balance of power while preventing "save syndrome" through varied usage limits.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.3 - Tier 3: Legendary Cards
 
 **Code:**
@@ -841,6 +857,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Integrates tech cards into bot personality system, creating narrative moments and strategic visibility.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 4 - Bot Integration
 
 **Code:**
@@ -865,6 +885,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Creates post-game discussion ("I thought Varkus was playing aggressively because he's a Warlord, but he was also scoring his hidden objective!").
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.1 - Hidden Objective Mechanics (At Game End)
 
 **Code:**
@@ -897,6 +921,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Provides concrete card pool for balance testing and bot decision-making. Cards designed to synergize with research doctrines.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Sections 3.1, 3.2, 3.3 - Card catalogs
 
 **Code:**
@@ -924,6 +952,10 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 
 **Rationale:** Creates strategic drafting decisions beyond "pick strongest card." Rewards intelligence gathering and counter-picking.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 2.1 - Card Anatomy (COUNTER field)
 
 **Code:**
@@ -958,6 +990,10 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 
 **Rationale:** Predictable timing enables strategic planning. Stacking with research creates powerful synergies. Automatic activation ensures cards get used.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.4 - Draft Events, Section 3.5 - Combat Integration
 
 **Code:**

@@ -583,6 +583,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Provides meaningful starting position without overwhelming new players. Ensures every empire can sustain population, build military, and afford expansion. Balanced configuration prevents starting advantage/disadvantage.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 
 | Sector Type | Count | Production |
@@ -614,6 +618,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Prevents runaway expansion while allowing strategic growth. Exponential scaling (exponent 1.5) creates diminishing returns, balancing wide vs tall empire strategies. First expansion affordable by turn 10-12 with starting income.
 
+
+**Dependencies:**
+- REQ-SEC-001 (SOFT: Formula uses current sector count which starts at 5 from REQ-SEC-001)
+
+
+**Blockers:** None
 **Formula:**
 ```
 Sector Cost = Base Cost × (1 + Current Sector Count × 0.1)^1.5
@@ -663,6 +673,10 @@ Where:
 
 **Rationale:** Primary food production building. Essential for feeding population and preventing starvation. Standard cost makes it accessible for early expansion.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -671,9 +685,7 @@ Where:
 | Category | Resource Producer |
 | Strategic Purpose | Feed population, prevent starvation |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -695,6 +707,10 @@ Where:
 
 **Rationale:** Primary ore production building. Essential for military unit construction. Lowest acquisition cost encourages military-focused expansion strategies.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -703,9 +719,7 @@ Where:
 | Category | Resource Producer |
 | Strategic Purpose | Build military units, construct buildings |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -727,6 +741,10 @@ Where:
 
 **Rationale:** Primary petroleum production building. Essential for military maintenance and operations. Higher cost reflects strategic importance and environmental trade-offs (pollution).
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -735,9 +753,7 @@ Where:
 | Category | Resource Producer |
 | Strategic Purpose | Fuel military operations, creates pollution |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -759,6 +775,10 @@ Where:
 
 **Rationale:** Primary income source. Self-financing after 1 turn. Standard cost (pays for itself) makes it fundamental choice for economic expansion.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -767,9 +787,7 @@ Where:
 | Category | Resource Producer |
 | Strategic Purpose | Primary income source |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -791,6 +809,10 @@ Where:
 
 **Rationale:** Hybrid building providing both population capacity and income. Essential for empires experiencing population growth. Dual benefits create unique strategic value.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -800,9 +822,7 @@ Where:
 | Category | Infrastructure Provider |
 | Strategic Purpose | House growing population, bonus income |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -824,6 +844,10 @@ Where:
 
 **Rationale:** Increases empire happiness and stability. Essential for maintaining high morale during wars or resource scarcity. Intangible benefit creates strategic depth.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -832,9 +856,7 @@ Where:
 | Category | Intangible Booster |
 | Strategic Purpose | Increase happiness, reduce unrest |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -856,6 +878,10 @@ Where:
 
 **Rationale:** Enables covert operations system. Lower cost (7,500 cr) encourages intelligence-focused strategies. Essential for Schemer archetype and espionage gameplay.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -864,9 +890,7 @@ Where:
 | Category | Infrastructure Provider |
 | Strategic Purpose | Enable covert operations |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -888,6 +912,10 @@ Where:
 
 **Rationale:** Accelerates tech tree progression. High cost (23,000 cr) creates meaningful trade-off between economic expansion and technological advancement. Strategic advantage justifies premium price.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -896,9 +924,7 @@ Where:
 | Category | Intangible Booster |
 | Strategic Purpose | Accelerate tech tree progression |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Sector Types and Production
 
@@ -926,6 +952,12 @@ Where:
 
 **Rationale:** Deterministic turn processing ensures predictable economy. Server-side processing prevents client-side manipulation and ensures fair play.
 
+
+**Dependencies:**
+- REQ-SEC-003 (HARD: Requires sector production values to process at turn boundary)
+
+
+**Blockers:** None
 **Source:** Section 3.3 - Production Timing
 
 **Code:**
@@ -945,6 +977,12 @@ Where:
 
 **Rationale:** Delaying new sector production by 1 turn prevents same-turn exploitation and creates strategic timing considerations for sector acquisition.
 
+
+**Dependencies:**
+- REQ-SEC-004-A (HARD: Delay rule applies to turn boundary production mechanics)
+
+
+**Blockers:** None
 **Source:** Section 3.3 - Production Timing
 
 **Code:**
@@ -964,6 +1002,12 @@ Where:
 
 **Rationale:** Production-before-consumption ordering ensures predictable economy and allows current production to meet current needs.
 
+
+**Dependencies:**
+- REQ-SEC-004-A (HARD: Ordering rule for turn boundary processing)
+
+
+**Blockers:** None
 **Source:** Section 3.3 - Production Timing
 
 **Code:**
@@ -982,6 +1026,13 @@ Where:
 
 **Rationale:** Simple, immediate feedback loop. No multi-turn construction delays (sectors are abstract, not physical buildings). Atomic transaction prevents race conditions or partial states.
 
+
+**Dependencies:**
+- REQ-SEC-002 (HARD: Must calculate cost before allowing acquisition)
+- REQ-SEC-003 (HARD: Must know available sector types for selection)
+
+
+**Blockers:** None
 **Source:** Section 3.2 - Sector Acquisition Process
 
 **Code:**
@@ -1009,6 +1060,12 @@ Where:
 
 **Rationale:** Prevents infinite food accumulation creating game-breaking strategies. Forces players to balance production vs storage and encourages spending food rather than hoarding.
 
+
+**Dependencies:**
+- REQ-SEC-003-01 (SOFT: Cap applies to Food production from Food sectors)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Resource | Cap | Overflow Behavior |
@@ -1035,6 +1092,12 @@ Where:
 
 **Rationale:** Prevents infinite ore accumulation creating game-breaking strategies. Forces players to balance production vs storage and encourages spending ore rather than hoarding.
 
+
+**Dependencies:**
+- REQ-SEC-003-02 (SOFT: Cap applies to Ore production from Ore sectors)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Resource | Cap | Overflow Behavior |
@@ -1061,6 +1124,12 @@ Where:
 
 **Rationale:** Prevents infinite petroleum accumulation creating game-breaking strategies. Forces players to balance production vs storage and encourages spending petroleum rather than hoarding.
 
+
+**Dependencies:**
+- REQ-SEC-003-03 (SOFT: Cap applies to Petroleum production from Petroleum sectors)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Resource | Cap | Overflow Behavior |
@@ -1087,6 +1156,12 @@ Where:
 
 **Rationale:** Credits unlimited to allow economic flexibility and prevent artificial constraints on economic strategies.
 
+
+**Dependencies:**
+- REQ-SEC-003-04 (SOFT: No cap for Credits production from Commerce sectors)
+
+
+**Blockers:** None
 **Key Values:**
 
 | Resource | Cap | Overflow Behavior |
@@ -1112,6 +1187,10 @@ Where:
 
 **Rationale:** Design philosophy "consequence over limits". No artificial caps - let economic pressure provide natural saturation point. Allows extreme strategies (hyper-expansion if player can afford it).
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.5 - Sector Limits and Caps
 
 **Code:**
@@ -1132,6 +1211,12 @@ Where:
 
 **Rationale:** Simple mental model - more sectors = more production. No diminishing returns per sector (cost scaling provides that). Enables specialization strategies (e.g., "Merchant with 7 Commerce sectors").
 
+
+**Dependencies:**
+- REQ-SEC-003 (HARD: Must know sector production values to calculate stacking effects)
+
+
+**Blockers:** None
 **Source:** Section 3.6 - Special Sector Interactions
 
 **Code:**
@@ -1157,6 +1242,10 @@ Where:
 
 **Rationale:** Consequences for military defeat without eliminating empire entirely. Random component adds tension. Overkill bonus rewards decisive victories.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 sectors_lost = floor(1 + random(0, 2) + overkill_bonus)
@@ -1198,6 +1287,12 @@ Examples:
 
 **Rationale:** Sectors destroyed rather than transferred to prevent excessive snowballing. Limits economic growth from conquest alone.
 
+
+**Dependencies:**
+- REQ-SEC-009-A (HARD: Formula determines which sectors to remove permanently)
+
+
+**Blockers:** None
 **Source:** Section 3.4 - Sector Destruction and Capture
 
 **Code:**
@@ -1222,6 +1317,10 @@ Examples:
 
 **Rationale:** Rewards conquest without creating unstoppable snowball. 50% cap ensures even total victory doesn't double empire size instantly.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 sectors_transferred = floor(conquered_empire_sectors × 0.5)
@@ -1256,6 +1355,12 @@ Examples:
 
 **Rationale:** Randomness prevents "only take best sectors" optimization and maintains strategic uncertainty.
 
+
+**Dependencies:**
+- REQ-SEC-010-A (HARD: Random selection applies to sectors within transfer cap)
+
+
+**Blockers:** None
 **Source:** Section 3.4 - Sector Destruction and Capture
 
 **Code:**
@@ -1274,6 +1379,12 @@ Examples:
 
 **Rationale:** Research sectors are most powerful (accelerate tech tree). Gating behind tech progression prevents first-player-to-rush-research dominance. Forces strategic choice: expand economy OR unlock research first.
 
+
+**Dependencies:**
+- REQ-SEC-003-08 (HARD: Must define Research sector before gating it behind unlock)
+
+
+**Blockers:** None
 **Source:** Section 5.1 - UI Mockups (Research sector shown as locked)
 
 **Code:**

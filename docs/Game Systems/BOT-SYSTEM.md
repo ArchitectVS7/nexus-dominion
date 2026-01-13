@@ -824,6 +824,12 @@ After game completion, players can review bot decision logs:
 
 **Rationale:** Creates most sophisticated bot opponents using AI for realistic decision-making. Fallback chain ensures reliability.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-001 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -834,9 +840,7 @@ After game completion, players can review bot decision logs:
 | Fallback | Tier 2 Strategic on API failure |
 | Personality | Custom prompts per persona |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -858,6 +862,12 @@ After game completion, players can review bot decision logs:
 
 **Rationale:** Provides strong strategic opponents without LLM cost. Archetype system creates predictable but varied behavior.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -868,9 +878,7 @@ After game completion, players can review bot decision logs:
 | Coalition Logic | Sophisticated formation and betrayal |
 | Priority System | Weighted priorities by archetype |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -895,6 +903,10 @@ After game completion, players can review bot decision logs:
 
 **Rationale:** Provides competent but predictable opposition for majority of bots. Low computational cost enables scaling to 100 total bots.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -905,9 +917,7 @@ After game completion, players can review bot decision logs:
 | Communication | Minimal |
 | Complexity | Simple behavioral rules |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -931,6 +941,12 @@ After game completion, players can review bot decision logs:
 
 **Rationale:** Creates unpredictable wild-card opponents. Provides entertainment value through chaos while maintaining minimal viability through constraints.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-001 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -941,9 +957,7 @@ After game completion, players can review bot decision logs:
 | Purpose | Unpredictability, baseline challenge |
 | Constraints | Prevents complete failure |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -975,6 +989,24 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Creates diverse, memorable opponents with distinct mechanical advantages and playstyles. Priority matrix ensures predictable but varied behavior.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-001-B (depends on this spec)
+- REQ-BOT-002-01 (depends on this spec)
+- REQ-BOT-002-02 (depends on this spec)
+- REQ-BOT-002-03 (depends on this spec)
+- REQ-BOT-002-04 (depends on this spec)
+- REQ-BOT-002-05 (depends on this spec)
+- REQ-BOT-002-06 (depends on this spec)
+- REQ-BOT-002-07 (depends on this spec)
+- REQ-BOT-002-08 (depends on this spec)
+- REQ-MKT-008-A (depends on this spec)
+- REQ-MKT-008-B (depends on this spec)
+- REQ-MKT-008-C (depends on this spec)
+- REQ-MKT-008-D (depends on this spec)
+
 **Source:** Section 7.6
 
 **Formulas:** See `docs/PRD-FORMULAS-ADDENDUM.md` Section 4.2-4.4
@@ -991,6 +1023,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Aggressive military-focused archetype with War Economy passive ability that reduces military costs during wartime.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** War Economy (-20% military cost when at war)
 
 **Priority Matrix:**
@@ -1004,9 +1042,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Prioritizes offensive military operations and maintains aggressive expansion through conquest.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1022,6 +1058,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Alliance-seeking mediator archetype with Trade Network passive that increases income based on active alliances.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** Trade Network (+10% income per active alliance)
 
 **Priority Matrix:**
@@ -1035,9 +1077,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Actively seeks and maintains alliances, mediates conflicts, and uses diplomatic relationships for economic advantage.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1053,6 +1093,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Economic domination archetype with Market Insight passive that provides advance knowledge of market prices.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** Market Insight (sees next turn market prices)
 
 **Priority Matrix:**
@@ -1066,9 +1112,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Focuses on economic development, market manipulation, and buying loyalty through trade advantages.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1084,6 +1128,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Deceptive tactics archetype with Shadow Network passive that reduces covert operation costs.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** Shadow Network (-50% covert operation cost)
 
 **Priority Matrix:**
@@ -1097,9 +1147,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Employs deceptive tactics, forms alliances for betrayal opportunities, and relies heavily on covert operations.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1115,6 +1163,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Defensive buildup archetype with Fortification passive that doubles defensive structure power.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** Fortification (2× defensive structure power)
 
 **Priority Matrix:**
@@ -1128,9 +1182,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Focuses on defensive structures and economic development. Never initiates attacks but responds strongly when attacked.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1146,6 +1198,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Fast early expansion archetype focused on aggressive strikes and rapid territorial acquisition.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** None specified
 
 **Priority Matrix:**
@@ -1159,9 +1217,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Prioritizes early game aggression, rapid expansion, and maintains offensive pressure throughout the game.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1177,6 +1233,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Research-prioritized archetype that focuses on economic and technological development for late-game power spike.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** None specified
 
 **Priority Matrix:**
@@ -1190,9 +1252,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Focuses on research and economic development in early-mid game, becomes powerful in late game through technological advantages.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1208,6 +1268,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Description:** Adaptive vulture strategy archetype that targets weakened empires and exploits opportunities.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Passive Ability:** None specified
 
 **Priority Matrix:**
@@ -1221,9 +1287,7 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Behavior:** Monitors empire strengths, opportunistically attacks weakened targets, and adapts strategy based on game state.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.6
 
@@ -1251,6 +1315,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Baseline state for successful bots. Slight bonuses without extreme behavior changes.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-003 (depends on this spec)
+
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1260,9 +1330,7 @@ Final Action = argmax(Action Weight for all possible actions)
 | Negotiation | +10% |
 | Trigger | Steady progress, winning battles |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.8
 
@@ -1281,6 +1349,10 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Punishes excessive success with poor decision-making and diplomatic isolation. Creates comeback opportunities for trailing players.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1290,9 +1362,7 @@ Final Action = argmax(Action Weight for all possible actions)
 | Negotiation | -30% |
 | Trigger | Multiple victories, high networth lead, dominant position |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.8
 
@@ -1311,6 +1381,10 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Losing bots become alliance-seeking and unpredictable. Creates dramatic comeback attempts.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1320,9 +1394,7 @@ Final Action = argmax(Action Weight for all possible actions)
 | Negotiation | -20% |
 | Trigger | Low networth, losing sectors, under sustained attack |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.8
 
@@ -1341,6 +1413,10 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Emotional override creates irrational but narratively compelling behavior. Target-specific aggression adds drama.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1350,9 +1426,7 @@ Final Action = argmax(Action Weight for all possible actions)
 | Negotiation | -40% |
 | Trigger | Sector capture, treaty betrayal, major attack |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.8
 
@@ -1371,6 +1445,10 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Survival instinct creates defensive coalitions. Highest alliance willingness encourages diplomatic gameplay.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1380,9 +1458,7 @@ Final Action = argmax(Action Weight for all possible actions)
 | Negotiation | +10% |
 | Trigger | Enemy buildup on borders, recent defeat, networth dropping |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.8
 
@@ -1401,6 +1477,12 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Victory momentum creates aggressive expansion phase. Temporary power spike after major wins.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-003 (depends on this spec)
+
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1410,9 +1492,7 @@ Final Action = argmax(Action Weight for all possible actions)
 | Negotiation | -20% |
 | Trigger | Won major battle, captured valuable sector, eliminated enemy |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 7.8
 
@@ -1455,6 +1535,10 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Creates persistent relationships and grudges without hard-coding alliances. Major events (betrayals, conquests) resist being "washed away" by minor positive actions. Permanent scars ensure some grudges last the entire game.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `src/lib/bots/memory/`, `src/lib/game/repositories/bot-memory-repository.ts`
@@ -1486,6 +1570,10 @@ For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appe
 
 **Rationale:** Creates memorable, distinguishable opponents. Voice and quirks ensure each bot feels unique. Template variety prevents repetitive messages.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `data/personas.json`, `src/lib/bots/personas.ts`
@@ -1546,9 +1634,13 @@ For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appe
 
 **Rationale:** Multi-provider strategy balances cost, speed, and reliability. Groq provides fast, cheap responses for most decisions. Together AI and OpenAI provide backup when Groq is down. Scripted fallback ensures game never breaks due to API issues.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-006 (depends on this spec)
+
+
 
 **Source:** Section 8.3 - LLM Integration, Provider Chain
 
@@ -1632,9 +1724,13 @@ Stay in character as {archetype}.
 
 **Rationale:** Structured prompt ensures LLM has all necessary context to make informed decisions. Personality and traits guide decision-making style. Recent events provide continuity. JSON schema ensures parseable responses.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-006 (depends on this spec)
+
+
 
 **Source:** Section 8.3 - LLM Integration, Prompt Template
 
@@ -1682,9 +1778,13 @@ Stay in character as {archetype}.
 
 **Rationale:** Rate limits prevent cost overruns while maintaining game quality. Per-game limit ensures budget predictability. Per-turn limit prevents slow turn processing. Per-hour limit respects provider constraints. Daily spend cap provides absolute cost safety.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-006 (depends on this spec)
+
+
 
 **Source:** Section 8.3 - LLM Integration, Rate Limits
 
@@ -1735,6 +1835,10 @@ interface BotDecisionLog {
 
 **Rationale:** Transparency for debugging, entertainment value seeing bot thought process, learning tool for understanding AI behavior.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `src/lib/game/repositories/bot-decision-log-repository.ts`
@@ -1806,9 +1910,13 @@ interface BotDecisionLog {
 
 **Rationale:** Archetype-specific formation creates personality-driven diplomacy. Warlords form power blocs, Diplomats build webs, Schemers infiltrate for betrayal. Turn 10 gate prevents instant alliance spam.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-008 (depends on this spec)
+
+
 
 **Source:** Section 9.2 - Coalition AI Behavior, Formation Logic
 
@@ -1855,9 +1963,13 @@ interface BotDecisionLog {
 
 **Rationale:** Coalition coordination makes bot alliances feel like coordinated opponents rather than independent actors. Defense pact honoring creates reliable allies. Intelligence sharing rewards diplomatic investment.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-008 (depends on this spec)
+
+
 
 **Source:** Section 9.2 - Coalition AI Behavior, Coalition Behavior
 
@@ -1917,9 +2029,13 @@ interface BotDecisionLog {
 
 **Rationale:** Schemer betrayal creates dramatic political moments and makes all alliances feel risky. Conditional betrayal ensures severe mistreatment has consequences. Leave conditions prevent bots being trapped in bad alliances.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-008 (depends on this spec)
+
+
 
 **Source:** Section 9.2 - Coalition AI Behavior, Betrayal/Leave Mechanics
 
@@ -1952,6 +2068,10 @@ interface BotDecisionLog {
 
 **Rationale:** Players can read bot intentions and respond strategically. Scheming bots are intentionally hard to read. Creates skill expression in "reading" bot behavior.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `src/lib/bots/messaging.ts`
@@ -1976,6 +2096,12 @@ interface BotDecisionLog {
 
 **Rationale:** Creates sense of urgency as game progresses. Increased aggression and coalition formation drive action toward conclusion.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-BOT-010 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1984,9 +2110,7 @@ interface BotDecisionLog {
 | Alliance Formation | Increased rate |
 | Messaging Style | More dramatic (Tier 1 bots) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -2005,6 +2129,13 @@ interface BotDecisionLog {
 
 **Rationale:** Creates dynamic balancing mechanic. Leading player faces organized opposition that feels narratively justified.
 
+
+**Dependencies:**
+- REQ-VIC-008
+- REQ-DIP-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -2013,9 +2144,7 @@ interface BotDecisionLog {
 | Coordination | Increased for coalition members |
 | Messaging | "Stop the leader" broadcasts |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -2036,6 +2165,10 @@ interface BotDecisionLog {
 
 **Rationale:** Endgame deserves epic storytelling. Final three scenario feels like climactic finale with dramatic bot roleplay.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -2044,9 +2177,7 @@ interface BotDecisionLog {
 | Messaging | Epic monologues, showdown declarations |
 | Tier 1 Behavior | Generate climactic narratives |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 
@@ -2065,6 +2196,14 @@ interface BotDecisionLog {
 
 **Rationale:** Victory should feel earned and dramatic. Final moments before victory trigger memorable narrative climax.
 
+
+**Dependencies:**
+- REQ-TURN-019
+
+
+**Blockers:**
+- REQ-BOT-010 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -2078,9 +2217,7 @@ interface BotDecisionLog {
 - "To my allies: It has been an honor. For the coalition!" (Diplomat)
 - "You all trusted me. Now the galaxy is mine." (Schemer victory)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** docs/design/BOT-SYSTEM.md
 

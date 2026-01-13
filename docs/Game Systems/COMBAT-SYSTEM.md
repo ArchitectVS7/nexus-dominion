@@ -403,6 +403,12 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Simplifies combat while maintaining drama. Single-roll resolution is faster and more intuitive.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COMBAT-009-A (depends on this spec)
+
 **Source:** Section 1.1
 
 **Code:** `src/lib/combat/d20-combat-engine.ts`
@@ -419,6 +425,10 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Slight defender advantage encourages defensive play and alliances.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 8.1
 
 **Code:** `src/lib/formulas/combat-power.ts`
@@ -435,6 +445,10 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Makes conquest harder, rewards defense.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.4
 
 **Code:** `src/lib/formulas/combat-power.ts:DEFENDER_ADVANTAGE`
@@ -457,6 +471,12 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Creates unit hierarchy and strategic choices.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-006 (depends on this spec)
+
 **Source:** Section 2.3
 
 **Code:** `src/lib/formulas/combat-power.ts:POWER_MULTIPLIERS`
@@ -472,6 +492,12 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Description:** Fleets with 4+ distinct unit types receive a 15% power bonus.
 
 **Rationale:** Encourages balanced fleet composition over mono-unit strategies.
+
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-008 (depends on this spec)
 
 **Source:** Section 3.5
 
@@ -489,6 +515,12 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Stations are defensive installations, not offensive units.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COMBAT-009-B (depends on this spec)
+
 **Source:** Section 3.5
 
 **Code:** `src/lib/formulas/combat-power.ts:STATION_DEFENSE_MULTIPLIER`
@@ -505,6 +537,10 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Allows new players to establish their empire before combat.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** VISION.md
 
 **Code:** `src/lib/game/constants.ts:PROTECTION_TURNS`
@@ -527,6 +563,10 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Creates narrative variety in battle reports.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.4
 
 **Code:** `src/lib/combat/outcomes.ts`
@@ -564,9 +604,11 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Space superiority is the first hurdle in planetary invasion. Controlling space allows bombardment and troop deployment while denying the defender reinforcement.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-COMBAT-001 (D20 Attack Resolution - used for space combat)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-COMBAT-009 (Multi-Domain Resolution parent spec depends on this)
 
 **Source:** Section 3.4 - Multi-Domain Resolution, Space Domain
 
@@ -592,9 +634,11 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Orbital stations provide last-ditch defense before ground invasion. Even if space is lost, stations can inflict heavy casualties on descending forces.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-COMBAT-006 (Station Defense Multiplier - applied to orbital combat)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-COMBAT-009 (Multi-Domain Resolution parent spec depends on this)
 
 **Source:** Section 3.4 - Multi-Domain Resolution, Orbital Domain
 
@@ -620,9 +664,10 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Ground combat is the decisive phase where sectors change hands. Even with space and orbital superiority, attackers must win on the ground to capture territory.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational ground combat)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-COMBAT-009 (Multi-Domain Resolution parent spec depends on this)
 
 **Source:** Section 3.4 - Multi-Domain Resolution, Ground Domain
 
@@ -652,9 +697,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Victory bonuses create narrative momentum and reward balanced fleet composition. Winning space makes orbital assault easier, winning orbital makes ground invasion easier. Encourages investing in all three domains rather than specializing.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COMBAT-009 (depends on this spec)
+
+
 
 **Source:** Section 3.4 - Multi-Domain Resolution, Victory Bonuses
 
@@ -675,6 +724,12 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Provides strategic alternatives to direct conquest.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COMBAT-009-C (depends on this spec)
+
 **Source:** Section 2.2
 
 **Code:** `src/lib/combat/battle-types.ts`
@@ -694,6 +749,10 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Creates power progression and late-game escalation.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.7
 
 **Code:** `src/lib/combat/unit-cards.ts`
@@ -730,9 +789,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Prevents unrealistic fights to the death. Forces must consider morale and retreat when suffering heavy losses. Creates strategic decision point - push for total victory or accept costly win.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COMBAT-012 (depends on this spec)
+
+
 
 **Source:** Section 3.6 - Morale & Surrender, Morale Checks
 
@@ -765,9 +828,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Allows mercy and negotiated endings. Prevents pyrrhic victories where attacker wins but suffers heavy losses. Creates diplomatic opportunities mid-combat. Rewards high-CHA attackers and high-WIS defenders.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COMBAT-012 (depends on this spec)
+
+
 
 **Source:** Section 3.6 - Morale & Surrender, Surrender Mechanics
 

@@ -760,15 +760,19 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Introduces diplomacy gradually after players establish their initial empire. Prevents overwhelming new players with too many systems at once.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-001 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Unlock Turn | 20 | Diplomacy becomes available |
 | Features Unlocked | Treaties, alliances, coalitions | Full diplomacy system |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1
 
@@ -789,15 +793,17 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Introduces covert operations at mid-game when players understand basic mechanics. Adds strategic depth after initial expansion phase.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Unlock Turn | 50 | Black Market becomes available |
 | Features Unlocked | Covert operations, smuggling | Full espionage system |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1
 
@@ -818,15 +824,17 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Reserves ultimate weapons for late game. Ensures early/mid game focuses on conventional warfare and strategy before introducing endgame mechanics.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Unlock Turn | 100 | Nuclear weapons become available |
 | Features Unlocked | Nuclear weapon production and use | Endgame weaponry |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1
 
@@ -847,6 +855,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Veterans and experienced players get full access immediately. Respects player experience level and reduces friction for returning players.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-001 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -854,9 +868,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Override Turn | 1 | All features available immediately |
 | Features Affected | All (Diplomacy, Black Market, Nuclear Weapons) | Complete system access |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -882,6 +894,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Provides safety net for long campaign games. Players protected from data loss without manual action. Short retention keeps storage costs manageable.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-002 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -890,9 +908,7 @@ This section contains formal requirements for spec-driven development. Each spec
 | Checkpoint Size | ~500KB | Compressed JSON format |
 | Trigger Timing | End of turn processing | After turn completion |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2
 
@@ -913,6 +929,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Gives players control over important game moments. Longer retention rewards deliberate saves. Limit prevents storage abuse.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -930,9 +950,7 @@ if (manual_checkpoints.length >= 3) {
 }
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2
 
@@ -954,6 +972,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Enables campaign continuation across sessions. Cloud storage ensures saves persist across devices. Automatic expiry manages storage costs.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-002 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -972,9 +996,7 @@ if (manual_checkpoints.length >= 3) {
 6. Resume gameplay from saved turn
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.3
 
@@ -1003,6 +1025,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Rare catastrophic event creating power vacuum. Instant effect prevents preparation, encouraging opportunistic expansion.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1012,9 +1040,7 @@ if (manual_checkpoints.length >= 3) {
 | Target | Unowned or weakest empire's sector |
 | Warning | None (instant) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1035,6 +1061,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Common harmful event affecting all equally. Hurts empires with large armies more (higher upkeep costs with less population).
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1044,9 +1076,7 @@ if (manual_checkpoints.length >= 3) {
 | Impact | Increased military upkeep burden |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1067,6 +1097,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Most common positive event. Accelerates economic game. Benefits all equally, creating stockpiling opportunities.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1076,9 +1112,7 @@ if (manual_checkpoints.length >= 3) {
 | Market Impact | Stable prices (no volatility) |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1099,6 +1133,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Punishes weakest empire, creates neutral territory grab opportunity. Anti-snowball mechanic favoring stronger empires.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1108,9 +1148,7 @@ if (manual_checkpoints.length >= 3) {
 | Target | Weakest empire (lowest military power) |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1131,6 +1169,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Rare catastrophic event isolating distant empires. Heavily impacts expansion-focused strategies. Expensive to rebuild.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1140,9 +1184,7 @@ if (manual_checkpoints.length >= 3) {
 | Rebuild Cost | 15,000-40,000 cr each |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1163,6 +1205,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Common positive event accelerating tech race. Players choose research, bots auto-select by archetype. Mid-game accelerator.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1172,9 +1220,7 @@ if (manual_checkpoints.length >= 3) {
 | Player Choice | From available Tier 2 options |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1195,6 +1241,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Rare chaos event forcing total war. Hurts diplomatic strategies, benefits opportunists. Longest duration event.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1204,9 +1256,7 @@ if (manual_checkpoints.length >= 3) {
 | Treaty Lock | Cannot form treaties for duration |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1227,6 +1277,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Most common positive event (tied with Golden Age). Accelerates resource game. Creates stockpiling and market selling opportunities.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1236,9 +1292,7 @@ if (manual_checkpoints.length >= 3) {
 | Exclusions | Credits, Research Points unaffected |
 | Warning | 1 turn advance |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1259,6 +1313,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Shared system rules governing all galactic events. Tutorial grace period prevents overwhelming new players. Max 1 event prevents compounding chaos.
 
+
+**Dependencies:**
+- REQ-PROG-003
+
+
+**Blockers:** None
 **Key Values:**
 | Rule | Value |
 |------|-------|
@@ -1268,9 +1328,7 @@ if (manual_checkpoints.length >= 3) {
 | Tutorial Grace Period | No events before Turn 10 |
 | Advance Warning | 1 turn (except Supernova) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
@@ -1296,6 +1354,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Teaches core mechanics progressively without overwhelming new players. Context-based learning more effective than abstract instruction.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-004 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1304,9 +1368,7 @@ if (manual_checkpoints.length >= 3) {
 | Mode | Integrated gameplay | Not separate sandbox |
 | Target Audience | First-time players | Auto-activates for new accounts |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.1
 
@@ -1327,6 +1389,10 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Clear goals give players immediate targets. Success criteria provide measurable progress. Objectives demonstrate practical use of mechanics.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Objective Examples:**
 | Turn | Objective | Mechanic Taught | Success Criteria |
 |------|-----------|-----------------|------------------|
@@ -1334,9 +1400,7 @@ if (manual_checkpoints.length >= 3) {
 | 3 | Build 10 Fighters | Unit production | 10 Fighters completed |
 | 10 | Tutorial complete | All mechanics | All objectives completed |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.1
 
@@ -1357,6 +1421,10 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Rewards incentivize objective completion. Early resources help new players establish foothold. Completion bonus celebrates achievement.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Reward Table:**
 | Turn/Milestone | Objective | Reward | Notes |
 |----------------|-----------|--------|-------|
@@ -1364,9 +1432,7 @@ if (manual_checkpoints.length >= 3) {
 | Turn 3 | Build 10 Fighters | +10 Fighters | Unit boost |
 | Turn 10 | Tutorial complete | +5,000 credits | Completion bonus |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.1
 
@@ -1386,6 +1452,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Respects player autonomy. Veterans shouldn't be forced through tutorial. Turn 3 threshold ensures minimal introduction before allowing skip.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-004 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1393,9 +1465,7 @@ if (manual_checkpoints.length >= 3) {
 | Skip Effect | Exit tutorial immediately | Return to normal gameplay |
 | Skip Rewards | Forfeit remaining rewards | Only keep rewards earned before skip |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.1
 
@@ -1422,6 +1492,12 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Reduces likelihood of aggressive early attacks on new players. Warlord/Blitzkrieg archetypes most likely to attack early, so priority reduction creates breathing room for learning.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-005 (depends on this spec)
+
 **Key Values:**
 | Parameter | Tutorial Value | Normal Value | Notes |
 |-----------|---------------|--------------|-------|
@@ -1429,9 +1505,7 @@ if (manual_checkpoints.length >= 3) {
 | Blitzkrieg Attack Priority | 0.3 | 0.9 | During Turns 1-10 |
 | Tutorial Duration | Turns 1-10 | N/A | Or until skip |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1
 
@@ -1453,6 +1527,10 @@ if (manual_checkpoints.length >= 3) {
 
 **Rationale:** Softens impact when bots do attack. New players can survive early mistakes without being immediately eliminated. Creates forgiving learning environment.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Tutorial Value | Normal Value | Notes |
 |-----------|---------------|--------------|-------|
@@ -1466,9 +1544,7 @@ Tutorial Damage = Base Damage × 0.5
 Normal Damage = Base Damage × 1.0
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1
 
@@ -1489,6 +1565,12 @@ Normal Damage = Base Damage × 1.0
 
 **Rationale:** Prevents overwhelming early aggression from Blitzkrieg's signature rush strategy. Gives new players time to establish defenses before facing coordinated early-game assault.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-005 (depends on this spec)
+
 **Key Values:**
 | Parameter | Tutorial Value | Normal Value | Notes |
 |-----------|---------------|--------------|-------|
@@ -1496,9 +1578,7 @@ Normal Damage = Base Damage × 1.0
 | Tutorial Duration | Turns 1-10 | N/A | Or until skip |
 | Affected Archetype | Blitzkrieg only | N/A | Specific to rush archetype |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1
 
@@ -1525,6 +1605,12 @@ Normal Damage = Base Damage × 1.0
 
 **Rationale:** Gives players time to react and prepare for most events. Supernova exception creates dramatic surprise element.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-006 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1532,9 +1618,7 @@ Normal Damage = Base Damage × 1.0
 | Warning Message | "GALACTIC EVENT INCOMING: [Type]" | Notification text |
 | Supernova Exception | No warning | Immediate occurrence |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.4
 
@@ -1554,6 +1638,10 @@ Normal Damage = Base Damage × 1.0
 
 **Rationale:** Ensures players aware of active event effects. Persistent visibility prevents confusion about current game state.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1561,9 +1649,7 @@ Normal Damage = Base Damage × 1.0
 | Banner Content | Event type and icon | Clear identification |
 | Display Location | Top of game screen | Prominent position |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 5.3
 
@@ -1583,6 +1669,10 @@ Normal Damage = Base Damage × 1.0
 
 **Rationale:** Provides clear timeline for event effects. Players can plan strategy around known end date.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1590,9 +1680,7 @@ Normal Damage = Base Damage × 1.0
 | Update Frequency | Each turn | Decrements by 1 |
 | End State | "Final turn" | Last turn indication |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 5.3
 
@@ -1612,6 +1700,12 @@ Normal Damage = Base Damage × 1.0
 
 **Rationale:** Clear closure for event. Players know when effects end and normal gameplay resumes.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-PROG-006 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1619,9 +1713,7 @@ Normal Damage = Base Damage × 1.0
 | End Message | "GALACTIC EVENT ENDED: [Type]" | Notification text |
 | Display Duration | 5 seconds | Auto-dismiss |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.4
 

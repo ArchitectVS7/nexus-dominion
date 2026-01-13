@@ -1299,9 +1299,11 @@ conquest_vp = (controlled_sectors / total_sectors) × (10 / 0.6)
 | conquest_threshold | 0.6 | 60% of sectors required for 10 VP |
 | vp_scale | 0-10 | Linear scaling |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-VIC-010.3 (depends on this spec)
+- REQ-TURN-019-01 (depends on this spec)
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1332,9 +1334,13 @@ economic_vp = (your_networth / second_networth) × (10 / 1.5)
 | economic_threshold | 1.5 | 1.5x second place required for 10 VP |
 | vp_scale | 0-10 | Linear scaling |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-VIC-002.1 (depends on this spec)
+- REQ-VIC-002.2 (depends on this spec)
+- REQ-VIC-010.3 (depends on this spec)
+- REQ-TURN-019-02 (depends on this spec)
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1365,9 +1371,10 @@ diplomatic_vp = (coalition_territory / total_sectors) × (10 / 0.5)
 | diplomatic_threshold | 0.5 | 50% of sectors required for 10 VP |
 | vp_scale | 0-10 | Linear scaling |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-002
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1400,9 +1407,10 @@ research_vp = ((capstone_progress × 0.5) + (advanced_techs / 10 × 0.5)) × 10
 | max_advanced_techs | 10 | 10 techs = 100% advanced contribution |
 | vp_scale | 0-10 | Linear scaling |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-002
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1433,9 +1441,14 @@ military_vp = (your_military / sum_all_others) × (10 / 2.0)
 | military_threshold | 2.0 | 2x all others combined required for 10 VP |
 | vp_scale | 0-10 | Linear scaling |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-VIC-003.1 (depends on this spec)
+- REQ-VIC-003.2 (depends on this spec)
+- REQ-VIC-003.3 (depends on this spec)
+- REQ-VIC-010.3 (depends on this spec)
+- REQ-TURN-019-03 (depends on this spec)
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1466,9 +1479,10 @@ survival_vp = (your_score / highest_score) × 10
 | vp_scale | 0-10 | Linear scaling |
 | turn_limit | 100 | Default turn limit for survival victory |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-003
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1501,9 +1515,10 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | critical_threshold | 9 VP | "One step from victory" alert |
 | victory_threshold | 10 VP | Victory achieved |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-003
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1540,9 +1555,10 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | trigger_threshold | 7 VP | 70% of victory progress |
 | deactivation_threshold | <7 VP | Mechanics lift when leader drops below 7 |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-003
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1569,9 +1585,13 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | attack_bonus_vs_leader | +10% | Applied to all attack rolls vs leader |
 | applies_to | All empires except leader | Leader does not receive this bonus |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-VIC-005.1 (depends on this spec)
+- REQ-VIC-005.2 (depends on this spec)
+- REQ-VIC-010.3 (depends on this spec)
+- REQ-TURN-019-05 (depends on this spec)
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1598,9 +1618,10 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | defense_bonus_vs_leader | +5% | Applied to all defense rolls vs leader |
 | applies_to | All empires except leader | Leader does not receive this bonus |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-005
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1628,9 +1649,10 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | applies_to_purchases | Yes | All buy orders |
 | applies_to_sales | No | Sell orders unaffected |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-005
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1659,9 +1681,14 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | applies_to | Leader only | Empire with 7+ VP |
 | min_reputation | 0 | Decay stops at 0, doesn't go negative |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-VIC-006.1 (depends on this spec)
+- REQ-VIC-006.2 (depends on this spec)
+- REQ-VIC-006.3 (depends on this spec)
+- REQ-VIC-010.3 (depends on this spec)
+- REQ-TURN-019-06 (depends on this spec)
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1690,9 +1717,10 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | eligible_empires | NAP or Alliance with any empire | Must have existing diplomatic ties |
 | offer_frequency | Once per threshold crossing | Not sent every turn |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-006
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1714,9 +1742,10 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Rationale:** Unified coordination ensures consistent anti-snowball behavior—mechanics don't activate/deactivate independently. Prevents edge cases where some mechanics are active while others aren't. Simplifies debugging and testing.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-006
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1762,9 +1791,12 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Rationale:** First early warning. Yellow indicates caution without alarm. Soft chime draws attention without urgency.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-VIC-006
+- REQ-VIC-007-A
+- REQ-VIC-007-G
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System, 5 VP Milestone
 
@@ -1791,9 +1823,11 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Rationale:** Critical threshold where anti-snowball kicks in. Orange indicates elevated threat. Klaxon signals urgent attention needed.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-VIC-006.3 (depends on this spec)
+- REQ-VIC-007 (depends on this spec)
 
 **Source:** Section 3.7 - Victory Point System, 7 VP Milestone
 
@@ -1820,9 +1854,9 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Rationale:** Final warning before victory. Red signals imminent threat. Urgent alarm demands immediate action.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System, 9 VP Milestone
 
@@ -1849,9 +1883,9 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Rationale:** Game-ending event. Gold indicates triumph rather than threat. Fanfare celebrates achievement and signals game conclusion.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System, 10 VP Milestone
 

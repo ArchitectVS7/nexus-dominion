@@ -1046,9 +1046,27 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Two-tier structure ensures critical empire state is atomic (transaction rollback on failure) while allowing non-critical systems to fail gracefully.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-TURN-001-01 (depends on this spec)
+- REQ-TURN-001-02 (depends on this spec)
+- REQ-TURN-001-03 (depends on this spec)
+- REQ-TURN-001-04 (depends on this spec)
+- REQ-TURN-001-05 (depends on this spec)
+- REQ-TURN-001-06 (depends on this spec)
+- REQ-TURN-001-07 (depends on this spec)
+- REQ-TURN-001-08 (depends on this spec)
+- REQ-TURN-001-09 (depends on this spec)
+- REQ-TURN-001-10 (depends on this spec)
+- REQ-TURN-001-11 (depends on this spec)
+- REQ-TURN-001-12 (depends on this spec)
+- REQ-TURN-001-13 (depends on this spec)
+- REQ-TURN-001-14 (depends on this spec)
+- REQ-TURN-001-15 (depends on this spec)
+- REQ-TURN-001-16 (depends on this spec)
+- REQ-TURN-001-17 (depends on this spec)
+- REQ-TURN-001-18 (depends on this spec)
 
 **Source:** Section 1.2, Section 2.1
 
@@ -1089,9 +1107,10 @@ food_income = 75 * num_sectors * civil_status_multiplier
 | civil_status_multiplier (Unrest) | 0.8 | -20% income penalty |
 | civil_status_multiplier (Rebellion) | 0.5 | -50% income penalty |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.1
 
@@ -1112,9 +1131,10 @@ food_income = 75 * num_sectors * civil_status_multiplier
 
 **Rationale:** Enables resource transformation chains for Tech Wars expansion. Automated to reduce micromanagement.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.2
 
@@ -1157,9 +1177,10 @@ else:
 | max_growth_rate | 0.05 | Max 5% population growth per turn |
 | starvation_death_rate | 0.1 | 10% of deficit translates to deaths |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.3
 
@@ -1187,9 +1208,10 @@ else:
 | 20-49 | Unrest | 0.8 | Cannot declare new wars |
 | 0-19 | Rebellion | 0.5 | 10% secession chance/turn |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.4
 
@@ -1209,9 +1231,10 @@ else:
 
 **Rationale:** Research progression is core to strategic depth. Must be atomic to prevent partial research state.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.5
 
@@ -1231,9 +1254,10 @@ else:
 
 **Rationale:** Build queue is critical military mechanic. Must be atomic to prevent partial unit construction.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.6
 
@@ -1253,9 +1277,10 @@ else:
 
 **Rationale:** Covert operations are critical for intelligence gathering and disruption. Must be atomic for fair resolution.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.7
 
@@ -1275,9 +1300,11 @@ else:
 
 **Rationale:** Crafting completes the resource transformation system. Must be atomic to prevent partial recipe execution.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
+- REQ-COV-006
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.8
 
@@ -1297,9 +1324,10 @@ else:
 
 **Rationale:** Bot decisions are non-critical for turn integrity. Failures should log errors but not block turn processing.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.9
 
@@ -1319,9 +1347,10 @@ else:
 
 **Rationale:** Emotional decay prevents permanent grudges/alliances. Non-critical for turn processing.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.10
 
@@ -1347,9 +1376,10 @@ else:
 | cleanup_interval | 5 | Cleanup runs every 5 turns |
 | weight_threshold | 0.1 | Memories below this weight are pruned |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.11
 
@@ -1369,9 +1399,10 @@ else:
 
 **Rationale:** Market updates are non-critical. Price calculation failures should not block turn processing.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.12
 
@@ -1391,9 +1422,10 @@ else:
 
 **Rationale:** Bot messages add flavor but are non-critical. Generation failures should not block turn processing.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.13
 
@@ -1418,9 +1450,10 @@ else:
 |-----------|-------|-------|
 | milestone_interval | 11 | Events trigger on turn % 11 == 0 |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.14
 
@@ -1445,9 +1478,10 @@ else:
 |-----------|-------|-------|
 | milestone_interval | 11 | Checkpoints trigger on turn % 11 == 0 |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.15
 
@@ -1467,9 +1501,10 @@ else:
 
 **Rationale:** Victory check must occur after all empires' end-of-turn states are finalized. Non-critical for turn processing but critical for game flow.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.16
 
@@ -1489,9 +1524,10 @@ else:
 
 **Rationale:** Auto-save provides recovery points. Non-critical for turn processing integrity.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.17
 
@@ -2305,9 +2341,10 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Typical Value | 70 of 100 sectors |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-001
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.16
 
@@ -2338,9 +2375,9 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Measurement | Stockpile (not income) |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.16
 
@@ -2372,9 +2409,9 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Treaty Type | Active alliances only |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.16
 
@@ -2405,9 +2442,11 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Measurement | All branches completed |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-TURN-004.1 (depends on this spec)
+- REQ-TURN-004.2 (depends on this spec)
 
 **Source:** Section 3.16
 
@@ -2438,9 +2477,10 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Measurement | Assassination operations only |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-004
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.16
 
@@ -2471,9 +2511,10 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Elimination Criteria | Zero sectors controlled |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-004
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.16
 
@@ -2588,9 +2629,9 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Rationale:** These are the heaviest computational phases with DB writes. Largest budget allocation reflects this complexity.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Tier 1 Budget
 
@@ -2615,9 +2656,12 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Rationale:** Bot AI is expensive but parallelizable. Can utilize multi-core CPUs effectively. Second-largest budget.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-TURN-006.1 (depends on this spec)
+- REQ-TURN-006.2 (depends on this spec)
+- REQ-TURN-006.3 (depends on this spec)
 
 **Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Bot AI Budget
 
@@ -2642,9 +2686,10 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Rationale:** These phases are lower-priority bookkeeping tasks. Can be optimized aggressively or deferred.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-006
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Tier 2 Budget
 
@@ -2669,9 +2714,10 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Rationale:** UI updates happen after server processing. 500ms budget allows smooth animations without feeling laggy.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-TURN-006
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, UI Budget
 

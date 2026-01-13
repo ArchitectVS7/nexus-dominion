@@ -531,6 +531,10 @@ Progress bar showing remaining turns until auto-renewal decision.
 
 **Rationale:** Enables diplomatic gameplay with meaningful choices. NAP is low-commitment, Alliance is strategic partnership.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 2.1
 
 **Code:**
@@ -556,6 +560,12 @@ Progress bar showing remaining turns until auto-renewal decision.
 
 **Rationale:** The 3-member minimum prevents two-player alliances from dominating. Creates meaningful groupings that require broader diplomatic coordination.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-002 (depends on this spec)
+
 **Formation Rules:**
 - Minimum members: 3 empires
 - Creation: Any empire can propose coalition
@@ -567,9 +577,7 @@ Progress bar showing remaining turns until auto-renewal decision.
 - All benefits immediately end
 - Members return to standard diplomatic relations
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1, Section 3.2
 
@@ -590,6 +598,12 @@ Progress bar showing remaining turns until auto-renewal decision.
 
 **Rationale:** Anti-snowball mechanic to prevent runaway victories. Creates "raid boss" feeling when attacking dominant leader. Benefits must be substantial enough to incentivize cooperation.
 
+
+**Dependencies:**
+- REQ-DIP-009
+
+
+**Blockers:** None
 **Coalition Benefits:**
 | Benefit | Value | Notes |
 |---------|-------|-------|
@@ -604,9 +618,7 @@ Progress bar showing remaining turns until auto-renewal decision.
 - Territory counted as aggregate across all members
 - Must maintain 3+ members to claim victory
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1, Section 3.2
 
@@ -629,6 +641,14 @@ Progress bar showing remaining turns until auto-renewal decision.
 
 **Rationale:** Provides exit mechanisms while creating consequences for betrayal. Majority vote allows peaceful dissolution, betrayal creates dramatic moments.
 
+
+**Dependencies:**
+- REQ-DIP-003
+
+
+**Blockers:**
+- REQ-DIP-002 (depends on this spec)
+
 **Dissolution Methods:**
 
 1. **Majority Vote:**
@@ -648,9 +668,7 @@ Progress bar showing remaining turns until auto-renewal decision.
 - Members return to individual diplomatic status
 - Can form new coalitions immediately (except betrayers)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1, Section 3.2
 
@@ -679,6 +697,12 @@ Progress bar showing remaining turns until auto-renewal decision.
 - Attack leader (7+ VP): +8
 
 **Rationale:** Creates consequences for diplomatic actions. Reputation affects bot behavior and treaty acceptance rates.
+
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-002-C (depends on this spec)
 
 **Formula:**
 ```
@@ -717,6 +741,10 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 **Rationale:** Separates short-term opportunism from long-term relationships. Recent actions matter more than ancient history.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 2.3
 
 **Code:**
@@ -742,6 +770,14 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 **Rationale:** Prevents runaway victories by creating automatic alliance formation against dominant players. Creates dramatic "everyone vs the boss" scenarios without requiring manual coordination.
 
+
+**Dependencies:**
+- REQ-BOT-008
+
+
+**Blockers:**
+- REQ-DIP-005 (depends on this spec)
+
 **Formation Sequence:**
 1. **Trigger Detection:** Empire reaches 7+ Victory Points
 2. **System Broadcast:** Warning sent to all empires ("Empire X is approaching victory!")
@@ -762,9 +798,7 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 - Leader is eliminated from game
 - All coalition benefits immediately removed upon disbanding
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -787,6 +821,14 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 **Rationale:** Debuffs create meaningful challenge for the leader while making attacking them more viable for weaker empires. Alliance restriction prevents leader from countering the auto-coalition.
 
+
+**Dependencies:**
+- REQ-VIC-008
+
+
+**Blockers:**
+- REQ-DIP-005 (depends on this spec)
+
 **Leader Debuffs:**
 | Debuff | Value | Effect |
 |--------|-------|--------|
@@ -803,9 +845,7 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 - These debuffs stack with REQ-VIC-008 anti-snowball mechanics
 - Creates compound difficulty for dominant leader
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -834,6 +874,12 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 **Rationale:** Treaty breaking must have meaningful consequences to prevent exploitation. Reputation penalties scale with treaty importance. Betrayed status creates lasting diplomatic damage.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-006 (depends on this spec)
+
 **Treaty Breaking Penalties:**
 | Treaty Type | Reputation Penalty | Notes |
 |-------------|-------------------|-------|
@@ -853,9 +899,7 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 4. Betrayed status applied to target
 5. Notification sent to target
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.3
 
@@ -877,6 +921,10 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 **Rationale:** Coalition betrayal is more severe than treaty breaking because it affects multiple empires and breaks collective trust. Pariah status prevents betrayers from immediately forming new alliances.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Coalition Betrayal Penalties:**
 | Penalty | Value | Scope |
 |---------|-------|-------|
@@ -901,9 +949,7 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 - Coalition continues if 3+ members remain
 - Coalition disbands if drops below 3 members
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.3
 
@@ -926,6 +972,12 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 **Rationale:** Creates tension in alliances with Schemer bots. Other archetypes betray rarely or under specific conditions, making them more reliable but not perfectly trustworthy.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-006 (depends on this spec)
+
 **Betrayal Rates by Archetype:**
 | Archetype | Betrayal Rate | Conditions |
 |-----------|---------------|------------|
@@ -947,9 +999,7 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 3. Roll probability
 4. Execute betrayal if threshold met
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.3
 
@@ -980,6 +1030,10 @@ Early termination:
 
 **Rationale:** Prevents exploit of forming/breaking treaties for temporary benefits. Enforces meaningful commitment.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.6
 
 **Code:**
@@ -1002,6 +1056,10 @@ Early termination:
 
 **Rationale:** Provides non-military victory path. Encourages cooperation. Alternative to conquest for diplomatic players.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 2.4
 
 **Code:**
@@ -1042,9 +1100,13 @@ Early termination:
 
 **Rationale:** Makes alliances tangibly useful. Players can coordinate strategy, identify weak allies needing support, and plan joint operations.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-009 (depends on this spec)
+
+
 
 **Source:** Section 3.7 - Shared Intelligence, Territory Visibility
 
@@ -1069,9 +1131,13 @@ Early termination:
 
 **Rationale:** Enables coordinated defense and creates dramatic "allies under siege" moments. Builds strategic interdependence.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-009 (depends on this spec)
+
+
 
 **Source:** Section 3.7 - Shared Intelligence, Attack Alerts
 
@@ -1096,9 +1162,13 @@ Early termination:
 
 **Rationale:** Builds narrative and reveals bot personalities. Creates dramatic irony when bots plot betrayal or discuss human player.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-009 (depends on this spec)
+
+
 
 **Source:** Section 3.7 - Shared Intelligence, Coalition Chat
 
@@ -1125,9 +1195,13 @@ Early termination:
 
 **Rationale:** Enables tactical coordination. Players can identify threats, plan joint attacks, and warn allies of impending invasions.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-009 (depends on this spec)
+
+
 
 **Source:** Section 3.7 - Shared Intelligence, Shared Vision
 
@@ -1180,9 +1254,13 @@ Early termination:
 
 **Rationale:** Fast recovery rewards active diplomatic engagement and generosity. 10+ turn requirement prevents gaming the system while remaining achievable.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-010 (depends on this spec)
+
+
 
 **Source:** Section 3.4 - Reputation Recovery, Fast Recovery
 
@@ -1214,9 +1292,13 @@ Early termination:
 
 **Rationale:** Slow recovery requires sustained commitment, proving genuine behavioral change. 30-turn requirement ensures players can't quickly erase past betrayals.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-010 (depends on this spec)
+
+
 
 **Source:** Section 3.4 - Reputation Recovery, Slow Recovery
 
@@ -1247,9 +1329,13 @@ Early termination:
 
 **Rationale:** Permanent scars create meaningful consequences for major betrayals. Players can partially recover through positive actions, but the scar remains as a warning to others. Prevents "scorched earth" strategies where players betray everyone with no long-term cost.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-DIP-010 (depends on this spec)
+
+
 
 **Source:** Section 3.4 - Reputation Recovery, Permanent Scars
 

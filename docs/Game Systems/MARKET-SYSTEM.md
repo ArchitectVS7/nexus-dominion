@@ -714,6 +714,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Enables economic strategy and resource conversion. Players can sell surplus production for credits and buy deficits to support expansion.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 1.1, 3.3, 3.4
 
 **Code:**
@@ -746,6 +750,12 @@ Price = Base Price × Supply Modifier × Demand Modifier × Event Modifier × Le
 
 **Rationale:** Establishes price stability and prevents market manipulation through artificial scarcity or oversupply.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-002 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -755,9 +765,7 @@ Price = Base Price × Supply Modifier × Demand Modifier × Event Modifier × Le
 | Price Floor | 50% of base price |
 | Price Ceiling | 200% of base price |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2, 3.1
 
@@ -777,6 +785,10 @@ Price = Base Price × Supply Modifier × Demand Modifier × Event Modifier × Le
 
 **Rationale:** High supply (heavy selling) reduces prices. Creates incentive to sell during low supply periods.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Supply Modifier = 1.0 - (Net Sell Volume / 100,000) × 0.5
@@ -789,9 +801,7 @@ Supply Modifier = 1.0 - (Net Sell Volume / 100,000) × 0.5
 | Supply Impact Factor | 0.5 |
 | Direction | Reduces price |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2, 3.1
 
@@ -811,6 +821,10 @@ Supply Modifier = 1.0 - (Net Sell Volume / 100,000) × 0.5
 
 **Rationale:** High demand (heavy buying) increases prices. Creates incentive to buy during low demand periods.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
@@ -823,9 +837,7 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 | Demand Impact Factor | 0.5 |
 | Direction | Increases price |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2, 3.1
 
@@ -845,6 +857,12 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Creates dynamic market conditions driven by galactic events. Rewards players who time trades around event cycles.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -852,9 +870,7 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 | Modifier Range | -15% to +20% |
 | Default (No Event) | 1.0 (no change) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2, 3.1, 3.2
 
@@ -877,6 +893,14 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Leader penalty slows economic advantage of leading empire. Price decay ensures temporary market events don't cause permanent distortions.
 
+
+**Dependencies:**
+- REQ-VIC-008
+
+
+**Blockers:**
+- REQ-MKT-002 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -884,9 +908,7 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 | Decay Rate | 5% per turn toward baseline |
 | Baseline Target | Base Price × 1.0 |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.2, 3.1
 
@@ -930,9 +952,13 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Base transaction cost prevents zero-risk arbitrage. Low percentage encourages market use while minimum prevents trivial-cost spam trades.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-003 (depends on this spec)
+
+
 
 **Source:** Section 2.3 - Transaction Fees, Buy Fee
 
@@ -956,9 +982,13 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Higher sell fees discourage rapid buy-resell arbitrage cycles and market manipulation. Creates natural friction for speculation.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-003 (depends on this spec)
+
+
 
 **Source:** Section 2.3 - Transaction Fees, Sell Fee
 
@@ -989,9 +1019,14 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Rewards strategic large trades and encourages bulk transactions over many small orders. Creates meaningful decision point for trade timing.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-003 (depends on this spec)
+- REQ-MKT-003-D (depends on this spec)
+
+
 
 **Source:** Section 3.3 - Bulk Discount
 
@@ -1021,9 +1056,15 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Research investment provides ongoing economic advantage. Commerce specialization creates meaningful strategic choice between military/tech/economic paths.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-MKT-003-C
+
+
+**Blockers:**
+- REQ-MKT-003 (depends on this spec)
+
+
 
 **Source:** Section 3.4 - Research Bonus
 
@@ -1047,6 +1088,12 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Prevents market manipulation through massive single transactions. Forces players to spread large trades across multiple turns, creating strategic planning requirements and preventing instant market corner attempts.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-004 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1060,9 +1107,7 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 - Return error message: "Transaction exceeds 50,000 unit limit"
 - No partial fulfillment (all-or-nothing)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.4, 3.4
 
@@ -1084,6 +1129,10 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 **Rationale:** Prevents players from selling themselves into economic collapse. Ensures minimum resource availability for empire operations. Creates strategic decisions about production vs selling.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Reserve = sector_production × 0.10
@@ -1108,9 +1157,7 @@ Max Sellable = current_storage - reserve
 - Block sells that would drop storage below reserve
 - Return error: "Cannot sell below 10% reserve requirement"
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.4, 3.4
 
@@ -1132,6 +1179,12 @@ Max Sellable = current_storage - reserve
 
 **Rationale:** Prevents extreme inflation/deflation that would make the market unusable. Ensures prices remain within reasonable bounds for strategic planning. Protects against edge cases in price formula.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-004 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1152,9 +1205,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 - If supply modifier calculates 30 credits → clamped to 50 credits
 - If demand modifier calculates 250 credits → clamped to 200 credits
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.4, 3.4
 
@@ -1184,6 +1235,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates favorable food market conditions. Rewards players who sell food during normal times and buy during harvest events.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1191,9 +1248,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 10 turns |
 | Impact | Food price -15% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1213,6 +1268,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates food scarcity pressure. Players with food stockpiles or agricultural sectors gain advantage.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1220,9 +1281,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 12 turns |
 | Impact | Food price +30% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1242,6 +1301,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates scarcity for military production. Players with ore stockpiles or mining sectors gain advantage.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1249,9 +1314,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 15 turns |
 | Impact | Ore price +25% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1271,6 +1334,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates favorable ore market conditions. Rewards players who buy ore during boom and sell during normal times.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1278,9 +1347,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 8 turns |
 | Impact | Ore price -20% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1300,6 +1367,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates severe fuel scarcity. Highest price impact of any event. Players with petroleum sectors gain significant advantage.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1307,9 +1380,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 8 turns |
 | Impact | Petroleum price +40% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1329,6 +1400,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates favorable petroleum market conditions. Rewards players who stockpile fuel during gluts for future use.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1336,9 +1413,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 10 turns |
 | Impact | Petroleum price -25% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1358,6 +1433,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates market friction. Discourages frequent trading. Players must balance need for resources against higher costs.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1365,9 +1446,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 20 turns |
 | Impact | All fees +3% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1387,6 +1466,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Creates favorable trading conditions. Encourages market activity and resource redistribution.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1394,9 +1479,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Duration | 15 turns |
 | Impact | All fees -2% |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1416,6 +1499,12 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Prevents multiple simultaneous events from creating unbalanced market conditions. Tutorial grace period ensures new players learn basic mechanics before events introduce volatility.
 
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:** None
 **Key Values:**
 | Rule | Details |
 |------|---------|
@@ -1423,9 +1512,7 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 | Fee Event Mutual Exclusion | Trade War and Free Trade cannot both be active |
 | Tutorial Grace Period | No events before turn 10 |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
@@ -1445,6 +1532,10 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 
 **Rationale:** Integrates with global anti-snowball mechanics. Dominant empires face economic headwinds, giving trailing empires catch-up opportunities.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Buy Price = Base Price × (Modifiers) × (1.2 if VP >= 7 else 1.0)
@@ -1481,6 +1572,13 @@ Buy Price = Base Price × (Modifiers) × (1.2 if VP >= 7 else 1.0)
 
 **Rationale:** Provides Merchant archetype with information advantage for strategic buying/selling. The ±10% variance prevents perfect prediction while still being useful. Coalition sharing spreads benefit to allies.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-007 (depends on this spec)
+- REQ-MKT-009-B (depends on this spec)
+
 **Formula:**
 ```
 Predicted Price = Next Turn Price + random(-10%, +10%)
@@ -1499,9 +1597,7 @@ Predicted Price = Next Turn Price + random(-10%, +10%)
 - Refreshes each turn with new prediction
 - Warning indicator if price expected to change significantly
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5, 4.1, 5.1
 
@@ -1524,6 +1620,12 @@ Predicted Price = Next Turn Price + random(-10%, +10%)
 
 **Rationale:** Allows Merchant to anticipate market movements from bot activity. Creates strategic opportunities to front-run large orders or avoid being on wrong side of price movements.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-009-B (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1543,9 +1645,7 @@ Predicted Price = Next Turn Price + random(-10%, +10%)
 - Medium large: 20,000-49,999 units
 - Very large: 50,000 units (max transaction)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5, 4.1, 5.1
 
@@ -1567,6 +1667,15 @@ Predicted Price = Next Turn Price + random(-10%, +10%)
 **Description:** Merchant archetype (and their coalition allies) have 50% chance to detect upcoming market events 2 turns before they trigger. Provides advance warning to position for price swings.
 
 **Rationale:** Creates strategic depth for economic players. Early warning allows preparation but isn't guaranteed, maintaining uncertainty. 2-turn advance gives time to act without being too overpowered.
+
+
+**Dependencies:**
+- REQ-MKT-005
+
+
+**Blockers:**
+- REQ-MKT-007 (depends on this spec)
+- REQ-MKT-009-B (depends on this spec)
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1594,9 +1703,7 @@ When market event generated (for turn T):
 - All market events from REQ-MKT-005 (Bumper Harvest, Famine, etc.)
 - Detection rolls separately for each event
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5, 4.1, 5.1
 
@@ -1627,6 +1734,15 @@ When market event generated (for turn T):
 
 **Rationale:** Creates liquidity and price stabilization in the market. Merchant trading behavior demonstrates economic mastery and provides learning example for players.
 
+
+**Dependencies:**
+- REQ-BOT-002
+- REQ-MKT-007
+
+
+**Blockers:**
+- REQ-MKT-008 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1635,9 +1751,7 @@ When market event generated (for turn T):
 | Strategy | Price prediction + bulk trading |
 | Passive Ability | Market Insight (price predictions) |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1, 4.2
 
@@ -1660,6 +1774,12 @@ When market event generated (for turn T):
 
 **Rationale:** Creates telegraphed market signals that skilled players can read to anticipate Warlord attacks. Military preparation drives strategic resource trading.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1668,9 +1788,7 @@ When market event generated (for turn T):
 | Purpose | Military stockpiling |
 | Market Signal | Predictable pattern |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1, 4.2
 
@@ -1693,6 +1811,12 @@ When market event generated (for turn T):
 
 **Rationale:** Creates consistent Food demand in market. Demonstrates defensive economic strategy and resource management.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1701,9 +1825,7 @@ When market event generated (for turn T):
 | Priority | Sustainability over profit |
 | Buy Trigger | Reserve drops below threshold |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1, 4.2
 
@@ -1726,6 +1848,14 @@ When market event generated (for turn T):
 
 **Rationale:** Creates unpredictable market chaos and price manipulation. Provides adversarial trading behavior for players to counter.
 
+
+**Dependencies:**
+- REQ-BOT-002
+
+
+**Blockers:**
+- REQ-MKT-008 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1734,9 +1864,7 @@ When market event generated (for turn T):
 | Trading Style | Opportunistic, disruptive |
 | Goal | Profit from artificial scarcity |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 4.1, 4.2
 
@@ -1765,6 +1893,12 @@ When market event generated (for turn T):
 
 **Rationale:** Informed decision-making requires historical data. Public transparency creates fair market conditions while allowing skilled players to identify patterns and opportunities.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-009 (depends on this spec)
+
 **Public Information:**
 | Information Type | Details | Display |
 |------------------|---------|---------|
@@ -1785,9 +1919,7 @@ When market event generated (for turn T):
 - Last 5 turns shown as bar chart
 - Helps identify unusual market activity
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5
 
@@ -1809,6 +1941,16 @@ When market event generated (for turn T):
 **Description:** Merchant archetype (and their coalition allies) have access to private market information not available to other players. This includes next turn price predictions, visibility of large bot orders, and early detection of upcoming market events.
 
 **Rationale:** Provides Merchant archetype with information edge as their core passive ability. Information advantage creates viable economic specialization without full market transparency. Coalition sharing creates synergy benefits.
+
+
+**Dependencies:**
+- REQ-MKT-007-A
+- REQ-MKT-007-B
+- REQ-MKT-007-C
+
+
+**Blockers:**
+- REQ-MKT-009 (depends on this spec)
 
 **Private Information Access:**
 | Information Type | Visibility | Source Spec |
@@ -1833,9 +1975,7 @@ When market event generated (for turn T):
 - Benefit persists while coalition active
 - Removed immediately upon coalition dissolution
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.5
 
@@ -1861,6 +2001,10 @@ When market event generated (for turn T):
 
 **Rationale:** Reflects resource importance and scarcity. Food is abundant (always needed, stable). Ore is war-dependent (moderate swings). Petroleum is luxury/strategic (extreme volatility).
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Resource | Base Price | Volatility | Max Swing |
 |----------|-----------|------------|-----------|
@@ -1886,6 +2030,10 @@ When market event generated (for turn T):
 
 **Rationale:** Rewards investment in Commerce research tree. Makes trading more profitable for dedicated economic players.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Research Discount = has_commerce_tier2 ? 0.02 : 0.0
@@ -1917,15 +2065,19 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 
 **Rationale:** Provides real-time price updates during active trading while minimizing unnecessary polling when market is idle.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-012 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Update Interval | 30 seconds | Polling frequency when active |
 | Trigger | Any transaction | Activates update cycle |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 5.1
 
@@ -1945,6 +2097,10 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 
 **Rationale:** Defines activity window for efficient resource management. Prevents unnecessary polling during quiet periods.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1952,9 +2108,7 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 | Inactive Behavior | Pause updates | Stop polling until next transaction |
 | Reactivation Trigger | Any transaction | Restarts update cycle |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 5.1
 
@@ -1974,6 +2128,12 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 
 **Rationale:** Smooth animations provide visual feedback on market changes. Dynamic calculations give immediate price impact visibility.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MKT-012 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1982,9 +2142,7 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 | Modal Calculation | <50ms | Instant feedback |
 | Update Trigger | Quantity change | Real-time totals |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 5.2, 5.3
 

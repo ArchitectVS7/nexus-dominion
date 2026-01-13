@@ -558,6 +558,10 @@ When viewing individual units:
 
 **Rationale:** Unit variety creates strategic depth. Six types provide enough diversity for meaningful fleet composition choices without overwhelming complexity.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 2.1, COMBAT-SYSTEM.md Section 2.3
 
 **Code:**
@@ -598,9 +602,13 @@ When viewing individual units:
 
 **Rationale:** Parallel building allows strategic investment across multiple unit types. No arbitrary queue limits - only economic constraints matter.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-002 (depends on this spec)
+
+
 
 **Source:** Section 2.3 - Build Queue System, Parallel Production
 
@@ -625,9 +633,13 @@ When viewing individual units:
 
 **Rationale:** Upfront payment creates meaningful economic decisions. Players must have resources available now, preventing overextension. Simplifies turn processing (no per-turn payment tracking).
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-002 (depends on this spec)
+
+
 
 **Source:** Section 2.3 - Build Queue System, Upfront Costs
 
@@ -660,9 +672,15 @@ When viewing individual units:
 
 **Rationale:** Multi-turn production prevents instant army spam. Creates strategic planning requirement - must anticipate future needs. High-value units require longer commitment.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-MIL-003
+
+
+**Blockers:**
+- REQ-MIL-002 (depends on this spec)
+
+
 
 **Source:** Section 2.3 - Build Queue System, Production Times
 
@@ -692,9 +710,13 @@ When viewing individual units:
 
 **Rationale:** Cancellation option provides flexibility for strategic pivots. 50% penalty creates meaningful sunk cost - not free to change plans, but not catastrophic. Encourages thoughtful queueing without locking players into bad decisions.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-002 (depends on this spec)
+
+
 
 **Source:** Section 3.1 - Build Cancellation
 
@@ -722,6 +744,12 @@ When viewing individual units:
 
 **Rationale:** Resource scarcity (especially petroleum) limits production of high-tier units. Forces economic strategy alongside military planning.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-002-C (depends on this spec)
+
 **Source:** Section 2.1, Section 3.2
 
 **Code:**
@@ -747,6 +775,12 @@ When viewing individual units:
 
 **Rationale:** Prevents runaway military growth. Forces economic sustainability for large fleets.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-004 (depends on this spec)
+
 **Maintenance Cost Table:**
 | Unit | Credits/turn | Ore/turn | Petroleum/turn |
 |------|--------------|----------|----------------|
@@ -764,9 +798,7 @@ Total Maintenance = Σ (unit_count × unit_maintenance_cost) for each resource t
 Deducted each turn during maintenance phase
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.5
 
@@ -787,6 +819,12 @@ Deducted each turn during maintenance phase
 
 **Rationale:** Creates consequences for unsustainable military expansion. Forces players to maintain economic balance.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-MIL-004 (depends on this spec)
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -802,9 +840,7 @@ if (maintenance_deficit_turns >= 2) {
 }
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.4
 
@@ -831,6 +867,10 @@ Production progress increments by 1 each turn. Units complete on turn = (start_t
 
 **Rationale:** Longer production times for powerful units create strategic planning. Cannot rapidly mobilize heavy fleets.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 2.1, Section 3.1
 
 **Code:**
@@ -862,6 +902,12 @@ Military Power = Σ (Unit Count × Unit Power Multiplier × Situational Bonuses)
 
 **Rationale:** Creates unit hierarchy. Power multipliers define relative combat strength.
 
+
+**Dependencies:**
+- REQ-COMBAT-004
+
+
+**Blockers:** None
 **Source:** Section 2.4, COMBAT-SYSTEM.md REQ-COMBAT-004
 
 **Code:**
@@ -896,6 +942,10 @@ Military Power = Σ (Unit Count × Unit Power Multiplier × Situational Bonuses)
 
 **Rationale:** Fighters and Bombers are most cost-efficient, encouraging balanced fleets. Higher-tier units provide raw power but at premium.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.2
 
 **Code:**
@@ -914,6 +964,12 @@ Military Power = Σ (Unit Count × Unit Power Multiplier × Situational Bonuses)
 
 **Rationale:** Encourages diverse fleet compositions over mono-unit strategies. Rewards strategic variety.
 
+
+**Dependencies:**
+- REQ-COMBAT-005
+
+
+**Blockers:** None
 **Source:** Section 3.3, COMBAT-SYSTEM.md REQ-COMBAT-005
 
 **Code:**
@@ -938,6 +994,10 @@ All other units restricted to single domain.
 
 **Rationale:** Creates tactical assignment decisions. Fighters' flexibility provides strategic options.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.6, COMBAT-SYSTEM.md Section 3.4
 
 **Code:**
@@ -963,6 +1023,10 @@ Natural limits:
 
 **Rationale:** "Consequence over limits" design philosophy. Players constrained by economics, not arbitrary caps.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** Section 3.5, PRD-EXECUTIVE.md
 
 **Code:**

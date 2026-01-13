@@ -1864,9 +1864,11 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Public | Galaxy-wide announcement |
 | Permanence | Permanent | Cannot be changed once selected |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-001-A
+- REQ-RSCH-001-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 1.1 - Three-Tier Draft Structure
 
@@ -1896,9 +1898,10 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Hidden | Until revealed through specific conditions |
 | Permanence | Permanent | Cannot be changed once selected |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-001 (depends on this spec)
 
 **Source:** Section 1.1 - Three-Tier Draft Structure
 
@@ -1930,9 +1933,9 @@ This section contains formal requirements for spec-driven development. Each spec
 | Selection method | Automatic | Based on doctrine choice |
 | Visibility | Galaxy-wide | Announcement to all players |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 1.1 - Three-Tier Draft Structure
 
@@ -1970,9 +1973,10 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Public | Galaxy-wide announcement |
 | Permanence | Permanent | Cannot be changed once selected |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-001 (depends on this spec)
 
 **Source:** Section 3.1 - Tier 1: Doctrine System
 
@@ -2006,9 +2010,11 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Public | Galaxy-wide announcement |
 | Permanence | Permanent | Cannot be changed once selected |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-002-A
+- REQ-RSCH-002-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.1 - Tier 1: Doctrine System
 
@@ -2042,9 +2048,10 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Public | Galaxy-wide announcement |
 | Permanence | Permanent | Cannot be changed once selected |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-002 (depends on this spec)
 
 **Source:** Section 3.1 - Tier 1: Doctrine System
 
@@ -2100,9 +2107,9 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Counter:** Shield Arrays (REQ-RSCH-003-C) provides immunity to surprise rounds.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.2
 
@@ -2124,9 +2131,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Highly effective against defensive structures and stations, bypassing their armor protection.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-002 (depends on this spec)
 
 **Source:** Section 3.2
 
@@ -2150,9 +2158,11 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Counters:** Shock Troops (REQ-RSCH-003-A)
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-003-A
+- REQ-RSCH-003-F
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.2
 
@@ -2174,9 +2184,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Weakens attacking forces before combat begins, providing defensive attrition advantage.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-003-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-003 (depends on this spec)
+- REQ-RSCH-003-C (depends on this spec)
 
 **Source:** Section 3.2
 
@@ -2198,9 +2211,9 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Maximizes economic efficiency in market transactions, accelerating economic growth.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.2
 
@@ -2222,9 +2235,11 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Converts economic resources into temporary military advantage on demand.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-003-A
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-003-A (depends on this spec)
 
 **Source:** Section 3.2
 
@@ -2260,9 +2275,9 @@ This section contains formal requirements for spec-driven development. Each spec
 | Special ability | Multi-attack | Can attack multiple times per round |
 | Visibility | Galaxy-wide | Announcement to all players |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.3 - Tier 3: Capstone System
 
@@ -2293,9 +2308,9 @@ This section contains formal requirements for spec-driven development. Each spec
 | Permanence | Permanent | Cannot be changed once designated |
 | Visibility | Galaxy-wide | Announcement to all players |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.3 - Tier 3: Capstone System
 
@@ -2331,9 +2346,10 @@ This section contains formal requirements for spec-driven development. Each spec
 Economic Hegemony Income = floor(2nd_place_empire_income × 0.5)
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-003 (depends on this spec)
 
 **Source:** Section 3.3 - Tier 3: Capstone System
 
@@ -2372,9 +2388,11 @@ RP per turn = Research Sector Count × 100
 | RP per sector | 100 RP/turn | Flat rate, no diminishing returns |
 | Processing timing | Phase 4 | Turn Processing (Resource Production) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-004-A
+- REQ-RSCH-004-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 1.2 - Research Points (RP) Economy
 
@@ -2402,9 +2420,10 @@ RP per turn = Research Sector Count × 100
 | Tier 3 threshold | 15,000 RP | ~Turn 60 with 3 research sectors (300 RP/turn from Turn 30) |
 | Advancement | Manual | Player must select when threshold reached |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-004 (depends on this spec)
 
 **Source:** Section 1.2 - Research Points (RP) Economy
 
@@ -2438,9 +2457,9 @@ Actual RP = Accumulated total (hidden)
 | Research sectors | Visible | Sector count is public information |
 | Estimation | Possible | Enemies can estimate based on sectors × turns |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 1.2 - Research Points (RP) Economy
 
@@ -2473,9 +2492,10 @@ Actual RP = Accumulated total (hidden)
 | Capstone unlocks | Public | Turn ~60 (15,000 RP unlock) | Signals endgame phase |
 | Research sector count | Public | Always (via sector visibility) | Allows RP estimation |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-004 (depends on this spec)
 
 **Source:** Section 2.2 - Information Visibility Matrix
 
@@ -2502,9 +2522,11 @@ Actual RP = Accumulated total (hidden)
 | Progress % toward next tier | Hidden | Creates strategic uncertainty |
 | Specialization choice (Tier 2) | Hidden | Until revealed through specific methods (see REQ-RSCH-006-C) |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-005-A
+- REQ-RSCH-005-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.2 - Information Visibility Matrix
 
@@ -2532,9 +2554,10 @@ Actual RP = Accumulated total (hidden)
 | Alliance membership | Free | 100% | Auto-share between coalition members |
 | Galactic News rumors | Free | 50% | Every 10 turns, 3 true + 2 false per cycle |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-005 (depends on this spec)
 
 **Source:** Section 3.4 - Information Visibility & Intelligence System
 
@@ -2576,9 +2599,9 @@ War Machine Cruiser:
 - With doctrine: STR 16 (+3), Damage 2d8+3
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.4 - Research-Combat Integration Flow
 
@@ -2616,9 +2639,10 @@ Shock Troops (surprise round):
 - Then proceed to normal initiative
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-005 (depends on this spec)
 
 **Source:** Section 2.4 - Research-Combat Integration Flow
 
@@ -2656,9 +2680,11 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 - Result: 2d8+3 surprise damage + normal combat rounds
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-006-A
+- REQ-RSCH-006-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.5 - Combat Integration
 
@@ -2700,9 +2726,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Hard counter that completely shuts down Shock Troops' defining mechanic, creating strong incentive for intelligence gathering before combat.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-006 (depends on this spec)
 
 **Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Shield Arrays vs Shock Troops
 
@@ -2726,9 +2753,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Siege weapons designed to break fortifications naturally counter defensive shields, creating tactical choice between mobility and protection.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-006-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Siege Engines vs Shield Arrays
 
@@ -2753,9 +2781,11 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Slow-moving siege equipment is vulnerable to prepared defenses like minefields, creating risk for specialized attackers.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-006 (depends on this spec)
+- REQ-RSCH-006-B (depends on this spec)
 
 **Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Minefield Networks vs Siege Engines
 
@@ -2780,9 +2810,11 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Elite shock troops trained in rapid breach tactics can clear defensive positions before the enemy can react, closing the counter-play circle.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-007-A
+- REQ-RSCH-007-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Shock Troops vs Minefield Networks
 
@@ -2821,9 +2853,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Significant but affordable mid-game cost creates meaningful decision point. Not trivial (can't spam), but accessible when needed.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-007 (depends on this spec)
 
 **Source:** Section 3.4.3 - Investigate Specialization, Cost
 
@@ -2849,9 +2882,9 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** High success rate (85%) makes the operation reliable but not guaranteed, creating tension and replayability.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.4.3 - Investigate Specialization, Success Rate
 
@@ -2877,9 +2910,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Aligns with all other covert operations for consistent turn processing behavior.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-007 (depends on this spec)
 
 **Source:** Section 3.4.3 - Investigate Specialization, Processing
 
@@ -2903,9 +2937,13 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Success provides actionable intel for strategic counter-picking. Counter recommendations help less experienced players.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:**
+- REQ-RSCH-008-A
+- REQ-RSCH-008-D
+- REQ-RSCH-008-B
+- REQ-RSCH-008-C
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:** None
 
 **Source:** Section 3.4.3 - Investigate Specialization, Success Result
 
@@ -2930,9 +2968,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Failure has meaningful consequences (wasted credits, diplomatic damage) but isn't catastrophic. Creates risk/reward tension.
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-008 (depends on this spec)
 
 **Source:** Section 3.4.3 - Investigate Specialization, Failure Result
 
@@ -2972,9 +3011,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 | Overall accuracy | 50% (3/5) | Players can't tell which are true |
 | Display | Mixed randomly | True/false status hidden from players |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-008 (depends on this spec)
 
 **Source:** Section 3.4.5 - Galactic News Rumor System
 
@@ -3002,9 +3042,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 | First bulletin | Turn 10 | After first doctrines unlock |
 | Last bulletin | No cap | Continues until game end |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-008 (depends on this spec)
 
 **Source:** Section 3.4.5 - Galactic News Rumor System
 
@@ -3031,9 +3072,10 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 | Verification method | Espionage operation | Investigate Specialization (REQ-RSCH-009) |
 | Accuracy after verification | 85% | Standard Investigate success rate |
 
-**Dependencies:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Blockers:**
+- REQ-RSCH-008 (depends on this spec)
 
 **Source:** Section 3.4.5 - Galactic News Rumor System
 

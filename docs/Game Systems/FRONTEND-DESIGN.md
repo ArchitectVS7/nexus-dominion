@@ -1901,6 +1901,10 @@ Visual characteristics:
 
 **Rationale:** Creates distinctive, immersive interface that reinforces spatial strategy gameplay.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 1
 
 **Code:** `src/components/`, `tailwind.config.ts`
@@ -1924,6 +1928,10 @@ Visual characteristics:
 
 **Rationale:** Physical boardgames keep the board always visible. Breaking this pattern breaks the boardgame feel. Players need spatial awareness and strategic context at all times.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 3.1
 
 **Code:** `src/app/game/starmap/page.tsx`, `src/components/game/OverlayPanel.tsx`, `src/components/game/OverlayPanelController.tsx`
@@ -1952,6 +1960,10 @@ Panel routing:
 
 **Rationale:** Maintains boardgame feel (picking up cards), faster navigation (no page transitions), preserves spatial context.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 3.3
 
 **Code:** `src/components/game/OverlayPanel.tsx`, `src/components/game/OverlayPanelController.tsx`
@@ -1981,6 +1993,10 @@ Applies to:
 
 **Rationale:** Original vertical stacking forced scrolling and hid action buttons below fold. UX analysis identified this as major friction point. Horizontal split eliminates scrolling and keeps actions visible.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 4.3, `docs/design/UX-ROADMAP.md` (archived analysis)
 
 **Code:** `src/components/game/market/MarketPanel.tsx`, `src/components/game/military/BuildUnitsPanel.tsx`
@@ -2009,6 +2025,10 @@ Turn 42/200 | Phase 6/6: Player Actions | ⏰ 4:23 remaining
 
 **Rationale:** UX analysis identified turn phase invisibility as CRITICAL issue. Players cannot learn game mechanics without understanding when events occur. Phase indicator teaches timing and guides actions.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.1, `docs/design/UX-ROADMAP.md` Priority 1
 
 **Code:** `src/components/game/PhaseIndicator.tsx`, `src/app/game/layout.tsx`
@@ -2035,6 +2055,10 @@ Example - Food shortage:
 
 **Rationale:** UX analysis found players see warnings but don't know how to fix them. Actionable prompts convert passive notifications into guided solutions.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.2, `docs/design/UX-ROADMAP.md` Priority 2
 
 **Code:** `src/components/game/ActionPrompt.tsx`, replaces `FoodWarning.tsx`
@@ -2066,6 +2090,10 @@ Example - Food shortage:
 
 **Rationale:** Game felt "administrative" rather than "strategic." Visual feedback creates tension, risk, reward feelings. Every action should have emotional weight.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.3, `docs/design/UX-ROADMAP.md` Priority 5
 
 **Code:** Component-specific styles, `src/components/game/*/styles.ts`
@@ -2084,6 +2112,10 @@ Example - Food shortage:
 
 **Rationale:** SDD architecture for predictable data flow.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** SDD Migration (Phase 3)
 
 **Code:** `src/lib/api/queries/`, `src/lib/api/mutations/`
@@ -2100,6 +2132,10 @@ Example - Food shortage:
 
 **Rationale:** SDD architecture for predictable state management.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** SDD Migration (Phase 3)
 
 **Code:** `src/stores/`
@@ -2123,6 +2159,10 @@ Example - Food shortage:
 
 **Rationale:** CSS handles micro-interactions efficiently. GSAP handles narrative sequences (combat, turn processing) with precise control. Best of both worlds.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 7
 
 **Code:** `src/styles/globals.css`, `src/lib/animations/`
@@ -2144,6 +2184,10 @@ Example - Food shortage:
 
 **Rationale:** D3.js is already implemented and perfect for network graph layouts. SVG enables easy styling and interaction. Force simulation creates organic, visually pleasing empire distributions.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 8, `docs/design/frontend-developer-manual.md`
 
 **Code:** `src/components/game/starmap/StarMap.tsx`
@@ -2171,6 +2215,10 @@ Example - Food shortage:
 
 **Rationale:** Keyboard navigation improves speed for experienced players and ensures accessibility compliance.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 9.1
 
 **Code:** `src/hooks/useKeyboardShortcuts.ts`, `src/components/game/GameShell.tsx`
@@ -2190,6 +2238,10 @@ Example - Food shortage:
 
 **Rationale:** Ensures readability for players with visual impairments and in various lighting conditions.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 9.3
 
 **Code:** `tailwind.config.ts` color definitions

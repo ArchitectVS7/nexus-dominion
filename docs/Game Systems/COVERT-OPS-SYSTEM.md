@@ -887,6 +887,12 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Variety enables strategic depth while maintaining manageable complexity. Ten operations cover intelligence, economic, social, and diplomatic categories without overwhelming players.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-COV-005-B (depends on this spec)
+
 **Key Values:**
 | Operation | Cost | Detection Risk | Unlock Turn |
 |-----------|------|----------------|-------------|
@@ -920,6 +926,10 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Rationale:** Graduated intel system rewards repeated reconnaissance and creates strategic decisions about when to spy vs. act. Decay prevents stale information from being permanent.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Intel Level | Visible Information | Recon Needed |
 |-------------|---------------------|--------------|
@@ -953,6 +963,10 @@ Decay: Every 20 turns, Intel Level -= 1 (min 0)
 
 **Rationale:** Formula rewards investment (more agents, better intel) while preventing guaranteed success or guaranteed failure. Multiple factors create strategic depth.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Base Success Rate = 60%
@@ -993,6 +1007,10 @@ Final Success Rate = Clamp(Base + Modifiers, 15%, 85%)
 
 **Rationale:** Separating detection from success creates four outcome scenarios (success/failure × detected/undetected), adding risk management complexity. Multiple modifiers create strategic depth in covert operations.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Detection Chance = Base Detection Risk (per operation)
@@ -1016,9 +1034,7 @@ Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 | Minimum detection | 5% | Floor |
 | Maximum detection | 75% | Ceiling |
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3 - Detection Mechanics
 
@@ -1038,6 +1054,10 @@ Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 
 **Rationale:** Diplomatic consequences make detection meaningful beyond simple failure. Creates risk management decisions and can escalate to war.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Diplomatic Consequences:**
 | Consequence | Value | Notes |
 |-------------|-------|-------|
@@ -1053,9 +1073,7 @@ Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 4. Target can share intel with allies (increases tension)
 5. Target can launch counter-operation (revenge)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3 - Detection Mechanics
 
@@ -1083,6 +1101,10 @@ Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 
 **Rationale:** Agent production requires dedicated infrastructure investment. Government sectors provide no direct military or economic benefit, making espionage investment intentional and strategic.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1095,9 +1117,7 @@ Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 Agents produced per turn = Government Sector Count * 300
 ```
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.2 - The Agent Economy
 
@@ -1119,15 +1139,19 @@ Agents produced per turn = Government Sector Count * 300
 
 **Rationale:** Agent consumption creates resource management decisions. Players must balance agent accumulation against operation frequency and type selection.
 
+
+**Dependencies:**
+- REQ-COV-001
+
+
+**Blockers:** None
 **Consumption Mechanics:**
 - Agents deducted when operation queued (upfront cost)
 - Base cost varies by operation type (see REQ-COV-001)
 - Insufficient agents prevents operation queueing
 - No partial operations (must have full cost available)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.2 - The Agent Economy
 
@@ -1149,6 +1173,10 @@ Agents produced per turn = Government Sector Count * 300
 
 **Rationale:** Schemer archetype specializes in espionage. The 50% discount enables more frequent operations, reinforcing the archetype's covert focus and providing competitive advantage in intelligence warfare.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1164,9 +1192,7 @@ Final agent cost = Base operation cost * (Schemer ? 0.5 : 1.0)
 - Reconnaissance base cost: 500 agents
 - Schemer cost: 250 agents (500 * 0.5)
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.2 - The Agent Economy
 
@@ -1187,6 +1213,12 @@ Final agent cost = Base operation cost * (Schemer ? 0.5 : 1.0)
 **Description:** Covert operations are resolved in Turn Processing Phase 5, after Diplomacy (Phase 4) and before Combat (Phase 6). Operations process in reverse turn order (strongest empire first) to balance weak-first combat advantage.
 
 **Rationale:** Sequential processing creates strategic tension. Strong empires strike first in espionage but last in combat. Timing matters for detection and retaliation.
+
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:**
+- REQ-TURN-001-08 (depends on this spec)
 
 **Processing Steps:**
 ```
@@ -1220,6 +1252,10 @@ Final agent cost = Base operation cost * (Schemer ? 0.5 : 1.0)
 
 **Rationale:** Economic warfare is a core covert strategy. Cap prevents single operation from bankrupting empires. Percentage-based ensures relevance at all game stages.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Roll = 1d10 + 5
@@ -1265,9 +1301,11 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** Defines Schemer identity as espionage specialist. High priority ensures frequent covert action selection during bot decision phase.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 4.1 - Archetype Behavior, Schemer Priority
 
@@ -1291,9 +1329,11 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** Makes frequent covert operations economically viable. Compensates for high agent costs of operations like Assassinate (400 agents → 200 agents).
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 4.1 - Archetype Behavior, Shadow Network Passive
 
@@ -1318,9 +1358,11 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** Schemers seek dramatic, game-changing espionage plays rather than incremental advantage. Reinforces "master manipulator" fantasy.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 4.1 - Archetype Behavior, Schemer Decision Tree
 
@@ -1344,9 +1386,11 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** Government sectors produce agents. Schemers need abundant agents for their covert-heavy playstyle. 3-5 sectors support 2-3 operations per turn.
 
-**Dependencies:** (to be filled by /spec-analyze)
 
-**Blockers:** (to be filled by /spec-analyze)
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
+
 
 **Source:** Section 4.1 - Archetype Behavior, Schemer Economic Strategy
 
@@ -1372,6 +1416,10 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** High-risk, high-reward disruption tool. Temporary nature prevents permanent crippling. High detection risk creates dramatic diplomatic incidents. Non-stacking prevents abuse.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1400,6 +1448,10 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** Diplomatic manipulation creates chaos and redirects aggression. High failure consequences (double reputation hit) balance the power to trigger wars. Requires strategic timing and target selection.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1429,6 +1481,10 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 **Rationale:** Prevents one-time reconnaissance from providing permanent intel. Creates ongoing agent investment decision. Simulates intelligence degradation over time.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Formula:**
 ```
 Every 20 turns:
@@ -1456,6 +1512,10 @@ Every 20 turns:
 
 **Rationale:** Prevents player frustration from wasting agents on impossible operations. Partial refund (not full) maintains consequence for poor target selection. Encourages reconnaissance before expensive operations.
 
+
+**Dependencies:** None (foundational spec)
+
+**Blockers:** None
 **Auto-Fail Thresholds:**
 | Operation | Minimum Target Resource | Refund |
 |-----------|-------------------------|--------|
