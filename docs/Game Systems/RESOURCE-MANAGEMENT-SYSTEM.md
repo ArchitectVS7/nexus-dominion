@@ -1543,32 +1543,186 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 ---
 
-### REQ-RES-008: Resource Storage and Negative Balances
+### REQ-RES-008: Resource Storage and Negative Balances (Split)
 
-**Description:** Resources have no hard storage caps but accumulate indefinitely. Negative balances are allowed with specific consequences per resource type:
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-RES-008-A through REQ-RES-008-F below.
 
-| Resource | Negative Balance Consequence |
-|----------|------------------------------|
-| Credits | Cannot purchase (blocked actions), no civil status penalty |
-| Food | Population decline (-10%/turn), civil status penalty (-30 score) |
-| Ore | Military units deactivate (cannot attack/defend effectively) |
-| Petroleum | Military units move at half speed, cannot build wormholes |
-| Research Points | Research progress halts (cannot go negative) |
+**Overview:** Resources have unlimited storage with no hard caps. Negative balances are permitted but trigger specific consequences per resource type, implementing "consequence over limits" design philosophy.
 
-**Rationale:** Soft limits via consequences (not hard caps) align with "Consequence over limits" design philosophy. Players can make strategic risks (go into debt) with clear penalties.
+**Resource Consequences Summary:**
+- **Credits:** Purchase blocking [REQ-RES-008-B]
+- **Food:** Population decline + civil status penalty [REQ-RES-008-C]
+- **Ore:** Military unit deactivation [REQ-RES-008-D]
+- **Petroleum:** Movement penalties + construction blocking [REQ-RES-008-E]
+- **Research Points:** Hard floor at zero [REQ-RES-008-F]
 
-**Source:** Section 3.2 - Resource Storage and Limits
+**Note:** This spec conflicts with REQ-SEC-006. Verify canonical storage/cap policy during implementation.
 
-**Code:**
-- `src/lib/game/services/resource-validation.ts` - `checkResourcePenalties()` function
-- `src/lib/game/services/military-service.ts` - Unit deactivation logic
-- `src/lib/game/services/purchase-validation.ts` - Purchase blocking logic
+---
 
-**Tests:**
-- `src/lib/game/services/__tests__/negative-balances.test.ts` - Penalty application tests
-- `src/lib/game/services/__tests__/purchase-blocking.test.ts` - Action blocking tests
+### REQ-RES-008-A: Unlimited Resource Storage Policy
+
+**Description:** All resources accumulate indefinitely without hard storage caps. Players can stockpile unlimited quantities of Credits, Food, Ore, Petroleum, and Research Points.
+
+**Storage Rules:**
+- No maximum cap on any resource
+- Resources accumulate without limit
+- No overflow or waste mechanics
+- Allows strategic hoarding
+
+**Rationale:** Aligns with "consequence over limits" philosophy. Players aren't artificially constrained by arbitrary caps, but face meaningful trade-offs in resource allocation.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2 - Resource Storage and Limits, Storage Policy
+
+**Code:** TBD - `src/lib/game/services/resource-storage.ts` - Storage validation
+
+**Tests:** TBD - Verify resources exceed arbitrary thresholds without clamping
 
 **Status:** Draft
+
+---
+
+### REQ-RES-008-B: Negative Credits Consequence
+
+**Description:** When Credits drop below zero, purchasing actions are blocked but no civil status penalty is applied.
+
+**Consequence Rules:**
+- Purchase actions blocked (sectors, units, market trades, covert ops, etc.)
+- No civil status impact
+- Can still receive income and return to positive balance
+- Debt is permitted strategically
+
+**Rationale:** Prevents overspending without punishing empire morale. Represents credit freeze rather than bankruptcy.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2 - Resource Storage and Limits, Credits Consequence
+
+**Code:** TBD - `src/lib/game/services/purchase-validation.ts` - Purchase blocking logic
+
+**Tests:** TBD - Purchase validation when credits < 0
+
+**Status:** Draft
+
+---
+
+### REQ-RES-008-C: Negative Food Consequence
+
+**Description:** When Food drops below zero, population declines at 10% per turn and civil status suffers a -30 score penalty.
+
+**Consequence Rules:**
+- Population decline: -10% per turn while Food < 0
+- Civil status penalty: -30 score while Food < 0
+- Both penalties persist until Food returns to positive
+- Cumulative with other civil status modifiers
+
+**Rationale:** Starvation has severe consequences: population loss (emigration, death) and massive unrest. Most punishing resource deficit.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2 - Resource Storage and Limits, Food Consequence
+
+**Code:** TBD - `src/lib/game/services/population-service.ts` - Starvation mechanics
+
+**Tests:** TBD - Population decline rate, civil status penalty application
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Decline rate (-10%/turn) and civil penalty (-30) require balance testing. May be too harsh.
+
+---
+
+### REQ-RES-008-D: Negative Ore Consequence
+
+**Description:** When Ore drops below zero, military units deactivate and cannot attack or defend effectively.
+
+**Consequence Rules:**
+- Military units become inactive (out of supply)
+- Cannot initiate attacks
+- Cannot defend effectively (massive combat penalty or auto-lose)
+- Units reactivate immediately when Ore returns to positive
+
+**Rationale:** Represents equipment failure, ammunition shortages, and lack of spare parts. Military force becomes decorative.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2 - Resource Storage and Limits, Ore Consequence
+
+**Code:** TBD - `src/lib/game/services/military-service.ts` - Unit deactivation logic
+
+**Tests:** TBD - Unit deactivation, combat blocking, reactivation
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER**: "Ineffective" combat behavior needs definition. Auto-lose? -90% power? Zero power?
+
+---
+
+### REQ-RES-008-E: Negative Petroleum Consequence
+
+**Description:** When Petroleum drops below zero, military units move at half speed and wormhole construction is blocked.
+
+**Consequence Rules:**
+- Military unit movement speed: 50% of normal
+- Cannot build new wormholes (construction blocked)
+- Existing wormholes remain functional
+- Penalties lift immediately when Petroleum returns to positive
+
+**Rationale:** Fuel shortage limits mobility and expansion but doesn't completely cripple the military (unlike Ore). Strategic positioning remains viable.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2 - Resource Storage and Limits, Petroleum Consequence
+
+**Code:** TBD - `src/lib/game/services/movement-service.ts` - Speed penalties
+
+**Tests:** TBD - Movement speed reduction, wormhole construction blocking
+
+**Status:** Draft
+
+---
+
+### REQ-RES-008-F: Negative Research Points Handling
+
+**Description:** Research Points have a hard floor at zero. They cannot go negative, and research progress halts when RP reaches zero.
+
+**Consequence Rules:**
+- Hard floor: RP cannot drop below 0
+- Research progress halts at zero (no further accumulation toward thresholds)
+- No penalties beyond halted progress
+- Resumes immediately when RP generation returns
+
+**Rationale:** Unlike physical resources, "negative research" is nonsensical. Zero RP simply means no progress. No additional penalties needed.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2 - Resource Storage and Limits, Research Points Handling
+
+**Code:** TBD - `src/lib/game/services/research-service.ts` - RP floor enforcement
+
+**Tests:** TBD - RP floor clamping, progress halt
+
+**Status:** Draft
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/game/services/resource-validation.ts` - Penalty orchestration
+- `src/lib/game/services/__tests__/negative-balances.test.ts` - Comprehensive penalty tests
 
 ---
 
