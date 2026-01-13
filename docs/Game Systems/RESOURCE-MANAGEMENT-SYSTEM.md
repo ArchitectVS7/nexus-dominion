@@ -874,37 +874,243 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-RES-002: Sector Production Rates
+### REQ-RES-002: Sector Production Rates (Split)
 
-**Description:** Each sector type produces specific resources per turn with defined base rates:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-002-01 through REQ-RES-002-08 for individual sector production definitions.
 
-- Food sector: 160 food/turn
-- Ore sector: 112 ore/turn
-- Petroleum sector: 92 petroleum/turn
-- Commerce sector: 8,000 credits/turn
-- Urban sector: 1,000 credits/turn + population capacity bonus
-- Education sector: +1 civil status level/turn (caps at Ecstatic)
-- Government sector: 300 spy points/turn
-- Research sector: 100 research points/turn
+**Overview:** Each of 8 sector types produces specific resources per turn with defined base rates. Final production = Base Production × Civil Status Multiplier.
 
-**Formula:**
-```
-Final Production = Base Production × Civil Status Multiplier
-```
+---
 
-**Rationale:** Fixed production rates enable predictable planning and strategic specialization. Civil status multiplier (0.25× to 2.5×) creates meaningful consequences for empire management without complex formulas.
+### REQ-RES-002-01: Food Sector Production
+
+**Description:** Food sector produces 160 food/turn (base rate). Subject to civil status multiplier (0.25× to 2.5×).
+
+**Rationale:** Base food production balances starting empire needs with strategic expansion incentives.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 160 food/turn |
+| Resource Type | Food |
+| Multiplier | Civil Status (0.25× - 2.5×) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1 - Resource Production Rates
 
-**Formulas:** See PRD-FORMULAS-ADDENDUM.md Section 2.1
-
 **Code:**
-- `src/lib/game/services/resource-engine.ts` - `calculateSectorProduction()` function
-- `src/lib/game/constants/sector-production.ts` - Base production rate constants
+- `src/lib/game/constants/sector-production.ts` - `FOOD_PRODUCTION = 160`
 
 **Tests:**
-- `src/lib/game/services/__tests__/resource-engine.test.ts` - Production calculation tests
-- `src/lib/game/services/__tests__/civil-status-multiplier.test.ts` - Multiplier application tests
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Food production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-02: Ore Sector Production
+
+**Description:** Ore sector produces 112 ore/turn (base rate). Subject to civil status multiplier (0.25× to 2.5×).
+
+**Rationale:** Ore production rate balances military unit production needs with strategic resource management.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 112 ore/turn |
+| Resource Type | Ore |
+| Multiplier | Civil Status (0.25× - 2.5×) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `ORE_PRODUCTION = 112`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Ore production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-03: Petroleum Sector Production
+
+**Description:** Petroleum sector produces 92 petroleum/turn (base rate). Subject to civil status multiplier (0.25× to 2.5×).
+
+**Rationale:** Petroleum production rate supports military maintenance while requiring strategic resource planning.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 92 petroleum/turn |
+| Resource Type | Petroleum |
+| Multiplier | Civil Status (0.25× - 2.5×) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `PETROLEUM_PRODUCTION = 92`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Petroleum production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-04: Commerce Sector Production
+
+**Description:** Commerce sector produces 8,000 credits/turn (base rate). Subject to civil status multiplier (0.25× to 2.5×).
+
+**Rationale:** High base income makes commerce sectors primary economic engine. Self-financing after 1 turn (8,000 cr cost).
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 8,000 credits/turn |
+| Resource Type | Credits |
+| Multiplier | Civil Status (0.25× - 2.5×) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `COMMERCE_PRODUCTION = 8000`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Commerce production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-05: Urban Sector Production
+
+**Description:** Urban sector produces 1,000 credits/turn (base rate) AND provides +1,000 population capacity bonus. Subject to civil status multiplier for credits only.
+
+**Rationale:** Hybrid sector providing both income and infrastructure. Lower credit production than Commerce but adds strategic population capacity.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 1,000 credits/turn |
+| Resource Type | Credits + Population Capacity |
+| Population Bonus | +1,000 capacity (not multiplied) |
+| Multiplier | Civil Status (credits only) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `URBAN_PRODUCTION = { credits: 1000, popCap: 1000 }`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Urban production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-06: Education Sector Production
+
+**Description:** Education sector provides +1 civil status level/turn improvement (caps at Ecstatic). Not subject to civil status multiplier (affects civil status itself).
+
+**Rationale:** Intangible benefit improving empire morale. Essential for maintaining high civil status during resource scarcity or war.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | +1 civil status/turn |
+| Resource Type | Civil Status (intangible) |
+| Cap | Ecstatic (maximum level) |
+| Multiplier | None (produces civil status) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `EDUCATION_PRODUCTION = 1`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Education civil status tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-07: Government Sector Production
+
+**Description:** Government sector produces 300 spy points/turn (base rate). Subject to civil status multiplier (0.25× to 2.5×).
+
+**Rationale:** Spy point production enables covert operations. Lower cost (7,500 cr) encourages intelligence-focused strategies.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 300 spy points/turn |
+| Resource Type | Spy Points |
+| Multiplier | Civil Status (0.25× - 2.5×) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `GOVERNMENT_PRODUCTION = 300`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Spy point production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-002-08: Research Sector Production
+
+**Description:** Research sector produces 100 research points/turn (base rate). Subject to civil status multiplier (0.25× to 2.5×).
+
+**Rationale:** Research point production accelerates tech progression. High cost (23,000 cr) creates strategic trade-off between expansion and research.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Base Production | 100 research points/turn |
+| Resource Type | Research Points |
+| Multiplier | Civil Status (0.25× - 2.5×) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1 - Resource Production Rates
+
+**Code:**
+- `src/lib/game/constants/sector-production.ts` - `RESEARCH_PRODUCTION = 100`
+
+**Tests:**
+- `src/lib/game/services/__tests__/resource-engine.test.ts` - Research point production tests
 
 **Status:** Draft
 

@@ -148,17 +148,25 @@
       "file": "docs/Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md",
       "specs": [
         { "id": "REQ-RES-001", "title": "Five Resource Types", "atomic": true, "line": 851 },
-        { "id": "REQ-RES-002", "title": "Sector Production Rates", "atomic": false, "line": 877, "splitCandidate": "8 sector production types" },
-        { "id": "REQ-RES-003", "title": "Civil Status Income Multiplier", "atomic": true, "line": 913, "note": "Placeholder values need verification" },
-        { "id": "REQ-RES-004", "title": "Population Food Consumption", "atomic": false, "line": 952, "splitCandidate": "consumption + deficit consequences" },
-        { "id": "REQ-RES-005", "title": "Military Maintenance Costs", "atomic": false, "line": 997, "splitCandidate": "ore + petroleum + consequences" },
-        { "id": "REQ-RES-006", "title": "Population Growth and Decline", "atomic": false, "line": 1046, "splitCandidate": "growth + decline + cap", "note": "Duplicate of REQ-TURN-006" },
-        { "id": "REQ-RES-007", "title": "Civil Status Calculation Formula", "atomic": false, "line": 1107, "splitCandidate": "5 factors + mapping + transitions", "note": "Duplicate of REQ-TURN-007" },
-        { "id": "REQ-RES-008", "title": "Resource Storage and Negative Balances", "atomic": false, "line": 1161, "splitCandidate": "5 resource consequences", "note": "Conflicts with REQ-SEC-006" },
-        { "id": "REQ-RES-009", "title": "Sector Type Conversion", "atomic": false, "line": 1190, "splitCandidate": "cost + timing + restrictions" },
-        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1223, "splitCandidate": "capacity + overcrowding + starting" },
-        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1258, "splitCandidate": "accumulation + thresholds + timeline" },
-        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 1292, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+        { "id": "REQ-RES-002", "title": "Sector Production Rates (Split)", "atomic": true, "line": 877, "parentOf": ["REQ-RES-002-01", "REQ-RES-002-02", "REQ-RES-002-03", "REQ-RES-002-04", "REQ-RES-002-05", "REQ-RES-002-06", "REQ-RES-002-07", "REQ-RES-002-08"] },
+        { "id": "REQ-RES-002-01", "title": "Food Sector Production", "atomic": true, "line": 885, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-02", "title": "Ore Sector Production", "atomic": true, "line": 914, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-03", "title": "Petroleum Sector Production", "atomic": true, "line": 943, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-04", "title": "Commerce Sector Production", "atomic": true, "line": 972, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-05", "title": "Urban Sector Production", "atomic": true, "line": 1001, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-06", "title": "Education Sector Production", "atomic": true, "line": 1031, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-07", "title": "Government Sector Production", "atomic": true, "line": 1061, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-002-08", "title": "Research Sector Production", "atomic": true, "line": 1090, "splitFrom": "REQ-RES-002" },
+        { "id": "REQ-RES-003", "title": "Civil Status Income Multiplier", "atomic": true, "line": 1119, "note": "Placeholder values need verification" },
+        { "id": "REQ-RES-004", "title": "Population Food Consumption", "atomic": false, "line": 1158, "splitCandidate": "consumption + deficit consequences" },
+        { "id": "REQ-RES-005", "title": "Military Maintenance Costs", "atomic": false, "line": 1203, "splitCandidate": "ore + petroleum + consequences" },
+        { "id": "REQ-RES-006", "title": "Population Growth and Decline", "atomic": false, "line": 1252, "splitCandidate": "growth + decline + cap", "note": "Duplicate of REQ-TURN-006" },
+        { "id": "REQ-RES-007", "title": "Civil Status Calculation Formula", "atomic": false, "line": 1313, "splitCandidate": "5 factors + mapping + transitions", "note": "Duplicate of REQ-TURN-007" },
+        { "id": "REQ-RES-008", "title": "Resource Storage and Negative Balances", "atomic": false, "line": 1367, "splitCandidate": "5 resource consequences", "note": "Conflicts with REQ-SEC-006" },
+        { "id": "REQ-RES-009", "title": "Sector Type Conversion", "atomic": false, "line": 1396, "splitCandidate": "cost + timing + restrictions" },
+        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1429, "splitCandidate": "capacity + overcrowding + starting" },
+        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1464, "splitCandidate": "accumulation + thresholds + timeline" },
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 1498, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
       ]
     },
     "SECTOR": {
@@ -339,9 +347,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 214,
-    "atomicSpecs": 125,
-    "splitCandidates": 88,
+    "totalSpecs": 221,
+    "atomicSpecs": 133,
+    "splitCandidates": 87,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
