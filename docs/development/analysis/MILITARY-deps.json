@@ -1,132 +1,161 @@
 {
   "system": "MILITARY",
-  "file": "docs/Game Systems/MILITARY-SYSTEM.md",
-  "analyzedAt": "2026-01-12T00:00:00Z",
-  "totalSpecs": 10,
-  "specs": {
-    "REQ-MIL-001": {
+  "totalSpecs": 16,
+  "analyzedAt": "2026-01-13T15:33:25.043Z",
+  "specs": [
+    {
+      "id": "REQ-MIL-001",
       "title": "Six Unit Types",
       "dependencies": [],
-      "blockers": [],
-      "notes": "Foundational spec - defines 6 unit types (Soldiers, Fighters, Bombers, Stations, Light Cruisers, Heavy Cruisers, Carriers). No dependencies."
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-MIL-002": {
-      "title": "Build Queue System",
-      "dependencies": ["REQ-MIL-001", "REQ-MIL-003", "REQ-TURN-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-TURN-001",
-          "reason": "Build queue progress increments per turn; requires turn processing system"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-MIL-001",
-          "reason": "Needs unit type definitions; can implement with stub units initially"
-        }
+    {
+      "id": "REQ-MIL-002",
+      "title": "Build Queue System (Split)",
+      "dependencies": [
+        "REQ-MIL-002-A",
+        "REQ-MIL-002-D",
+        "REQ-MIL-002-B",
+        "REQ-MIL-002-C"
       ],
-      "notes": "Multi-turn production queue system. Resources deducted upfront, units complete after N turns."
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-MIL-002-A",
+        "REQ-MIL-002-D",
+        "REQ-MIL-002-B",
+        "REQ-MIL-002-C"
+      ]
     },
-    "REQ-MIL-003": {
+    {
+      "id": "REQ-MIL-002-A",
+      "title": "Build Queue Management",
+      "dependencies": [],
+      "dependents": [
+        "REQ-MIL-002"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-MIL-002-B",
+      "title": "Upfront Resource Deduction",
+      "dependencies": [],
+      "dependents": [
+        "REQ-MIL-002"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-MIL-002-C",
+      "title": "Multi-Turn Production Times",
+      "dependencies": [
+        "REQ-MIL-003"
+      ],
+      "dependents": [
+        "REQ-MIL-002"
+      ],
+      "crossSystemDeps": [
+        "REQ-MIL-003"
+      ]
+    },
+    {
+      "id": "REQ-MIL-002-D",
+      "title": "Build Cancellation and Refunds",
+      "dependencies": [],
+      "dependents": [
+        "REQ-MIL-002"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-MIL-003",
       "title": "Resource Costs",
-      "dependencies": ["REQ-RES-001", "REQ-MIL-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-RES-001",
-          "reason": "Costs use Credits, Ore, Petroleum, Food resources; can hardcode resource names"
-        }
+      "dependencies": [],
+      "dependents": [
+        "REQ-MIL-002-C"
       ],
-      "notes": "Defines build costs for each unit type. Ranges from 100cr (Soldiers) to 30,000cr (Carriers)."
+      "crossSystemDeps": []
     },
-    "REQ-MIL-004": {
-      "title": "Maintenance Costs",
-      "dependencies": ["REQ-MIL-001", "REQ-RES-001"],
-      "blockers": [],
-      "notes": "Per-turn upkeep costs for completed units. Formula: Σ(Unit Maintenance Cost). Referenced by REQ-RES-005."
+    {
+      "id": "REQ-MIL-004",
+      "title": "Maintenance Costs (Split)",
+      "dependencies": [
+        "REQ-MIL-004-A",
+        "REQ-MIL-004-B"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-MIL-004-A",
+        "REQ-MIL-004-B"
+      ]
     },
-    "REQ-MIL-005": {
+    {
+      "id": "REQ-MIL-004-A",
+      "title": "Unit Maintenance Costs",
+      "dependencies": [],
+      "dependents": [
+        "REQ-MIL-004"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-MIL-004-B",
+      "title": "Maintenance Deficit Attrition",
+      "dependencies": [],
+      "dependents": [
+        "REQ-MIL-004"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-MIL-005",
       "title": "Production Time",
-      "dependencies": ["REQ-MIL-002", "REQ-TURN-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-TURN-001",
-          "reason": "Production time measured in turns (1-5 turns); requires turn increment"
-        }
-      ],
-      "notes": "Build times: Soldiers 1 turn, Fighters/Bombers 2 turns, Stations 3 turns, Cruisers/Carriers 4-5 turns."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-MIL-006": {
+    {
+      "id": "REQ-MIL-006",
       "title": "Power Multipliers",
-      "dependencies": ["REQ-MIL-001", "REQ-COMBAT-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-COMBAT-001",
-          "reason": "Power multipliers used in combat power calculation; can define multipliers without combat"
-        }
+      "dependencies": [
+        "REQ-COMBAT-004"
       ],
-      "notes": "Unit power: Soldiers 0.1×, Fighters 1.0×, Bombers 2.0×, Stations 3.0× (6.0× defending), Light Cruisers 4.0×, Heavy Cruisers 8.0×, Carriers 12.0×."
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-COMBAT-004"
+      ]
     },
-    "REQ-MIL-007": {
+    {
+      "id": "REQ-MIL-007",
       "title": "Cost-to-Power Efficiency",
-      "dependencies": ["REQ-MIL-003", "REQ-MIL-006"],
-      "blockers": [],
-      "notes": "Analytical spec - compares unit costs to power output. Fighters/Bombers most efficient, Cruisers/Carriers premium power."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-MIL-008": {
+    {
+      "id": "REQ-MIL-008",
       "title": "Composition Bonus",
-      "dependencies": ["REQ-COMBAT-005", "REQ-MIL-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-COMBAT-005",
-          "reason": "4+ unit types = +15% diversity bonus; combat system calculates bonus"
-        }
+      "dependencies": [
+        "REQ-COMBAT-005"
       ],
-      "notes": "Encourages fleet diversity. Requires 4+ distinct unit types for +15% power bonus. Defined in COMBAT-SYSTEM REQ-COMBAT-005."
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-COMBAT-005"
+      ]
     },
-    "REQ-MIL-009": {
+    {
+      "id": "REQ-MIL-009",
       "title": "Domain Assignment",
-      "dependencies": ["REQ-COMBAT-010", "REQ-MIL-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-COMBAT-010",
-          "reason": "Units assigned to SPACE/ORBITAL/GROUND domains; requires three battle types system"
-        }
-      ],
-      "notes": "Units must be assigned to combat domains: Soldiers (GROUND), Fighters (SPACE/ORBITAL), Bombers/Stations (ORBITAL), Cruisers/Carriers (SPACE)."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-MIL-010": {
+    {
+      "id": "REQ-MIL-010",
       "title": "No Unit Caps",
       "dependencies": [],
-      "blockers": [],
-      "notes": "Design decision - no hard cap on unit count. Natural limits from resource scarcity and maintenance costs."
+      "dependents": [],
+      "crossSystemDeps": []
     }
-  },
-  "summary": {
-    "totalDependencies": 15,
-    "intraSystemDependencies": 7,
-    "crossSystemDependencies": 8,
-    "hardBlockers": 3,
-    "softBlockers": 4,
-    "topDependedOnSpecs": [
-      "REQ-MIL-001 (depended on by 6 specs)",
-      "REQ-TURN-001 (depended on by 3 specs)",
-      "REQ-RES-001 (depended on by 2 specs)"
-    ],
-    "crossSystemReferences": [
-      { "toSystem": "RESOURCE", "count": 3, "specs": ["REQ-RES-001"] },
-      { "toSystem": "TURN", "count": 3, "specs": ["REQ-TURN-001"] },
-      { "toSystem": "COMBAT", "count": 3, "specs": ["REQ-COMBAT-001", "REQ-COMBAT-005", "REQ-COMBAT-010"] }
-    ],
-    "implementationWaves": {
-      "wave0_foundations": ["REQ-MIL-001", "REQ-MIL-010"],
-      "wave1_costs_power": ["REQ-MIL-003", "REQ-MIL-004", "REQ-MIL-006", "REQ-MIL-007"],
-      "wave2_production": ["REQ-MIL-002", "REQ-MIL-005"],
-      "wave3_combat_integration": ["REQ-MIL-008", "REQ-MIL-009"]
-    }
-  }
+  ]
 }

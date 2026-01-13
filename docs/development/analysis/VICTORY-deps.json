@@ -1,598 +1,441 @@
 {
   "system": "VICTORY",
-  "file": "docs/Game Systems/VICTORY-SYSTEMS.md",
-  "analyzedAt": "2026-01-12T00:00:00Z",
-  "totalSpecs": 18,
-  "specs": {
-    "REQ-VIC-001": {
+  "totalSpecs": 40,
+  "analyzedAt": "2026-01-13T15:33:25.057Z",
+  "specs": [
+    {
+      "id": "REQ-VIC-001",
       "title": "Conquest Victory",
-      "dependencies": ["REQ-SEC-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-SEC-001",
-          "reason": "Requires sector tracking and counting to determine controlled_sectors / total_sectors ratio"
-        }
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-010.3",
+        "REQ-TURN-019-01"
       ],
-      "notes": "Standalone victory condition: Control 60% of 500 sectors. Only hard dependency is sector system for counting."
+      "crossSystemDeps": []
     },
-    "REQ-VIC-002": {
-      "title": "Economic Victory",
-      "dependencies": ["REQ-RES-001", "REQ-RES-002", "REQ-MIL-001", "REQ-SEC-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-RES-001",
-          "reason": "Requires resource types (Credits, Food, Ore, Petroleum) for networth calculation"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-RES-002",
-          "reason": "Networth includes sector values and production rates"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-MIL-001",
-          "reason": "Networth includes military_power × 10; can skip military contribution initially"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-SEC-001",
-          "reason": "Networth includes sector values (× 500); can approximate with sector count"
-        }
+    {
+      "id": "REQ-VIC-002",
+      "title": "Economic Victory (PARENT)",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-002.1",
+        "REQ-VIC-002.2",
+        "REQ-VIC-010.3",
+        "REQ-TURN-019-02"
       ],
-      "notes": "Dynamic victory condition requiring networth ratio to second place. Formula: (your_networth / second_place_networth) >= 1.5"
+      "crossSystemDeps": []
     },
-    "REQ-VIC-003": {
-      "title": "Diplomatic Victory",
-      "dependencies": ["REQ-SEC-001", "REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-SEC-001",
-          "reason": "Requires coalition member tracking and sector summing (50% of total = 250 sectors)"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-DIP-001",
-          "reason": "Requires coalition formation system (minimum 3 members, all alliances, +50 rep with all members)"
-        }
+    {
+      "id": "REQ-VIC-002.1",
+      "title": "Networth Calculation Formula",
+      "dependencies": [
+        "REQ-VIC-002"
       ],
-      "notes": "Coalition-based victory: Sum sectors of all coalition members >= 50% (250 sectors). All members win together."
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-002"
+      ]
     },
-    "REQ-VIC-004": {
-      "title": "Research Victory",
-      "dependencies": ["REQ-RSCH-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-RSCH-001",
-          "reason": "Requires tech tree tracking: Doctrine + Specialization + Capstone (1 available per game) + 10 advanced techs"
-        }
+    {
+      "id": "REQ-VIC-002.2",
+      "title": "Economic Victory Threshold",
+      "dependencies": [
+        "REQ-VIC-002"
       ],
-      "notes": "Tech tree completion victory. Formula: (capstone_complete AND advanced_tech_count >= 10)"
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-002"
+      ]
     },
-    "REQ-VIC-005": {
-      "title": "Military Victory",
-      "dependencies": ["REQ-MIL-001", "REQ-MIL-002"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-MIL-001",
-          "reason": "Requires military unit definitions with power values (soldiers=1, fighters=4, cruisers=20, dreadnoughts=200)"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-MIL-002",
-          "reason": "Requires military unit tracking and power calculation for all empires"
-        }
+    {
+      "id": "REQ-VIC-003",
+      "title": "Diplomatic Victory (PARENT)",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-003.1",
+        "REQ-VIC-003.2",
+        "REQ-VIC-003.3",
+        "REQ-VIC-010.3",
+        "REQ-TURN-019-03"
       ],
-      "notes": "Military supremacy victory: your_military >= (sum_all_others × 2). Extremely difficult threshold."
+      "crossSystemDeps": []
     },
-    "REQ-VIC-006": {
-      "title": "Survival Victory",
-      "dependencies": ["REQ-RES-001", "REQ-RES-002", "REQ-MIL-001", "REQ-SEC-001", "REQ-RSCH-001", "REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-RES-001",
-          "reason": "Score formula includes networth component; can implement with simplified scoring"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-RES-002",
-          "reason": "Score includes resource value contributions"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-MIL-001",
-          "reason": "Score includes military_power × 10"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-SEC-001",
-          "reason": "Score includes sectors × 500"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-RSCH-001",
-          "reason": "Score includes tech_tier_average × 1000"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-001",
-          "reason": "Score includes reputation × 100"
-        }
+    {
+      "id": "REQ-VIC-003.1",
+      "title": "Coalition Territory Calculation",
+      "dependencies": [
+        "REQ-VIC-003"
       ],
-      "notes": "Fallback victory when turn limit reached (200 turns standard). Highest composite score wins. All blockers are SOFT—can use simplified score."
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-003"
+      ]
     },
-    "REQ-VIC-007": {
-      "title": "Victory Point Calculation (Parent Spec)",
-      "dependencies": ["REQ-VIC-007-A", "REQ-VIC-007-B", "REQ-VIC-007-C", "REQ-VIC-007-D", "REQ-VIC-007-E", "REQ-VIC-007-F", "REQ-VIC-007-G"],
-      "blockers": [],
-      "notes": "Parent spec split into 7 atomic sub-specs (REQ-VIC-007-A through G). Each calculates VP for one victory category."
+    {
+      "id": "REQ-VIC-003.2",
+      "title": "Diplomatic Victory Threshold",
+      "dependencies": [
+        "REQ-VIC-003"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-003"
+      ]
     },
-    "REQ-VIC-007-A": {
+    {
+      "id": "REQ-VIC-003.3",
+      "title": "Shared Victory Mechanics",
+      "dependencies": [
+        "REQ-VIC-003"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-003"
+      ]
+    },
+    {
+      "id": "REQ-VIC-005",
+      "title": "Military Victory (PARENT)",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-005.1",
+        "REQ-VIC-005.2",
+        "REQ-VIC-010.3",
+        "REQ-TURN-019-05"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-VIC-005.1",
+      "title": "Military Power Calculation",
+      "dependencies": [
+        "REQ-VIC-005"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-005"
+      ]
+    },
+    {
+      "id": "REQ-VIC-005.2",
+      "title": "Military Victory Threshold",
+      "dependencies": [
+        "REQ-VIC-005"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-005"
+      ]
+    },
+    {
+      "id": "REQ-VIC-006",
+      "title": "Survival Victory (PARENT)",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-006.1",
+        "REQ-VIC-006.2",
+        "REQ-VIC-006.3",
+        "REQ-VIC-010.3",
+        "REQ-TURN-019-06"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-VIC-006.1",
+      "title": "Score Calculation Formula",
+      "dependencies": [
+        "REQ-VIC-006"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-006"
+      ]
+    },
+    {
+      "id": "REQ-VIC-006.2",
+      "title": "Turn Limit Trigger",
+      "dependencies": [
+        "REQ-VIC-006"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-006"
+      ]
+    },
+    {
+      "id": "REQ-VIC-006.3",
+      "title": "Tiebreaker Rules",
+      "dependencies": [
+        "REQ-VIC-006",
+        "REQ-VIC-007-A",
+        "REQ-VIC-007-G"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-006",
+        "REQ-VIC-007-A",
+        "REQ-VIC-007-G"
+      ]
+    },
+    {
+      "id": "REQ-VIC-007",
+      "title": "Victory Point Calculation (Split)",
+      "dependencies": [
+        "REQ-VIC-007-A"
+      ],
+      "dependents": [
+        "REQ-VIC-010.3"
+      ],
+      "crossSystemDeps": [
+        "REQ-VIC-007-A"
+      ]
+    },
+    {
+      "id": "REQ-VIC-007-A",
       "title": "Conquest VP Formula",
-      "dependencies": ["REQ-VIC-001", "REQ-SEC-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-001",
-          "reason": "Conquest VP calculation depends on Conquest Victory's sector tracking"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-SEC-001",
-          "reason": "Requires total_sectors count (500 at game start)"
-        }
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-006.3",
+        "REQ-VIC-007"
       ],
-      "notes": "Formula: conquest_vp = (controlled_sectors / total_sectors) × (10 / 0.6). Linear scaling 0-10 VP."
+      "crossSystemDeps": []
     },
-    "REQ-VIC-007-B": {
+    {
+      "id": "REQ-VIC-007-B",
       "title": "Economic VP Formula",
-      "dependencies": ["REQ-VIC-002"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-002",
-          "reason": "Economic VP depends on Economic Victory's networth calculation and second-place tracking"
-        }
-      ],
-      "notes": "Formula: economic_vp = (your_networth / second_networth) × (10 / 1.5). Updates when empires are eliminated."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-007-C": {
+    {
+      "id": "REQ-VIC-007-C",
       "title": "Diplomatic VP Formula",
-      "dependencies": ["REQ-VIC-003", "REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-003",
-          "reason": "Diplomatic VP depends on Diplomatic Victory's coalition tracking"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-DIP-001",
-          "reason": "Requires active coalition membership and sector summing"
-        }
-      ],
-      "notes": "Formula: diplomatic_vp = (coalition_territory / total_sectors) × (10 / 0.5). Only applies if in coalition."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-007-D": {
+    {
+      "id": "REQ-VIC-007-D",
       "title": "Research VP Formula",
-      "dependencies": ["REQ-VIC-004", "REQ-RSCH-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-004",
-          "reason": "Research VP depends on capstone and advanced tech completion tracking"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-RSCH-001",
-          "reason": "Requires tech completion state and tier tracking"
-        }
-      ],
-      "notes": "Formula: research_vp = ((capstone_progress × 0.5) + (advanced_techs / 10 × 0.5)) × 10. 50/50 weighting on capstone vs breadth."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-007-E": {
+    {
+      "id": "REQ-VIC-007-E",
       "title": "Military VP Formula",
-      "dependencies": ["REQ-VIC-005", "REQ-MIL-001", "REQ-MIL-002"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-005",
-          "reason": "Military VP depends on Military Victory's power calculation"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-MIL-001",
-          "reason": "Requires military unit power values"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-MIL-002",
-          "reason": "Requires summing military power across all empires"
-        }
-      ],
-      "notes": "Formula: military_vp = (your_military / sum_all_others) × (10 / 2.0). Hardest VP to achieve due to 2.0x threshold."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-007-F": {
+    {
+      "id": "REQ-VIC-007-F",
       "title": "Survival VP Formula",
-      "dependencies": ["REQ-VIC-006"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-006",
-          "reason": "Survival VP depends on score calculation (only applies at turn limit)"
-        }
-      ],
-      "notes": "Formula: survival_vp = (your_score / highest_score) × 10. Only relevant if turn limit reached without other victory."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-007-G": {
+    {
+      "id": "REQ-VIC-007-G",
       "title": "Total VP Aggregation",
-      "dependencies": ["REQ-VIC-007-A", "REQ-VIC-007-B", "REQ-VIC-007-C", "REQ-VIC-007-D", "REQ-VIC-007-E", "REQ-VIC-007-F"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-A",
-          "reason": "Total VP = MAX of all categories; requires conquest_vp"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-B",
-          "reason": "Total VP = MAX of all categories; requires economic_vp"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-C",
-          "reason": "Total VP = MAX of all categories; requires diplomatic_vp"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-D",
-          "reason": "Total VP = MAX of all categories; requires research_vp"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-E",
-          "reason": "Total VP = MAX of all categories; requires military_vp"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-F",
-          "reason": "Total VP = MAX of all categories; requires survival_vp"
-        }
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-006.3"
       ],
-      "notes": "Aggregation: total_vp = MAX(all 6 category VPs). Triggers notifications at 5, 7, 9, 10 VP thresholds. Players see leading victory path."
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008": {
-      "title": "Anti-Snowball Mechanics (Parent Spec)",
-      "dependencies": ["REQ-VIC-008-A", "REQ-VIC-008-B", "REQ-VIC-008-C", "REQ-VIC-008-D", "REQ-VIC-008-E", "REQ-VIC-008-F", "REQ-VIC-008-G"],
-      "blockers": [],
-      "notes": "Parent spec split into 7 atomic sub-specs (REQ-VIC-008-A through G). Each implements one anti-snowball mechanic triggered at 7 VP."
+    {
+      "id": "REQ-VIC-008",
+      "title": "Anti-Snowball Mechanics (Split)",
+      "dependencies": [
+        "REQ-VIC-008-A",
+        "REQ-VIC-008-G"
+      ],
+      "dependents": [
+        "REQ-VIC-010.3",
+        "REQ-DIP-005-B",
+        "REQ-BOT-010-B",
+        "REQ-MKT-002-E"
+      ],
+      "crossSystemDeps": [
+        "REQ-VIC-008-A",
+        "REQ-VIC-008-G"
+      ]
     },
-    "REQ-VIC-008-A": {
+    {
+      "id": "REQ-VIC-008-A",
       "title": "Anti-Snowball Trigger Threshold",
-      "dependencies": ["REQ-VIC-007-G"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-G",
-          "reason": "Trigger checks if total_vp >= 7 and manages activation/deactivation state"
-        }
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-008"
       ],
-      "notes": "Triggers when any empire reaches 7 VP (70% progress to victory). All anti-snowball effects activate/deactivate together."
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008-B": {
+    {
+      "id": "REQ-VIC-008-B",
       "title": "Combat Attack Bonus vs Leader",
-      "dependencies": ["REQ-VIC-008-A", "REQ-COMBAT-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-A",
-          "reason": "Only applies when anti-snowball is active (leader at 7+ VP)"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-COMBAT-001",
-          "reason": "Requires combat system to apply +10% attack bonus modifier"
-        }
-      ],
-      "notes": "Non-leaders gain +10% attack bonus when attacking leader. Applies to all combat (space, ground, orbital)."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008-C": {
+    {
+      "id": "REQ-VIC-008-C",
       "title": "Combat Defense Bonus vs Leader",
-      "dependencies": ["REQ-VIC-008-A", "REQ-COMBAT-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-A",
-          "reason": "Only applies when anti-snowball is active (leader at 7+ VP)"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-COMBAT-001",
-          "reason": "Requires combat system to apply +5% defense bonus modifier"
-        }
-      ],
-      "notes": "Non-leaders gain +5% defense bonus when defending against leader attacks. Smaller than attack bonus (+10%) to encourage offense."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008-D": {
+    {
+      "id": "REQ-VIC-008-D",
       "title": "Market Price Penalty for Leader",
-      "dependencies": ["REQ-VIC-008-A", "REQ-MKT-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-A",
-          "reason": "Only applies when anti-snowball is active (leader at 7+ VP)"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-MKT-001",
-          "reason": "Requires market system to apply +20% cost multiplier to leader's buy orders"
-        }
-      ],
-      "notes": "Leader pays +20% more for market purchases (× 1.2 multiplier). Sell prices unaffected. Applies to all resources."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008-E": {
+    {
+      "id": "REQ-VIC-008-E",
       "title": "Reputation Decay for Leader",
-      "dependencies": ["REQ-VIC-008-A", "REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-A",
-          "reason": "Only applies when anti-snowball is active (leader at 7+ VP)"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-DIP-001",
-          "reason": "Requires reputation system to apply -2 reputation decay per turn"
-        }
-      ],
-      "notes": "Leader loses 2 reputation points per turn automatically (minimum 0). Decay stops at 0, doesn't go negative."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008-F": {
+    {
+      "id": "REQ-VIC-008-F",
       "title": "Automatic Coalition Offers",
-      "dependencies": ["REQ-VIC-008-A", "REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-A",
-          "reason": "Coalition offers only when leader reaches 7 VP for the first time"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-DIP-001",
-          "reason": "Requires coalition formation system and NAP/Alliance tracking to identify eligible recipients"
-        }
-      ],
-      "notes": "Automatic coalition offers sent once per 7 VP threshold crossing to all empires with existing NAP/Alliance with any empire. Not sent every turn."
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-VIC-008-G": {
+    {
+      "id": "REQ-VIC-008-G",
       "title": "Anti-Snowball Mechanics Coordination",
-      "dependencies": ["REQ-VIC-008-A", "REQ-VIC-008-B", "REQ-VIC-008-C", "REQ-VIC-008-D", "REQ-VIC-008-E", "REQ-VIC-008-F"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-A",
-          "reason": "Central trigger coordinator; all other mechanics depend on this"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-B",
-          "reason": "Combat bonuses must activate/deactivate with coordinator"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-C",
-          "reason": "Combat bonuses must activate/deactivate with coordinator"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-D",
-          "reason": "Market penalty must activate/deactivate with coordinator"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-E",
-          "reason": "Reputation decay must activate/deactivate with coordinator"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-008-F",
-          "reason": "Coalition offers must be triggered by coordinator"
-        }
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-008"
       ],
-      "notes": "Master coordinator ensuring all anti-snowball mechanics activate/deactivate simultaneously at 7 VP threshold. No partial activation states allowed."
+      "crossSystemDeps": []
     },
-    "REQ-VIC-009": {
-      "title": "Victory Notifications",
-      "dependencies": ["REQ-VIC-007-G"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-007-G",
-          "reason": "Notifications triggered by VP milestone crossings (5, 7, 9, 10 VP)"
-        }
+    {
+      "id": "REQ-VIC-009",
+      "title": "Victory Notifications (Split)",
+      "dependencies": [
+        "REQ-VIC-009-A",
+        "REQ-VIC-009-D",
+        "REQ-VIC-009-B",
+        "REQ-VIC-009-C"
       ],
-      "notes": "Players notified at VP milestones: 5 VP (Yellow), 7 VP (Orange + anti-snowball alert), 9 VP (Red), 10 VP (Gold). Audio cues included."
+      "dependents": [
+        "REQ-VIC-010.3"
+      ],
+      "crossSystemDeps": [
+        "REQ-VIC-009-A",
+        "REQ-VIC-009-D",
+        "REQ-VIC-009-B",
+        "REQ-VIC-009-C"
+      ]
     },
-    "REQ-VIC-010": {
-      "title": "Victory Achievement Screen",
-      "dependencies": ["REQ-VIC-001", "REQ-VIC-002", "REQ-VIC-003", "REQ-VIC-004", "REQ-VIC-005", "REQ-VIC-006"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-001",
-          "reason": "Screen displays victory type and final statistics"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-002",
-          "reason": "Screen displays victory type and final statistics"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-003",
-          "reason": "Screen displays victory type and final statistics"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-004",
-          "reason": "Screen displays victory type and final statistics"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-005",
-          "reason": "Screen displays victory type and final statistics"
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-006",
-          "reason": "Screen displays victory type and final statistics"
-        }
+    {
+      "id": "REQ-VIC-009-A",
+      "title": "5 VP Milestone Notification",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-009"
       ],
-      "notes": "Game-ending UI: displays winner, victory type, final statistics, and leaderboard. Screen freezes on victory moment."
-    }
-  },
-  "summary": {
-    "totalDependencies": 42,
-    "intraSystemDependencies": 26,
-    "crossSystemDependencies": 16,
-    "hardBlockers": 32,
-    "softBlockers": 10,
-    "topDependedOnSpecs": [
-      "REQ-VIC-007-G (Total VP Aggregation) - depended on by 5 specs (REQ-VIC-008-A, REQ-VIC-009, and others)",
-      "REQ-VIC-008-A (Anti-Snowball Trigger) - depended on by 6 specs (REQ-VIC-008-B through G)",
-      "REQ-VIC-001 (Conquest Victory) - depended on by 2 specs (REQ-VIC-007-A, REQ-VIC-010)",
-      "REQ-VIC-002 (Economic Victory) - depended on by 2 specs (REQ-VIC-007-B, REQ-VIC-010)",
-      "REQ-VIC-003 (Diplomatic Victory) - depended on by 2 specs (REQ-VIC-007-C, REQ-VIC-010)",
-      "REQ-VIC-004 (Research Victory) - depended on by 2 specs (REQ-VIC-007-D, REQ-VIC-010)",
-      "REQ-VIC-005 (Military Victory) - depended on by 2 specs (REQ-VIC-007-E, REQ-VIC-010)"
-    ],
-    "crossSystemReferences": [
-      {
-        "toSystem": "SECTOR",
-        "count": 5,
-        "specs": ["REQ-SEC-001"],
-        "reasons": ["Sector counting for Conquest VP", "Coalition territory summing for Diplomatic VP", "Sector control tracking"]
-      },
-      {
-        "toSystem": "RESOURCE",
-        "count": 2,
-        "specs": ["REQ-RES-001", "REQ-RES-002"],
-        "reasons": ["Resource values for Economic Victory networth", "Sector production rates for networth"]
-      },
-      {
-        "toSystem": "MILITARY",
-        "count": 3,
-        "specs": ["REQ-MIL-001", "REQ-MIL-002"],
-        "reasons": ["Military power calculation for Military Victory", "Military power for networth component", "Military unit definitions and tracking"]
-      },
-      {
-        "toSystem": "RESEARCH",
-        "count": 2,
-        "specs": ["REQ-RSCH-001"],
-        "reasons": ["Tech completion tracking for Research Victory", "Tech tier averaging for Survival score"]
-      },
-      {
-        "toSystem": "DIPLOMACY",
-        "count": 4,
-        "specs": ["REQ-DIP-001"],
-        "reasons": ["Coalition formation for Diplomatic Victory", "Coalition offers for anti-snowball", "Reputation system for anti-snowball decay", "Reputation for Survival score"]
-      },
-      {
-        "toSystem": "COMBAT",
-        "count": 2,
-        "specs": ["REQ-COMBAT-001"],
-        "reasons": ["Combat bonuses in anti-snowball mechanics", "Attack/defense modifier application"]
-      },
-      {
-        "toSystem": "MARKET",
-        "count": 1,
-        "specs": ["REQ-MKT-001"],
-        "reasons": ["Market price penalty for leader during anti-snowball"]
-      }
-    ],
-    "implementationWaves": {
-      "wave0_foundations": [
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-VIC-009-B",
+      "title": "7 VP Milestone Notification",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-009"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-VIC-009-C",
+      "title": "9 VP Milestone Notification",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-009"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-VIC-009-D",
+      "title": "10 VP Victory Notification",
+      "dependencies": [
+        "REQ-VIC-010"
+      ],
+      "dependents": [
+        "REQ-VIC-009"
+      ],
+      "crossSystemDeps": [
+        "REQ-VIC-010"
+      ]
+    },
+    {
+      "id": "REQ-VIC-010",
+      "title": "Victory Achievement Screen (PARENT)",
+      "dependencies": [],
+      "dependents": [
+        "REQ-VIC-009-D",
+        "REQ-VIC-010.1",
+        "REQ-VIC-010.2",
+        "REQ-VIC-010.3"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-VIC-010.1",
+      "title": "Game State Freeze",
+      "dependencies": [
+        "REQ-VIC-010"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-010"
+      ]
+    },
+    {
+      "id": "REQ-VIC-010.2",
+      "title": "Victory Screen Display",
+      "dependencies": [
+        "REQ-VIC-010"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-010"
+      ]
+    },
+    {
+      "id": "REQ-VIC-010.3",
+      "title": "Final Statistics Display",
+      "dependencies": [
+        "REQ-VIC-010",
         "REQ-VIC-001",
         "REQ-VIC-002",
         "REQ-VIC-003",
         "REQ-VIC-004",
         "REQ-VIC-005",
-        "REQ-VIC-006"
+        "REQ-VIC-006",
+        "REQ-VIC-007",
+        "REQ-VIC-008",
+        "REQ-VIC-009"
       ],
-      "wave1_vp_calculation": [
-        "REQ-VIC-007-A",
-        "REQ-VIC-007-B",
-        "REQ-VIC-007-C",
-        "REQ-VIC-007-D",
-        "REQ-VIC-007-E",
-        "REQ-VIC-007-F",
-        "REQ-VIC-007-G"
-      ],
-      "wave2_notifications": [
-        "REQ-VIC-009",
-        "REQ-VIC-010"
-      ],
-      "wave3_anti_snowball": [
-        "REQ-VIC-008-A",
-        "REQ-VIC-008-B",
-        "REQ-VIC-008-C",
-        "REQ-VIC-008-D",
-        "REQ-VIC-008-E",
-        "REQ-VIC-008-F",
-        "REQ-VIC-008-G"
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-VIC-010",
+        "REQ-VIC-001",
+        "REQ-VIC-002",
+        "REQ-VIC-003",
+        "REQ-VIC-004",
+        "REQ-VIC-005",
+        "REQ-VIC-006",
+        "REQ-VIC-007",
+        "REQ-VIC-008",
+        "REQ-VIC-009"
       ]
-    },
-    "criticalPath": [
-      {
-        "wave": 0,
-        "specs": ["REQ-VIC-001 through REQ-VIC-006"],
-        "rationale": "Six core victory conditions must be defined before VP calculations can work"
-      },
-      {
-        "wave": 1,
-        "specs": ["REQ-VIC-007-A through REQ-VIC-007-G"],
-        "rationale": "VP calculation formulas depend on wave 0; REQ-VIC-007-G (Total VP Aggregation) unlocks notifications and anti-snowball"
-      },
-      {
-        "wave": 2,
-        "specs": ["REQ-VIC-009, REQ-VIC-010"],
-        "rationale": "Player-facing notifications and victory screen depend on VP calculations (wave 1)"
-      },
-      {
-        "wave": 3,
-        "specs": ["REQ-VIC-008-A through REQ-VIC-008-G"],
-        "rationale": "Anti-snowball mechanics depend on VP system (wave 1) and other game systems (combat, market, diplomacy)"
-      }
-    ],
-    "blockingDependencies": {
-      "REQ-SEC-001": "Blocks: REQ-VIC-001 (sector counting), REQ-VIC-007-A (Conquest VP), REQ-VIC-003 (coalition territory)",
-      "REQ-RES-001": "Blocks: REQ-VIC-002 (networth formula requires resource types), REQ-VIC-006 (score formula)",
-      "REQ-RES-002": "Blocks: REQ-VIC-002 (networth includes sector values), REQ-VIC-006 (score formula)",
-      "REQ-MIL-001": "Blocks: REQ-VIC-005 (military power calculation), REQ-VIC-007-E (Military VP formula)",
-      "REQ-MIL-002": "Blocks: REQ-VIC-005 (military tracking), REQ-VIC-007-E (Military VP requires all empires' power)",
-      "REQ-RSCH-001": "Blocks: REQ-VIC-004 (tech tree completion), REQ-VIC-007-D (Research VP formula)",
-      "REQ-DIP-001": "Blocks: REQ-VIC-003 (coalition formation), REQ-VIC-008-E (reputation decay), REQ-VIC-008-F (coalition offers)",
-      "REQ-COMBAT-001": "Blocks: REQ-VIC-008-B (attack bonus), REQ-VIC-008-C (defense bonus)",
-      "REQ-MKT-001": "Blocks: REQ-VIC-008-D (market price penalty)"
-    },
-    "notesOnSplitSpecs": {
-      "REQ-VIC-007": "Split into REQ-VIC-007-A through G for atomic VP formulas. Each formula can be tested independently. REQ-VIC-007-G (Total VP Aggregation) is critical—unlocks notifications and determines which victory path is 'leading'.",
-      "REQ-VIC-008": "Split into REQ-VIC-008-A through G for atomic anti-snowball mechanics. REQ-VIC-008-A (Trigger Threshold) must activate first; others depend on it. REQ-VIC-008-G (Coordination) ensures all mechanics activate/deactivate together without partial states."
-    },
-    "implementationNotes": [
-      "Wave 0 (6 specs) is completely independent of other game systems except sector, resource, military, research, and diplomacy systems—must be implemented in parallel.",
-      "Wave 1 (7 specs: VP calculations) depends entirely on Wave 0. REQ-VIC-007-G is the lynchpin—must aggregate all 6 category VPs correctly.",
-      "Wave 2 (2 specs: UI/notifications) is lightweight and depends only on VP system (Wave 1).",
-      "Wave 3 (7 specs: anti-snowball) is most complex—depends on VP system (Wave 1) AND external game systems (combat, market, diplomacy). Can be parallelized by mechanic.",
-      "Victory achievement is determined by checking if total_vp >= 10 in any category (after REQ-VIC-007-G aggregation).",
-      "Anti-snowball represents ~40% of VICTORY system complexity due to cross-system coordination (combat, market, diplomacy, reputation).",
-      "Hard blockers: 32/42 dependencies are HARD, indicating Victory system is tightly coupled to Resource, Military, Research, Sector, Diplomacy, Combat, and Market systems.",
-      "Soft blockers: 10/42 dependencies are SOFT, mostly in Economic Victory (can simplify networth initially) and Survival Victory (can use basic score)."
-    ]
-  }
+    }
+  ]
 }

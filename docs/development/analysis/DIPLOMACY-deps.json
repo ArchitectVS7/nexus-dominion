@@ -1,464 +1,266 @@
 {
   "system": "DIPLOMACY",
-  "file": "docs/Game Systems/DIPLOMACY-SYSTEM.md",
-  "analyzedAt": "2026-01-12T00:00:00Z",
-  "totalSpecs": 10,
-  "specs": {
-    "REQ-DIP-001": {
+  "totalSpecs": 25,
+  "analyzedAt": "2026-01-13T15:33:25.048Z",
+  "specs": [
+    {
+      "id": "REQ-DIP-001",
       "title": "Treaty Types",
       "dependencies": [],
-      "blockers": [],
-      "notes": "Foundational spec - defines NAP and Alliance treaty types with durations (20 and 30 turns minimum). No dependencies."
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "REQ-DIP-002": {
-      "title": "Coalition System",
-      "dependencies": ["REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-001",
-          "reason": "Coalition references treaty mechanics; can implement independently but treaty system enhances coalition validation"
-        }
+    {
+      "id": "REQ-DIP-002",
+      "title": "Coalition System (Split)",
+      "dependencies": [
+        "REQ-DIP-002-A",
+        "REQ-DIP-002-C"
       ],
-      "notes": "Multi-empire coalitions (3+ members) with shared victory at 50% territory. Requires UI for coalition management and shared intelligence."
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-DIP-002-A",
+        "REQ-DIP-002-C"
+      ]
     },
-    "REQ-DIP-003": {
-      "title": "Reputation System",
-      "dependencies": ["REQ-DIP-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-001",
-          "reason": "Reputation changes triggered by treaty actions (break NAP -15, break alliance -25); can hardcode initial values"
-        }
+    {
+      "id": "REQ-DIP-002-A",
+      "title": "Coalition Formation Requirements",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-002"
       ],
-      "notes": "Empire-to-empire reputation tracking (-100 to +100) affecting treaty acceptance. Foundation for bot decision logic."
+      "crossSystemDeps": []
     },
-    "REQ-DIP-004": {
-      "title": "Trust Score Calculation",
-      "dependencies": ["REQ-DIP-003", "REQ-BOT-008"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-003",
-          "reason": "Trust = Base Reputation + Recent Interactions + Archetype Modifier; reputation system must exist first"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-BOT-008",
-          "reason": "Archetype modifiers depend on bot personality system; can use fixed modifiers initially"
-        }
-      ],
-      "notes": "Trust decays 1 point per 5 turns. Complex formula but can be implemented incrementally. Archetype modifiers are optional enhancement."
-    },
-    "REQ-DIP-005": {
-      "title": "Automatic Coalition Formation",
-      "dependencies": ["REQ-DIP-002", "REQ-VIC-001", "REQ-BOT-008"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-001",
-          "reason": "Coalition trigger: leader at 7+ Victory Points. Requires victory tracking system."
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-BOT-008",
-          "reason": "Bot coalition decisions per archetype. Cannot implement bot participation without archetype system."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-002",
-          "reason": "Uses coalition formation mechanics; coalition system must exist"
-        }
-      ],
-      "notes": "Anti-snowball mechanic triggered at 7 VP threshold. Automatic coalition formation with configurable bot acceptance rates per archetype."
-    },
-    "REQ-DIP-006": {
-      "title": "Betrayal Mechanics",
-      "dependencies": ["REQ-DIP-001", "REQ-DIP-003", "REQ-BOT-008"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-001",
-          "reason": "Breaking treaties triggers betrayal. Treaty system must exist to track active agreements."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-003",
-          "reason": "Betrayal reputation penalties (-40 coalition, -25 alliance, -15 NAP). Reputation system calculates penalties."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-BOT-008",
-          "reason": "Bot betrayal logic varies by archetype (Schemer 95%, Warlord 0%). Requires archetype system for differentiated behavior."
-        }
-      ],
-      "notes": "Treachery creates drama and tension. Schemer always betrays after 20 turns. Major reputation penalties create consequences for breaking faith."
-    },
-    "REQ-DIP-007": {
-      "title": "Treaty Duration & Renewal",
-      "dependencies": ["REQ-DIP-001", "REQ-TURN-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-TURN-001",
-          "reason": "Treaty durations measured in turns (20-30 minimum). Turn processing system required."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-001",
-          "reason": "Duration validation for treaty types (NAP 20, Alliance 30). Treaty system must enforce minimums."
-        }
-      ],
-      "notes": "Auto-renewal unless cancelled or trust < 0. Early termination options: mutual (no penalty) or unilateral (penalty applies)."
-    },
-    "REQ-DIP-008": {
-      "title": "Diplomatic Victory Condition",
-      "dependencies": ["REQ-DIP-002", "REQ-VIC-001", "REQ-SEC-001"],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-VIC-001",
-          "reason": "Victory system required for diplomatic victory condition registration and game end triggering."
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-SEC-001",
-          "reason": "Requires sector counting and territory calculation (50% = victory). Sector system must track ownership."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-002",
-          "reason": "Victory only achievable through coalition. Coalition membership must track for victory calculation."
-        }
-      ],
-      "notes": "Coalition wins when controlling 50% galaxy territory. Provides non-military victory path and encourages cooperation."
-    },
-    "REQ-DIP-009": {
-      "title": "Shared Intelligence",
-      "dependencies": ["REQ-DIP-001", "REQ-DIP-002", "REQ-FOG-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-001",
-          "reason": "Alliance intelligence sharing (see territories, receive alerts). Treaty system must track active alliances."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-002",
-          "reason": "Coalition shared vision and chat. Coalition system must maintain membership list."
-        },
-        {
-          "type": "HARD",
-          "spec": "REQ-FOG-001",
-          "reason": "Lifting fog of war for allied territories. Fog of war system required to selectively reveal territories."
-        }
-      ],
-      "notes": "Alliance benefits include seeing allied sectors and receiving attack alerts. Coalition chat shows bot strategy discussions."
-    },
-    "REQ-DIP-010": {
-      "title": "Reputation Recovery",
-      "dependencies": ["REQ-DIP-003", "REQ-RES-001", "REQ-TURN-001"],
-      "blockers": [
-        {
-          "type": "SOFT",
-          "spec": "REQ-DIP-003",
-          "reason": "Reputation recovery mechanics modify reputation scores. Reputation system must support recovery calculations."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-RES-001",
-          "reason": "Recovery through resource gifts (+5 per gift). Resource system must support gift transactions."
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-TURN-001",
-          "reason": "Recovery measured in turns (peace for 30 turns = +10, trade for 10 turns = +20). Turn tracking required."
-        }
-      ],
-      "notes": "Fast recovery (10+ turns) through positive actions. Slow recovery (30+ turns) through patience. Permanent scars from coalition betrayal (-20)."
-    }
-  },
-  "summary": {
-    "totalDependencies": 24,
-    "intraSystemDependencies": 11,
-    "crossSystemDependencies": 13,
-    "hardBlockers": 7,
-    "softBlockers": 13,
-    "topDependedOnSpecs": [
-      "REQ-DIP-001 (depended on by 6 specs)",
-      "REQ-DIP-003 (depended on by 4 specs)",
-      "REQ-DIP-002 (depended on by 3 specs)",
-      "REQ-BOT-008 (depended on by 3 specs)"
-    ],
-    "crossSystemReferences": [
-      {
-        "toSystem": "VICTORY",
-        "count": 2,
-        "specs": ["REQ-VIC-001"]
-      },
-      {
-        "toSystem": "BOT",
-        "count": 3,
-        "specs": ["REQ-BOT-008"]
-      },
-      {
-        "toSystem": "TURN",
-        "count": 2,
-        "specs": ["REQ-TURN-001"]
-      },
-      {
-        "toSystem": "SECTOR",
-        "count": 1,
-        "specs": ["REQ-SEC-001"]
-      },
-      {
-        "toSystem": "RESOURCE",
-        "count": 1,
-        "specs": ["REQ-RES-001"]
-      },
-      {
-        "toSystem": "FOG_OF_WAR",
-        "count": 1,
-        "specs": ["REQ-FOG-001"]
-      }
-    ],
-    "implementationWaves": {
-      "wave0_foundations": [
-        "REQ-DIP-001"
-      ],
-      "wave1_core_mechanics": [
-        "REQ-DIP-003",
-        "REQ-DIP-007"
-      ],
-      "wave2_player_treaties": [
-        "REQ-DIP-004",
-        "REQ-DIP-010"
-      ],
-      "wave3_coalitions": [
-        "REQ-DIP-002",
+    {
+      "id": "REQ-DIP-002-B",
+      "title": "Coalition Benefits and Shared Victory",
+      "dependencies": [
         "REQ-DIP-009"
       ],
-      "wave4_bot_integration": [
-        "REQ-DIP-005",
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-DIP-009"
+      ]
+    },
+    {
+      "id": "REQ-DIP-002-C",
+      "title": "Coalition Dissolution Mechanics",
+      "dependencies": [
+        "REQ-DIP-003"
+      ],
+      "dependents": [
+        "REQ-DIP-002"
+      ],
+      "crossSystemDeps": [
+        "REQ-DIP-003"
+      ]
+    },
+    {
+      "id": "REQ-DIP-003",
+      "title": "Reputation System",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-002-C"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-004",
+      "title": "Trust Score Calculation",
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-005",
+      "title": "Automatic Coalition Formation (Split)",
+      "dependencies": [
+        "REQ-DIP-005-A",
+        "REQ-DIP-005-B"
+      ],
+      "dependents": [
+        "REQ-BOT-010-B"
+      ],
+      "crossSystemDeps": [
+        "REQ-DIP-005-A",
+        "REQ-DIP-005-B"
+      ]
+    },
+    {
+      "id": "REQ-DIP-005-A",
+      "title": "Automatic Coalition Trigger and Formation",
+      "dependencies": [
+        "REQ-BOT-008"
+      ],
+      "dependents": [
+        "REQ-DIP-005"
+      ],
+      "crossSystemDeps": [
+        "REQ-BOT-008"
+      ]
+    },
+    {
+      "id": "REQ-DIP-005-B",
+      "title": "Leader Debuffs and Restrictions",
+      "dependencies": [
+        "REQ-VIC-008"
+      ],
+      "dependents": [
+        "REQ-DIP-005"
+      ],
+      "crossSystemDeps": [
+        "REQ-VIC-008"
+      ]
+    },
+    {
+      "id": "REQ-DIP-006",
+      "title": "Betrayal Mechanics (Split)",
+      "dependencies": [
+        "REQ-DIP-006-A",
+        "REQ-DIP-006-C"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-DIP-006-A",
+        "REQ-DIP-006-C"
+      ]
+    },
+    {
+      "id": "REQ-DIP-006-A",
+      "title": "Treaty Breaking Mechanics",
+      "dependencies": [],
+      "dependents": [
         "REQ-DIP-006"
       ],
-      "wave5_victory_conditions": [
-        "REQ-DIP-008"
-      ]
+      "crossSystemDeps": []
     },
-    "criticalPathAnalysis": {
-      "description": "Critical path for DIPLOMACY system implementation",
-      "phases": [
-        {
-          "phase": "1: Foundation",
-          "specs": ["REQ-DIP-001"],
-          "duration": "M1",
-          "description": "Implement basic treaty types (NAP, Alliance) with creation/acceptance/breaking"
-        },
-        {
-          "phase": "2: Reputation & Trust",
-          "specs": ["REQ-DIP-003", "REQ-DIP-004"],
-          "duration": "M2-M3",
-          "description": "Build reputation tracking system and trust score calculations",
-          "prerequisite": "REQ-DIP-001",
-          "notes": "REQ-BOT-008 can be stubbed initially"
-        },
-        {
-          "phase": "3: Treaty Lifecycle",
-          "specs": ["REQ-DIP-007", "REQ-DIP-010"],
-          "duration": "M3-M4",
-          "description": "Implement treaty duration, renewal, and reputation recovery mechanics",
-          "prerequisite": ["REQ-DIP-001", "REQ-DIP-003"]
-        },
-        {
-          "phase": "4: Coalition System",
-          "specs": ["REQ-DIP-002", "REQ-DIP-009"],
-          "duration": "M4-M5",
-          "description": "Build coalition formation, membership, and shared intelligence",
-          "prerequisite": ["REQ-DIP-001", "REQ-FOG-001"],
-          "notes": "REQ-FOG-001 (fog of war) is BLOCKING"
-        },
-        {
-          "phase": "5: Bot Diplomacy",
-          "specs": ["REQ-DIP-005", "REQ-DIP-006"],
-          "duration": "M6-M7",
-          "description": "Implement bot archetype diplomatic behavior and betrayal mechanics",
-          "prerequisite": ["REQ-BOT-008", "REQ-DIP-002"],
-          "notes": "Must wait for bot system implementation"
-        },
-        {
-          "phase": "6: Victory Condition",
-          "specs": ["REQ-DIP-008"],
-          "duration": "M8",
-          "description": "Register diplomatic victory condition and test 50% territory trigger",
-          "prerequisite": ["REQ-DIP-002", "REQ-VIC-001"],
-          "notes": "Final phase after victory system exists"
-        }
-      ]
+    {
+      "id": "REQ-DIP-006-B",
+      "title": "Coalition Betrayal Mechanics",
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
     },
-    "implementationDependencyGraph": {
-      "REQ-DIP-001": {
-        "blockedBy": [],
-        "blocks": ["REQ-DIP-003", "REQ-DIP-006", "REQ-DIP-007", "REQ-DIP-009"]
-      },
-      "REQ-DIP-002": {
-        "blockedBy": ["REQ-DIP-001"],
-        "blocks": ["REQ-DIP-005", "REQ-DIP-008", "REQ-DIP-009"]
-      },
-      "REQ-DIP-003": {
-        "blockedBy": ["REQ-DIP-001"],
-        "blocks": ["REQ-DIP-004", "REQ-DIP-006", "REQ-DIP-010"]
-      },
-      "REQ-DIP-004": {
-        "blockedBy": ["REQ-DIP-003", "REQ-BOT-008"],
-        "blocks": []
-      },
-      "REQ-DIP-005": {
-        "blockedBy": ["REQ-DIP-002", "REQ-VIC-001", "REQ-BOT-008"],
-        "blocks": []
-      },
-      "REQ-DIP-006": {
-        "blockedBy": ["REQ-DIP-001", "REQ-DIP-003", "REQ-BOT-008"],
-        "blocks": []
-      },
-      "REQ-DIP-007": {
-        "blockedBy": ["REQ-DIP-001", "REQ-TURN-001"],
-        "blocks": []
-      },
-      "REQ-DIP-008": {
-        "blockedBy": ["REQ-DIP-002", "REQ-VIC-001", "REQ-SEC-001"],
-        "blocks": []
-      },
-      "REQ-DIP-009": {
-        "blockedBy": ["REQ-DIP-001", "REQ-DIP-002", "REQ-FOG-001"],
-        "blocks": []
-      },
-      "REQ-DIP-010": {
-        "blockedBy": ["REQ-DIP-003", "REQ-RES-001", "REQ-TURN-001"],
-        "blocks": []
-      }
-    },
-    "externalBlockers": {
-      "HARD": [
-        {
-          "spec": "REQ-VIC-001",
-          "reason": "Required for automatic coalition formation trigger (7+ VP) and diplomatic victory condition",
-          "affectedSpecs": ["REQ-DIP-005", "REQ-DIP-008"]
-        },
-        {
-          "spec": "REQ-BOT-008",
-          "reason": "Required for bot archetype diplomatic decisions and betrayal rates. No diplomacy can work without bot system.",
-          "affectedSpecs": ["REQ-DIP-004", "REQ-DIP-005", "REQ-DIP-006"]
-        },
-        {
-          "spec": "REQ-FOG-001",
-          "reason": "Required for shared intelligence (revealing allied territories). Coalition benefits depend on fog of war system.",
-          "affectedSpecs": ["REQ-DIP-009"]
-        },
-        {
-          "spec": "REQ-SEC-001",
-          "reason": "Required for territory counting in diplomatic victory (50% coalition territory). Sector tracking is essential.",
-          "affectedSpecs": ["REQ-DIP-008"]
-        },
-        {
-          "spec": "REQ-TURN-001",
-          "reason": "Required for treaty duration tracking (20/30 turn minimums) and turn-based reputation recovery.",
-          "affectedSpecs": ["REQ-DIP-007", "REQ-DIP-010"]
-        }
+    {
+      "id": "REQ-DIP-006-C",
+      "title": "Bot Archetype Betrayal Rates",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-006"
       ],
-      "SOFT": [
-        {
-          "spec": "REQ-RES-001",
-          "reason": "Reputation recovery through resource gifts. Can implement without this but gift functionality limited.",
-          "affectedSpecs": ["REQ-DIP-010"]
-        }
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-007",
+      "title": "Treaty Duration & Renewal",
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-008",
+      "title": "Diplomatic Victory Condition",
+      "dependencies": [],
+      "dependents": [],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-009",
+      "title": "Shared Intelligence (Split)",
+      "dependencies": [
+        "REQ-DIP-009-A",
+        "REQ-DIP-009-D",
+        "REQ-DIP-009-B",
+        "REQ-DIP-009-C"
+      ],
+      "dependents": [
+        "REQ-DIP-002-B"
+      ],
+      "crossSystemDeps": [
+        "REQ-DIP-009-A",
+        "REQ-DIP-009-D",
+        "REQ-DIP-009-B",
+        "REQ-DIP-009-C"
       ]
     },
-    "implementationStrategy": {
-      "sequence": [
-        {
-          "step": 1,
-          "action": "Implement REQ-DIP-001 (Treaty Types)",
-          "reason": "Foundational spec - no dependencies. Defines NAP and Alliance.",
-          "expectedDuration": "2 days"
-        },
-        {
-          "step": 2,
-          "action": "Implement REQ-DIP-003 (Reputation System)",
-          "reason": "Depends only on REQ-DIP-001. Core system for all bot decisions.",
-          "expectedDuration": "3 days",
-          "prerequisite": "REQ-DIP-001"
-        },
-        {
-          "step": 3,
-          "action": "Implement REQ-DIP-007 (Treaty Duration & Renewal)",
-          "reason": "Depends on REQ-DIP-001 and REQ-TURN-001 (external). Adds lifecycle to treaties.",
-          "expectedDuration": "2 days",
-          "prerequisite": "REQ-DIP-001, REQ-TURN-001",
-          "notes": "Can stub turn system if needed"
-        },
-        {
-          "step": 4,
-          "action": "Implement REQ-DIP-004 (Trust Score Calculation)",
-          "reason": "Depends on REQ-DIP-003. Enhances reputation with decay mechanics.",
-          "expectedDuration": "2 days",
-          "prerequisite": "REQ-DIP-003"
-        },
-        {
-          "step": 5,
-          "action": "Implement REQ-DIP-010 (Reputation Recovery)",
-          "reason": "Depends on REQ-DIP-003. Adds redemption path for damaged relationships.",
-          "expectedDuration": "2 days",
-          "prerequisite": "REQ-DIP-003"
-        },
-        {
-          "step": 6,
-          "action": "Implement REQ-DIP-002 (Coalition System)",
-          "reason": "Depends on REQ-DIP-001. Core system for multi-empire diplomacy.",
-          "expectedDuration": "3 days",
-          "prerequisite": "REQ-DIP-001"
-        },
-        {
-          "step": 7,
-          "action": "Implement REQ-DIP-009 (Shared Intelligence)",
-          "reason": "Depends on REQ-FOG-001 (external blocker). Coalition benefits require this.",
-          "expectedDuration": "2 days",
-          "prerequisite": "REQ-DIP-002, REQ-FOG-001",
-          "notes": "BLOCKED until fog of war system implemented"
-        },
-        {
-          "step": 8,
-          "action": "Implement REQ-DIP-006 (Betrayal Mechanics)",
-          "reason": "Depends on REQ-BOT-008 for archetype-specific betrayal rates. Adds dramatic tension.",
-          "expectedDuration": "3 days",
-          "prerequisite": "REQ-DIP-001, REQ-DIP-003, REQ-BOT-008",
-          "notes": "BLOCKED until bot system implemented"
-        },
-        {
-          "step": 9,
-          "action": "Implement REQ-DIP-005 (Automatic Coalition Formation)",
-          "reason": "Depends on REQ-VIC-001 and REQ-BOT-008 (external blockers). Anti-snowball mechanic.",
-          "expectedDuration": "3 days",
-          "prerequisite": "REQ-DIP-002, REQ-VIC-001, REQ-BOT-008",
-          "notes": "BLOCKED until victory system and bot system implemented"
-        },
-        {
-          "step": 10,
-          "action": "Implement REQ-DIP-008 (Diplomatic Victory Condition)",
-          "reason": "Depends on REQ-VIC-001 and REQ-SEC-001 (external blockers). Final phase.",
-          "expectedDuration": "2 days",
-          "prerequisite": "REQ-DIP-002, REQ-VIC-001, REQ-SEC-001",
-          "notes": "BLOCKED until victory and sector systems implemented"
-        }
+    {
+      "id": "REQ-DIP-009-A",
+      "title": "Allied Territory Visibility",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-009"
       ],
-      "totalDuration": "~25 days (5 weeks) with dependencies resolved",
-      "criticalDependencies": [
-        "REQ-BOT-008 (blocks 3 specs)",
-        "REQ-VIC-001 (blocks 2 specs)",
-        "REQ-FOG-001 (blocks 1 spec, but high impact)",
-        "REQ-SEC-001 (blocks 1 spec - diplomatic victory)"
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-009-B",
+      "title": "Allied Attack Alerts",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-009"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-009-C",
+      "title": "Coalition Chat Visibility",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-009"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-009-D",
+      "title": "Shared Vision of Enemy Units",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-009"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-010",
+      "title": "Reputation Recovery (Split)",
+      "dependencies": [
+        "REQ-DIP-010-A",
+        "REQ-DIP-010-C",
+        "REQ-DIP-010-B"
+      ],
+      "dependents": [],
+      "crossSystemDeps": [
+        "REQ-DIP-010-A",
+        "REQ-DIP-010-C",
+        "REQ-DIP-010-B"
       ]
+    },
+    {
+      "id": "REQ-DIP-010-A",
+      "title": "Fast Reputation Recovery",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-010"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-010-B",
+      "title": "Slow Reputation Recovery",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-010"
+      ],
+      "crossSystemDeps": []
+    },
+    {
+      "id": "REQ-DIP-010-C",
+      "title": "Permanent Reputation Scars",
+      "dependencies": [],
+      "dependents": [
+        "REQ-DIP-010"
+      ],
+      "crossSystemDeps": []
     }
-  }
+  ]
 }

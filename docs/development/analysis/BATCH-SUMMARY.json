@@ -1,0 +1,98 @@
+{
+  "completedAt": "2026-01-13T15:33:25.143Z",
+  "durationSeconds": 0.12,
+  "systemsAnalyzed": 15,
+  "totalSpecs": 477,
+  "systems": [
+    {
+      "system": "RESOURCE",
+      "specs": 52,
+      "totalDependencies": 38,
+      "crossSystemDeps": 38
+    },
+    {
+      "system": "SECTOR",
+      "specs": 30,
+      "totalDependencies": 16,
+      "crossSystemDeps": 16
+    },
+    {
+      "system": "MILITARY",
+      "specs": 16,
+      "totalDependencies": 9,
+      "crossSystemDeps": 9
+    },
+    {
+      "system": "COMBAT",
+      "specs": 18,
+      "totalDependencies": 9,
+      "crossSystemDeps": 0
+    },
+    {
+      "system": "DIPLOMACY",
+      "specs": 25,
+      "totalDependencies": 17,
+      "crossSystemDeps": 17
+    },
+    {
+      "system": "VICTORY",
+      "specs": 40,
+      "totalDependencies": 32,
+      "crossSystemDeps": 32
+    },
+    {
+      "system": "TURN",
+      "specs": 70,
+      "totalDependencies": 59,
+      "crossSystemDeps": 7
+    },
+    {
+      "system": "BOT",
+      "specs": 38,
+      "totalDependencies": 24,
+      "crossSystemDeps": 3
+    },
+    {
+      "system": "COVERT",
+      "specs": 21,
+      "totalDependencies": 1,
+      "crossSystemDeps": 1
+    },
+    {
+      "system": "MARKET",
+      "specs": 45,
+      "totalDependencies": 37,
+      "crossSystemDeps": 37
+    },
+    {
+      "system": "RESEARCH",
+      "specs": 55,
+      "totalDependencies": 36,
+      "crossSystemDeps": 36
+    },
+    {
+      "system": "PROGRESSIVE",
+      "specs": 33,
+      "totalDependencies": 19,
+      "crossSystemDeps": 19
+    },
+    {
+      "system": "SYNDICATE",
+      "specs": 12,
+      "totalDependencies": 0,
+      "crossSystemDeps": 0
+    },
+    {
+      "system": "TECH",
+      "specs": 9,
+      "totalDependencies": 0,
+      "crossSystemDeps": 0
+    },
+    {
+      "system": "UI",
+      "specs": 13,
+      "totalDependencies": 0,
+      "crossSystemDeps": 0
+    }
+  ]
+}
