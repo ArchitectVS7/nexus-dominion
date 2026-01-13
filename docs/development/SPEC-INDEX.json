@@ -128,10 +128,19 @@
       "specs": [
         { "id": "REQ-PROG-001", "title": "Feature Unlocks", "atomic": false, "line": 751, "splitCandidate": "3 unlocks + veteran override" },
         { "id": "REQ-PROG-002", "title": "Game Checkpoints", "atomic": false, "line": 782, "splitCandidate": "auto + manual + cloud" },
-        { "id": "REQ-PROG-003", "title": "Galactic Events", "atomic": false, "line": 814, "splitCandidate": "probability + 8 types + duration + restrictions" },
-        { "id": "REQ-PROG-004", "title": "Tutorial Sequence", "atomic": false, "line": 846, "splitCandidate": "sequence + objectives + rewards + skip" },
-        { "id": "REQ-PROG-005", "title": "Bot Tutorial Passivity", "atomic": false, "line": 877, "splitCandidate": "3 passivity adjustments" },
-        { "id": "REQ-PROG-006", "title": "Event Announcements", "atomic": false, "line": 908, "splitCandidate": "warning + banner + counter + end" }
+        { "id": "REQ-PROG-003", "title": "Galactic Events (Split)", "atomic": true, "line": 814, "parentOf": ["REQ-PROG-003-01", "REQ-PROG-003-02", "REQ-PROG-003-03", "REQ-PROG-003-04", "REQ-PROG-003-05", "REQ-PROG-003-06", "REQ-PROG-003-07", "REQ-PROG-003-08", "REQ-PROG-003-09"] },
+        { "id": "REQ-PROG-003-01", "title": "Supernova Event", "atomic": true, "line": 822, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-02", "title": "Plague Event", "atomic": true, "line": 854, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-03", "title": "Golden Age Event", "atomic": true, "line": 886, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-04", "title": "Rebellion Event", "atomic": true, "line": 918, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-05", "title": "Wormhole Collapse Event", "atomic": true, "line": 950, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-06", "title": "Tech Breakthrough Event", "atomic": true, "line": 982, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-07", "title": "Galactic War Event", "atomic": true, "line": 1014, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-08", "title": "Resource Boom Event", "atomic": true, "line": 1046, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-003-09", "title": "Galactic Event System Rules", "atomic": true, "line": 1078, "splitFrom": "REQ-PROG-003" },
+        { "id": "REQ-PROG-004", "title": "Tutorial Sequence", "atomic": false, "line": 1109, "splitCandidate": "sequence + objectives + rewards + skip" },
+        { "id": "REQ-PROG-005", "title": "Bot Tutorial Passivity", "atomic": false, "line": 1140, "splitCandidate": "3 passivity adjustments" },
+        { "id": "REQ-PROG-006", "title": "Event Announcements", "atomic": false, "line": 1171, "splitCandidate": "warning + banner + counter + end" }
       ]
     },
     "RESOURCE": {
@@ -330,9 +339,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 206,
-    "atomicSpecs": 116,
-    "splitCandidates": 89,
+    "totalSpecs": 214,
+    "atomicSpecs": 125,
+    "splitCandidates": 88,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

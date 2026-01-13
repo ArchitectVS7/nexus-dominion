@@ -811,33 +811,296 @@ If player selects "Skip Tutorial" or is a veteran account, all features unlock i
 
 ---
 
-### REQ-PROG-003: Galactic Events
+### REQ-PROG-003: Galactic Events (Split)
 
-**Description:** Random galactic events occur that affect all empires:
-- 3% chance per turn (average 1 event per 30 turns)
-- 8 event types (Supernova, Plague, Golden Age, etc.)
-- Events last 0-15 turns depending on type
-- Cannot occur during tutorial (Turns 1-10)
-- Max 1 active event at a time
+> **Note:** This spec has been split into atomic sub-specs. See REQ-PROG-003-01 through REQ-PROG-003-09 for individual event definitions and system rules.
 
-**Rationale:** Creates shared challenges and narrative moments. All empires face same conditions, creating common experiences and strategic opportunities.
+**Overview:** Random galactic events create shared challenges affecting all empires. 8 event types with varying probabilities, durations, and impacts.
+
+---
+
+### REQ-PROG-003-01: Supernova Event
+
+**Description:** Supernova event has 5% probability when events trigger. Destroys a random sector instantly (unowned or from weakest empire). No advance warning.
+
+**Rationale:** Rare catastrophic event creating power vacuum. Instant effect prevents preparation, encouraging opportunistic expansion.
 
 **Key Values:**
-| Event | Probability | Duration | Effect |
-|-------|------------|----------|--------|
-| Supernova | 5% | Instant | Random sector destroyed |
-| Plague | 15% | 5 turns | -10% population |
-| Golden Age | 25% | 10 turns | +20% income |
-| Galactic War | 10% | 15 turns | All treaties void |
+| Parameter | Value |
+|-----------|-------|
+| Probability | 5% (when event triggers) |
+| Duration | Instant |
+| Effect | Random sector destroyed permanently |
+| Target | Unowned or weakest empire's sector |
+| Warning | None (instant) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3, 3.4
 
 **Code:**
-- `src/lib/game/services/events/event-service.ts` - Event triggers
-- `src/lib/game/services/events/event-types.ts` - Event definitions
+- `src/lib/game/services/events/event-types.ts` - `SupernovaEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerSupernova()`
 
 **Tests:**
-- `src/lib/game/services/events/__tests__/event-service.test.ts`
+- `src/lib/game/services/events/__tests__/supernova.test.ts` - Supernova effects
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-02: Plague Event
+
+**Description:** Plague event has 15% probability when events trigger. All empires lose 10% of population for 5 turns.
+
+**Rationale:** Common harmful event affecting all equally. Hurts empires with large armies more (higher upkeep costs with less population).
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 15% (when event triggers) |
+| Duration | 5 turns |
+| Effect | -10% population (all empires) |
+| Impact | Increased military upkeep burden |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `PlagueEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerPlague()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/plague.test.ts` - Plague effects
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-03: Golden Age Event
+
+**Description:** Golden Age event has 25% probability when events trigger. All empires gain +20% income for 10 turns.
+
+**Rationale:** Most common positive event. Accelerates economic game. Benefits all equally, creating stockpiling opportunities.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 25% (when event triggers) |
+| Duration | 10 turns |
+| Effect | +20% credits from sectors |
+| Market Impact | Stable prices (no volatility) |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `GoldenAgeEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerGoldenAge()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/golden-age.test.ts` - Golden Age effects
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-04: Rebellion Event
+
+**Description:** Rebellion event has 15% probability when events trigger. Weakest empire loses 2-5 random sectors to independence (become neutral). Instant effect.
+
+**Rationale:** Punishes weakest empire, creates neutral territory grab opportunity. Anti-snowball mechanic favoring stronger empires.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 15% (when event triggers) |
+| Duration | Instant |
+| Effect | 2-5 sectors become neutral |
+| Target | Weakest empire (lowest military power) |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `RebellionEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerRebellion()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/rebellion.test.ts` - Rebellion effects
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-05: Wormhole Collapse Event
+
+**Description:** Wormhole Collapse event has 5% probability when events trigger. All wormholes destroyed galaxy-wide. Instant effect.
+
+**Rationale:** Rare catastrophic event isolating distant empires. Heavily impacts expansion-focused strategies. Expensive to rebuild.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 5% (when event triggers) |
+| Duration | Instant |
+| Effect | All wormholes destroyed |
+| Rebuild Cost | 15,000-40,000 cr each |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `WormholeCollapseEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerWormholeCollapse()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/wormhole-collapse.test.ts` - Wormhole destruction
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-06: Tech Breakthrough Event
+
+**Description:** Tech Breakthrough event has 20% probability when events trigger. All empires gain 1 free Tier 2 research. Instant effect (permanent research).
+
+**Rationale:** Common positive event accelerating tech race. Players choose research, bots auto-select by archetype. Mid-game accelerator.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 20% (when event triggers) |
+| Duration | Instant (permanent) |
+| Effect | Free Tier 2 research for all |
+| Player Choice | From available Tier 2 options |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `TechBreakthroughEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerTechBreakthrough()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/tech-breakthrough.test.ts` - Free research
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-07: Galactic War Event
+
+**Description:** Galactic War event has 10% probability when events trigger. All treaties dissolved, no new treaties for 15 turns. All empires hostile.
+
+**Rationale:** Rare chaos event forcing total war. Hurts diplomatic strategies, benefits opportunists. Longest duration event.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 10% (when event triggers) |
+| Duration | 15 turns |
+| Effect | All treaties void, war state |
+| Treaty Lock | Cannot form treaties for duration |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `GalacticWarEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerGalacticWar()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/galactic-war.test.ts` - Treaty dissolution
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-08: Resource Boom Event
+
+**Description:** Resource Boom event has 25% probability when events trigger. Food, Ore, Petroleum sectors produce 2× output for 8 turns. Does NOT affect Credits or Research Points.
+
+**Rationale:** Most common positive event (tied with Golden Age). Accelerates resource game. Creates stockpiling and market selling opportunities.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Probability | 25% (when event triggers) |
+| Duration | 8 turns |
+| Effect | 2× production (Food, Ore, Petroleum only) |
+| Exclusions | Credits, Research Points unaffected |
+| Warning | 1 turn advance |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-types.ts` - `ResourceBoomEvent` class
+- `src/lib/game/services/events/event-service.ts` - `triggerResourceBoom()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/resource-boom.test.ts` - Resource doubling
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-003-09: Galactic Event System Rules
+
+**Description:** Galactic event system rules: 3% trigger chance per turn (average 1 event per 30 turns). Max 1 active event at a time. Cannot occur during tutorial (Turns 1-10). Warning notification 1 turn before (except Supernova).
+
+**Rationale:** Shared system rules governing all galactic events. Tutorial grace period prevents overwhelming new players. Max 1 event prevents compounding chaos.
+
+**Key Values:**
+| Rule | Value |
+|------|-------|
+| Trigger Chance | 3% per turn |
+| Average Frequency | 1 event per 30 turns |
+| Max Active Events | 1 |
+| Tutorial Grace Period | No events before Turn 10 |
+| Advance Warning | 1 turn (except Supernova) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3, 3.4
+
+**Code:**
+- `src/lib/game/services/events/event-service.ts` - `canTriggerEvent()`, `selectEventType()`
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/event-system.test.ts` - System rules
 
 **Status:** Draft
 
@@ -1432,7 +1695,8 @@ UPDATE tutorial_progress SET is_skipped = TRUE, is_completed = TRUE;
 ### Dependencies
 
 **Depends On:**
-- **[GAME-DESIGN.md](GAME-DESIGN.md)** - Core game loop, turn structure, victory conditions
+- **[VISION.md](../VISION.md)** - Design philosophy and player experience principles
+- **[PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md)** - System overview, turn structure, victory conditions
 - **[BOT-SYSTEM.md](BOT-SYSTEM.md)** - Bot archetypes, decision priorities, tutorial passivity
 - **[MARKET-SYSTEM.md](MARKET-SYSTEM.md)** - Market tutorial step (Turn 5)
 - **Research System** (TBD) - Research tutorial integration
