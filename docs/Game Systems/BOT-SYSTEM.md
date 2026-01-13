@@ -246,8 +246,13 @@ PROPOSAL: "Greetings! I believe our empires could benefit
 
 **Schemer:**
 ```
-FALSE: "You seem reasonable. Let's form an alliance -
-       together we can dominate!"
+FALSE: Schemer bots will use language and behaviors similar to the other archetypes. 
+We may include cryptic clues, perhaps the frequency of the cryptic "tells" can be tied 
+to difficulty level. What we dont want is an obvious hand wringing "muahaha" type of behavior,
+defeats the ourpose of a schemer! Consider copying some warlords, diplomats, and metchants
+dialog, and making a few edits as clues. 
+
+
        [Internal: Mark as future target]
 ```
 
