@@ -3653,10 +3653,35 @@
         },
         {
           "id": "REQ-VIC-010",
-          "title": "Victory Achievement Screen",
+          "title": "Victory Achievement Screen (PARENT)",
           "atomic": false,
-          "line": 1840,
-          "splitCandidate": "freeze + screen + stats"
+          "line": 1874,
+          "children": [
+            "REQ-VIC-010.1",
+            "REQ-VIC-010.2",
+            "REQ-VIC-010.3"
+          ]
+        },
+        {
+          "id": "REQ-VIC-010.1",
+          "title": "Game State Freeze",
+          "atomic": true,
+          "line": 1888,
+          "parent": "REQ-VIC-010"
+        },
+        {
+          "id": "REQ-VIC-010.2",
+          "title": "Victory Screen Display",
+          "atomic": true,
+          "line": 1946,
+          "parent": "REQ-VIC-010"
+        },
+        {
+          "id": "REQ-VIC-010.3",
+          "title": "Final Statistics Display",
+          "atomic": true,
+          "line": 1965,
+          "parent": "REQ-VIC-010"
         }
       ]
     },
@@ -3746,9 +3771,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 399,
-    "atomicSpecs": 372,
-    "splitCandidates": 18,
+    "totalSpecs": 401,
+    "atomicSpecs": 375,
+    "splitCandidates": 17,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

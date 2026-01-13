@@ -1871,29 +1871,79 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 ---
 
-### REQ-VIC-010: Victory Achievement Screen
+### REQ-VIC-010: Victory Achievement Screen (PARENT)
 
-**Description:** When any empire achieves 10 VP (victory), game immediately freezes, displays cinematic victory announcement screen showing winner, victory type, final statistics, and leaderboard.
+**Description:** When any empire achieves 10 VP (victory), game presents victory announcement. This parent spec tracks the complete victory achievement system.
 
-**Rationale:** Victory is the most important moment in the game and deserves dramatic presentation. Freeze game state ensures no actions during victory announcement. Statistics provide closure and context for player's performance.
+**Children:**
+- REQ-VIC-010.1: Game State Freeze
+- REQ-VIC-010.2: Victory Screen Display
+- REQ-VIC-010.3: Final Statistics Display
+
+**Rationale:** Victory is the most important moment in the game and deserves dramatic presentation.
+
+**Source:** Section 5.1 - UI Mockups
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-010.1: Game State Freeze
+
+**Description:** Game immediately freezes when victory achieved. No actions allowed during victory announcement.
+
+**Rationale:** Freeze ensures game integrity during victory announcement and prevents confusion.
+
+**Source:** Section 5.1 - UI Mockups
+
+**Code:**
+- `src/lib/game/services/core/game-service.ts` - Freeze game state
+
+**Tests:**
+- `src/lib/game/services/__tests__/game-service.test.ts` - "Game state frozen during victory"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-010.2: Victory Screen Display
+
+**Description:** Displays cinematic victory announcement screen showing winner and victory type.
+
+**Rationale:** Dramatic presentation makes victory moment memorable and rewarding.
 
 **Source:** Section 5.1 - UI Mockups
 
 **Code:**
 - `src/lib/game/services/core/victory-service.ts` - `triggerVictoryScreen()`
 - `src/app/components/victory/VictoryScreen.tsx` - Victory UI
-- `src/lib/game/services/core/game-service.ts` - Freeze game state
 
 **Tests:**
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Victory screen triggered at 10 VP"
-- `src/lib/game/services/__tests__/game-service.test.ts` - "Game state frozen during victory"
-- `src/app/components/victory/__tests__/VictoryScreen.test.tsx` - "Victory screen displays winner and stats"
+- `src/app/components/victory/__tests__/VictoryScreen.test.tsx` - "Victory screen displays winner"
 
 **Status:** Draft
 
 ---
 
-### Specification Summary
+### REQ-VIC-010.3: Final Statistics Display
+
+**Description:** Victory screen displays final statistics and leaderboard showing all empire rankings.
+
+**Rationale:** Statistics provide closure and context for player's performance relative to others.
+
+**Source:** Section 5.1 - UI Mockups
+
+**Code:**
+- `src/app/components/victory/VictoryScreen.tsx` - Statistics display
+
+**Tests:**
+- `src/app/components/victory/__tests__/VictoryScreen.test.tsx` - "Victory screen displays stats"
+
+**Status:** Draft
+
+---
+
 
 | ID | Title | Status | Tests |
 |----|-------|--------|-------|
