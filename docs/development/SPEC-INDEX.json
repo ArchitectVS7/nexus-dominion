@@ -286,9 +286,12 @@
         { "id": "REQ-RES-009-A", "title": "Sector Conversion Cost Calculation", "atomic": true, "line": 1876, "splitFrom": "REQ-RES-009" },
         { "id": "REQ-RES-009-B", "title": "Sector Conversion Timing", "atomic": true, "line": 1910, "splitFrom": "REQ-RES-009" },
         { "id": "REQ-RES-009-C", "title": "Sector Conversion Restrictions", "atomic": true, "line": 1935, "splitFrom": "REQ-RES-009" },
-        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1959, "splitCandidate": "capacity + overcrowding + starting" },
-        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1994, "splitCandidate": "accumulation + thresholds + timeline" },
-        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 2028, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity (Split)", "atomic": true, "line": 1959, "parentOf": ["REQ-RES-010-A", "REQ-RES-010-B", "REQ-RES-010-C"] },
+        { "id": "REQ-RES-010-A", "title": "Population Capacity Calculation", "atomic": true, "line": 1965, "splitFrom": "REQ-RES-010" },
+        { "id": "REQ-RES-010-B", "title": "Overcrowding Penalty", "atomic": true, "line": 1999, "splitFrom": "REQ-RES-010" },
+        { "id": "REQ-RES-010-C", "title": "Starting Urban Infrastructure", "atomic": true, "line": 2035, "splitFrom": "REQ-RES-010" },
+        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 2058, "splitCandidate": "accumulation + thresholds + timeline" },
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 2092, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
       ]
     },
     "SECTOR": {
@@ -492,9 +495,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 340,
-    "atomicSpecs": 284,
-    "splitCandidates": 47,
+    "totalSpecs": 343,
+    "atomicSpecs": 288,
+    "splitCandidates": 46,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

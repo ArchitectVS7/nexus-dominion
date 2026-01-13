@@ -1956,36 +1956,100 @@ Examples:
 
 ---
 
-### REQ-RES-010: Urban Sectors and Population Capacity
+### REQ-RES-010: Urban Sectors and Population Capacity (Split)
 
-**Description:** Urban sectors provide population housing capacity:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-010-A through REQ-RES-010-C.
 
-```
-Population Capacity = Urban Sectors × 10,000 people
-```
+---
 
-Overcrowding occurs when population exceeds capacity, causing -20 civil status score penalty.
+### REQ-RES-010-A: Population Capacity Calculation
 
-**Starting Conditions:**
-- 1 Urban sector (10,000 capacity)
-- 10,000 population (at capacity)
-
-**Growth Dynamics:**
-- Population grows +2%/turn = +200 people/turn
-- Turn 51: Population 20,400, capacity 10,000 → overcrowding penalty
-- Solution: Build 1 Urban sector (capacity → 20,000)
+**Description:** Urban sectors provide population housing capacity at 10,000 people per sector. Total capacity calculated as number of Urban sectors multiplied by 10,000.
 
 **Rationale:** Forces infrastructure investment alongside population growth. Prevents runaway population without corresponding sector expansion.
+
+**Formula:**
+```
+Population Capacity = Urban Sectors × 10,000 people
+
+Examples:
+- 1 Urban sector → 10,000 capacity
+- 2 Urban sectors → 20,000 capacity
+- 5 Urban sectors → 50,000 capacity
+```
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Capacity per Urban sector | 10,000 people | Housing capacity |
 
 **Source:** Section 3.4 - Urban Sectors and Population Capacity
 
 **Code:**
 - `src/lib/game/services/population-service.ts` - `calculatePopulationCapacity()` function
-- `src/lib/game/services/civil-status.ts` - Overcrowding penalty logic
 
 **Tests:**
 - `src/lib/game/services/__tests__/population-capacity.test.ts` - Capacity calculation tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-010-B: Overcrowding Penalty
+
+**Description:** When population exceeds capacity, overcrowding occurs causing -20 civil status score penalty. Penalty applied immediately when population exceeds Urban sector capacity.
+
+**Rationale:** Forces infrastructure investment alongside population growth. Creates urgency to build Urban sectors before overcrowding occurs.
+
+**Formula:**
+```
+if (Population > Capacity):
+  Civil Status Penalty = -20 score
+
+Growth Dynamics Example:
+- Turn 1: 10,000 population, 10,000 capacity → no penalty
+- Population grows +2%/turn = +200 people/turn
+- Turn 51: Population 20,400, capacity 10,000 → overcrowding penalty (-20)
+- Solution: Build 1 Urban sector (capacity → 20,000) → penalty removed
+```
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Overcrowding penalty | -20 civil status | Applied when population > capacity |
+
+**Source:** Section 3.4 - Urban Sectors and Population Capacity
+
+**Code:**
+- `src/lib/game/services/civil-status.ts` - Overcrowding penalty logic
+
+**Tests:**
 - `src/lib/game/services/__tests__/overcrowding-penalties.test.ts` - Penalty application
+
+**Status:** Draft
+
+---
+
+### REQ-RES-010-C: Starting Urban Infrastructure
+
+**Description:** Starting game conditions provide 1 Urban sector (10,000 capacity) and 10,000 starting population. Population starts at capacity with no overcrowding penalty.
+
+**Rationale:** Provides baseline population capacity. Population growth requires Urban sector expansion to avoid overcrowding.
+
+**Starting Conditions:**
+- 1 Urban sector (10,000 capacity)
+- 10,000 population (at capacity)
+- No overcrowding penalty initially
+
+**Source:** Section 3.4 - Urban Sectors and Population Capacity
+
+**Code:**
+- `src/lib/game/services/population-service.ts` - `calculatePopulationCapacity()` function
+
+**Tests:**
+- `src/lib/game/services/__tests__/population-capacity.test.ts` - Capacity calculation tests
 
 **Status:** Draft
 
