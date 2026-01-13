@@ -1808,53 +1808,75 @@ if current_project_progress >= current_project_cost:
 
 ---
 
-### REQ-TURN-010: Covert Phase
+### REQ-TURN-010: Covert Phase (PARENT)
 
-**Description:** Covert Phase (Phase 7) generates spy points based on intelligence buildings:
-```
-spy_points_earned = base_spy_rate * num_spy_buildings * civil_status_multiplier
-spy_points = min(spy_points + spy_points_earned, max_spy_points)
-```
+**Description:** Covert Phase (Phase 7) generates spy points based on intelligence buildings. This parent spec tracks the complete covert phase system.
 
-Spy points cap at 500 to prevent hoarding.
+**Children:**
+- REQ-TURN-010.1: Spy Point Generation Formula
+- REQ-TURN-010.2: Spy Point Stockpile Cap
 
 **Rationale:** Automated generation prevents micromanagement. Cap prevents infinite stockpiling.
+
+**Source:** Section 3.7
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-010.1: Spy Point Generation Formula
+
+**Description:** Spy points are generated based on formula:
+```
+spy_points_earned = base_spy_rate * num_spy_buildings * civil_status_multiplier
+spy_points += spy_points_earned
+```
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | base_spy_rate | 10 | Each spy building generates 10 points/turn |
-| max_spy_points | 500 | Maximum stockpile |
+
+**Rationale:** Spy generation scales with intelligence infrastructure and is affected by civil status.
 
 **Source:** Section 3.7
 
 **Code:**
-- `src/lib/game/services/phases/covert-phase.ts` - `processCovertPhase()`
+- `src/lib/game/services/phases/covert-phase.ts` - `generateSpyPoints()`
 
 **Tests:**
-- `src/lib/game/services/__tests__/covert-phase.test.ts` - Generation, cap enforcement
+- `src/lib/game/services/__tests__/covert-phase.test.ts` - Test generation formula
 
 **Status:** Draft
 
 ---
 
-### REQ-TURN-011: Crafting Phase
+### REQ-TURN-010.2: Spy Point Stockpile Cap
 
-**Description:** Crafting Phase (Phase 8) processes crafting queue items (multi-turn complex production). Decrements turns_remaining, completes items when ready.
+**Description:** Spy points cap at maximum value to prevent hoarding:
+```
+spy_points = min(spy_points, max_spy_points)
+```
 
-**Rationale:** Enables complex crafting chains for Tech Wars expansion (separate from basic build queue).
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| max_spy_points | 500 | Maximum stockpile |
 
-**Source:** Section 3.8
+**Rationale:** Cap prevents infinite stockpiling and encourages active use of covert operations.
+
+**Source:** Section 3.7
 
 **Code:**
-- `src/lib/game/services/phases/crafting-phase.ts` - `processCraftingQueue()`
+- `src/lib/game/services/phases/covert-phase.ts` - `enforceSpyPointCap()`
 
 **Tests:**
-- `src/lib/game/services/__tests__/crafting-phase.test.ts` - Queue processing, complex recipe completion
+- `src/lib/game/services/__tests__/covert-phase.test.ts` - Test cap enforcement
 
 **Status:** Draft
 
 ---
+
 
 ### REQ-TURN-012: Bot Decisions Phase
 
