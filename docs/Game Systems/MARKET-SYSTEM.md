@@ -1035,14 +1035,54 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 ---
 
-### REQ-MKT-004: Market Limits
+### REQ-MKT-004: Market Limits (Split)
 
-**Description:** Enforce transaction and reserve limits:
-- **Max Transaction**: 50,000 units per turn per resource
-- **Reserve Requirement**: Cannot sell below 10% of sector production capacity
-- **Price Clamping**: Prices clamped to [50%, 200%] of base price
+> **Note:** This spec has been split into atomic sub-specs. See REQ-MKT-004-A through REQ-MKT-004-C.
 
-**Rationale:** Prevents market manipulation through massive single transactions. Reserve requirement ensures players don't sell critical stockpiles. Price clamping prevents extreme inflation/deflation.
+---
+
+### REQ-MKT-004-A: Maximum Transaction Limit
+
+**Description:** Enforces a maximum transaction limit of 50,000 units per resource per turn. Players cannot buy or sell more than this amount in a single turn for any individual resource type.
+
+**Rationale:** Prevents market manipulation through massive single transactions. Forces players to spread large trades across multiple turns, creating strategic planning requirements and preventing instant market corner attempts.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Max transaction | 50,000 units | Per resource per turn |
+| Applies to | Buy and sell | Both directions |
+| Scope | Per resource | Food, Ore, Petroleum separate |
+
+**Validation:**
+- Check transaction quantity before execution
+- Reject transactions exceeding 50,000 units
+- Return error message: "Transaction exceeds 50,000 unit limit"
+- No partial fulfillment (all-or-nothing)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.4, 3.4
+
+**Code:**
+- `src/lib/market/limits.ts` - `validateTransactionLimit()`
+- `src/lib/market/transaction-validator.ts` - Transaction size checking
+
+**Tests:**
+- `src/lib/market/__tests__/limits.test.ts` - Test 50,000 unit limit enforcement
+- `src/lib/market/__tests__/transaction-validator.test.ts` - Verify rejection above limit
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-004-B: Reserve Requirement
+
+**Description:** Players cannot sell resources below a reserve threshold calculated as 10% of their sector production capacity. The reserve ensures players maintain critical resource stockpiles.
+
+**Rationale:** Prevents players from selling themselves into economic collapse. Ensures minimum resource availability for empire operations. Creates strategic decisions about production vs selling.
 
 **Formula:**
 ```
@@ -1053,18 +1093,78 @@ Max Sellable = current_storage - reserve
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| Max Transaction | 50,000 units | Per resource per turn |
-| Reserve % | 10% | Of sector production |
-| Price Floor | 50% | Of base price |
-| Price Ceiling | 200% | Of base price |
+| Reserve percentage | 10% | Of sector production |
+| Calculation base | Sector production | Per-turn production rate |
+| Enforcement | Sell only | Does not affect buying |
+
+**Reserve Calculation Example:**
+- Food sectors: 10 sectors × 500/turn = 5,000 production
+- Reserve requirement: 5,000 × 0.10 = 500 food
+- Current storage: 3,000 food
+- Max sellable: 3,000 - 500 = 2,500 food
+
+**Validation:**
+- Calculate reserve before each sell transaction
+- Block sells that would drop storage below reserve
+- Return error: "Cannot sell below 10% reserve requirement"
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.4, 3.4
 
 **Code:**
-- `src/lib/market/limits.ts` - `validateTransaction()`, `calculateReserve()`
+- `src/lib/market/limits.ts` - `calculateReserve()`, `validateReserve()`
+- `src/lib/resources/production-calculator.ts` - Sector production calculation
 
 **Tests:**
-- `src/lib/market/__tests__/limits.test.ts` - Limit validation tests
+- `src/lib/market/__tests__/limits.test.ts` - Test reserve requirement enforcement
+- `src/lib/market/__tests__/reserve-calculation.test.ts` - Verify 10% calculation
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-004-C: Price Clamping
+
+**Description:** Market prices are clamped to a range of 50%-200% of base price. Prices cannot fall below 50% (floor) or rise above 200% (ceiling) regardless of supply and demand pressures.
+
+**Rationale:** Prevents extreme inflation/deflation that would make the market unusable. Ensures prices remain within reasonable bounds for strategic planning. Protects against edge cases in price formula.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Price floor | 50% | Of base price |
+| Price ceiling | 200% | Of base price |
+| Application | All resources | Food, Ore, Petroleum |
+
+**Clamping Logic:**
+```
+calculated_price = applyModifiers(base_price)
+final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
+```
+
+**Examples:**
+- Food base price: 100 credits
+- Floor: 50 credits (50%)
+- Ceiling: 200 credits (200%)
+- If supply modifier calculates 30 credits → clamped to 50 credits
+- If demand modifier calculates 250 credits → clamped to 200 credits
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.4, 3.4
+
+**Code:**
+- `src/lib/market/price-calculator.ts` - `clampPrice()`, price bounds enforcement
+- `src/lib/market/limits.ts` - Price validation
+
+**Tests:**
+- `src/lib/market/__tests__/price-clamping.test.ts` - Test floor and ceiling enforcement
+- `src/lib/market/__tests__/limits.test.ts` - Verify clamping across all resources
 
 **Status:** Draft
 

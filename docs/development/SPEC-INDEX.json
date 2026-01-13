@@ -145,7 +145,10 @@
         { "id": "REQ-MKT-003-B", "title": "Sell Transaction Fee", "atomic": true, "line": 947, "splitFrom": "REQ-MKT-003" },
         { "id": "REQ-MKT-003-C", "title": "Bulk Transaction Discount", "atomic": true, "line": 973, "splitFrom": "REQ-MKT-003" },
         { "id": "REQ-MKT-003-D", "title": "Commerce Research Fee Reduction", "atomic": true, "line": 1006, "splitFrom": "REQ-MKT-003" },
-        { "id": "REQ-MKT-004", "title": "Market Limits", "atomic": false, "line": 1038, "splitCandidate": "max transaction + reserve + clamping" },
+        { "id": "REQ-MKT-004", "title": "Market Limits (Split)", "atomic": true, "line": 1038, "parentOf": ["REQ-MKT-004-A", "REQ-MKT-004-B", "REQ-MKT-004-C"] },
+        { "id": "REQ-MKT-004-A", "title": "Maximum Transaction Limit", "atomic": true, "line": 1044, "splitFrom": "REQ-MKT-004" },
+        { "id": "REQ-MKT-004-B", "title": "Reserve Requirement", "atomic": true, "line": 1081, "splitFrom": "REQ-MKT-004" },
+        { "id": "REQ-MKT-004-C", "title": "Price Clamping", "atomic": true, "line": 1129, "splitFrom": "REQ-MKT-004" },
         { "id": "REQ-MKT-005", "title": "Market Events (Split)", "atomic": true, "line": 840, "parentOf": ["REQ-MKT-005-01", "REQ-MKT-005-02", "REQ-MKT-005-03", "REQ-MKT-005-04", "REQ-MKT-005-05", "REQ-MKT-005-06", "REQ-MKT-005-07", "REQ-MKT-005-08", "REQ-MKT-005-09"] },
         { "id": "REQ-MKT-005-01", "title": "Bumper Harvest Event", "atomic": true, "line": 848, "splitFrom": "REQ-MKT-005" },
         { "id": "REQ-MKT-005-02", "title": "Famine Event", "atomic": true, "line": 877, "splitFrom": "REQ-MKT-005" },
@@ -450,9 +453,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 306,
-    "atomicSpecs": 236,
-    "splitCandidates": 61,
+    "totalSpecs": 308,
+    "atomicSpecs": 239,
+    "splitCandidates": 60,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
