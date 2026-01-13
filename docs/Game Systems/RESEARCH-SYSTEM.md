@@ -1947,38 +1947,115 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-RSCH-002: Doctrine System (Tier 1)
+### REQ-RSCH-002: Doctrine System (Tier 1) (Split)
 
-**Description:** Three doctrines define strategic identity:
-- **War Machine:** +2 STR to all units, -10% planet income, unlocks Heavy Cruisers + offensive specializations
-- **Fortress:** +4 AC when defending, -5% attack power, unlocks Defense Platforms + defensive specializations
-- **Commerce:** +2 CHA (commander), +20% market sell prices, unlocks Trade Fleets + economic specializations
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-002-A through REQ-RSCH-002-C.
 
-Choice is permanent, public (announced galaxy-wide), and unlocks at 1,000 RP.
+---
 
-**Rationale:** Establishes strategic direction and asymmetric gameplay early. Public announcement creates diplomatic consequences and informs enemy strategies.
+### REQ-RSCH-002-A: War Machine Doctrine
+
+**Description:** Offensive doctrine providing +2 STR to all units and -10% planet income penalty. Unlocks Heavy Cruisers and offensive specializations (Shock Troops, Siege Engines). Choice is permanent, public (announced galaxy-wide), and unlocks at 1,000 RP.
+
+**Rationale:** Establishes aggressive military strategy with unit power focus. Income penalty creates strategic trade-off.
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| War Machine STR bonus | +2 | Applies to all units |
-| War Machine income penalty | -10% | All planet production |
-| Fortress AC bonus | +4 | Defending only |
-| Fortress attack penalty | -5% | When initiating attacks |
-| Commerce CHA bonus | +2 | Commander diplomacy |
-| Commerce sell bonus | +20% | Market transactions |
+| STR bonus | +2 | Applies to all military units |
+| Income penalty | -10% | All planet production |
+| Unlocked unit | Heavy Cruisers | Offensive capital ship |
+| Unlocked specializations | Shock Troops, Siege Engines | Tier 2 choices |
 | Unlock threshold | 1,000 RP | ~Turn 10 with 1 research sector |
+| Visibility | Public | Galaxy-wide announcement |
+| Permanence | Permanent | Cannot be changed once selected |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.1 - Tier 1: Doctrine System
 
 **Code:**
 - `src/lib/game/services/research-service.ts:selectDoctrine` - Doctrine selection
-- `src/lib/combat/research-bonuses.ts:applyDoctrineBonus` - Combat integration
-- `src/lib/economy/income-calculator.ts` - Economic penalties
+- `src/lib/combat/research-bonuses.ts:applyDoctrineBonus` - STR bonus application
+- `src/lib/economy/income-calculator.ts` - Income penalty calculation
 
 **Tests:**
-- `src/lib/game/__tests__/doctrine-selection.test.ts` - Test all 3 doctrines apply bonuses correctly
-- `src/lib/combat/__tests__/doctrine-combat.test.ts` - Test STR/AC bonuses in combat
+- `src/lib/game/__tests__/doctrine-selection.test.ts` - Test War Machine selection
+- `src/lib/combat/__tests__/doctrine-combat.test.ts` - Test STR bonus in combat
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-002-B: Fortress Doctrine
+
+**Description:** Defensive doctrine providing +4 AC when defending and -5% attack power penalty. Unlocks Defense Platforms and defensive specializations (Shield Arrays, Minefield Networks). Choice is permanent, public (announced galaxy-wide), and unlocks at 1,000 RP.
+
+**Rationale:** Establishes defensive strategy with significant armor bonuses. Attack penalty creates strategic trade-off.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| AC bonus | +4 | Defending only (not when attacking) |
+| Attack penalty | -5% | When initiating attacks |
+| Unlocked unit | Defense Platforms | Defensive structure |
+| Unlocked specializations | Shield Arrays, Minefield Networks | Tier 2 choices |
+| Unlock threshold | 1,000 RP | ~Turn 10 with 1 research sector |
+| Visibility | Public | Galaxy-wide announcement |
+| Permanence | Permanent | Cannot be changed once selected |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Tier 1: Doctrine System
+
+**Code:**
+- `src/lib/game/services/research-service.ts:selectDoctrine` - Doctrine selection
+- `src/lib/combat/research-bonuses.ts:applyDoctrineBonus` - AC bonus application (defending only)
+- `src/lib/combat/attack-calculator.ts` - Attack penalty calculation
+
+**Tests:**
+- `src/lib/game/__tests__/doctrine-selection.test.ts` - Test Fortress selection
+- `src/lib/combat/__tests__/doctrine-combat.test.ts` - Test AC bonus when defending
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-002-C: Commerce Doctrine
+
+**Description:** Economic doctrine providing +2 CHA to commander and +20% market sell prices. Unlocks Trade Fleets and economic specializations (Trade Monopoly, Mercenary Contracts). Choice is permanent, public (announced galaxy-wide), and unlocks at 1,000 RP.
+
+**Rationale:** Establishes economic strategy with diplomacy and trade focus. Creates asymmetric gameplay through economic advantages rather than military bonuses.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| CHA bonus | +2 | Commander diplomacy stat |
+| Market sell bonus | +20% | All market transactions |
+| Unlocked unit | Trade Fleets | Economic support ship |
+| Unlocked specializations | Trade Monopoly, Mercenary Contracts | Tier 2 choices |
+| Unlock threshold | 1,000 RP | ~Turn 10 with 1 research sector |
+| Visibility | Public | Galaxy-wide announcement |
+| Permanence | Permanent | Cannot be changed once selected |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1 - Tier 1: Doctrine System
+
+**Code:**
+- `src/lib/game/services/research-service.ts:selectDoctrine` - Doctrine selection
+- `src/lib/economy/market-service.ts` - Market sell price bonus
+- `src/lib/diplomacy/commander-stats.ts` - CHA bonus calculation
+
+**Tests:**
+- `src/lib/game/__tests__/doctrine-selection.test.ts` - Test Commerce selection
+- `src/lib/economy/__tests__/market-bonuses.test.ts` - Test sell price bonus
 
 **Status:** Draft
 
