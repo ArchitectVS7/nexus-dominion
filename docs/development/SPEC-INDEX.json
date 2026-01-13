@@ -1,7 +1,7 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "generated": "2026-01-12",
-  "totalSpecs": 179,
+  "totalSpecs": 185,
   "systems": {
     "COMBAT": {
       "prefix": "REQ-COMBAT",
@@ -266,8 +266,15 @@
         { "id": "REQ-VIC-004", "title": "Research Victory", "atomic": false, "line": 998, "splitCandidate": "capstone + advanced tech" },
         { "id": "REQ-VIC-005", "title": "Military Victory", "atomic": false, "line": 1035, "splitCandidate": "power calc + threshold" },
         { "id": "REQ-VIC-006", "title": "Survival Victory", "atomic": false, "line": 1076, "splitCandidate": "score + turn limit + tiebreaker" },
-        { "id": "REQ-VIC-007", "title": "Victory Point Calculation", "atomic": false, "line": 1120, "splitCandidate": "6 category formulas - CRITICAL SPLIT" },
-        { "id": "REQ-VIC-008", "title": "Anti-Snowball Mechanics", "atomic": false, "line": 1167, "splitCandidate": "7 mechanics - CRITICAL SPLIT" },
+        { "id": "REQ-VIC-007", "title": "Victory Point Calculation (Split)", "atomic": true, "line": 1120, "parentOf": ["REQ-VIC-007-A", "REQ-VIC-007-B", "REQ-VIC-007-C", "REQ-VIC-007-D", "REQ-VIC-007-E", "REQ-VIC-007-F", "REQ-VIC-007-G"] },
+        { "id": "REQ-VIC-007-A", "title": "Conquest VP Formula", "atomic": true, "line": 1126, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-007-B", "title": "Economic VP Formula", "atomic": true, "line": 1159, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-007-C", "title": "Diplomatic VP Formula", "atomic": true, "line": 1192, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-007-D", "title": "Research VP Formula", "atomic": true, "line": 1225, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-007-E", "title": "Military VP Formula", "atomic": true, "line": 1260, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-007-F", "title": "Survival VP Formula", "atomic": true, "line": 1293, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-007-G", "title": "Total VP Aggregation", "atomic": true, "line": 1326, "splitFrom": "REQ-VIC-007" },
+        { "id": "REQ-VIC-008", "title": "Anti-Snowball Mechanics", "atomic": false, "line": 1366, "splitCandidate": "7 mechanics - CRITICAL SPLIT" },
         { "id": "REQ-VIC-009", "title": "Victory Notifications", "atomic": false, "line": 1201, "splitCandidate": "4 VP threshold notifications" },
         { "id": "REQ-VIC-010", "title": "Victory Achievement Screen", "atomic": false, "line": 1232, "splitCandidate": "freeze + screen + stats" }
       ]
@@ -293,15 +300,15 @@
     }
   },
   "summary": {
-    "totalSpecs": 187,
-    "atomicSpecs": 95,
+    "totalSpecs": 185,
+    "atomicSpecs": 93,
     "splitCandidates": 92,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
   "splitPriority": [
-    { "id": "REQ-VIC-007", "items": 6, "reason": "6 VP formulas in one spec" },
     { "id": "REQ-VIC-008", "items": 7, "reason": "7 anti-snowball mechanics" },
+    { "id": "REQ-BOT-002", "items": 8, "reason": "8 archetype definitions" },
     { "id": "REQ-RSCH-003", "items": 6, "reason": "6 specialization definitions" }
   ],
   "duplicatesToResolve": [

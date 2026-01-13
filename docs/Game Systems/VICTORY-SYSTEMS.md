@@ -1117,48 +1117,247 @@ survival_victory = (turn === turn_limit) AND (your_score === highest_score)
 
 ---
 
-### REQ-VIC-007: Victory Point Calculation
+### REQ-VIC-007: Victory Point Calculation (Split)
 
-**Description:** Victory Points (VP) are calculated every turn for all empires across all six victory categories. Empire's total VP is the maximum of their six category VPs.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-VIC-007-A through REQ-VIC-007-G below.
 
-**Rationale:** Unified VP system enables:
-- Transparent victory progress tracking
-- Anti-snowball trigger (7 VP)
-- Strategic tension (multiple empires nearing victory)
-- UI consistency (single metric to display)
+---
+
+### REQ-VIC-007-A: Conquest VP Formula
+
+**Description:** Conquest Victory Points are calculated based on sector control percentage: `conquest_vp = (controlled_sectors / total_sectors) × (10 / 0.6)`. Reaches 10 VP when empire controls 60% of all sectors.
+
+**Rationale:** Conquest VP scales linearly with sector control, rewarding territorial expansion. 60% threshold prevents total domination requirement while ensuring clear majority control.
 
 **Formula:**
 ```typescript
 conquest_vp = (controlled_sectors / total_sectors) × (10 / 0.6)
-economic_vp = (your_networth / second_networth) × (10 / 1.5)
-diplomatic_vp = (coalition_territory / total_sectors) × (10 / 0.5)
-research_vp = ((capstone_progress × 0.5) + (advanced_techs / 10 × 0.5)) × 10
-military_vp = (your_military / sum_all_others) × (10 / 2.0)
-survival_vp = (your_score / highest_score) × 10
+```
 
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| conquest_threshold | 0.6 | 60% of sectors required for 10 VP |
+| vp_scale | 0-10 | Linear scaling |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateConquestVP()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Conquest VP calculation"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-007-B: Economic VP Formula
+
+**Description:** Economic Victory Points are calculated based on net worth ratio to second place: `economic_vp = (your_networth / second_networth) × (10 / 1.5)`. Reaches 10 VP when empire's net worth is 1.5x the second richest empire.
+
+**Rationale:** Economic VP rewards wealth accumulation relative to competitors. 1.5x threshold balances difficulty (not too easy) with achievability (not requiring total economic dominance).
+
+**Formula:**
+```typescript
+economic_vp = (your_networth / second_networth) × (10 / 1.5)
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| economic_threshold | 1.5 | 1.5x second place required for 10 VP |
+| vp_scale | 0-10 | Linear scaling |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateEconomicVP()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Economic VP calculation"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-007-C: Diplomatic VP Formula
+
+**Description:** Diplomatic Victory Points are calculated based on coalition territory control: `diplomatic_vp = (coalition_territory / total_sectors) × (10 / 0.5)`. Reaches 10 VP when coalition (you + allies) controls 50% of all sectors.
+
+**Rationale:** Diplomatic VP rewards alliance building and collective power. 50% threshold reflects cooperative victory path—easier than solo conquest (60%) but requires maintaining alliances.
+
+**Formula:**
+```typescript
+diplomatic_vp = (coalition_territory / total_sectors) × (10 / 0.5)
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| diplomatic_threshold | 0.5 | 50% of sectors required for 10 VP |
+| vp_scale | 0-10 | Linear scaling |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateDiplomaticVP()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Diplomatic VP calculation"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-007-D: Research VP Formula
+
+**Description:** Research Victory Points are calculated based on capstone progress and advanced techs: `research_vp = ((capstone_progress × 0.5) + (advanced_techs / 10 × 0.5)) × 10`. Capstone and advanced techs each contribute 50% to total research VP.
+
+**Rationale:** Research VP rewards both depth (capstone unlock) and breadth (multiple advanced techs). Equal weighting ensures no single path dominates—empires must balance specialization and diversification.
+
+**Formula:**
+```typescript
+research_vp = ((capstone_progress × 0.5) + (advanced_techs / 10 × 0.5)) × 10
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| capstone_weight | 0.5 | 50% of research VP |
+| advanced_tech_weight | 0.5 | 50% of research VP |
+| max_advanced_techs | 10 | 10 techs = 100% advanced contribution |
+| vp_scale | 0-10 | Linear scaling |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateResearchVP()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Research VP calculation"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-007-E: Military VP Formula
+
+**Description:** Military Victory Points are calculated based on relative military strength: `military_vp = (your_military / sum_all_others) × (10 / 2.0)`. Reaches 10 VP when empire's military power equals 2x the combined power of all other empires.
+
+**Rationale:** Military VP rewards overwhelming force projection. 2x threshold is intentionally difficult—military victory requires clear dominance, not just marginal superiority. Prevents early military snowballing.
+
+**Formula:**
+```typescript
+military_vp = (your_military / sum_all_others) × (10 / 2.0)
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| military_threshold | 2.0 | 2x all others combined required for 10 VP |
+| vp_scale | 0-10 | Linear scaling |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateMilitaryVP()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Military VP calculation"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-007-F: Survival VP Formula
+
+**Description:** Survival Victory Points are calculated based on score ratio to highest scorer: `survival_vp = (your_score / highest_score) × 10`. Only applicable if turn limit reached. Highest scorer gets 10 VP.
+
+**Rationale:** Survival VP provides fallback victory condition if no empire achieves other victories by turn limit. Simple ratio ensures highest scorer wins, with VP spread showing relative performance.
+
+**Formula:**
+```typescript
+survival_vp = (your_score / highest_score) × 10
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| vp_scale | 0-10 | Linear scaling |
+| turn_limit | 100 | Default turn limit for survival victory |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateSurvivalVP()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Survival VP calculation"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-007-G: Total VP Aggregation
+
+**Description:** Total VP is the maximum of all six category VPs: `total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp, survival_vp)`. VP thresholds trigger notifications and anti-snowball mechanics: 5 VP (warning), 7 VP (anti-snowball), 9 VP (critical), 10 VP (victory achieved).
+
+**Rationale:** Max aggregation ensures empires pursue their strongest victory path. Players only need to excel in ONE category, encouraging specialization. Thresholds provide graduated warnings and intervention points.
+
+**Formula:**
+```typescript
 total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp, survival_vp)
 ```
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| vp_scale | 0-10 | 10 VP = victory achieved |
-| anti_snowball_threshold | 7 VP | Triggers coalition formation |
 | warning_threshold | 5 VP | "Approaching victory" notification |
+| anti_snowball_threshold | 7 VP | Triggers coalition formation |
 | critical_threshold | 9 VP | "One step from victory" alert |
+| victory_threshold | 10 VP | Victory achieved |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.7 - Victory Point System
 
 **Code:**
-- `src/lib/game/services/core/victory-service.ts` - `calculateVictoryPoints()`
+- `src/lib/game/services/core/victory-service.ts` - `calculateTotalVP()`
 - `src/lib/game/services/core/victory-service.ts` - `getLeadingVictoryPath()`
 - `src/app/components/victory/VictoryProgressPanel.tsx` - Display VP
 
 **Tests:**
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "VP calculation for all six categories"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Total VP is max of all categories"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "VP updates every turn"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Leading victory path correctly identified"
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "VP threshold notifications trigger correctly"
 
 **Status:** Draft
 
