@@ -166,16 +166,22 @@
       "specs": [
         { "id": "REQ-RSCH-001", "title": "Three-Tier Research Structure", "atomic": false, "line": 1846, "splitCandidate": "3 tier definitions" },
         { "id": "REQ-RSCH-002", "title": "Doctrine System (Tier 1)", "atomic": false, "line": 1870, "splitCandidate": "3 doctrine definitions" },
-        { "id": "REQ-RSCH-003", "title": "Specialization System (Tier 2)", "atomic": false, "line": 1907, "splitCandidate": "6 specialization definitions" },
-        { "id": "REQ-RSCH-004", "title": "Capstone System (Tier 3)", "atomic": false, "line": 1942, "splitCandidate": "3 capstone definitions" },
-        { "id": "REQ-RSCH-005", "title": "Research Point Economy", "atomic": false, "line": 1983, "splitCandidate": "generation + accumulation + visibility" },
-        { "id": "REQ-RSCH-006", "title": "Research Information Visibility", "atomic": false, "line": 2016, "splitCandidate": "public + hidden + reveal methods" },
-        { "id": "REQ-RSCH-007", "title": "Research-Combat Integration", "atomic": false, "line": 2054, "splitCandidate": "doctrine + specialization + stacking" },
-        { "id": "REQ-RSCH-008", "title": "Specialization Counter-Play", "atomic": false, "line": 2089, "splitCandidate": "4 counter relationships" },
-        { "id": "REQ-RSCH-009", "title": "Investigate Specialization Operation", "atomic": false, "line": 2125, "splitCandidate": "cost + rate + processing + results + failure" },
-        { "id": "REQ-RSCH-010", "title": "Galactic News Rumor System", "atomic": false, "line": 2153, "splitCandidate": "generation + frequency + verification" },
-        { "id": "REQ-RSCH-011", "title": "Alliance Intel Sharing", "atomic": false, "line": 2187, "splitCandidate": "spec reveal + ally reveal + RP sharing + UI" },
-        { "id": "REQ-RSCH-012", "title": "Bot Research Decision Logic", "atomic": false, "line": 2212, "splitCandidate": "archetype preferences + counter-picking + tier logic" }
+        { "id": "REQ-RSCH-003", "title": "Specialization System Overview (Split)", "atomic": true, "line": 1907, "parentOf": ["REQ-RSCH-003-A", "REQ-RSCH-003-B", "REQ-RSCH-003-C", "REQ-RSCH-003-D", "REQ-RSCH-003-E", "REQ-RSCH-003-F"] },
+        { "id": "REQ-RSCH-003-A", "title": "Shock Troops Specialization", "atomic": true, "line": 1934, "splitFrom": "REQ-RSCH-003" },
+        { "id": "REQ-RSCH-003-B", "title": "Siege Engines Specialization", "atomic": true, "line": 1960, "splitFrom": "REQ-RSCH-003" },
+        { "id": "REQ-RSCH-003-C", "title": "Shield Arrays Specialization", "atomic": true, "line": 1985, "splitFrom": "REQ-RSCH-003" },
+        { "id": "REQ-RSCH-003-D", "title": "Minefield Networks Specialization", "atomic": true, "line": 2010, "splitFrom": "REQ-RSCH-003" },
+        { "id": "REQ-RSCH-003-E", "title": "Trade Monopoly Specialization", "atomic": true, "line": 2034, "splitFrom": "REQ-RSCH-003" },
+        { "id": "REQ-RSCH-003-F", "title": "Mercenary Contracts Specialization", "atomic": true, "line": 2058, "splitFrom": "REQ-RSCH-003" },
+        { "id": "REQ-RSCH-004", "title": "Capstone System (Tier 3)", "atomic": false, "line": 2082, "splitCandidate": "3 capstone definitions" },
+        { "id": "REQ-RSCH-005", "title": "Research Point Economy", "atomic": false, "line": 2123, "splitCandidate": "generation + accumulation + visibility" },
+        { "id": "REQ-RSCH-006", "title": "Research Information Visibility", "atomic": false, "line": 2156, "splitCandidate": "public + hidden + reveal methods" },
+        { "id": "REQ-RSCH-007", "title": "Research-Combat Integration", "atomic": false, "line": 2194, "splitCandidate": "doctrine + specialization + stacking" },
+        { "id": "REQ-RSCH-008", "title": "Specialization Counter-Play", "atomic": false, "line": 2229, "splitCandidate": "4 counter relationships" },
+        { "id": "REQ-RSCH-009", "title": "Investigate Specialization Operation", "atomic": false, "line": 2265, "splitCandidate": "cost + rate + processing + results + failure" },
+        { "id": "REQ-RSCH-010", "title": "Galactic News Rumor System", "atomic": false, "line": 2293, "splitCandidate": "generation + frequency + verification" },
+        { "id": "REQ-RSCH-011", "title": "Alliance Intel Sharing", "atomic": false, "line": 2327, "splitCandidate": "spec reveal + ally reveal + RP sharing + UI" },
+        { "id": "REQ-RSCH-012", "title": "Bot Research Decision Logic", "atomic": false, "line": 2352, "splitCandidate": "archetype preferences + counter-picking + tier logic" }
       ]
     },
     "SYNDICATE": {
@@ -300,16 +306,15 @@
     }
   },
   "summary": {
-    "totalSpecs": 185,
-    "atomicSpecs": 93,
-    "splitCandidates": 92,
+    "totalSpecs": 191,
+    "atomicSpecs": 100,
+    "splitCandidates": 91,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
   "splitPriority": [
-    { "id": "REQ-VIC-008", "items": 7, "reason": "7 anti-snowball mechanics" },
-    { "id": "REQ-BOT-002", "items": 8, "reason": "8 archetype definitions" },
-    { "id": "REQ-RSCH-003", "items": 6, "reason": "6 specialization definitions" }
+    { "id": "REQ-VIC-007", "items": 6, "reason": "6 VP formulas in one spec" },
+    { "id": "REQ-VIC-008", "items": 7, "reason": "7 anti-snowball mechanics" }
   ],
   "duplicatesToResolve": [
     { "primary": "REQ-COMBAT-004", "duplicate": "REQ-MIL-006", "concept": "Power multipliers" },

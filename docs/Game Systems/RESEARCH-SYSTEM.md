@@ -1904,36 +1904,176 @@ Choice is permanent, public (announced galaxy-wide), and unlocks at 1,000 RP.
 
 ---
 
-### REQ-RSCH-003: Specialization System (Tier 2)
+### REQ-RSCH-003: Specialization System Overview (Split)
 
-**Description:** Hidden specializations provide focused tactical bonuses (2 per doctrine, player picks 1):
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-003-A through REQ-RSCH-003-F for individual specialization definitions.
 
-**War Machine:**
-- Shock Troops: Surprise round (attack before initiative)
-- Siege Engines: +50% damage vs stationary targets (ignore station AC)
+**Description:** Tier 2 research system providing hidden specializations with focused tactical bonuses. Each doctrine offers 2 specializations (player picks 1). Choices remain hidden until revealed through combat (first use), espionage (5,000 cr, 85% success), alliance sharing, or galactic news rumors (50% accuracy).
 
-**Fortress:**
-- Shield Arrays: Immunity to surprise rounds (negates Shock Troops)
-- Minefield Networks: Pre-combat CON save DC 15 or lose 10% HP
-
-**Commerce:**
-- Trade Monopoly: Buy -20%, sell +30% (economic only)
-- Mercenary Contracts: Pay 10,000 cr for +2 STR per battle
-
-Choice is **hidden** until revealed through combat (first use), espionage (5,000 cr, 85% success), alliance sharing, or galactic news rumors (50% accuracy).
+**Reveal Mechanics:**
+- Combat: Revealed on first use
+- Espionage: 5,000 cr cost, 85% success rate
+- Alliance sharing: Automatic reveal to allies
+- Galactic news rumors: 50% accuracy
 
 **Rationale:** Creates information asymmetry and tactical surprise. Rewards intelligence gathering and creates deduction gameplay.
 
-**Source:** Section 3.2 - Tier 2: Specialization System
+**Source:** Section 3.2
 
 **Code:**
 - `src/lib/game/services/research-service.ts:selectSpecialization` - Specialization selection (hidden)
-- `src/lib/combat/specialization-effects.ts` - Combat effect implementation
 - `src/lib/intel/specialization-reveal.ts` - Reveal logic (combat, espionage)
 
 **Tests:**
-- `src/lib/combat/__tests__/specialization-combat.test.ts` - Test all 6 specializations work correctly
 - `src/lib/intel/__tests__/specialization-reveal.test.ts` - Test reveal conditions
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003-A: Shock Troops Specialization
+
+**Description:** War Machine Tier 2 specialization that grants a surprise round, allowing the player to attack before initiative roll.
+
+**Doctrine:** War Machine
+
+**Effect:** Surprise round (attack before initiative)
+
+**Tactical Use:** Enables first strike capability, dealing damage before enemy can respond.
+
+**Counter:** Shield Arrays (REQ-RSCH-003-C) provides immunity to surprise rounds.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:** `src/lib/combat/specialization-effects.ts:applyShockTroops`
+
+**Tests:** `src/lib/combat/__tests__/shock-troops.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003-B: Siege Engines Specialization
+
+**Description:** War Machine Tier 2 specialization that provides +50% damage bonus against stationary targets and ignores station armor class.
+
+**Doctrine:** War Machine
+
+**Effect:** +50% damage vs stationary targets (ignore station AC)
+
+**Tactical Use:** Highly effective against defensive structures and stations, bypassing their armor protection.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:** `src/lib/combat/specialization-effects.ts:applySiegeEngines`
+
+**Tests:** `src/lib/combat/__tests__/siege-engines.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003-C: Shield Arrays Specialization
+
+**Description:** Fortress Tier 2 specialization that provides immunity to surprise rounds, directly countering Shock Troops.
+
+**Doctrine:** Fortress
+
+**Effect:** Immunity to surprise rounds (negates Shock Troops)
+
+**Tactical Use:** Defensive counter to surprise attacks, ensuring initiative proceeds normally.
+
+**Counters:** Shock Troops (REQ-RSCH-003-A)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:** `src/lib/combat/specialization-effects.ts:applyShieldArrays`
+
+**Tests:** `src/lib/combat/__tests__/shield-arrays.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003-D: Minefield Networks Specialization
+
+**Description:** Fortress Tier 2 specialization that forces enemies to make a pre-combat CON save DC 15 or lose 10% HP before battle begins.
+
+**Doctrine:** Fortress
+
+**Effect:** Pre-combat CON save DC 15 or lose 10% HP
+
+**Tactical Use:** Weakens attacking forces before combat begins, providing defensive attrition advantage.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:** `src/lib/combat/specialization-effects.ts:applyMinefieldNetworks`
+
+**Tests:** `src/lib/combat/__tests__/minefield-networks.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003-E: Trade Monopoly Specialization
+
+**Description:** Commerce Tier 2 specialization that provides market advantages: -20% buy cost and +30% sell price (economic transactions only).
+
+**Doctrine:** Commerce
+
+**Effect:** Buy -20%, sell +30% (economic only)
+
+**Tactical Use:** Maximizes economic efficiency in market transactions, accelerating economic growth.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:** `src/lib/market/specialization-effects.ts:applyTradeMonopoly`
+
+**Tests:** `src/lib/market/__tests__/trade-monopoly.test.ts`
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-003-F: Mercenary Contracts Specialization
+
+**Description:** Commerce Tier 2 specialization that allows hiring mercenaries for 10,000 cr to gain +2 STR bonus per battle.
+
+**Doctrine:** Commerce
+
+**Effect:** Pay 10,000 cr for +2 STR per battle
+
+**Tactical Use:** Converts economic resources into temporary military advantage on demand.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:** `src/lib/combat/specialization-effects.ts:applyMercenaryContracts`
+
+**Tests:** `src/lib/combat/__tests__/mercenary-contracts.test.ts`
 
 **Status:** Draft
 
