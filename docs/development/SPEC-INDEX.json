@@ -2978,11 +2978,35 @@
         },
         {
           "id": "REQ-TURN-006",
-          "title": "Population Phase",
+          "title": "Population Phase (PARENT)",
           "atomic": false,
-          "line": 1176,
-          "splitCandidate": "growth + starvation + civil impact",
-          "note": "Duplicate of REQ-RES-006"
+          "line": 1640,
+          "children": [
+            "REQ-TURN-006.1",
+            "REQ-TURN-006.2",
+            "REQ-TURN-006.3"
+          ]
+        },
+        {
+          "id": "REQ-TURN-006.1",
+          "title": "Population Growth Formula",
+          "atomic": true,
+          "line": 1654,
+          "parent": "REQ-TURN-006"
+        },
+        {
+          "id": "REQ-TURN-006.2",
+          "title": "Starvation Death Formula",
+          "atomic": true,
+          "line": 1741,
+          "parent": "REQ-TURN-006"
+        },
+        {
+          "id": "REQ-TURN-006.3",
+          "title": "Starvation Civil Status Impact",
+          "atomic": true,
+          "line": 1768,
+          "parent": "REQ-TURN-006"
         },
         {
           "id": "REQ-TURN-007",
@@ -3073,7 +3097,7 @@
           "id": "REQ-TURN-019",
           "title": "Victory Check Phase (Split)",
           "atomic": true,
-          "line": 1976,
+          "line": 2021,
           "parentOf": [
             "REQ-TURN-019-01",
             "REQ-TURN-019-02",
@@ -3087,56 +3111,56 @@
           "id": "REQ-TURN-019-01",
           "title": "Military Victory Check",
           "atomic": true,
-          "line": 1984,
+          "line": 2029,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-02",
           "title": "Economic Victory Check",
           "atomic": true,
-          "line": 2017,
+          "line": 2062,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-03",
           "title": "Diplomatic Victory Check",
           "atomic": true,
-          "line": 2050,
+          "line": 2095,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-04",
           "title": "Research Victory Check",
           "atomic": true,
-          "line": 2084,
+          "line": 2129,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-05",
           "title": "Covert Victory Check",
           "atomic": true,
-          "line": 2117,
+          "line": 2162,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-06",
           "title": "Survival Victory Check",
           "atomic": true,
-          "line": 2150,
+          "line": 2195,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-020",
           "title": "Auto-Save Phase",
           "atomic": false,
-          "line": 2183,
+          "line": 2228,
           "splitCandidate": "save + rotation + failure"
         },
         {
           "id": "REQ-TURN-021",
           "title": "Performance Budget (Split)",
           "atomic": true,
-          "line": 2202,
+          "line": 2247,
           "parentOf": [
             "REQ-TURN-021-A",
             "REQ-TURN-021-B",
@@ -3148,28 +3172,28 @@
           "id": "REQ-TURN-021-A",
           "title": "Tier 1 Performance Budget",
           "atomic": true,
-          "line": 2217,
+          "line": 2262,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-B",
           "title": "Bot Decisions Performance Budget",
           "atomic": true,
-          "line": 2244,
+          "line": 2289,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-C",
           "title": "Tier 2 Performance Budget",
           "atomic": true,
-          "line": 2271,
+          "line": 2316,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-D",
           "title": "UI and Animation Performance Budget",
           "atomic": true,
-          "line": 2298,
+          "line": 2343,
           "splitFrom": "REQ-TURN-021"
         }
       ]
@@ -3483,9 +3507,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 379,
-    "atomicSpecs": 340,
-    "splitCandidates": 30,
+    "totalSpecs": 381,
+    "atomicSpecs": 343,
+    "splitCandidates": 29,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

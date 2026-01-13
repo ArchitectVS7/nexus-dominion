@@ -1637,9 +1637,26 @@ income = base_rate * sector_count * civil_multiplier
 
 ---
 
-### REQ-TURN-006: Population Phase
+### REQ-TURN-006: Population Phase (PARENT)
 
-**Description:** Population Phase (Phase 3) calculates population growth or starvation based on food balance:
+**Description:** Population Phase (Phase 3) calculates population growth or starvation based on food balance. This parent spec tracks the complete population system.
+
+**Children:**
+- REQ-TURN-006.1: Population Growth Formula
+- REQ-TURN-006.2: Starvation Death Formula
+- REQ-TURN-006.3: Starvation Civil Status Impact
+
+**Rationale:** Food is critical resource for empire sustainability. Starvation has cascading negative effects (population loss + morale drop).
+
+**Source:** Section 3.3
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-006.1: Population Growth Formula
+
+**Description:** When food surplus exists, population grows based on formula:
 ```
 food_consumed = population * food_per_capita (1 food/person)
 food_balance = food_income - food_consumed
@@ -1647,18 +1664,11 @@ food_balance = food_income - food_consumed
 if food_balance >= 0:
   growth = min(food_balance / 10, population * 0.05)  // Max 5% growth
   population += growth
-else:
-  deaths = abs(food_balance) * 0.1
-  population -= deaths
-  civil_status degrades (starvation penalty)
 ```
-
-**Rationale:** Food is critical resource for empire sustainability. Starvation has cascading negative effects (population loss + morale drop).
 
 **Formula:**
 ```
 growth = min(surplus_food / 10, population * 0.05)
-deaths = food_deficit * 0.1
 ```
 
 **Key Values:**
@@ -1667,31 +1677,72 @@ deaths = food_deficit * 0.1
 | food_per_capita | 1 | Each person consumes 1 food/turn |
 | food_per_growth | 10 | 10 food required to add 1 population |
 | max_growth_rate | 0.05 | Max 5% population growth per turn |
-| starvation_death_rate | 0.1 | 10% of deficit translates to deaths |
+
+**Rationale:** Population growth incentivizes food production but is capped to prevent exponential growth.
 
 **Source:** Section 3.3
 
 **Code:**
-- `src/lib/game/services/phases/population-phase.ts` - `processPopulation()`
+- `src/lib/game/services/phases/population-phase.ts` - `calculateGrowth()`
 
 **Tests:**
-- `src/lib/game/services/__tests__/population-phase.test.ts` - Growth, starvation, edge cases (zero population)
+- `src/lib/game/services/__tests__/population-phase.test.ts` - Test growth calculation
 
 **Status:** Draft
 
 ---
 
-### REQ-TURN-007: Civil Status Phase
+### REQ-TURN-006.2: Starvation Death Formula
 
-**Description:** Civil Status Phase (Phase 4) calculates morale based on food balance, military losses, raids, diplomacy. Morale thresholds determine civil status:
-- 80-100: Happy (1.2x income)
-- 50-79: Content (1.0x income)
-- 20-49: Unrest (0.8x income)
-- 0-19: Rebellion (0.5x income, 10% secession chance)
+**Description:** When food deficit exists, population dies based on formula:
+```
+if food_balance < 0:
+  deaths = abs(food_balance) * 0.1
+  population -= deaths
+```
 
-**Rationale:** Morale creates strategic depth—military losses and starvation weaken economy. Rebellion is severe penalty for neglecting empire health.
+**Formula:**
+```
+deaths = food_deficit * 0.1
+```
 
 **Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| starvation_death_rate | 0.1 | 10% of deficit translates to deaths |
+
+**Rationale:** Starvation creates immediate population loss, punishing poor food management.
+
+**Source:** Section 3.3
+
+**Code:**
+- `src/lib/game/services/phases/population-phase.ts` - `calculateStarvation()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/population-phase.test.ts` - Test starvation deaths, zero population edge case
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-006.3: Starvation Civil Status Impact
+
+**Description:** When starvation occurs, civil status degrades (starvation penalty applied to morale).
+
+**Rationale:** Starvation has cascading negative effects beyond population loss—morale drops create economic penalties.
+
+**Source:** Section 3.3
+
+**Code:**
+- `src/lib/game/services/phases/population-phase.ts` - `applyStarvationPenalty()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/population-phase.test.ts` - Test civil status degradation
+
+**Status:** Draft
+
+---
+
 | Morale Range | Civil Status | Income Multiplier | Special Effects |
 |--------------|--------------|-------------------|-----------------|
 | 80-100 | Happy | 1.2 | +5 morale/turn |
