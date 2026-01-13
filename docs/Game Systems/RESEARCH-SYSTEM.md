@@ -1843,25 +1843,105 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-RSCH-001: Three-Tier Research Structure
+### REQ-RSCH-001: Three-Tier Research Structure (Split)
 
-**Description:** Research follows a 3-tier draft system:
-1. **Doctrines (Tier 1)** - Turn ~10, choose 1 of 3, public announcement
-2. **Specializations (Tier 2)** - Turn ~30, choose 1 of 2, hidden until revealed
-3. **Capstones (Tier 3)** - Turn ~60, automatic based on doctrine, galaxy-wide announcement
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-001-A through REQ-RSCH-001-C.
 
-Each tier has specific unlock thresholds (1,000 RP, 5,000 RP, 15,000 RP) and creates strategic progression.
+---
 
-**Rationale:** Creates meaningful strategic identity choices with progressive power scaling. Three tiers provide early (doctrine), mid (specialization), and late (capstone) game decision points.
+### REQ-RSCH-001-A: Doctrine Tier (Tier 1)
+
+**Description:** First tier of research unlocks at 1,000 RP (~Turn 10). Player chooses 1 of 3 doctrines (War Machine, Fortress, Commerce). Choice is permanent and publicly announced galaxy-wide.
+
+**Rationale:** Establishes early strategic direction and creates diplomatic consequences through public visibility.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock threshold | 1,000 RP | First tier unlock |
+| Expected timing | Turn ~10 | With 1 research sector producing 100 RP/turn |
+| Doctrine count | 3 options | War Machine, Fortress, Commerce |
+| Visibility | Public | Galaxy-wide announcement |
+| Permanence | Permanent | Cannot be changed once selected |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.1 - Three-Tier Draft Structure
 
 **Code:**
 - `src/lib/game/services/research-service.ts` - ResearchService class
-- `src/lib/game/research/tier-system.ts` - Tier threshold logic
+- `src/lib/game/research/tier-system.ts` - Tier 1 threshold logic
 
 **Tests:**
-- `src/lib/game/__tests__/research-service.test.ts` - Test tier unlocks at correct RP thresholds
+- `src/lib/game/__tests__/research-service.test.ts` - Test doctrine tier unlocks at 1,000 RP
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-001-B: Specialization Tier (Tier 2)
+
+**Description:** Second tier of research unlocks at 5,000 RP (~Turn 30). Player chooses 1 of 2 specializations based on their doctrine. Choice remains hidden until revealed through combat, espionage, alliance sharing, or galactic rumors.
+
+**Rationale:** Creates information asymmetry and tactical surprise. Rewards intelligence gathering and deduction gameplay.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock threshold | 5,000 RP | Second tier unlock |
+| Expected timing | Turn ~30 | Mid-game decision point |
+| Specialization count | 2 options | Per doctrine (6 total specializations) |
+| Visibility | Hidden | Until revealed through specific conditions |
+| Permanence | Permanent | Cannot be changed once selected |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 1.1 - Three-Tier Draft Structure
+
+**Code:**
+- `src/lib/game/services/research-service.ts` - ResearchService class
+- `src/lib/game/research/tier-system.ts` - Tier 2 threshold logic
+- `src/lib/intel/specialization-reveal.ts` - Hidden specialization reveal logic
+
+**Tests:**
+- `src/lib/game/__tests__/research-service.test.ts` - Test specialization tier unlocks at 5,000 RP
+- `src/lib/intel/__tests__/specialization-reveal.test.ts` - Test reveal conditions
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-001-C: Capstone Tier (Tier 3)
+
+**Description:** Third tier of research automatically unlocks at 15,000 RP (~Turn 60). Capstone is automatically granted based on player's doctrine choice. Unlock triggers galaxy-wide announcement.
+
+**Rationale:** Provides late-game strategic escalation and creates game-ending power spikes. Automatic grant based on doctrine ensures capstone aligns with player's strategic identity.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock threshold | 15,000 RP | Third tier unlock |
+| Expected timing | Turn ~60 | Late-game power spike |
+| Capstone count | 3 options | One per doctrine, automatically granted |
+| Selection method | Automatic | Based on doctrine choice |
+| Visibility | Galaxy-wide | Announcement to all players |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 1.1 - Three-Tier Draft Structure
+
+**Code:**
+- `src/lib/game/services/research-service.ts` - ResearchService class
+- `src/lib/game/research/tier-system.ts` - Tier 3 threshold logic
+
+**Tests:**
+- `src/lib/game/__tests__/research-service.test.ts` - Test capstone tier unlocks at 15,000 RP
 
 **Status:** Draft
 
