@@ -1284,32 +1284,127 @@ if (manual_checkpoints.length >= 3) {
 
 ---
 
-### REQ-PROG-004: Tutorial Sequence
+### REQ-PROG-004: Tutorial Sequence (Split)
 
-**Description:** First-time players experience guided tutorial (Turns 1-10):
-- Each turn introduces one new mechanic
-- Objectives with success criteria (e.g., "Build 10 Fighters")
-- Rewards for completion (+500 credits, +10 units)
-- "Skip Tutorial" option after Turn 3
-- Tutorial complete bonus: +5,000 credits
+> **Note:** This spec has been split into atomic sub-specs. See REQ-PROG-004-A through REQ-PROG-004-D.
 
-**Rationale:** Teaches core mechanics in context of actual gameplay. Not a separate sandbox, but integrated into first game. Skippable for veterans.
+---
+
+### REQ-PROG-004-A: Tutorial Sequence Structure
+
+**Description:** First-time players experience guided tutorial from Turns 1-10. Each turn introduces one new game mechanic in context of actual gameplay. Tutorial integrated into first game, not a separate sandbox mode.
+
+**Rationale:** Teaches core mechanics progressively without overwhelming new players. Context-based learning more effective than abstract instruction.
 
 **Key Values:**
-| Turn | Objective | Reward |
-|------|-----------|--------|
-| 1 | Explore 5 sectors | +500 credits |
-| 3 | Build 10 Fighters | +10 Fighters |
-| 10 | Tutorial complete | +5,000 credits |
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Duration | Turns 1-10 | 10-turn guided experience |
+| Pacing | 1 mechanic per turn | Progressive introduction |
+| Mode | Integrated gameplay | Not separate sandbox |
+| Target Audience | First-time players | Auto-activates for new accounts |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.1
 
 **Code:**
 - `src/lib/tutorial/tutorial-service.ts` - Tutorial state machine
-- `src/app/tutorial/TutorialOverlay.tsx` - UI component
+- `src/app/tutorial/TutorialOverlay.tsx` - Tutorial UI overlay
 
 **Tests:**
-- `src/lib/tutorial/__tests__/tutorial-service.test.ts`
+- `src/lib/tutorial/__tests__/tutorial-service.test.ts` - Sequence tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-004-B: Tutorial Objectives and Success Criteria
+
+**Description:** Each tutorial turn presents specific objectives with clear success criteria. Examples: "Explore 5 sectors" (Turn 1), "Build 10 Fighters" (Turn 3). Objectives tied to mechanic being taught that turn.
+
+**Rationale:** Clear goals give players immediate targets. Success criteria provide measurable progress. Objectives demonstrate practical use of mechanics.
+
+**Objective Examples:**
+| Turn | Objective | Mechanic Taught | Success Criteria |
+|------|-----------|-----------------|------------------|
+| 1 | Explore 5 sectors | Sector exploration | 5 sectors revealed |
+| 3 | Build 10 Fighters | Unit production | 10 Fighters completed |
+| 10 | Tutorial complete | All mechanics | All objectives completed |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1
+
+**Code:**
+- `src/lib/tutorial/tutorial-service.ts` - Objective tracking
+- `src/app/tutorial/TutorialOverlay.tsx` - Objective display
+
+**Tests:**
+- `src/lib/tutorial/__tests__/tutorial-service.test.ts` - Objective completion tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-004-C: Tutorial Completion Rewards
+
+**Description:** Players receive rewards for completing tutorial objectives. Per-objective rewards (+500 credits, +10 units) granted upon milestone completion. Final completion bonus of +5,000 credits awarded at Turn 10 when all objectives complete.
+
+**Rationale:** Rewards incentivize objective completion. Early resources help new players establish foothold. Completion bonus celebrates achievement.
+
+**Reward Table:**
+| Turn/Milestone | Objective | Reward | Notes |
+|----------------|-----------|--------|-------|
+| Turn 1 | Explore 5 sectors | +500 credits | Early funding |
+| Turn 3 | Build 10 Fighters | +10 Fighters | Unit boost |
+| Turn 10 | Tutorial complete | +5,000 credits | Completion bonus |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1
+
+**Code:**
+- `src/lib/tutorial/tutorial-service.ts` - Reward distribution
+
+**Tests:**
+- `src/lib/tutorial/__tests__/tutorial-service.test.ts` - Reward grant tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-004-D: Skip Tutorial Option
+
+**Description:** "Skip Tutorial" button becomes available after Turn 3. Veterans or confident new players can bypass remaining tutorial content immediately. Skipping exits tutorial mode and returns to normal gameplay.
+
+**Rationale:** Respects player autonomy. Veterans shouldn't be forced through tutorial. Turn 3 threshold ensures minimal introduction before allowing skip.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Skip Availability | Turn 3+ | Button appears after Turn 3 |
+| Skip Effect | Exit tutorial immediately | Return to normal gameplay |
+| Skip Rewards | Forfeit remaining rewards | Only keep rewards earned before skip |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.1
+
+**Code:**
+- `src/lib/tutorial/tutorial-service.ts` - Skip logic
+- `src/app/tutorial/TutorialOverlay.tsx` - Skip button UI
+
+**Tests:**
+- `src/lib/tutorial/__tests__/tutorial-service.test.ts` - Skip functionality tests
 
 **Status:** Draft
 

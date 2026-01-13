@@ -225,7 +225,11 @@
         { "id": "REQ-PROG-003-07", "title": "Galactic War Event", "atomic": true, "line": 1014, "splitFrom": "REQ-PROG-003" },
         { "id": "REQ-PROG-003-08", "title": "Resource Boom Event", "atomic": true, "line": 1046, "splitFrom": "REQ-PROG-003" },
         { "id": "REQ-PROG-003-09", "title": "Galactic Event System Rules", "atomic": true, "line": 1078, "splitFrom": "REQ-PROG-003" },
-        { "id": "REQ-PROG-004", "title": "Tutorial Sequence", "atomic": false, "line": 1109, "splitCandidate": "sequence + objectives + rewards + skip" },
+        { "id": "REQ-PROG-004", "title": "Tutorial Sequence (Split)", "atomic": true, "line": 1287, "parentOf": ["REQ-PROG-004-A", "REQ-PROG-004-B", "REQ-PROG-004-C", "REQ-PROG-004-D"] },
+        { "id": "REQ-PROG-004-A", "title": "Tutorial Sequence Structure", "atomic": true, "line": 1293, "splitFrom": "REQ-PROG-004" },
+        { "id": "REQ-PROG-004-B", "title": "Tutorial Objectives and Success Criteria", "atomic": true, "line": 1324, "splitFrom": "REQ-PROG-004" },
+        { "id": "REQ-PROG-004-C", "title": "Tutorial Completion Rewards", "atomic": true, "line": 1354, "splitFrom": "REQ-PROG-004" },
+        { "id": "REQ-PROG-004-D", "title": "Skip Tutorial Option", "atomic": true, "line": 1383, "splitFrom": "REQ-PROG-004" },
         { "id": "REQ-PROG-005", "title": "Bot Tutorial Passivity", "atomic": false, "line": 1140, "splitCandidate": "3 passivity adjustments" },
         { "id": "REQ-PROG-006", "title": "Event Announcements", "atomic": false, "line": 1171, "splitCandidate": "warning + banner + counter + end" }
       ]
@@ -470,9 +474,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 321,
-    "atomicSpecs": 258,
-    "splitCandidates": 54,
+    "totalSpecs": 324,
+    "atomicSpecs": 262,
+    "splitCandidates": 53,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
