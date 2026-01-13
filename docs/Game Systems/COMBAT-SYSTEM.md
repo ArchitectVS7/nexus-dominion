@@ -505,7 +505,7 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Allows new players to establish their empire before combat.
 
-**Source:** GAME-DESIGN.md
+**Source:** VISION.md
 
 **Code:** `src/lib/game/constants.ts:PROTECTION_TURNS`
 
@@ -537,17 +537,130 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 ---
 
-### REQ-COMBAT-009: Multi-Domain Resolution
+### REQ-COMBAT-009: Multi-Domain Resolution (Split)
 
-**Description:** Full Invasions resolve across three sequential domains: Space -> Orbital -> Ground. Victories provide +2 bonus to subsequent domains.
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-COMBAT-009-A through REQ-COMBAT-009-D below.
 
-**Rationale:** Creates narrative coherence and rewards balanced fleet composition.
+**Overview:** Full Invasions resolve across three sequential domains (Space -> Orbital -> Ground), with victories in earlier domains providing combat bonuses to later domains.
 
-**Source:** Section 3.4
+**Domain Sequence:**
+- Space Domain: Fighters, Bombers, Cruisers, Carriers [REQ-COMBAT-009-A]
+- Orbital Domain: Stations defend [REQ-COMBAT-009-B]
+- Ground Domain: Soldiers battle for sector capture [REQ-COMBAT-009-C]
+- Victory Bonuses: +2 per domain win [REQ-COMBAT-009-D]
 
-**Code:** `src/lib/combat/multi-domain.ts`
+---
 
-**Tests:** TBD
+### REQ-COMBAT-009-A: Space Domain Resolution
+
+**Description:** The first combat domain where space-capable units (Fighters, Bombers, Light Cruisers, Heavy Cruisers, Carriers) engage in space combat before proceeding to orbital or ground phases.
+
+**Space Domain Rules:**
+- Sequence: Always resolves first in Full Invasion battles
+- Eligible Units: Fighters, Bombers, Light Cruisers, Heavy Cruisers, Carriers
+- Resolution: Standard D20 attack resolution (REQ-COMBAT-001)
+- Victory Condition: Reduce enemy space forces to 0 or force retreat
+- Advancement: Winner proceeds to Orbital Domain with victory bonus
+
+**Rationale:** Space superiority is the first hurdle in planetary invasion. Controlling space allows bombardment and troop deployment while denying the defender reinforcement.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Multi-Domain Resolution, Space Domain
+
+**Code:** TBD - `src/lib/combat/multi-domain.ts` - Space domain logic
+
+**Tests:** TBD - Verify space units engage first, winner advances
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-009-B: Orbital Domain Resolution
+
+**Description:** The second combat domain where orbital defense stations defend against attacking space forces, representing the battle for orbital control before ground invasion.
+
+**Orbital Domain Rules:**
+- Sequence: Resolves second, after Space Domain
+- Defender Units: Stations only (orbital defense platforms)
+- Attacker Units: Surviving space units from Space Domain
+- Resolution: Standard D20 attack resolution with Station Defense Multiplier (REQ-COMBAT-006)
+- Victory Condition: Destroy all stations or force retreat
+- Advancement: Winner proceeds to Ground Domain with accumulated victory bonuses
+
+**Rationale:** Orbital stations provide last-ditch defense before ground invasion. Even if space is lost, stations can inflict heavy casualties on descending forces.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Multi-Domain Resolution, Orbital Domain
+
+**Code:** TBD - `src/lib/combat/multi-domain.ts` - Orbital domain logic
+
+**Tests:** TBD - Verify stations defend in orbital phase, attacker brings space units
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-009-C: Ground Domain Resolution
+
+**Description:** The final combat domain where ground forces (Soldiers) battle for control of planetary sectors, determining whether sectors are captured or successfully defended.
+
+**Ground Domain Rules:**
+- Sequence: Resolves third and last, after Orbital Domain
+- Eligible Units: Soldiers only (ground troops)
+- Resolution: Standard D20 attack resolution
+- Victory Condition: Reduce defender soldiers to critical levels
+- Sector Capture: Winner captures 5-15% of defender's sectors (per REQ-COMBAT-010)
+- Final Domain: No further advancement, battle concludes here
+
+**Rationale:** Ground combat is the decisive phase where sectors change hands. Even with space and orbital superiority, attackers must win on the ground to capture territory.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Multi-Domain Resolution, Ground Domain
+
+**Code:** TBD - `src/lib/combat/multi-domain.ts` - Ground domain logic
+
+**Tests:** TBD - Verify ground combat is final phase, sector capture occurs
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-009-D: Cross-Domain Victory Bonuses
+
+**Description:** Winning a combat domain grants the victor a +2 bonus to all attack rolls in subsequent domains, rewarding dominant performance and creating momentum.
+
+**Victory Bonus Rules:**
+- Bonus Amount: +2 to attack rolls per domain won
+- Stacking: Bonuses stack across domains (win 2 domains = +4 total)
+- Application: Applies to all units in subsequent domains
+- Maximum: +4 bonus (win Space and Orbital domains)
+- Duration: Lasts only for current battle, resets between battles
+
+**Examples:**
+- Win Space Domain: +2 bonus in Orbital and Ground
+- Win Space + Orbital: +2 in Orbital, +4 in Ground
+- Lose Space, Win Orbital: +2 in Ground only
+
+**Rationale:** Victory bonuses create narrative momentum and reward balanced fleet composition. Winning space makes orbital assault easier, winning orbital makes ground invasion easier. Encourages investing in all three domains rather than specializing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Multi-Domain Resolution, Victory Bonuses
+
+**Code:** TBD - `src/lib/combat/multi-domain.ts` - Victory bonus tracking
+
+**Tests:** TBD - Verify +2 per domain win, stacking to +4 maximum
 
 **Status:** Draft
 

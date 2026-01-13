@@ -15,8 +15,12 @@
         { "id": "REQ-COMBAT-006", "title": "Station Defense Multiplier", "atomic": true, "line": 486 },
         { "id": "REQ-COMBAT-007", "title": "Protection Period", "atomic": true, "line": 502 },
         { "id": "REQ-COMBAT-008", "title": "Six Dramatic Outcomes", "atomic": true, "line": 518 },
-        { "id": "REQ-COMBAT-009", "title": "Multi-Domain Resolution", "atomic": false, "line": 540, "splitCandidate": "3 domains + victory bonuses" },
-        { "id": "REQ-COMBAT-010", "title": "Three Battle Types", "atomic": true, "line": 556 },
+        { "id": "REQ-COMBAT-009", "title": "Multi-Domain Resolution (Split)", "atomic": true, "line": 540, "parentOf": ["REQ-COMBAT-009-A", "REQ-COMBAT-009-B", "REQ-COMBAT-009-C", "REQ-COMBAT-009-D"] },
+        { "id": "REQ-COMBAT-009-A", "title": "Space Domain Resolution", "atomic": true, "line": 554, "splitFrom": "REQ-COMBAT-009" },
+        { "id": "REQ-COMBAT-009-B", "title": "Orbital Domain Resolution", "atomic": true, "line": 581, "splitFrom": "REQ-COMBAT-009" },
+        { "id": "REQ-COMBAT-009-C", "title": "Ground Domain Resolution", "atomic": true, "line": 609, "splitFrom": "REQ-COMBAT-009" },
+        { "id": "REQ-COMBAT-009-D", "title": "Cross-Domain Victory Bonuses", "atomic": true, "line": 637, "splitFrom": "REQ-COMBAT-009" },
+        { "id": "REQ-COMBAT-010", "title": "Three Battle Types", "atomic": true, "line": 669 },
         { "id": "REQ-COMBAT-011", "title": "Unit Rarity Tiers", "atomic": true, "line": 575 },
         { "id": "REQ-COMBAT-012", "title": "Morale & Surrender", "atomic": false, "line": 594, "splitCandidate": "morale + surrender mechanics" }
       ]
@@ -425,9 +429,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 289,
-    "atomicSpecs": 211,
-    "splitCandidates": 70,
+    "totalSpecs": 292,
+    "atomicSpecs": 215,
+    "splitCandidates": 69,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
