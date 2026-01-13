@@ -2490,20 +2490,73 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 ---
 
-### REQ-TURN-020: Auto-Save Phase
+### REQ-TURN-020: Auto-Save Phase (PARENT)
 
-**Description:** Auto-Save Phase (Phase 17) persists entire game state to JSON file. Saves to `saves/game_{game_id}_turn_{turn_number}.json`. Keeps last 10 auto-saves (deletes older). Failures log errors and warn player but don't block turn.
+**Description:** Auto-Save Phase (Phase 17) persists entire game state. This parent spec tracks the complete auto-save system.
+
+**Children:**
+- REQ-TURN-020.1: Game State Serialization
+- REQ-TURN-020.2: Save File Rotation
+- REQ-TURN-020.3: Save Failure Handling
 
 **Rationale:** Crash recovery. Player can reload last auto-save if game crashes or bug occurs.
 
 **Source:** Section 3.17
 
+**Status:** Draft
+
+---
+
+### REQ-TURN-020.1: Game State Serialization
+
+**Description:** Persists entire game state to JSON file at `saves/game_{game_id}_turn_{turn_number}.json`.
+
+**Rationale:** Complete state capture enables full game recovery from any saved point.
+
+**Source:** Section 3.17
+
 **Code:**
 - `src/lib/game/services/phases/auto-save-phase.ts` - `processAutoSave()`
-- `src/lib/game/persistence/save-manager.ts` - File I/O, rotation logic
+- `src/lib/game/persistence/save-manager.ts` - Serialization logic
 
 **Tests:**
-- `src/lib/game/services/__tests__/auto-save-phase.test.ts` - Save file creation, rotation, failure handling
+- `src/lib/game/services/__tests__/auto-save-phase.test.ts` - Test save file creation
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-020.2: Save File Rotation
+
+**Description:** Keeps last 10 auto-saves and deletes older save files to prevent disk bloat.
+
+**Rationale:** Balance between crash recovery history and disk space management.
+
+**Source:** Section 3.17
+
+**Code:**
+- `src/lib/game/persistence/save-manager.ts` - Rotation logic
+
+**Tests:**
+- `src/lib/game/services/__tests__/auto-save-phase.test.ts` - Test rotation and deletion
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-020.3: Save Failure Handling
+
+**Description:** Save failures log errors and warn player but don't block turn completion.
+
+**Rationale:** Graceful degradation ensures game continues even if save system fails.
+
+**Source:** Section 3.17
+
+**Code:**
+- `src/lib/game/services/phases/auto-save-phase.ts` - Error handling
+
+**Tests:**
+- `src/lib/game/services/__tests__/auto-save-phase.test.ts` - Test failure handling
 
 **Status:** Draft
 

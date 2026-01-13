@@ -3282,10 +3282,35 @@
         },
         {
           "id": "REQ-TURN-020",
-          "title": "Auto-Save Phase",
+          "title": "Auto-Save Phase (PARENT)",
           "atomic": false,
-          "line": 2436,
-          "splitCandidate": "save + rotation + failure"
+          "line": 2493,
+          "children": [
+            "REQ-TURN-020.1",
+            "REQ-TURN-020.2",
+            "REQ-TURN-020.3"
+          ]
+        },
+        {
+          "id": "REQ-TURN-020.1",
+          "title": "Game State Serialization",
+          "atomic": true,
+          "line": 2505,
+          "parent": "REQ-TURN-020"
+        },
+        {
+          "id": "REQ-TURN-020.2",
+          "title": "Save File Rotation",
+          "atomic": true,
+          "line": 2555,
+          "parent": "REQ-TURN-020"
+        },
+        {
+          "id": "REQ-TURN-020.3",
+          "title": "Save Failure Handling",
+          "atomic": true,
+          "line": 2573,
+          "parent": "REQ-TURN-020"
         },
         {
           "id": "REQ-TURN-021",
@@ -3317,14 +3342,14 @@
           "id": "REQ-TURN-021-C",
           "title": "Tier 2 Performance Budget",
           "atomic": true,
-          "line": 2524,
+          "line": 2556,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-D",
           "title": "UI and Animation Performance Budget",
           "atomic": true,
-          "line": 2551,
+          "line": 2583,
           "splitFrom": "REQ-TURN-021"
         }
       ]
@@ -3638,9 +3663,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 391,
-    "atomicSpecs": 359,
-    "splitCandidates": 23,
+    "totalSpecs": 393,
+    "atomicSpecs": 362,
+    "splitCandidates": 22,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
