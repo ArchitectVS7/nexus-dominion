@@ -1575,34 +1575,140 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 ---
 
-### REQ-VIC-009: Victory Notifications
+### REQ-VIC-009: Victory Notifications (Split)
 
-**Description:** Players receive notifications when any empire (including themselves) reaches VP milestones: 5 VP (approaching), 7 VP (nearing, anti-snowball), 9 VP (critical), 10 VP (victory achieved).
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-VIC-009-A through REQ-VIC-009-D below.
 
-**Rationale:** Transparency ensures players can react to threats. Notifications at multiple thresholds (5, 7, 9) provide escalating warnings. Color-coded alerts (yellow → orange → red → gold) create visual hierarchy.
+**Overview:** Players receive escalating notifications when any empire reaches VP milestones (5, 7, 9, 10), with color-coded visual hierarchy and distinct audio cues.
 
-**Key Values:**
-| VP Threshold | Notification | Color | Audio |
-|--------------|--------------|-------|-------|
-| 5 VP | "Approaching victory" | Yellow | Soft chime |
-| 7 VP | "Nearing victory" (anti-snowball) | Orange | Alert klaxon |
-| 9 VP | "One step from victory" | Red | Urgent alarm |
-| 10 VP | "Victory achieved" | Gold | Triumphant fanfare |
+**Milestone Notifications:**
+- 5 VP: "Approaching victory" (Yellow, Soft chime) [REQ-VIC-009-A]
+- 7 VP: "Nearing victory" (Orange, Alert klaxon) [REQ-VIC-009-B]
+- 9 VP: "One step from victory" (Red, Urgent alarm) [REQ-VIC-009-C]
+- 10 VP: "Victory achieved" (Gold, Triumphant fanfare) [REQ-VIC-009-D]
 
-**Source:** Section 3.7 - Victory Point System
+---
 
-**Code:**
-- `src/lib/game/services/core/victory-service.ts` - `checkVPMilestones()`
-- `src/app/components/notifications/VictoryAlert.tsx` - Display notifications
-- `src/lib/game/services/core/notification-service.ts` - Queue notifications
+### REQ-VIC-009-A: 5 VP Milestone Notification
 
-**Tests:**
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Notification sent at 5 VP milestone"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Notification sent at 7 VP milestone"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Notification sent at 9 VP milestone"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "No duplicate notifications for same milestone"
+**Description:** When any empire reaches 5 VP, display an "Approaching victory" notification to all players with yellow alert styling and soft chime audio.
+
+**Notification Rules:**
+- Trigger: Any empire reaches exactly 5 VP
+- Message: "[Empire Name] is approaching victory (5/10 VP)"
+- Color: Yellow (warning level 1)
+- Audio: Soft chime (gentle alert)
+- Visibility: All players see notification
+- Frequency: Once per empire per milestone (no duplicates)
+
+**Rationale:** First early warning. Yellow indicates caution without alarm. Soft chime draws attention without urgency.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System, 5 VP Milestone
+
+**Code:** TBD - `src/lib/game/services/core/victory-service.ts` - 5 VP check
+
+**Tests:** TBD - Notification sent at 5 VP, no duplicates
 
 **Status:** Draft
+
+---
+
+### REQ-VIC-009-B: 7 VP Milestone Notification
+
+**Description:** When any empire reaches 7 VP (anti-snowball trigger), display a "Nearing victory" notification to all players with orange alert styling and alert klaxon audio.
+
+**Notification Rules:**
+- Trigger: Any empire reaches exactly 7 VP
+- Message: "[Empire Name] is nearing victory (7/10 VP) - Anti-snowball active!"
+- Color: Orange (warning level 2)
+- Audio: Alert klaxon (heightened urgency)
+- Visibility: All players see notification
+- Frequency: Once per empire per milestone
+- Special: Highlights anti-snowball mechanics activation
+
+**Rationale:** Critical threshold where anti-snowball kicks in. Orange indicates elevated threat. Klaxon signals urgent attention needed.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System, 7 VP Milestone
+
+**Code:** TBD - `src/lib/game/services/core/victory-service.ts` - 7 VP check
+
+**Tests:** TBD - Notification sent at 7 VP, anti-snowball message
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-009-C: 9 VP Milestone Notification
+
+**Description:** When any empire reaches 9 VP (one away from victory), display a "One step from victory" notification to all players with red alert styling and urgent alarm audio.
+
+**Notification Rules:**
+- Trigger: Any empire reaches exactly 9 VP
+- Message: "[Empire Name] is ONE STEP from victory (9/10 VP)!"
+- Color: Red (critical warning)
+- Audio: Urgent alarm (maximum urgency)
+- Visibility: All players see notification
+- Frequency: Once per empire per milestone
+- Special: May flash or pulse to emphasize criticality
+
+**Rationale:** Final warning before victory. Red signals imminent threat. Urgent alarm demands immediate action.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System, 9 VP Milestone
+
+**Code:** TBD - `src/lib/game/services/core/victory-service.ts` - 9 VP check
+
+**Tests:** TBD - Notification sent at 9 VP, critical urgency
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-009-D: 10 VP Victory Notification
+
+**Description:** When any empire reaches 10 VP (victory achieved), display a "Victory achieved" notification to all players with gold styling and triumphant fanfare audio.
+
+**Notification Rules:**
+- Trigger: Any empire reaches exactly 10 VP
+- Message: "[Empire Name] has achieved VICTORY! (10/10 VP)"
+- Color: Gold (victory/celebratory)
+- Audio: Triumphant fanfare (cinematic victory music)
+- Visibility: All players see notification
+- Frequency: Once per empire per milestone
+- Special: Triggers game freeze and victory screen (see REQ-VIC-010)
+
+**Rationale:** Game-ending event. Gold indicates triumph rather than threat. Fanfare celebrates achievement and signals game conclusion.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.7 - Victory Point System, 10 VP Milestone
+
+**Code:** TBD - `src/lib/game/services/core/victory-service.ts` - 10 VP check and game freeze
+
+**Tests:** TBD - Notification sent at 10 VP, game freeze triggered
+
+**Status:** Draft
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/game/services/core/victory-service.ts` - `checkVPMilestones()` orchestration
+- `src/app/components/notifications/VictoryAlert.tsx` - Notification display component
+- `src/lib/game/services/core/notification-service.ts` - Notification queueing
+- `src/lib/game/services/__tests__/victory-service.test.ts` - Milestone notification tests, no duplicates
 
 ---
 
