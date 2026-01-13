@@ -70,11 +70,15 @@
         { "id": "REQ-COV-005", "title": "Agent Economy", "atomic": false, "line": 1024, "splitCandidate": "production + consumption + discount" },
         { "id": "REQ-COV-006", "title": "Phase 5 Processing Order", "atomic": true, "line": 1060 },
         { "id": "REQ-COV-007", "title": "Steal Credits Operation", "atomic": true, "line": 1092 },
-        { "id": "REQ-COV-008", "title": "Schemer Archetype Integration", "atomic": false, "line": 1117, "splitCandidate": "priority + passive + decision + sectors" },
-        { "id": "REQ-COV-009", "title": "Assassinate Leader Operation", "atomic": true, "line": 1144 },
-        { "id": "REQ-COV-010", "title": "Frame Another Empire Operation", "atomic": true, "line": 1172 },
-        { "id": "REQ-COV-011", "title": "Intel Decay System", "atomic": true, "line": 1201 },
-        { "id": "REQ-COV-012", "title": "Operation Failure Resource Refunds", "atomic": true, "line": 1228 }
+        { "id": "REQ-COV-008", "title": "Schemer Archetype Integration (Split)", "atomic": true, "line": 1117, "parentOf": ["REQ-COV-008-A", "REQ-COV-008-B", "REQ-COV-008-C", "REQ-COV-008-D"] },
+        { "id": "REQ-COV-008-A", "title": "Schemer Covert Priority", "atomic": true, "line": 1131, "splitFrom": "REQ-COV-008" },
+        { "id": "REQ-COV-008-B", "title": "Schemer Shadow Network Passive", "atomic": true, "line": 1157, "splitFrom": "REQ-COV-008" },
+        { "id": "REQ-COV-008-C", "title": "Schemer Decision Logic", "atomic": true, "line": 1185, "splitFrom": "REQ-COV-008" },
+        { "id": "REQ-COV-008-D", "title": "Schemer Government Sector Focus", "atomic": true, "line": 1210, "splitFrom": "REQ-COV-008" },
+        { "id": "REQ-COV-009", "title": "Assassinate Leader Operation", "atomic": true, "line": 1244 },
+        { "id": "REQ-COV-010", "title": "Frame Another Empire Operation", "atomic": true, "line": 1272 },
+        { "id": "REQ-COV-011", "title": "Intel Decay System", "atomic": true, "line": 1301 },
+        { "id": "REQ-COV-012", "title": "Operation Failure Resource Refunds", "atomic": true, "line": 1328 }
       ]
     },
     "DIPLOMACY": {
@@ -402,9 +406,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 271,
-    "atomicSpecs": 188,
-    "splitCandidates": 76,
+    "totalSpecs": 274,
+    "atomicSpecs": 192,
+    "splitCandidates": 75,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

@@ -76,7 +76,7 @@ Unlike combat (which requires military superiority), covert operations depend on
 
 ### 1.2 The Agent Economy
 
-**Agents** are produced by **Government sectors** (see GAME-DESIGN.md Section "Sector Types"):
+**Agents** are produced by **Government sectors** (see SECTOR-MANAGEMENT-SYSTEM.md for sector types):
 - Each Government sector produces **+300 agents per turn**
 - Agents accumulate in a pool (no cap, but expensive opportunity cost)
 - Government sectors cost **7,500 credits** to build
@@ -315,7 +315,7 @@ Sabotage delays by 3 turns → Now 8 turns remaining.
 **Detection Risk:** 40% base
 **Unlock:** Turn 15+
 
-**Civil Status Levels (from GAME-DESIGN.md):**
+**Civil Status Levels (from RESOURCE-MANAGEMENT-SYSTEM.md):**
 - Ecstatic (4.0x production)
 - Content (1.0x production)
 - Unrest (0.5x production)
@@ -1114,30 +1114,130 @@ Stolen = min(Target Credits * (Roll / 100), 100000)
 
 ---
 
-### REQ-COV-008: Schemer Archetype Integration
+### REQ-COV-008: Schemer Archetype Integration (Split)
 
-**Description:** Schemer archetype has 0.9 covert priority (highest), Shadow Network passive (50% agent cost reduction), and specialized decision logic that prioritizes high-impact operations (Assassinate, Frame, Recruit Defectors). Schemers build 3-5 Government sectors by Turn 30.
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-COV-008-A through REQ-COV-008-D below.
 
-**Rationale:** Schemer is the "espionage specialist" archetype. Covert operations define their playstyle and identity. Shadow Network makes frequent operations viable.
+**Overview:** Schemer archetype specializes in espionage with highest covert priority (0.9), Shadow Network passive (50% cost reduction), specialized decision logic, and Government sector focus.
 
-**Key Values:**
-| Parameter | Value | Notes |
-|-----------|-------|-------|
-| Covert priority | 0.9 | Highest among archetypes |
-| Shadow Network discount | 50% | All operations |
-| Government sectors | 3-5 | By Turn 30 |
-| Operations per turn | 2-3 | When multi-op unlocked |
+**Components:**
+- Covert Priority: 0.9 (highest) [REQ-COV-008-A]
+- Shadow Network Passive: 50% agent discount [REQ-COV-008-B]
+- Decision Logic: High-impact operation focus [REQ-COV-008-C]
+- Government Sectors: 3-5 by Turn 30 [REQ-COV-008-D]
 
-**Source:** Section 4.1 - Archetype Behavior (Schemer Deep Dive)
+---
 
-**Code:**
-- `src/lib/bots/archetypes/schemer.ts` - Schemer archetype definition and behavior
-- `src/lib/bots/decision-trees/schemer-covert.ts` - Covert operation decision logic
+### REQ-COV-008-A: Schemer Covert Priority
 
-**Tests:**
-- `src/lib/bots/__tests__/schemer.test.ts` - Verify behavior, discount, government sector building
+**Description:** Schemer archetype has 0.9 covert operation priority weight, the highest among all archetypes, making covert ops their most frequent action type.
+
+**Priority Rules:**
+- Covert priority weight: 0.9 (90% of decision weight)
+- Highest among all 8 archetypes
+- Determines action selection in bot decision phase
+- Operations per turn: 2-3 when multi-op unlocked
+
+**Rationale:** Defines Schemer identity as espionage specialist. High priority ensures frequent covert action selection during bot decision phase.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 4.1 - Archetype Behavior, Schemer Priority
+
+**Code:** TBD - `src/lib/bots/archetypes/schemer.ts` - Priority weight definition
+
+**Tests:** TBD - Verify Schemer selects covert ops 80-90% of turns
 
 **Status:** Draft
+
+---
+
+### REQ-COV-008-B: Schemer Shadow Network Passive
+
+**Description:** Schemer archetype has "Shadow Network" passive ability that reduces all covert operation agent costs by 50%.
+
+**Discount Rules:**
+- Passive name: "Shadow Network"
+- Discount: 50% off all agent costs
+- Applies to: All covert operations (Reconnaissance, Sabotage, Steal Credits, Assassinate, Frame, etc.)
+- Always active (no unlock required)
+
+**Rationale:** Makes frequent covert operations economically viable. Compensates for high agent costs of operations like Assassinate (400 agents → 200 agents).
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 4.1 - Archetype Behavior, Shadow Network Passive
+
+**Code:** TBD - `src/lib/bots/archetypes/schemer.ts` - Cost modifier
+
+**Tests:** TBD - Verify 50% discount applied to all operations
+
+**Status:** Draft
+
+> **⚠️ BALANCE CONCERN**: 50% discount is very strong. May need tuning if Schemers dominate.
+
+---
+
+### REQ-COV-008-C: Schemer Decision Logic
+
+**Description:** Schemer archetype prioritizes high-impact covert operations (Assassinate, Frame Another Empire, Recruit Defectors) over low-impact ops (Reconnaissance, Steal Credits).
+
+**Decision Priorities:**
+- **Tier 1 (High-impact):** Assassinate Leader, Frame Another Empire, Recruit Defectors
+- **Tier 2 (Medium-impact):** Sabotage Operations, Investigate Specialization
+- **Tier 3 (Low-impact):** Reconnaissance, Steal Credits (fallback when low on agents)
+
+**Rationale:** Schemers seek dramatic, game-changing espionage plays rather than incremental advantage. Reinforces "master manipulator" fantasy.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 4.1 - Archetype Behavior, Schemer Decision Tree
+
+**Code:** TBD - `src/lib/bots/decision-trees/schemer-covert.ts` - Operation prioritization
+
+**Tests:** TBD - Verify Tier 1 ops selected 70%+ of time when available
+
+**Status:** Draft
+
+---
+
+### REQ-COV-008-D: Schemer Government Sector Focus
+
+**Description:** Schemer archetype builds 3-5 Government sectors by Turn 30 to generate high agent production for covert operations.
+
+**Sector Building Rules:**
+- Target: 3-5 Government sectors by Turn 30
+- Purpose: Maximize agent generation for frequent operations
+- Priority: High (secondary only to Urban for pop capacity)
+- Timing: Start building Government sectors Turn 10-15
+
+**Rationale:** Government sectors produce agents. Schemers need abundant agents for their covert-heavy playstyle. 3-5 sectors support 2-3 operations per turn.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 4.1 - Archetype Behavior, Schemer Economic Strategy
+
+**Code:** TBD - `src/lib/bots/archetypes/schemer.ts` - Sector building priorities
+
+**Tests:** TBD - Verify 3-5 Government sectors by Turn 30
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Government sector count (3-5) requires playtesting. May be too high/low.
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/bots/archetypes/schemer.ts` - Schemer archetype definition and integration
+- `src/lib/bots/__tests__/schemer.test.ts` - Comprehensive Schemer behavior tests
 
 ---
 
