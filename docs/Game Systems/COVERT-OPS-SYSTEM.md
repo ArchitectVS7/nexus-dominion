@@ -981,11 +981,17 @@ Final Success Rate = Clamp(Base + Modifiers, 15%, 85%)
 
 ---
 
-### REQ-COV-004: Detection Mechanics
+### REQ-COV-004: Detection Mechanics (Split)
 
-**Description:** Detection occurs independently from success. Detection chance is based on operation base risk, modified by intel level, target agents, target security, and archetype. Detection results in diplomatic consequences including reputation loss and potential war.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-COV-004-A through REQ-COV-004-B.
 
-**Rationale:** Separating detection from success creates four outcome scenarios (success/failure × detected/undetected), adding risk management complexity. Diplomatic consequences make detection meaningful.
+---
+
+### REQ-COV-004-A: Detection Chance Calculation
+
+**Description:** Detection occurs independently from operation success. Detection chance is calculated using base detection risk per operation, modified by your intel level (reducing detection), target agent count (increasing detection), target security research (increasing detection), and archetype bonuses (Schemer reduces detection).
+
+**Rationale:** Separating detection from success creates four outcome scenarios (success/failure × detected/undetected), adding risk management complexity. Multiple modifiers create strategic depth in covert operations.
 
 **Formula:**
 ```
@@ -1000,21 +1006,65 @@ Modifiers:
 Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 ```
 
-**Diplomatic Consequences:**
-- -15 Reputation with target
-- Target can demand reparations (2x operation cost)
-- Target can share intel with allies
-- Target can retaliate with counter-operation
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Intel level reduction | -5% per level | Improves spycraft |
+| Target agents increase | +2% per 100 agents | Counter-espionage |
+| Security research increase | +10% per tier | Tech defenses |
+| Schemer archetype bonus | -10% | Shadow Network passive |
+| Minimum detection | 5% | Floor |
+| Maximum detection | 75% | Ceiling |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.3 - Detection Mechanics
 
 **Code:**
 - `src/lib/covert/detection-calculator.ts` - Detection chance calculation
+
+**Tests:**
+- `src/lib/covert/__tests__/detection.test.ts` - Test detection formula and clamping
+
+**Status:** Draft
+
+---
+
+### REQ-COV-004-B: Diplomatic Consequences of Detection
+
+**Description:** When a covert operation is detected, the target empire suffers reputation loss with the target, who can then demand reparations, share intelligence with allies, or launch counter-operations in retaliation.
+
+**Rationale:** Diplomatic consequences make detection meaningful beyond simple failure. Creates risk management decisions and can escalate to war.
+
+**Diplomatic Consequences:**
+| Consequence | Value | Notes |
+|-------------|-------|-------|
+| Reputation loss | -15 | With target empire |
+| Reparations demand | 2x operation cost | Optional response |
+| Intel sharing | Full operation details | Shared with target's allies |
+| Counter-operation | Any covert op | Retaliation option |
+
+**Escalation Path:**
+1. Detection occurs
+2. Reputation penalty applied immediately
+3. Target can demand reparations (player choice to pay or refuse)
+4. Target can share intel with allies (increases tension)
+5. Target can launch counter-operation (revenge)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Detection Mechanics
+
+**Code:**
 - `src/lib/covert/detection-resolver.ts` - Handle detection outcomes
 - `src/lib/diplomacy/reputation-system.ts` - Apply reputation penalties
 
 **Tests:**
-- `src/lib/covert/__tests__/detection.test.ts` - Test detection formula and outcomes
+- `src/lib/covert/__tests__/detection.test.ts` - Test detection outcomes
 - `src/lib/diplomacy/__tests__/reputation.test.ts` - Verify reputation changes on detection
 
 **Status:** Draft

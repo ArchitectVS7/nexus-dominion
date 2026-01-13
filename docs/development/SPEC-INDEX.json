@@ -78,7 +78,9 @@
         { "id": "REQ-COV-001", "title": "Ten Operation Types", "atomic": true, "line": 884 },
         { "id": "REQ-COV-002", "title": "Reconnaissance Intel Levels", "atomic": true, "line": 917 },
         { "id": "REQ-COV-003", "title": "Success Rate Formula", "atomic": true, "line": 950 },
-        { "id": "REQ-COV-004", "title": "Detection Mechanics", "atomic": false, "line": 984, "splitCandidate": "detection + diplomatic consequences" },
+        { "id": "REQ-COV-004", "title": "Detection Mechanics (Split)", "atomic": true, "line": 984, "parentOf": ["REQ-COV-004-A", "REQ-COV-004-B"] },
+        { "id": "REQ-COV-004-A", "title": "Detection Chance Calculation", "atomic": true, "line": 990, "splitFrom": "REQ-COV-004" },
+        { "id": "REQ-COV-004-B", "title": "Diplomatic Consequences of Detection", "atomic": true, "line": 1035, "splitFrom": "REQ-COV-004" },
         { "id": "REQ-COV-005", "title": "Agent Economy", "atomic": false, "line": 1024, "splitCandidate": "production + consumption + discount" },
         { "id": "REQ-COV-006", "title": "Phase 5 Processing Order", "atomic": true, "line": 1060 },
         { "id": "REQ-COV-007", "title": "Steal Credits Operation", "atomic": true, "line": 1092 },
@@ -437,9 +439,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 298,
-    "atomicSpecs": 223,
-    "splitCandidates": 66,
+    "totalSpecs": 299,
+    "atomicSpecs": 225,
+    "splitCandidates": 65,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
