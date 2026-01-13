@@ -1878,46 +1878,81 @@ spy_points = min(spy_points, max_spy_points)
 ---
 
 
-### REQ-TURN-012: Bot Decisions Phase
+### REQ-TURN-012: Bot Decisions Phase (PARENT)
 
-**Description:** Bot Decisions Phase (Phase 9) runs AI evaluation for all bot empires. Each bot evaluates strategic options (attack, build, research, diplomacy) based on archetype and current game state, then executes highest-priority decision. Failures log errors but don't block turn completion.
+**Description:** Bot Decisions Phase (Phase 9) runs AI evaluation for all bot empires. This parent spec tracks the complete bot decision system.
+
+**Children:**
+- REQ-TURN-012.1: Bot Strategic Options Evaluation
+- REQ-TURN-012.2: Decision Prioritization Logic
+- REQ-TURN-012.3: Graceful Failure Handling
 
 **Rationale:** Bots need access to updated Tier 1 state (income, population, civil status) to make informed decisions. Graceful failure prevents bot bugs from breaking game.
 
 **Source:** Section 3.9, Section 4.1
 
+**Status:** Draft
+
+---
+
+### REQ-TURN-012.1: Bot Strategic Options Evaluation
+
+**Description:** Each bot evaluates strategic options based on archetype and current game state:
+- Attack options (military targets)
+- Build options (economic/military development)
+- Research options (tech progression)
+- Diplomacy options (alliances, treaties)
+
+**Rationale:** Bots need comprehensive evaluation of all available actions to make informed strategic decisions.
+
+**Source:** Section 3.9, Section 4.1
+
 **Code:**
-- `src/lib/game/services/phases/bot-decisions-phase.ts` - `processBotDecisions()`
 - `src/lib/game/ai/bot-archetypes.ts` - Archetype decision trees
-- `src/lib/game/ai/decision-evaluator.ts` - Option evaluation and prioritization
+- `src/lib/game/ai/decision-evaluator.ts` - Option evaluation logic
 
 **Tests:**
 - `src/lib/game/ai/__tests__/bot-decisions.test.ts` - Each archetype decision logic
-- `src/lib/game/services/__tests__/bot-decisions-phase.test.ts` - Phase execution, failure handling
 
 **Status:** Draft
 
 ---
 
-### REQ-TURN-013: Emotional Decay Phase
+### REQ-TURN-012.2: Decision Prioritization Logic
 
-**Description:** Emotional Decay Phase (Phase 10) reduces bot emotions toward neutral over time:
-- Anger: -5 points/turn
-- Gratitude: -3 points/turn
-- Fear: -2 points/turn
+**Description:** Bots prioritize evaluated options and execute highest-priority decision based on archetype preferences and current needs.
 
-Emotions clamp at 0 (neutral).
+**Rationale:** Prioritization ensures bots make coherent strategic choices aligned with their archetype personality.
 
-**Rationale:** Prevents permanent grudges/alliances. Creates dynamic relationships where yesterday's enemy can become tomorrow's ally.
-
-**Source:** Section 3.10
+**Source:** Section 3.9, Section 4.1
 
 **Code:**
-- `src/lib/game/services/phases/emotional-decay-phase.ts` - `processEmotionalDecay()`
-- `src/lib/game/ai/emotion-system.ts` - Emotion management
+- `src/lib/game/ai/decision-evaluator.ts` - Prioritization and execution
 
 **Tests:**
-- `src/lib/game/services/__tests__/emotional-decay-phase.test.ts` - Decay rates, clamping at zero
+- `src/lib/game/ai/__tests__/bot-decisions.test.ts` - Test prioritization logic
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-012.3: Graceful Failure Handling
+
+**Description:** Bot decision failures log errors but don't block turn completion. Failed decisions are skipped and game continues.
+
+**Rationale:** Prevents bot bugs from breaking entire game. Allows developers to identify and fix bot issues without causing game-breaking crashes.
+
+**Source:** Section 3.9
+
+**Code:**
+- `src/lib/game/services/phases/bot-decisions-phase.ts` - `processBotDecisions()` with error handling
+
+**Tests:**
+- `src/lib/game/services/__tests__/bot-decisions-phase.test.ts` - Failure handling
+
+**Status:** Draft
+
+---
 
 **Status:** Draft
 
