@@ -319,12 +319,16 @@
         { "id": "REQ-SEC-004-B", "title": "New Sector Production Delay", "atomic": true, "line": 942, "splitFrom": "REQ-SEC-004" },
         { "id": "REQ-SEC-004-C", "title": "Production Before Consumption Order", "atomic": true, "line": 961, "splitFrom": "REQ-SEC-004" },
         { "id": "REQ-SEC-005", "title": "Sector Acquisition Action", "atomic": true, "line": 979 },
-        { "id": "REQ-SEC-006", "title": "Resource Cap Handling", "atomic": false, "line": 1000, "splitCandidate": "3 caps + overflow", "note": "Conflicts with REQ-RES-008" },
-        { "id": "REQ-SEC-007", "title": "No Maximum Sector Count", "atomic": true, "line": 1030 },
-        { "id": "REQ-SEC-008", "title": "Special Sector Stacking", "atomic": true, "line": 1050 },
-        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat", "atomic": false, "line": 1069, "splitCandidate": "formula + permanent" },
-        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 1099, "splitCandidate": "cap + random selection" },
-        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1125 }
+        { "id": "REQ-SEC-006", "title": "Resource Cap Handling (Split)", "atomic": true, "line": 1000, "parentOf": ["REQ-SEC-006-A", "REQ-SEC-006-B", "REQ-SEC-006-C", "REQ-SEC-006-D"], "note": "Conflicts with REQ-RES-008" },
+        { "id": "REQ-SEC-006-A", "title": "Food Resource Cap", "atomic": true, "line": 1006, "splitFrom": "REQ-SEC-006" },
+        { "id": "REQ-SEC-006-B", "title": "Ore Resource Cap", "atomic": true, "line": 1032, "splitFrom": "REQ-SEC-006" },
+        { "id": "REQ-SEC-006-C", "title": "Petroleum Resource Cap", "atomic": true, "line": 1058, "splitFrom": "REQ-SEC-006" },
+        { "id": "REQ-SEC-006-D", "title": "Credits Unlimited Storage", "atomic": true, "line": 1084, "splitFrom": "REQ-SEC-006" },
+        { "id": "REQ-SEC-007", "title": "No Maximum Sector Count", "atomic": true, "line": 1109 },
+        { "id": "REQ-SEC-008", "title": "Special Sector Stacking", "atomic": true, "line": 1129 },
+        { "id": "REQ-SEC-009", "title": "Sector Destruction in Combat", "atomic": false, "line": 1148, "splitCandidate": "formula + permanent" },
+        { "id": "REQ-SEC-010", "title": "Sector Capture on Conquest", "atomic": false, "line": 1178, "splitCandidate": "cap + random selection" },
+        { "id": "REQ-SEC-011", "title": "Research Sector Unlock", "atomic": true, "line": 1204 }
       ]
     },
     "RESEARCH": {
@@ -503,9 +507,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 351,
-    "atomicSpecs": 299,
-    "splitCandidates": 43,
+    "totalSpecs": 355,
+    "atomicSpecs": 304,
+    "splitCandidates": 42,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

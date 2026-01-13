@@ -997,20 +997,23 @@ Where:
 
 ---
 
-### REQ-SEC-006: Resource Cap Handling
+### REQ-SEC-006: Resource Cap Handling (Split)
 
-**Description:** Sectors can produce resources exceeding empire storage caps (Food: 10,000, Ore: 5,000, Petroleum: 3,000). Excess production is wasted (not stored). Credits have no cap.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-SEC-006-A through REQ-SEC-006-D.
 
-**Rationale:** Prevents infinite resource accumulation creating game-breaking strategies. Forces players to balance production vs storage. Encourages spending resources rather than hoarding. Credits unlimited to allow economic flexibility.
+---
+
+### REQ-SEC-006-A: Food Resource Cap
+
+**Description:** Food resource capped at 10,000 storage. Sector production can exceed cap, but excess is wasted (not stored). Cap enforced after production phase.
+
+**Rationale:** Prevents infinite food accumulation creating game-breaking strategies. Forces players to balance production vs storage and encourages spending food rather than hoarding.
 
 **Key Values:**
 
 | Resource | Cap | Overflow Behavior |
 |----------|-----|-------------------|
-| Credits | None (unlimited) | N/A |
 | Food | 10,000 | Excess wasted |
-| Ore | 5,000 | Excess wasted |
-| Petroleum | 3,000 | Excess wasted |
 
 **Source:** Section 3.5 - Sector Limits and Caps
 
@@ -1020,8 +1023,84 @@ Where:
 
 **Tests:**
 - `src/lib/resources/__tests__/cap-handler.test.ts` - "should cap food at 10,000"
-- `src/lib/resources/__tests__/cap-handler.test.ts` - "should not cap credits"
 - `src/lib/resources/__tests__/cap-handler.test.ts` - "production exceeding cap should be lost"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-006-B: Ore Resource Cap
+
+**Description:** Ore resource capped at 5,000 storage. Sector production can exceed cap, but excess is wasted (not stored). Cap enforced after production phase.
+
+**Rationale:** Prevents infinite ore accumulation creating game-breaking strategies. Forces players to balance production vs storage and encourages spending ore rather than hoarding.
+
+**Key Values:**
+
+| Resource | Cap | Overflow Behavior |
+|----------|-----|-------------------|
+| Ore | 5,000 | Excess wasted |
+
+**Source:** Section 3.5 - Sector Limits and Caps
+
+**Code:**
+- `src/lib/game/constants.ts` - `RESOURCE_CAPS` constant
+- `src/lib/resources/cap-handler.ts` - `applyResourceCaps(empire: Empire): void`
+
+**Tests:**
+- `src/lib/resources/__tests__/cap-handler.test.ts` - "should cap ore at 5,000"
+- `src/lib/resources/__tests__/cap-handler.test.ts` - "production exceeding cap should be lost"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-006-C: Petroleum Resource Cap
+
+**Description:** Petroleum resource capped at 3,000 storage. Sector production can exceed cap, but excess is wasted (not stored). Cap enforced after production phase.
+
+**Rationale:** Prevents infinite petroleum accumulation creating game-breaking strategies. Forces players to balance production vs storage and encourages spending petroleum rather than hoarding.
+
+**Key Values:**
+
+| Resource | Cap | Overflow Behavior |
+|----------|-----|-------------------|
+| Petroleum | 3,000 | Excess wasted |
+
+**Source:** Section 3.5 - Sector Limits and Caps
+
+**Code:**
+- `src/lib/game/constants.ts` - `RESOURCE_CAPS` constant
+- `src/lib/resources/cap-handler.ts` - `applyResourceCaps(empire: Empire): void`
+
+**Tests:**
+- `src/lib/resources/__tests__/cap-handler.test.ts` - "should cap petroleum at 3,000"
+- `src/lib/resources/__tests__/cap-handler.test.ts` - "production exceeding cap should be lost"
+
+**Status:** Draft
+
+---
+
+### REQ-SEC-006-D: Credits Unlimited Storage
+
+**Description:** Credits have no storage cap. Empires can accumulate unlimited credits without overflow or waste.
+
+**Rationale:** Credits unlimited to allow economic flexibility and prevent artificial constraints on economic strategies.
+
+**Key Values:**
+
+| Resource | Cap | Overflow Behavior |
+|----------|-----|-------------------|
+| Credits | None (unlimited) | N/A |
+
+**Source:** Section 3.5 - Sector Limits and Caps
+
+**Code:**
+- `src/lib/game/constants.ts` - `RESOURCE_CAPS` constant
+- `src/lib/resources/cap-handler.ts` - `applyResourceCaps(empire: Empire): void`
+
+**Tests:**
+- `src/lib/resources/__tests__/cap-handler.test.ts` - "should not cap credits"
 
 **Status:** Draft
 
