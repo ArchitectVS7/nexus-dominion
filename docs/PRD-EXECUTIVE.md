@@ -97,55 +97,72 @@ No orphaned backend logic or UI shells without data.
 
 ## System Overview
 
-### Combat System
-Unified D20 resolution determines battle outcomes. Full invasions resolve across three sequential domains (Space, Orbital, Ground) with cascading bonuses. Defenders receive a 10% home turf advantage. Six dramatic outcomes create varied narratives from decisive victories to pyrrhic defeats.
-
-**Tier 2 Reference:** [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md)
+**DEV NOTE** Systems listed alphabetically for easy verificsation. May require re-ordering by priority / scope
 
 ### Bot AI System
 Four-tier intelligence architecture: LLM-powered elite bots, archetype-driven strategic bots, rule-based simple bots, and chaotic random bots. Eight archetypes (Warlord, Diplomat, Merchant, Schemer, Turtle, Blitzkrieg, Tech Rush, Opportunist) combined with emotional states and relationship memory create 100 unique personalities.
 
 **Tier 2 Reference:** [BOT-SYSTEM.md](Game Systems/BOT-SYSTEM.md)
 
-### Galaxy Structure
-Ten sectors of 8-10 empires each. Same-sector attacks are free; adjacent sector attacks require border discovery (1.2x cost); distant attacks require wormhole construction (1.5x cost). This creates regional strategy phases: consolidate (Turn 1-20), expand (Turn 21-40), reach (Turn 41-60), dominate (Turn 61+).
+### Combat System
+Unified D20 resolution determines battle outcomes. Full invasions resolve across three sequential domains (Space, Orbital, Ground) with cascading bonuses. Defenders receive a 10% home turf advantage. Six dramatic outcomes create varied narratives from decisive victories to pyrrhic defeats.
 
-**Tier 2 Reference:** [SECTOR-MANAGEMENT-SYSTEM.md](Game Systems/SECTOR-MANAGEMENT-SYSTEM.md)
-
-### Resource Economy
-Five resources (Credits, Food, Ore, Petroleum, Research Points) produced by eight sector types. Civil status multipliers (0.25x rioting to 4.0x ecstatic) affect production. Population grows with food, starves without. Military requires maintenance.
-
-**Tier 2 Reference:** [RESOURCE-MANAGEMENT-SYSTEM.md](Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md)
-
-### Market System
-Dynamic galactic market where prices fluctuate based on supply, demand, and random events. Players can profit by selling high and buying low, or manipulate prices to hurt rivals. Merchant archetype bots use predictive insight to dominate trade.
-
-**Tier 2 Reference:** [MARKET-SYSTEM.md](Game Systems/MARKET-SYSTEM.md)
-
-### Research System
-Three-tier draft structure: Doctrines (Turn 10), Specializations (Turn 30), Capstones (Turn 60). Three strategic paths: War Machine, Fortress, Commerce. Each leads to unique capstone abilities (Dreadnought, Citadel World, Economic Hegemony).
-
-**Tier 2 Reference:** [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md)
-
-### Diplomacy System
-Treaties (NAP, Alliance, Coalition) with reputation consequences. Breaking treaties costs reputation; helping weak empires builds it. Low reputation makes bots target you and treaties harder to form.
-
-**Tier 2 Reference:** [DIPLOMACY-SYSTEM.md](Game Systems/DIPLOMACY-SYSTEM.md)
-
-### Military System
-Six unit types across three domains (Space, Orbital, Ground). Card-based unit stats with power multipliers ranging from 0.1x (Soldiers) to 12.0x (Carriers). Production queues require multi-turn investment and strategic resource management (Credits, Ore, Petroleum).
-
-**Tier 2 Reference:** [MILITARY-SYSTEM.md](Game Systems/MILITARY-SYSTEM.md)
+**Tier 2 Reference:** [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md)
 
 ### Covert Ops System
 Asymmetric warfare for weaker empires. Ten operation types ranging from theft (Steal Credits) to disruption (Sabotage Production) and assassination. Success depends on agent allocation and risk management, with diplomatic consequences for detection.
 
 **Tier 2 Reference:** [COVERT-OPS-SYSTEM.md](Game Systems/COVERT-OPS-SYSTEM.md)
 
+### Diplomacy System
+Treaties (NAP, Alliance, Coalition) with reputation consequences. Breaking treaties costs reputation; helping weak empires builds it. Low reputation makes bots target you and treaties harder to form.
+
+**Tier 2 Reference:** [DIPLOMACY-SYSTEM.md](Game Systems/DIPLOMACY-SYSTEM.md)
+
+### Frontend/UI
+LCARS (Star Trek) inspired design with semi-transparent panels, orange/peach/violet palette, smooth animations. The starmap is the command hub: click neighbors to attack, click sectors to build, click borders to expand.
+
+**Tier 2 Reference:** [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md)
+
+### Market System
+Dynamic galactic market where prices fluctuate based on supply, demand, and random events. Players can profit by selling high and buying low, or manipulate prices to hurt rivals. Merchant archetype bots use predictive insight to dominate trade.
+
+**Tier 2 Reference:** [MARKET-SYSTEM.md](Game Systems/MARKET-SYSTEM.md)
+
+### Military System
+Six unit types across three domains (Space, Orbital, Ground). Card-based unit stats with power multipliers ranging from 0.1x (Soldiers) to 12.0x (Carriers). Production queues require multi-turn investment and strategic resource management (Credits, Ore, Petroleum).
+
+**Tier 2 Reference:** [MILITARY-SYSTEM.md](Game Systems/MILITARY-SYSTEM.md)
+
+### Progressive Systems
+(Stubbed)
+
+**Tier 2 Reference:** [PROGRRSSIVE-SYSTEMS.md](Game Systems/PROGRESSIVE-SYSTEMS.md)
+
+### Research System
+Three-tier draft structure: Doctrines (Turn 10), Specializations (Turn 30), Capstones (Turn 60). Three strategic paths: War Machine, Fortress, Commerce. Each leads to unique capstone abilities (Dreadnought, Citadel World, Economic Hegemony).
+
+**Tier 2 Reference:** [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md)
+
+### Resource Economy
+Five resources (Credits, Food, Ore, Petroleum, Research Points) produced by eight sector types. Civil status multipliers (0.25x rioting to 4.0x ecstatic) affect production. Population grows with food, starves without. Military requires maintenance.
+
+**Tier 2 Reference:** [RESOURCE-MANAGEMENT-SYSTEM.md](Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md)
+
+### Sector Management / Galaxy Structure
+Ten sectors of 8-10 empires each. Same-sector attacks are free; adjacent sector attacks require border discovery (1.2x cost); distant attacks require wormhole construction (1.5x cost). This creates regional strategy phases: consolidate (Turn 1-20), expand (Turn 21-40), reach (Turn 41-60), dominate (Turn 61+).
+
+**Tier 2 Reference:** [SECTOR-MANAGEMENT-SYSTEM.md](Game Systems/SECTOR-MANAGEMENT-SYSTEM.md)
+
 ### Syndicate System
 Hidden role mechanics where 10% of empires secretly serve the Syndicate. Players pursue shadow contracts while maintaining a facade of loyalty. Accusation trials and betrayal mechanics turn the endgame into a high-stakes social deduction challenge.
 
 **Tier 2 Reference:** [SYNDICATE-SYSTEM.md](Game Systems/SYNDICATE-SYSTEM.md)
+
+### Tech Card System
+Stubbed
+
+**Tier 2 Reference:** [TECH-CARD-SYSTEM.md](Game Systems/TECH-CARD-SYSTEM.md)
 
 ### Turn Processing System
 Atomic 17-phase execution pipeline ensures 100-empire turns process in under 2 seconds. Separates transactional state updates from cosmetic bot logic for robust failure handling. Orchestrates the heartbeat of the galaxy.
@@ -157,10 +174,6 @@ Six distinct paths to victory: Conquest, Economic, Diplomatic, Research, Militar
 
 **Tier 2 Reference:** [VICTORY-SYSTEMS.md](Game Systems/VICTORY-SYSTEMS.md)
 
-### Frontend/UI
-LCARS (Star Trek) inspired design with semi-transparent panels, orange/peach/violet palette, smooth animations. The starmap is the command hub: click neighbors to attack, click sectors to build, click borders to expand.
-
-**Tier 2 Reference:** [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md)
 
 ---
 
@@ -205,7 +218,7 @@ LEGEND:
 ◄────  Bidirectional dependency
 ```
 
-### Implementation Order (Recommended)
+### Implementation Order (Verify after all dependency and blocker mapping is complete)
 
 ```
 Phase 1 (Foundation)      Phase 2 (Core Loop)       Phase 3 (Polish)
@@ -230,36 +243,41 @@ Detailed specifications for each system:
 
 | Document | Scope |
 |----------|-------|
-| [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
-| [MILITARY-SYSTEM.md](Game Systems/MILITARY-SYSTEM.md) | Unit types, production, fleet composition |
 | [BOT-SYSTEM.md](Game Systems/BOT-SYSTEM.md) | AI architecture, personas |
-| [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
-| [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md) | UI/UX patterns |
-| [SECTOR-MANAGEMENT-SYSTEM.md](Game Systems/SECTOR-MANAGEMENT-SYSTEM.md) | Galaxy structure, expansion |
-| [RESOURCE-MANAGEMENT-SYSTEM.md](Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md) | Economy, production |
-| [MARKET-SYSTEM.md](Game Systems/MARKET-SYSTEM.md) | Trading, price fluctuation |
-| [DIPLOMACY-SYSTEM.md](Game Systems/DIPLOMACY-SYSTEM.md) | Treaties, reputation |
+| [COMBAT-SYSTEM.md](Game Systems/COMBAT-SYSTEM.md) | D20 mechanics, battle resolution |
 | [COVERT-OPS-SYSTEM.md](Game Systems/COVERT-OPS-SYSTEM.md) | Espionage, sabotage |
+| [DIPLOMACY-SYSTEM.md](Game Systems/DIPLOMACY-SYSTEM.md) | Treaties, reputation |
+| [FRONTEND-DESIGN.md](Game Systems/FRONTEND-DESIGN.md) | UI/UX patterns |
+| [MARKET-SYSTEM.md](Game Systems/MARKET-SYSTEM.md) | Trading, price fluctuation |
+| [MILITARY-SYSTEM.md](Game Systems/MILITARY-SYSTEM.md) | Unit types, production, fleet composition |
+| Progressive Systems ... |
+| [RESEARCH-SYSTEM.md](Game Systems/RESEARCH-SYSTEM.md) | Tech tree, draft mechanics |
+| [RESOURCE-MANAGEMENT-SYSTEM.md](Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md) | Economy, production |
+| [SECTOR-MANAGEMENT-SYSTEM.md](Game Systems/SECTOR-MANAGEMENT-SYSTEM.md) | Galaxy structure, expansion |
 | [SYNDICATE-SYSTEM.md](Game Systems/SYNDICATE-SYSTEM.md) | Hidden roles, contracts |
-| [VICTORY-SYSTEMS.md](Game Systems/VICTORY-SYSTEMS.md) | Victory conditions, scoring |
+| Tech Card System ... |
 | [TURN-PROCESSING-SYSTEM.md](Game Systems/TURN-PROCESSING-SYSTEM.md) | Execution pipeline, timing |
+| [VICTORY-SYSTEMS.md](Game Systems/VICTORY-SYSTEMS.md) | Victory conditions, scoring |
+
 
 ### Tier 3: Implementation References
 
 | Document | Purpose |
 |----------|---------|
-| [PRD.md](PRD.md) | Detailed requirements with code traces |
+| [PRD-EXECUTIVE.md](PRD-EXECUTIVE.md) | High level requirements with code traces |
 | [SPEC-REGISTRY.md](SPEC-REGISTRY.md) | Spec-to-code mapping |
 | [ARCHITECTURE.md](development/ARCHITECTURE.md) | Technical stack and patterns |
+
+**DEV NOTE** Architecture has not been reviewed since the new redesign. This document could have been archived to minimize cross contamination. We must re-evaluate the tech stack 
 
 ### Tier 4: Roadmap
 
 | Document | Timeframe |
 |----------|-----------|
-| [ALPHA.md](roadmap/ALPHA.md) | Current playable state |
-| [BETA.md](roadmap/BETA.md) | Stability, mobile, polish |
+| [ALPHA.md](roadmap/ALPHA.md) | Playable state |
+| [BETA.md](roadmap/BETA.md) | Stability, mobile, added advanced systems, polish |
 | [LAUNCH.md](roadmap/LAUNCH.md) | v1.0 definition of done |
-| [EXPANSION.md](roadmap/EXPANSION.md) | Post-launch: Crafting + Syndicate |
+| [EXPANSION.md](roadmap/EXPANSION.md) | Post-launch Expansions |
 
 ---
 
@@ -273,7 +291,7 @@ Detailed specifications for each system:
 | **Galaxy** | 10 sectors (10 empires each) |
 | **Attacker Win Rate** | 47.6% with equal forces |
 | **Defender Advantage** | 1.10x (home turf) |
-| **Protection Period** | 20 turns |
+| **Protection Period** | 20 turns | **DEV NOTE** This is an artifact from Solar Realms where players could be newly entering a galaxy with advanced players, and seems excessive. Need to evaluate
 | **Coalition Trigger** | 7+ Victory Points |
 
 ---
