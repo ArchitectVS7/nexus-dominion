@@ -844,48 +844,11 @@ After game completion, players can review bot decision logs:
 
 ### 7.6 Bot Archetypes
 
-### REQ-BOT-002: Eight Archetypes
+### REQ-BOT-002: Archetype System Overview (Split)
 
-**Description:** 8 bot archetypes define behavioral patterns with unique passive abilities and decision priorities.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-BOT-002-01 through REQ-BOT-002-08 for individual archetype definitions.
 
-**Archetype Profiles:**
-
-1. **Warlord** - Aggressive military focus
-   - Passive: War Economy (-20% military cost when at war)
-   - Priority: Attack 0.9, Defense 0.5, Alliance 0.3, Economy 0.4, Covert 0.5
-   - Commander Stats: INT 12 (+1), WIS 14 (+2), CHA 8 (-1)
-
-2. **Diplomat** - Alliance-seeking, mediates conflicts
-   - Passive: Trade Network (+10% income per active alliance)
-   - Priority: Alliance 0.95, Attack 0.2, Defense 0.6, Economy 0.5, Covert 0.2
-   - Commander Stats: INT 13 (+1), WIS 14 (+2), CHA 18 (+4)
-
-3. **Merchant** - Economic domination, buys loyalty
-   - Passive: Market Insight (sees next turn market prices)
-   - Priority: Economy 0.95, Alliance 0.7, Attack 0.3, Defense 0.4, Covert 0.4
-   - Commander Stats: INT 14 (+2), WIS 13 (+1), CHA 15 (+2)
-
-4. **Schemer** - Deceptive tactics, betrayals
-   - Passive: Shadow Network (-50% covert operation cost)
-   - Priority: Covert 0.9, Alliance 0.8* (*for deception), Attack 0.6, Defense 0.3, Economy 0.5
-   - Commander Stats: INT 13 (+1), WIS 15 (+2), CHA 16 (+3)
-
-5. **Turtle** - Defensive buildup, never attacks first
-   - Passive: Fortification (2× defensive structure power)
-   - Priority: Defense 0.95, Economy 0.7, Attack 0.1, Alliance 0.5, Covert 0.3
-   - Commander Stats: INT 14 (+2), WIS 16 (+3), CHA 10 (+0)
-
-6. **Blitzkrieg** - Fast early expansion, aggressive strikes
-   - Priority: Attack 0.95, Defense 0.2, Alliance 0.2, Economy 0.5, Covert 0.4
-   - Commander Stats: INT 12 (+1), WIS 10 (+0), CHA 12 (+1)
-
-7. **Tech Rush** - Research priority, late-game power spike
-   - Priority: Economy 0.6, Defense 0.5, Attack 0.3, Alliance 0.4, Covert 0.3
-   - Commander Stats: INT 17 (+3), WIS 12 (+1), CHA 10 (+0)
-
-8. **Opportunist** - Adaptive vulture strategy, attacks weakened empires
-   - Priority: Attack 0.7, Economy 0.6, Defense 0.4, Alliance 0.4, Covert 0.5
-   - Commander Stats: INT 13 (+1), WIS 14 (+2), CHA 11 (+0)
+**Description:** Bot archetype system that defines 8 distinct behavioral patterns with unique passive abilities, decision priorities, and commander statistics. Each archetype creates a memorable, predictable opponent with distinct mechanical advantages.
 
 **Decision Formula:**
 ```
@@ -896,11 +859,259 @@ Final Action = argmax(Action Weight for all possible actions)
 
 **Rationale:** Creates diverse, memorable opponents with distinct mechanical advantages and playstyles. Priority matrix ensures predictable but varied behavior.
 
-**Source:** `docs/design/BOT-SYSTEM.md` Sections 7.6, 8
+**Source:** Section 7.6
 
 **Formulas:** See `docs/PRD-FORMULAS-ADDENDUM.md` Section 4.2-4.4
 
 **Code:** `src/lib/bots/archetypes/`, `src/lib/bots/types.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-01: Warlord Archetype
+
+**Description:** Aggressive military-focused archetype with War Economy passive ability that reduces military costs during wartime.
+
+**Passive Ability:** War Economy (-20% military cost when at war)
+
+**Priority Matrix:**
+- Attack: 0.9
+- Defense: 0.5
+- Alliance: 0.3
+- Economy: 0.4
+- Covert: 0.5
+
+**Commander Stats:** INT 12 (+1), WIS 14 (+2), CHA 8 (-1)
+
+**Behavior:** Prioritizes offensive military operations and maintains aggressive expansion through conquest.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/warlord.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-02: Diplomat Archetype
+
+**Description:** Alliance-seeking mediator archetype with Trade Network passive that increases income based on active alliances.
+
+**Passive Ability:** Trade Network (+10% income per active alliance)
+
+**Priority Matrix:**
+- Alliance: 0.95
+- Attack: 0.2
+- Defense: 0.6
+- Economy: 0.5
+- Covert: 0.2
+
+**Commander Stats:** INT 13 (+1), WIS 14 (+2), CHA 18 (+4)
+
+**Behavior:** Actively seeks and maintains alliances, mediates conflicts, and uses diplomatic relationships for economic advantage.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/diplomat.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-03: Merchant Archetype
+
+**Description:** Economic domination archetype with Market Insight passive that provides advance knowledge of market prices.
+
+**Passive Ability:** Market Insight (sees next turn market prices)
+
+**Priority Matrix:**
+- Economy: 0.95
+- Alliance: 0.7
+- Attack: 0.3
+- Defense: 0.4
+- Covert: 0.4
+
+**Commander Stats:** INT 14 (+2), WIS 13 (+1), CHA 15 (+2)
+
+**Behavior:** Focuses on economic development, market manipulation, and buying loyalty through trade advantages.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/merchant.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-04: Schemer Archetype
+
+**Description:** Deceptive tactics archetype with Shadow Network passive that reduces covert operation costs.
+
+**Passive Ability:** Shadow Network (-50% covert operation cost)
+
+**Priority Matrix:**
+- Covert: 0.9
+- Alliance: 0.8 (for deception purposes)
+- Attack: 0.6
+- Defense: 0.3
+- Economy: 0.5
+
+**Commander Stats:** INT 13 (+1), WIS 15 (+2), CHA 16 (+3)
+
+**Behavior:** Employs deceptive tactics, forms alliances for betrayal opportunities, and relies heavily on covert operations.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/schemer.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-05: Turtle Archetype
+
+**Description:** Defensive buildup archetype with Fortification passive that doubles defensive structure power.
+
+**Passive Ability:** Fortification (2× defensive structure power)
+
+**Priority Matrix:**
+- Defense: 0.95
+- Economy: 0.7
+- Attack: 0.1
+- Alliance: 0.5
+- Covert: 0.3
+
+**Commander Stats:** INT 14 (+2), WIS 16 (+3), CHA 10 (+0)
+
+**Behavior:** Focuses on defensive structures and economic development. Never initiates attacks but responds strongly when attacked.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/turtle.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-06: Blitzkrieg Archetype
+
+**Description:** Fast early expansion archetype focused on aggressive strikes and rapid territorial acquisition.
+
+**Passive Ability:** None specified
+
+**Priority Matrix:**
+- Attack: 0.95
+- Defense: 0.2
+- Alliance: 0.2
+- Economy: 0.5
+- Covert: 0.4
+
+**Commander Stats:** INT 12 (+1), WIS 10 (+0), CHA 12 (+1)
+
+**Behavior:** Prioritizes early game aggression, rapid expansion, and maintains offensive pressure throughout the game.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/blitzkrieg.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-07: Tech Rush Archetype
+
+**Description:** Research-prioritized archetype that focuses on economic and technological development for late-game power spike.
+
+**Passive Ability:** None specified
+
+**Priority Matrix:**
+- Economy: 0.6
+- Defense: 0.5
+- Attack: 0.3
+- Alliance: 0.4
+- Covert: 0.3
+
+**Commander Stats:** INT 17 (+3), WIS 12 (+1), CHA 10 (+0)
+
+**Behavior:** Focuses on research and economic development in early-mid game, becomes powerful in late game through technological advantages.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/tech-rush.ts`
+
+**Tests:** TBD
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-002-08: Opportunist Archetype
+
+**Description:** Adaptive vulture strategy archetype that targets weakened empires and exploits opportunities.
+
+**Passive Ability:** None specified
+
+**Priority Matrix:**
+- Attack: 0.7
+- Economy: 0.6
+- Defense: 0.4
+- Alliance: 0.4
+- Covert: 0.5
+
+**Commander Stats:** INT 13 (+1), WIS 14 (+2), CHA 11 (+0)
+
+**Behavior:** Monitors empire strengths, opportunistically attacks weakened targets, and adapts strategy based on game state.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 7.6
+
+**Code:** `src/lib/bots/archetypes/opportunist.ts`
 
 **Tests:** TBD
 
@@ -1554,7 +1765,7 @@ const BOT_FEATURES = {
 - **[COVERT-OPS.md]** (if exists) - Spy operations for Schemer archetype
 
 **Depended By:**
-- **[GAME-DESIGN.md](GAME-DESIGN.md)** - Overall game flow relies on bot opponents
+- **[PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md)** - Overall game flow relies on bot opponents
 - **[VICTORY-SYSTEMS.md](VICTORY-SYSTEMS.md)** - Endgame behavior triggers on victory thresholds
 - **[PROGRESSIVE-SYSTEMS.md](PROGRESSIVE-SYSTEMS.md)** - Unlocks may affect bot behavior
 
@@ -1591,7 +1802,8 @@ See [COMBAT-SYSTEM.md Section 2.4](COMBAT-SYSTEM.md#24-commander-stats-mental-ab
 
 ## Related Documents
 
-- [Game Design](GAME-DESIGN.md) - Overall game design
+- [Vision & Philosophy](../VISION.md) - Design philosophy and principles
+- [PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md) - System overview and game design
 - [COMBAT-SYSTEM.md](COMBAT-SYSTEM.md) - Battle resolution, commander stats (Section 2.4)
 - [RESEARCH.md](RESEARCH.md) - Research system, bot preferences (Section 8)
 - [Terminology Rules](../development/TERMINOLOGY.md) - CRITICAL
