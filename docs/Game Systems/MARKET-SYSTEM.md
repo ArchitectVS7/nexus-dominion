@@ -837,33 +837,270 @@ Max Sellable = current_storage - reserve
 
 ---
 
-### REQ-MKT-005: Market Events
+### REQ-MKT-005: Market Events (Split)
 
-**Description:** Random market events trigger with 1-4% chance per turn, lasting 8-20 turns, modifying prices by ±15% to ±40%:
-- Bumper Harvest, Famine (Food)
-- Ore Shortage, Mining Boom (Ore)
-- Fuel Crisis, Refinery Glut (Petroleum)
-- Trade War, Free Trade (Fees)
+> **Note:** This spec has been split into atomic sub-specs. See REQ-MKT-005-01 through REQ-MKT-005-09 for individual event definitions.
 
-Only 1 event active per resource type. Events do not trigger in first 10 turns.
+**Overview:** Random market events create dramatic price swings and strategic opportunities. Each event triggers independently with specific probabilities, durations, and impacts on resource prices or transaction fees.
 
-**Rationale:** Creates unpredictable market conditions requiring adaptation. Rewards players who anticipate and react to events.
+---
+
+### REQ-MKT-005-01: Bumper Harvest Event
+
+**Description:** Bumper Harvest event triggers with 3% chance per turn, lasts 10 turns, and reduces Food price by 15%.
+
+**Rationale:** Creates favorable food market conditions. Rewards players who sell food during normal times and buy during harvest events.
 
 **Key Values:**
-| Event | Chance | Duration | Impact |
-|-------|--------|----------|--------|
-| Bumper Harvest | 3%/turn | 10 turns | Food -15% |
-| Famine | 2%/turn | 12 turns | Food +30% |
-| Ore Shortage | 4%/turn | 15 turns | Ore +25% |
-| Fuel Crisis | 2%/turn | 8 turns | Petroleum +40% |
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 3% per turn |
+| Duration | 10 turns |
+| Impact | Food price -15% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
 **Code:**
-- `src/lib/market/events.ts` - `triggerEvent()`, `applyEventModifier()`
+- `src/lib/market/events.ts` - `triggerBumperHarvest()`, `applyBumperHarvestModifier()`
 
 **Tests:**
-- `src/lib/market/__tests__/events.test.ts` - Event triggering and effects
+- `src/lib/market/__tests__/events.test.ts` - Bumper Harvest trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-02: Famine Event
+
+**Description:** Famine event triggers with 2% chance per turn, lasts 12 turns, and increases Food price by 30%.
+
+**Rationale:** Creates food scarcity pressure. Players with food stockpiles or agricultural sectors gain advantage.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 2% per turn |
+| Duration | 12 turns |
+| Impact | Food price +30% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerFamine()`, `applyFamineModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Famine trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-03: Ore Shortage Event
+
+**Description:** Ore Shortage event triggers with 4% chance per turn, lasts 15 turns, and increases Ore price by 25%.
+
+**Rationale:** Creates scarcity for military production. Players with ore stockpiles or mining sectors gain advantage.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 4% per turn |
+| Duration | 15 turns |
+| Impact | Ore price +25% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerOreShortage()`, `applyOreShortageModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Ore Shortage trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-04: Mining Boom Event
+
+**Description:** Mining Boom event triggers with 3% chance per turn, lasts 8 turns, and reduces Ore price by 20%.
+
+**Rationale:** Creates favorable ore market conditions. Rewards players who buy ore during boom and sell during normal times.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 3% per turn |
+| Duration | 8 turns |
+| Impact | Ore price -20% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerMiningBoom()`, `applyMiningBoomModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Mining Boom trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-05: Fuel Crisis Event
+
+**Description:** Fuel Crisis event triggers with 2% chance per turn, lasts 8 turns, and increases Petroleum price by 40%.
+
+**Rationale:** Creates severe fuel scarcity. Highest price impact of any event. Players with petroleum sectors gain significant advantage.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 2% per turn |
+| Duration | 8 turns |
+| Impact | Petroleum price +40% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerFuelCrisis()`, `applyFuelCrisisModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Fuel Crisis trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-06: Refinery Glut Event
+
+**Description:** Refinery Glut event triggers with 3% chance per turn, lasts 10 turns, and reduces Petroleum price by 25%.
+
+**Rationale:** Creates favorable petroleum market conditions. Rewards players who stockpile fuel during gluts for future use.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 3% per turn |
+| Duration | 10 turns |
+| Impact | Petroleum price -25% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerRefineryGlut()`, `applyRefineryGlutModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Refinery Glut trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-07: Trade War Event
+
+**Description:** Trade War event triggers with 1% chance per turn, lasts 20 turns, and increases all transaction fees by 3%.
+
+**Rationale:** Creates market friction. Discourages frequent trading. Players must balance need for resources against higher costs.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 1% per turn |
+| Duration | 20 turns |
+| Impact | All fees +3% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerTradeWar()`, `applyTradeWarModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Trade War trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-08: Free Trade Event
+
+**Description:** Free Trade event triggers with 2% chance per turn, lasts 15 turns, and reduces all transaction fees by 2%.
+
+**Rationale:** Creates favorable trading conditions. Encourages market activity and resource redistribution.
+
+**Key Values:**
+| Parameter | Value |
+|-----------|-------|
+| Trigger Chance | 2% per turn |
+| Duration | 15 turns |
+| Impact | All fees -2% |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `triggerFreeTrade()`, `applyFreeTradeModifier()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Free Trade trigger and effects
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-005-09: Event Exclusion Rules
+
+**Description:** Market event exclusion rules: Only 1 event active per resource type at a time. Trade War and Free Trade cannot overlap. Events do not trigger in first 10 turns (tutorial period).
+
+**Rationale:** Prevents multiple simultaneous events from creating unbalanced market conditions. Tutorial grace period ensures new players learn basic mechanics before events introduce volatility.
+
+**Key Values:**
+| Rule | Details |
+|------|---------|
+| Resource Exclusivity | Max 1 Food event, 1 Ore event, 1 Petroleum event active |
+| Fee Event Mutual Exclusion | Trade War and Free Trade cannot both be active |
+| Tutorial Grace Period | No events before turn 10 |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/market/events.ts` - `canTriggerEvent()`, `getActiveEventsByType()`
+
+**Tests:**
+- `src/lib/market/__tests__/events.test.ts` - Event exclusion logic
 
 **Status:** Draft
 
@@ -1688,7 +1925,9 @@ UPDATE market_prices SET
 ### Dependencies
 
 **Depends On:**
-- **[GAME-DESIGN.md](GAME-DESIGN.md)** - Resource system, sector types, victory conditions
+- **[PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md)** - System overview, victory conditions
+- **[RESOURCE-MANAGEMENT-SYSTEM.md](RESOURCE-MANAGEMENT-SYSTEM.md)** - Resource mechanics and production
+- **[SECTOR-MANAGEMENT-SYSTEM.md](SECTOR-MANAGEMENT-SYSTEM.md)** - Sector types and production values
 - **[BOT-SYSTEM.md](BOT-SYSTEM.md)** - Bot archetypes, decision priorities, Merchant passive
 - **Research System** (TBD) - Commerce Tier 2 for -2% fee bonus
 - **Victory System** (TBD) - Economic victory condition integration
