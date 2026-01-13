@@ -83,8 +83,8 @@ Combat in Nexus Dominion feels like commanding a fleet in a tabletop wargame. Pl
 
 | Roll | Event | Effect |
 |------|-------|--------|
-| **Natural 20** | Critical Success | 2x damage, bypass 50% DEF |
-| **Natural 1** | Critical Failure | Miss, lose 1 SPEED (initiative penalty next round) |
+| **Natural 20** | Critical Success | crit success table |
+| **Natural 1** | Critical Failure | crit fail table |
 | **18-19** | Excellent Hit | +50% damage |
 | **2-3** | Glancing Blow | -50% damage (if hit) |
 
@@ -210,7 +210,7 @@ Each domain battle follows this sequence:
 
 **PHASE 1: Initiative**
 - Each side rolls: d20 + Highest MNV in fleet
-- Winner gains "Tactical Advantage Token" (reroll 1 failed attack, strike first)
+- Winner gains one time use "Tactical Advantage Token" (reroll 1 failed attack, strike first)
 
 **PHASE 2: Attack Rolls**
 - For each unit: Roll d20 + ATK modifier
