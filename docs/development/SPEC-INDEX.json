@@ -3194,11 +3194,35 @@
         },
         {
           "id": "REQ-TURN-018",
-          "title": "Alliance Checkpoints Phase",
+          "title": "Alliance Checkpoints Phase (PARENT)",
           "atomic": false,
-          "line": 1494,
-          "splitCandidate": "formation + join + milestone",
-          "note": "Duplicate of REQ-DIP-005"
+          "line": 2207,
+          "children": [
+            "REQ-TURN-018.1",
+            "REQ-TURN-018.2",
+            "REQ-TURN-018.3"
+          ]
+        },
+        {
+          "id": "REQ-TURN-018.1",
+          "title": "Coalition Formation Logic",
+          "atomic": true,
+          "line": 2221,
+          "parent": "REQ-TURN-018"
+        },
+        {
+          "id": "REQ-TURN-018.2",
+          "title": "Bot Join Decision Mechanics",
+          "atomic": true,
+          "line": 2293,
+          "parent": "REQ-TURN-018"
+        },
+        {
+          "id": "REQ-TURN-018.3",
+          "title": "Milestone Gate Requirement",
+          "atomic": true,
+          "line": 2315,
+          "parent": "REQ-TURN-018"
         },
         {
           "id": "REQ-TURN-019",
@@ -3232,42 +3256,42 @@
           "id": "REQ-TURN-019-03",
           "title": "Diplomatic Victory Check",
           "atomic": true,
-          "line": 2257,
+          "line": 2303,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-04",
           "title": "Research Victory Check",
           "atomic": true,
-          "line": 2291,
+          "line": 2337,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-05",
           "title": "Covert Victory Check",
           "atomic": true,
-          "line": 2324,
+          "line": 2370,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-019-06",
           "title": "Survival Victory Check",
           "atomic": true,
-          "line": 2357,
+          "line": 2403,
           "splitFrom": "REQ-TURN-019"
         },
         {
           "id": "REQ-TURN-020",
           "title": "Auto-Save Phase",
           "atomic": false,
-          "line": 2390,
+          "line": 2436,
           "splitCandidate": "save + rotation + failure"
         },
         {
           "id": "REQ-TURN-021",
           "title": "Performance Budget (Split)",
           "atomic": true,
-          "line": 2409,
+          "line": 2455,
           "parentOf": [
             "REQ-TURN-021-A",
             "REQ-TURN-021-B",
@@ -3279,28 +3303,28 @@
           "id": "REQ-TURN-021-A",
           "title": "Tier 1 Performance Budget",
           "atomic": true,
-          "line": 2424,
+          "line": 2470,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-B",
           "title": "Bot Decisions Performance Budget",
           "atomic": true,
-          "line": 2451,
+          "line": 2497,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-C",
           "title": "Tier 2 Performance Budget",
           "atomic": true,
-          "line": 2478,
+          "line": 2524,
           "splitFrom": "REQ-TURN-021"
         },
         {
           "id": "REQ-TURN-021-D",
           "title": "UI and Animation Performance Budget",
           "atomic": true,
-          "line": 2505,
+          "line": 2551,
           "splitFrom": "REQ-TURN-021"
         }
       ]
@@ -3614,9 +3638,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 389,
-    "atomicSpecs": 356,
-    "splitCandidates": 24,
+    "totalSpecs": 391,
+    "atomicSpecs": 359,
+    "splitCandidates": 23,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

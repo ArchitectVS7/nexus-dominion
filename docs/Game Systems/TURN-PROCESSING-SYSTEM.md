@@ -2204,36 +2204,88 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 ---
 
-### REQ-TURN-018: Alliance Checkpoints Phase
+### REQ-TURN-018: Alliance Checkpoints Phase (PARENT)
 
-**Description:** Alliance Checkpoints Phase (Phase 15) evaluates coalition formation against dominant empires. If leader has 7+ victory points, potential coalition of 3-5 weaker empires forms (80% chance per bot). Only active if M11 milestone unlocked. Failures log errors but don't block turn.
+**Description:** Alliance Checkpoints Phase (Phase 15) evaluates coalition formation against dominant empires. This parent spec tracks the complete alliance checkpoint system.
+
+**Children:**
+- REQ-TURN-018.1: Coalition Formation Logic
+- REQ-TURN-018.2: Bot Join Decision Mechanics
+- REQ-TURN-018.3: Milestone Gate Requirement
 
 **Rationale:** Anti-snowball mechanic. Prevents runaway victories by organizing resistance.
 
-**Key Values:**
-| Parameter | Value | Notes |
-|-----------|-------|-------|
-| coalition_trigger_vp | 7 | Victory points threshold for auto-coalition |
-| coalition_join_chance | 0.8 | 80% chance bot joins coalition |
-| min_coalition_size | 3 | Minimum empires to form coalition |
-| max_coalition_size | 5 | Maximum empires in coalition |
-
 **Source:** Section 3.15
-
-**Code:**
-- `src/lib/game/services/phases/alliance-checkpoints-phase.ts` - `processAllianceCheckpoints()`
-- `src/lib/game/diplomacy/coalition-manager.ts` - Coalition formation logic
-
-**Tests:**
-- `src/lib/game/services/__tests__/alliance-checkpoints-phase.test.ts` - Coalition formation, thresholds, milestone gate
 
 **Status:** Draft
 
 ---
 
-### REQ-TURN-019: Victory Check Phase (Split)
+### REQ-TURN-018.1: Coalition Formation Logic
 
-> **Note:** This spec has been split into atomic sub-specs. See REQ-TURN-019-01 through REQ-TURN-019-06 for individual victory checks.
+**Description:** If leader has 7+ victory points, potential coalition of 3-5 weaker empires forms automatically.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| coalition_trigger_vp | 7 | Victory points threshold for auto-coalition |
+| min_coalition_size | 3 | Minimum empires to form coalition |
+| max_coalition_size | 5 | Maximum empires in coalition |
+
+**Rationale:** Automatic coalition formation creates organized resistance against dominant players.
+
+**Source:** Section 3.15
+
+**Code:**
+- `src/lib/game/diplomacy/coalition-manager.ts` - Coalition formation logic
+
+**Tests:**
+- `src/lib/game/services/__tests__/alliance-checkpoints-phase.test.ts` - Test formation thresholds
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-018.2: Bot Join Decision Mechanics
+
+**Description:** Bots have 80% chance to join anti-leader coalition when triggered.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| coalition_join_chance | 0.8 | 80% chance bot joins coalition |
+
+**Rationale:** High join probability ensures effective coalition formation while maintaining some unpredictability.
+
+**Source:** Section 3.15
+
+**Code:**
+- `src/lib/game/services/phases/alliance-checkpoints-phase.ts` - Bot join decision logic
+
+**Tests:**
+- `src/lib/game/services/__tests__/alliance-checkpoints-phase.test.ts` - Test join probability
+
+**Status:** Draft
+
+---
+
+### REQ-TURN-018.3: Milestone Gate Requirement
+
+**Description:** Alliance Checkpoints Phase only active if M11 milestone unlocked. Failures log errors but don't block turn.
+
+**Rationale:** Milestone gate prevents overwhelming new players with complex diplomacy systems.
+
+**Source:** Section 3.15
+
+**Code:**
+- `src/lib/game/services/phases/alliance-checkpoints-phase.ts` - `processAllianceCheckpoints()` with milestone check
+
+**Tests:**
+- `src/lib/game/services/__tests__/alliance-checkpoints-phase.test.ts` - Test milestone gate
+
+**Status:** Draft
+
+---
 
 **Overview:** Victory Check Phase (Phase 16) evaluates all 6 victory conditions for all empires. First empire to meet any condition wins. Game locks after victory.
 
