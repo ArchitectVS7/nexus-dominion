@@ -103,7 +103,10 @@
       "file": "docs/Game Systems/DIPLOMACY-SYSTEM.md",
       "specs": [
         { "id": "REQ-DIP-001", "title": "Treaty Types", "atomic": true, "line": 526 },
-        { "id": "REQ-DIP-002", "title": "Coalition System", "atomic": false, "line": 547, "splitCandidate": "formation + benefits + dissolution" },
+        { "id": "REQ-DIP-002", "title": "Coalition System (Split)", "atomic": true, "line": 547, "parentOf": ["REQ-DIP-002-A", "REQ-DIP-002-B", "REQ-DIP-002-C"] },
+        { "id": "REQ-DIP-002-A", "title": "Coalition Formation Requirements", "atomic": true, "line": 553, "splitFrom": "REQ-DIP-002" },
+        { "id": "REQ-DIP-002-B", "title": "Coalition Benefits and Shared Victory", "atomic": true, "line": 587, "splitFrom": "REQ-DIP-002" },
+        { "id": "REQ-DIP-002-C", "title": "Coalition Dissolution Mechanics", "atomic": true, "line": 626, "splitFrom": "REQ-DIP-002" },
         { "id": "REQ-DIP-003", "title": "Reputation System", "atomic": true, "line": 570 },
         { "id": "REQ-DIP-004", "title": "Trust Score Calculation", "atomic": true, "line": 610 },
         { "id": "REQ-DIP-005", "title": "Automatic Coalition Formation", "atomic": false, "line": 634, "splitCandidate": "auto-formation + leader debuffs" },
@@ -442,9 +445,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 301,
-    "atomicSpecs": 228,
-    "splitCandidates": 64,
+    "totalSpecs": 303,
+    "atomicSpecs": 231,
+    "splitCandidates": 63,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

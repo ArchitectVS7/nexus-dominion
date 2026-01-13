@@ -544,24 +544,123 @@ Progress bar showing remaining turns until auto-renewal decision.
 
 ---
 
-### REQ-DIP-002: Coalition System
+### REQ-DIP-002: Coalition System (Split)
 
-**Description:** Multiple empires can form coalitions:
-- Requires 3+ members
-- Shared victory condition: Coalition controls 50% of territory
-- Provides shared intelligence, coordinated attacks (+5% attack bonus), diplomatic immunity
-- Can be dissolved by majority vote or betrayal
+> **Note:** This spec has been split into atomic sub-specs. See REQ-DIP-002-A through REQ-DIP-002-C.
 
-**Rationale:** Anti-snowball mechanic to prevent runaway victories. Creates "raid boss" feeling when attacking dominant leader.
+---
+
+### REQ-DIP-002-A: Coalition Formation Requirements
+
+**Description:** Multiple empires can form coalitions. A coalition requires a minimum of 3 member empires to be created and maintained.
+
+**Rationale:** The 3-member minimum prevents two-player alliances from dominating. Creates meaningful groupings that require broader diplomatic coordination.
+
+**Formation Rules:**
+- Minimum members: 3 empires
+- Creation: Any empire can propose coalition
+- Joining: Requires invitation and acceptance
+- Status: Coalition active when 3+ members present
+
+**Consequences of dropping below 3 members:**
+- Coalition automatically dissolves
+- All benefits immediately end
+- Members return to standard diplomatic relations
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 2.1, Section 3.2
 
 **Code:**
-- `src/lib/diplomacy/coalitions.ts` - Coalition formation, membership, benefits
-- `src/lib/game/services/coalition-service.ts` - Coalition management
+- `src/lib/diplomacy/coalitions.ts` - Coalition formation and membership validation
+- `src/lib/game/services/coalition-service.ts` - Coalition creation logic
 
 **Tests:**
-- `src/lib/game/services/__tests__/coalition-service.test.ts` - Coalition operations
+- `src/lib/game/services/__tests__/coalition-service.test.ts` - Test 3-member minimum enforcement
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-002-B: Coalition Benefits and Shared Victory
+
+**Description:** Coalition members gain strategic advantages including shared intelligence, coordinated attack bonuses, diplomatic immunity, and a shared victory condition. The coalition wins if it collectively controls 50% of galactic territory.
+
+**Rationale:** Anti-snowball mechanic to prevent runaway victories. Creates "raid boss" feeling when attacking dominant leader. Benefits must be substantial enough to incentivize cooperation.
+
+**Coalition Benefits:**
+| Benefit | Value | Notes |
+|---------|-------|-------|
+| Shared intelligence | Full visibility | See REQ-DIP-009 for details |
+| Coordinated attack bonus | +5% | Applies when attacking same target |
+| Diplomatic immunity | Within coalition | Cannot attack coalition members |
+| Shared victory | 50% territory | Collective control threshold |
+
+**Shared Victory Condition:**
+- Victory triggers when coalition collectively controls 50% of galactic territory
+- All coalition members share the victory
+- Territory counted as aggregate across all members
+- Must maintain 3+ members to claim victory
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1, Section 3.2
+
+**Code:**
+- `src/lib/diplomacy/coalitions.ts` - Coalition benefits implementation
+- `src/lib/combat/coalition-bonus.ts` - Coordinated attack bonus
+- `src/lib/victory/coalition-victory.ts` - Shared victory checking
+
+**Tests:**
+- `src/lib/game/services/__tests__/coalition-service.test.ts` - Verify all benefits active
+- `src/lib/victory/__tests__/coalition-victory.test.ts` - Test 50% territory threshold
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-002-C: Coalition Dissolution Mechanics
+
+**Description:** Coalitions can be dissolved through majority vote by members or through betrayal when one member attacks another.
+
+**Rationale:** Provides exit mechanisms while creating consequences for betrayal. Majority vote allows peaceful dissolution, betrayal creates dramatic moments.
+
+**Dissolution Methods:**
+
+1. **Majority Vote:**
+   - Any member can call dissolution vote
+   - Requires >50% member approval
+   - Peaceful dissolution (no reputation penalty)
+   - Immediate effect upon vote passing
+
+2. **Betrayal:**
+   - Automatic dissolution when member attacks another member
+   - Betrayer suffers -40 reputation with all empires (see REQ-DIP-003)
+   - Coalition dissolves immediately
+   - Cannot rejoin coalition for 20 turns
+
+**Post-Dissolution:**
+- All coalition benefits immediately removed
+- Members return to individual diplomatic status
+- Can form new coalitions immediately (except betrayers)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1, Section 3.2
+
+**Code:**
+- `src/lib/diplomacy/coalitions.ts` - Dissolution logic and voting
+- `src/lib/diplomacy/betrayal.ts` - Betrayal detection and penalties
+
+**Tests:**
+- `src/lib/game/services/__tests__/coalition-service.test.ts` - Test majority vote and betrayal dissolution
+- `src/lib/diplomacy/__tests__/betrayal.test.ts` - Verify betrayal consequences
 
 **Status:** Draft
 
