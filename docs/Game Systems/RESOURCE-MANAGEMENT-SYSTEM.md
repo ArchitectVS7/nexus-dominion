@@ -1230,28 +1230,27 @@ Examples:
 
 ---
 
-### REQ-RES-005: Military Maintenance Costs
+### REQ-RES-005: Military Maintenance Costs (Split)
 
-**Description:** Military units consume ore and petroleum each turn for maintenance and fuel:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-005-A through REQ-RES-005-C.
 
-```
-Ore Maintenance per Turn = Σ(Unit Ore Cost × 5%)
-Petroleum Fuel per Turn = Σ(Unit Petroleum Cost × 3%)
-```
+---
 
-If ore/petroleum balance goes negative, military units suffer penalties (deactivate for ore, half speed for petroleum).
+### REQ-RES-005-A: Ore Maintenance Calculation
+
+**Description:** Military units consume ore each turn for maintenance. Ore maintenance calculated as 5% of unit build cost per turn, summed across all units. Ore deducted from empire storage each turn during maintenance phase.
 
 **Rationale:** Prevents infinite military growth without economic support. Encourages balancing military power with resource production.
 
 **Formula:**
 ```
-Per-unit maintenance:
-- Fighter: 50 ore build cost × 5% = 2.5 ore/turn maintenance
-- Fighter: 25 petroleum build cost × 3% = 0.75 petroleum/turn fuel
+Ore Maintenance per Turn = Σ(Unit Ore Cost × 5%)
 
-Fleet of 20 fighters:
+Example - Per-unit maintenance:
+- Fighter: 50 ore build cost × 5% = 2.5 ore/turn maintenance
+
+Example - Fleet of 20 fighters:
 - Ore: 20 × 2.5 = 50 ore/turn
-- Petroleum: 20 × 0.75 = 15 petroleum/turn
 ```
 
 **Key Values:**
@@ -1259,9 +1258,6 @@ Fleet of 20 fighters:
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Ore maintenance rate | 5% of build cost/turn | Per-unit upkeep |
-| Petroleum fuel rate | 3% of build cost/turn | Per-unit fuel |
-| Negative ore consequence | Units deactivate (0% power) | Cannot attack/defend |
-| Negative petroleum consequence | Half speed | Can attack at 50% effectiveness |
 
 **Source:** Section 2.2 - Resource Consumption Rates
 
@@ -1271,11 +1267,74 @@ Fleet of 20 fighters:
 
 **Tests:**
 - `src/lib/game/services/__tests__/military-maintenance.test.ts` - Maintenance calculation tests
-- `src/lib/game/services/__tests__/negative-resource-penalties.test.ts` - Consequence tests
 
 **Status:** Draft
 
-> **⚠️ PLACEHOLDER VALUES**: Maintenance rates (5% ore, 3% petroleum) are initial estimates requiring balance testing against fleet sizes and resource production rates.
+> **⚠️ PLACEHOLDER VALUES**: Maintenance rate (5% ore) is initial estimate requiring balance testing against fleet sizes and resource production rates.
+
+---
+
+### REQ-RES-005-B: Petroleum Fuel Calculation
+
+**Description:** Military units consume petroleum each turn for fuel. Petroleum fuel calculated as 3% of unit build cost per turn, summed across all units. Petroleum deducted from empire storage each turn during maintenance phase.
+
+**Rationale:** Prevents infinite military growth without economic support. Encourages balancing military power with resource production.
+
+**Formula:**
+```
+Petroleum Fuel per Turn = Σ(Unit Petroleum Cost × 3%)
+
+Example - Per-unit fuel:
+- Fighter: 25 petroleum build cost × 3% = 0.75 petroleum/turn fuel
+
+Example - Fleet of 20 fighters:
+- Petroleum: 20 × 0.75 = 15 petroleum/turn
+```
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Petroleum fuel rate | 3% of build cost/turn | Per-unit fuel |
+
+**Source:** Section 2.2 - Resource Consumption Rates
+
+**Code:**
+- `src/lib/game/services/military-maintenance.ts` - `calculateMaintenanceCosts()` function
+- `src/lib/game/services/resource-engine.ts` - Consumption phase integration
+
+**Tests:**
+- `src/lib/game/services/__tests__/military-maintenance.test.ts` - Maintenance calculation tests
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Fuel rate (3% petroleum) is initial estimate requiring balance testing against fleet sizes and resource production rates.
+
+---
+
+### REQ-RES-005-C: Military Resource Deficit Consequences
+
+**Description:** When ore/petroleum balance goes negative during maintenance phase, military units suffer immediate penalties. Ore deficit causes units to deactivate (0% combat power). Petroleum deficit causes units to operate at half effectiveness (50% combat power, half speed).
+
+**Rationale:** Prevents infinite military growth without economic support. Encourages balancing military power with resource production.
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Negative ore consequence | Units deactivate (0% power) | Cannot attack/defend |
+| Negative petroleum consequence | Half speed (50% power) | Can attack at 50% effectiveness |
+
+**Source:** Section 2.2 - Resource Consumption Rates
+
+**Code:**
+- `src/lib/game/services/military-maintenance.ts` - `calculateMaintenanceCosts()` function
+- `src/lib/game/services/resource-engine.ts` - Consumption phase integration
+
+**Tests:**
+- `src/lib/game/services/__tests__/negative-resource-penalties.test.ts` - Consequence tests
+
+**Status:** Draft
 
 ---
 
