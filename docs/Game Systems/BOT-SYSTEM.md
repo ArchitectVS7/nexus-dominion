@@ -1740,41 +1740,187 @@ interface BotDecisionLog {
 
 ---
 
-### REQ-BOT-008: Coalition AI Behavior
+### REQ-BOT-008: Coalition AI Behavior (Split)
 
-**Description:** Bots form, manage, and betray coalitions based on archetype and game state:
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-BOT-008-A through REQ-BOT-008-C below.
 
-**Formation Logic (game turn > 10):**
-- Diplomat: Actively seeks allies (trust_score > 30)
-- Warlord: Only allies with strong players (top 20% networth)
-- Merchant: Allies with trade partners
-- Schemer: Joins any coalition (plans betrayal after 20 turns)
-- Turtle: Joins defensive coalitions only
-- Random: 30% chance to propose/accept
+**Overview:** Bots form, manage, and betray coalitions based on archetype and game state, creating dynamic alliance politics.
 
-**Coalition Behavior:**
-- Honor defense pacts (if loyalty > 0.5)
-- Coordinate attacks on shared enemies
-- Share intelligence via coalition chat
-- Coalition chat examples: defensive coordination, attack planning, strategic discussion
+**Coalition Mechanics:**
+- Formation: Archetype-based joining logic [REQ-BOT-008-A]
+- Behavior: Coordination within coalitions [REQ-BOT-008-B]
+- Betrayal/Leave: Exit conditions [REQ-BOT-008-C]
+
+---
+
+### REQ-BOT-008-A: Coalition Formation Logic
+
+**Description:** Bots decide whether to form or join coalitions based on their archetype personality, game state, and relationship scores, with formation only occurring after turn 10.
+
+**Formation Rules (game turn > 10):**
+
+1. **Diplomat:**
+   - Strategy: Actively seeks allies
+   - Trigger: trust_score > 30 with any empire
+   - Frequency: Proposes alliances every 5 turns
+   - Target: Any empire meeting trust threshold
+
+2. **Warlord:**
+   - Strategy: Only allies with strong players
+   - Trigger: Target in top 20% networth
+   - Frequency: Selective, evaluates every 10 turns
+   - Target: Military powerhouses only
+
+3. **Merchant:**
+   - Strategy: Allies with trade partners
+   - Trigger: Active trade relationship exists
+   - Frequency: After 10+ completed trades
+   - Target: Empires with mutual economic benefit
+
+4. **Schemer:**
+   - Strategy: Joins any coalition (plans betrayal)
+   - Trigger: Any coalition invite
+   - Frequency: Accepts all reasonable offers
+   - Target: Any coalition (planning 20-turn betrayal timer)
+
+5. **Turtle:**
+   - Strategy: Joins defensive coalitions only
+   - Trigger: Under attack or threatened
+   - Frequency: When defensive need exists
+   - Target: Coalitions formed against aggressors
+
+6. **Random:**
+   - Strategy: Unpredictable alliance behavior
+   - Trigger: 30% chance to propose/accept
+   - Frequency: Random evaluation each turn
+   - Target: Any empire with neutral+ relationship
+
+**Timing Gate:**
+- No coalitions before turn 10 (early game isolation period)
+- Ensures players establish positions before alliances form
+
+**Rationale:** Archetype-specific formation creates personality-driven diplomacy. Warlords form power blocs, Diplomats build webs, Schemers infiltrate for betrayal. Turn 10 gate prevents instant alliance spam.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 9.2 - Coalition AI Behavior, Formation Logic
+
+**Code:** TBD - `src/lib/bots/coalition-formation.ts` - Formation decision logic
+
+**Tests:** TBD - Verify each archetype's formation behavior
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-008-B: Coalition Behavior and Coordination
+
+**Description:** Bots within coalitions coordinate military actions, honor defense pacts, and share intelligence through coalition chat, creating challenging multi-bot opponents.
+
+**Coalition Coordination:**
+
+1. **Honor Defense Pacts:**
+   - Trigger: Coalition member attacked by non-member
+   - Condition: Bot loyalty > 0.5
+   - Response: Join defensive war within 1 turn
+   - Exception: If bot is currently losing own war
+
+2. **Coordinate Attacks:**
+   - Strategy: Plan simultaneous strikes on shared enemies
+   - Timing: Synchronize attacks within 2-turn window
+   - Target selection: Focus fire on coalition threats
+   - Communication: Discuss timing in coalition chat
+
+3. **Share Intelligence:**
+   - Visibility: Coalition members see each other's shared intel
+   - Updates: Sector visibility, enemy movements, resource status
+   - Chat: Strategic discussions, warnings, coordination
+   - Example messages:
+     - "Enemy building carriers at Sector X"
+     - "Coordinating attack on EmpireY turn 45"
+     - "Need defensive support at border sectors"
+
+4. **Coalition Chat Behavior:**
+   - Frequency: 1-3 messages per turn (if significant events)
+   - Content: Strategic discussion, attack coordination, defensive warnings
+   - Personality: Reflects archetype (Warlord aggressive, Diplomat polite, Schemer deceptive)
+   - Visibility: All coalition members see bot-to-bot chats
+
+**Rationale:** Coalition coordination makes bot alliances feel like coordinated opponents rather than independent actors. Defense pact honoring creates reliable allies. Intelligence sharing rewards diplomatic investment.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 9.2 - Coalition AI Behavior, Coalition Behavior
+
+**Code:** TBD - `src/lib/bots/coalition-coordination.ts` - Coordination logic
+
+**Tests:** TBD - Verify defense pacts, attack coordination, intel sharing
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-008-C: Coalition Betrayal and Leave Mechanics
+
+**Description:** Bots betray or leave coalitions based on archetype-specific triggers, creating dramatic political shifts and ensuring alliances aren't permanent.
 
 **Betrayal Conditions:**
-- Schemer archetype: Always after 20 turns in coalition
-- Other archetypes: Only if trust_score < -50
-- Opportunity: Coalition weakened by war
 
-**Leave Conditions:**
-- Coalition attacks the bot
-- Coalition leader eliminated
-- Better opportunity exists (risk_tolerance > 0.7)
+1. **Schemer Archetype (Guaranteed):**
+   - Timer: Always betrays after exactly 20 turns in coalition
+   - Method: Surprise attack on weakest coalition member
+   - Preparation: Positions forces during membership
+   - Warning: None (surprise betrayal)
 
-**Rationale:** Creates dynamic alliance politics. Scheming bots make all alliances untrustworthy. Coalition coordination creates challenging multi-bot opponents.
+2. **Other Archetypes (Conditional):**
+   - Trigger: trust_score < -50 with coalition
+   - Cause: Repeated slights, broken promises, or aggression
+   - Method: Declares exit then attacks (1-turn warning)
+   - Frequency: Rare (requires severe trust breakdown)
 
-**Source:** `docs/design/BOT-SYSTEM.md`
+3. **Opportunity Betrayal:**
+   - Trigger: Coalition weakened by war
+   - Condition: Bot sees opportunity to gain significantly
+   - Method: Attack during coalition's moment of weakness
+   - Archetype: Risk-tolerant archetypes more likely
 
-**Code:** `src/lib/bots/coalition.ts`, `src/lib/game/services/__tests__/coalition-service.test.ts`
+**Leave Conditions (Non-Hostile Exit):**
 
-**Tests:** `src/lib/game/services/__tests__/coalition-service.test.ts`
+1. **Coalition Attacks Bot:**
+   - Trigger: Coalition member declares war on bot
+   - Response: Immediate exit from coalition
+   - No betrayal: Just leaves (defensive response)
+
+2. **Coalition Leader Eliminated:**
+   - Trigger: Empire that formed coalition is destroyed
+   - Response: Coalition dissolves automatically
+   - Transition: Bots may form new coalition
+
+3. **Better Opportunity:**
+   - Trigger: Stronger coalition invite received
+   - Condition: Bot risk_tolerance > 0.7
+   - Method: Leave peacefully, join new coalition
+   - Archetype: Opportunistic archetypes (Merchant, Schemer)
+
+**Reputation Impact:**
+- Betrayal: -20 reputation with all empires (permanent scar)
+- Peaceful leave: -5 reputation (temporary)
+
+**Rationale:** Schemer betrayal creates dramatic political moments and makes all alliances feel risky. Conditional betrayal ensures severe mistreatment has consequences. Leave conditions prevent bots being trapped in bad alliances.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 9.2 - Coalition AI Behavior, Betrayal/Leave Mechanics
+
+**Code:** TBD - `src/lib/bots/coalition-betrayal.ts` - Betrayal/leave logic
+
+**Tests:** TBD - Verify Schemer 20-turn timer, trust-based betrayal, leave triggers
 
 **Status:** Draft
 

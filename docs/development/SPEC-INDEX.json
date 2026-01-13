@@ -59,8 +59,11 @@
         { "id": "REQ-BOT-006-B", "title": "LLM System Prompt Template", "atomic": true, "line": 1558, "splitFrom": "REQ-BOT-006" },
         { "id": "REQ-BOT-006-C", "title": "LLM Rate Limits and Cost Controls", "atomic": true, "line": 1644, "splitFrom": "REQ-BOT-006" },
         { "id": "REQ-BOT-007", "title": "Decision Audit System", "atomic": true, "line": 1694 },
-        { "id": "REQ-BOT-008", "title": "Coalition AI Behavior", "atomic": false, "line": 1341, "splitCandidate": "formation + behavior + betrayal" },
-        { "id": "REQ-BOT-009", "title": "Behavioral Telegraphing", "atomic": true, "line": 1381 },
+        { "id": "REQ-BOT-008", "title": "Coalition AI Behavior (Split)", "atomic": true, "line": 1743, "parentOf": ["REQ-BOT-008-A", "REQ-BOT-008-B", "REQ-BOT-008-C"] },
+        { "id": "REQ-BOT-008-A", "title": "Coalition Formation Logic", "atomic": true, "line": 1756, "splitFrom": "REQ-BOT-008" },
+        { "id": "REQ-BOT-008-B", "title": "Coalition Behavior and Coordination", "atomic": true, "line": 1818, "splitFrom": "REQ-BOT-008" },
+        { "id": "REQ-BOT-008-C", "title": "Coalition Betrayal and Leave Mechanics", "atomic": true, "line": 1867, "splitFrom": "REQ-BOT-008" },
+        { "id": "REQ-BOT-009", "title": "Behavioral Telegraphing", "atomic": true, "line": 1929 },
         { "id": "REQ-BOT-010", "title": "Endgame Behavior (Split)", "atomic": true, "line": 1668, "parentOf": ["REQ-BOT-010-A", "REQ-BOT-010-B", "REQ-BOT-010-C", "REQ-BOT-010-D"] },
         { "id": "REQ-BOT-010-A", "title": "Late Campaign Threshold (Turn 150+)", "atomic": true, "line": 1676, "splitFrom": "REQ-BOT-010" },
         { "id": "REQ-BOT-010-B", "title": "Dominant Leader Threshold (50% Dominance)", "atomic": true, "line": 1705, "splitFrom": "REQ-BOT-010" },
@@ -434,9 +437,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 296,
-    "atomicSpecs": 220,
-    "splitCandidates": 67,
+    "totalSpecs": 298,
+    "atomicSpecs": 223,
+    "splitCandidates": 66,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
