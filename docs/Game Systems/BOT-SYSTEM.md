@@ -33,6 +33,21 @@ This document serves as the canonical reference for all bot AI behavior in Nexus
 
 ---
 
+## Table of Contents
+
+1. [Overview](#overview)
+2. [4-Tier Intelligence System](#4-tier-intelligence-system)
+3. [8 Archetypes](#8-archetypes)
+4. [Emotional State System](#emotional-state-system)
+5. [UI/UX Design](#5-uiux-design)
+6. [Requirements (Specifications)](#requirements)
+7. [Implementation](#implementation)
+8. [Balance Targets](#balance-targets)
+9. [Migration Plan](#migration-plan)
+10. [Conclusion](#10-conclusion)
+
+---
+
 ## Overview
 
 Nexus Dominion features 10-100 AI bot opponents with varying intelligence, personalities, and strategies. Bots create a dynamic, unpredictable game world where players must read behavior, form alliances, and anticipate betrayals.
@@ -155,49 +170,29 @@ Bots remember interactions with **weighted decay**:
 
 ### Core Decision Loop
 
-```
-1. GATHER STATE
-   ├── Own empire status (resources, military, sectors)
-   ├── Relationship data (allies, enemies, neutrals)
-   ├── Global game state (rankings, market prices)
-   └── Recent events (attacks, messages, treaties)
+Bot decision processing follows a 5-step cycle:
 
-2. ASSESS SITUATION
-   ├── Threat analysis (who can attack us?)
-   ├── Opportunity analysis (who is weak?)
-   ├── Economic position (are we growing?)
-   └── Alliance health (are allies reliable?)
+1. **GATHER STATE** - Collect empire status, relationships, and game state
+2. **ASSESS SITUATION** - Analyze threats, opportunities, and strategic position
+3. **STRATEGIC DECISION** - Choose actions based on tier intelligence
+4. **EXECUTE ACTIONS** - Perform military, economic, diplomatic, and research actions
+5. **LOG & LEARN** - Record decisions and update relationship scores
 
-3. STRATEGIC DECISION (varies by tier)
-   ├── Tier 1: LLM analysis with personality prompt
-   ├── Tier 2: Decision tree with weighted priorities
-   ├── Tier 3: Simple if/then rules
-   └── Tier 4: Random with constraints
-
-4. EXECUTE ACTIONS
-   ├── Military: Attack, defend, produce units
-   ├── Economic: Buy/sell, adjust production
-   ├── Diplomatic: Propose/accept/break treaties
-   ├── Research: Choose tech path
-   └── Communication: Send messages
-
-5. LOG & LEARN
-   ├── Record decision reasoning
-   ├── Update relationship scores
-   └── Adjust strategy if needed
-```
+For complete pseudo-code, see [Appendix 1.1: Bot Decision Engine](appendix/BOT-SYSTEM-APPENDIX.md#11-bot-decision-engine---core-loop).
 
 ### Bot Decision Types
 
+Brief example of bot decision types:
+
 ```typescript
 type BotDecision =
-  | { type: "build_units"; unitType: UnitType; quantity: number }
-  | { type: "buy_sector"; sectorType: SectorType }
   | { type: "attack"; targetId: string; forces: Forces }
   | { type: "diplomacy"; action: "propose_nap" | "propose_alliance"; targetId: string }
   | { type: "trade"; resource: ResourceType; quantity: number; action: "buy" | "sell" }
   | { type: "do_nothing" }
 ```
+
+For complete type definition, see [Appendix 2.1: BotDecision Type](appendix/BOT-SYSTEM-APPENDIX.md#21-botdecision-type).
 
 ---
 
@@ -220,28 +215,16 @@ Each archetype has different telegraph patterns:
 
 ### Formation Logic
 
-```
-IF no coalition AND game_turn > 10:
-  ├── Diplomat: Seek allies (trust_score > 30)
-  ├── Warlord: Only ally with strong (top 20% networth)
-  ├── Merchant: Ally with trade partners
-  ├── Schemer: Join any coalition (plan betrayal)
-  ├── Turtle: Join defensive coalitions only
-  └── Random: 30% chance to propose/accept
+Coalitions form after turn 10 based on archetype behavior:
+- **Diplomat**: Actively seeks allies (trust_score > 30)
+- **Warlord**: Only allies with strong players (top 20% networth)
+- **Merchant**: Allies with trade partners
+- **Schemer**: Joins any coalition, plans betrayal after 20 turns
+- **Turtle**: Joins defensive coalitions only
 
-IF in coalition:
-  ├── Honor defense pacts (loyalty > 0.5)
-  ├── Coordinate attacks on shared enemies
-  ├── Share intelligence via coalition chat
-  └── Consider betrayal IF:
-      ├── Schemer: Always after 20 turns
-      └── Others: Only if trust_score < -50
+Bots honor defense pacts (if loyalty > 0.5), coordinate attacks, and share intelligence. Betrayals occur when trust_score < -50 or for Schemer archetype after 20 turns.
 
-LEAVE coalition IF:
-  ├── Coalition attacks us
-  ├── Leader is eliminated
-  └── Better opportunity exists (risk_tolerance > 0.7)
-```
+For complete coalition logic, see [Appendix 1.2: Coalition Formation Algorithm](appendix/BOT-SYSTEM-APPENDIX.md#12-coalition-formation-algorithm).
 
 ---
 
@@ -297,35 +280,9 @@ Choose your side wisely."
 
 ## 100 Unique Personas
 
-Each persona has:
+Each persona has a unique voice, personality quirks, vocabulary preferences, and 30-45 message templates across categories (greeting, battle, diplomacy, trade, etc.). The `usedPhrases` set prevents repetitive messaging within a single game.
 
-```typescript
-interface BotPersona {
-  id: string;                    // "commander_hexen"
-  name: string;                  // "Commander Hexen"
-  archetype: Archetype;
-
-  voice: {
-    tone: string;                // "gruff military veteran"
-    quirks: string[];            // ["never says please"]
-    vocabulary: string[];        // ["soldier", "campaign"]
-    catchphrase?: string;        // "Victory favors the prepared"
-  };
-
-  templates: {
-    greeting: string[];
-    battleTaunt: string[];
-    victoryGloat: string[];
-    defeat: string[];
-    tradeOffer: string[];
-    allianceProposal: string[];
-    betrayal: string[];
-    // ... more categories
-  };
-
-  usedPhrases: Set<string>;      // Prevent repetition
-}
-```
+For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appendix/BOT-SYSTEM-APPENDIX.md#22-botpersona-interface).
 
 Personas stored in `data/personas.json`.
 
@@ -409,21 +366,11 @@ SPEAKING STYLE:
 
 ### LLM Provider Chain
 
-```typescript
-const LLM_PROVIDERS = [
-  { name: 'groq', priority: 1 },
-  { name: 'together', priority: 2 },
-  { name: 'openai', priority: 3 }
-];
+Tier 1 bots use a fallback chain: Groq (priority 1) → Together AI (priority 2) → OpenAI (priority 3) → Tier 2 scripted behavior.
 
-// Rate limits
-const RATE_LIMITS = {
-  llmCallsPerGame: 5000,
-  llmCallsPerTurn: 50,
-  llmCallsPerHour: 500,
-  maxDailySpend: 50.00
-};
-```
+**Rate limits:** 5000 calls/game, 50 calls/turn, 500 calls/hour, $50 daily spend cap.
+
+For complete configuration and fallback logic, see [Appendix 3.1: LLM Provider Fallback Chain](appendix/BOT-SYSTEM-APPENDIX.md#31-llm-provider-fallback-chain).
 
 ---
 
@@ -431,80 +378,26 @@ const RATE_LIMITS = {
 
 ### System Prompt Template (Tier 1 Bots)
 
-```
-You are {empire_name}, a player in Nexus Dominion, a space empire strategy game.
+The LLM system prompt includes:
+- Empire name and archetype personality description
+- Numeric trait values (aggression, diplomacy, risk tolerance, loyalty, deception)
+- Current situation (turn, networth, rank, sectors, military power)
+- Relationship summary (allies, enemies, trust scores, recent interactions)
+- Recent events (last 5 turns of significant events)
 
-PERSONALITY: {archetype_description}
+The prompt asks the LLM to decide on military actions, production focus, diplomacy, research, and send messages while staying in character.
 
-YOUR TRAITS:
-- Aggression: {aggression}/10
-- Diplomacy: {diplomacy}/10
-- Risk Tolerance: {risk_tolerance}/10
-- Loyalty: {loyalty}/10
-- Deception: {deception}/10
-
-CURRENT SITUATION:
-{game_state_summary}
-
-YOUR RELATIONSHIPS:
-{relationship_summary}
-
-RECENT EVENTS:
-{recent_events}
-
-You must decide your actions for this turn. Consider:
-1. Who should you attack, if anyone?
-2. Should you propose or accept any alliances?
-3. What should your production focus be?
-4. Should you send any messages? (trash talk, diplomacy, coordination)
-
-Respond in JSON format with your decisions and reasoning.
-Also include any messages you want to send to other players.
-
-Remember: Stay in character as {archetype}. Your messages should reflect your personality.
-```
+For complete prompt template with variable substitution, see [Appendix 4.1: Complete System Prompt Template](appendix/BOT-SYSTEM-APPENDIX.md#41-complete-system-prompt-template).
 
 ### LLM Response Schema
 
-```typescript
-interface LLMBotResponse {
-  reasoning: string;
-  actions: {
-    military: {
-      attack_target: string | null;
-      attack_force: Forces;
-      defense_priority: "low" | "medium" | "high";
-    };
-    production: {
-      military_focus: number;  // 0.0-1.0
-      economy_focus: number;
-      research_focus: number;
-    };
-    diplomacy: {
-      propose_treaty: Array<{ target: string; type: TreatyType }>;
-      accept_treaties: string[];
-      break_treaties: string[];
-    };
-    research: {
-      target_tech: string | null;
-    };
-    covert: {
-      operation: CovertOpType | null;
-      target: string;
-    };
-  };
-  messages: Array<{
-    recipient: string;  // empireId | "global" | "coalition"
-    subject: string;
-    content: string;
-  }>;
-  coalition: {
-    invite: string[];
-    accept_invite: boolean;
-    leave: boolean;
-  };
-}
-```
+The LLM responds with JSON containing:
+- `reasoning`: Explanation of thought process
+- `actions`: Military, production, diplomacy, research, covert decisions
+- `messages`: Array of messages to send to other players
+- `coalition`: Invite/accept/leave decisions
+
+For complete LLMBotResponse interface, see [Appendix 2.5: LLMBotResponse Schema](appendix/BOT-SYSTEM-APPENDIX.md#25-llmbotresponse-schema).
 
 ---
 
@@ -583,37 +476,15 @@ As victory approaches, bot behavior intensifies:
 
 ### Bot Decision Logging
 
-All bot decisions are logged for debugging and player entertainment:
-
-```typescript
-interface BotDecisionLog {
-  id: string;
-  botId: string;
-  gameId: string;
-  turnNumber: number;
-
-  decisionType: BotDecisionType;
-  decisionData: Record<string, unknown>;
-  reasoning: string;              // Why bot made this choice
-  llmResponse?: string;           // Raw LLM response if applicable
-
-  preDecisionState: {
-    resources: Resources;
-    military: Forces;
-    relationships: RelationshipScore[];
-    emotion: EmotionalState;
-  };
-
-  outcome?: {
-    success: boolean;
-    impact: string;
-  };
-
-  createdAt: Date;
-}
-```
+All bot decisions are logged with:
+- Decision type, data, and reasoning
+- Pre-decision state (resources, military, relationships, emotion)
+- Raw LLM response (if applicable)
+- Outcome (success, impact)
 
 **Player Access**: Decision logs visible in post-game analysis (optional "God Mode" view)
+
+For complete BotDecisionLog interface, see [Appendix 2.3: BotDecisionLog Interface](appendix/BOT-SYSTEM-APPENDIX.md#23-botdecisionlog-interface).
 
 ---
 
@@ -661,33 +532,15 @@ interface BotDecisionLog {
 
 ### Game Setup Options
 
-```typescript
-interface BotGameConfig {
-  botCount: number;              // 10-100
-  tierDistribution: {
-    tier1: number;               // 5-10 (LLM)
-    tier2: number;               // 20-25 (Strategic)
-    tier3: number;               // 50-60 (Simple)
-    tier4: number;               // 10-15 (Chaotic)
-  };
+Game configuration controls:
+- Bot count (10-100)
+- Tier distribution (LLM, Strategic, Simple, Chaotic)
+- LLM settings (enabled, providers, rate limits)
+- Difficulty (easy, normal, hard, nightmare)
 
-  llmConfig: {
-    enabled: boolean;
-    providers: LLMProviderConfig[];
-    rateLimits: {
-      callsPerTurn: number;
-      callsPerHour: number;
-      maxDailySpend: number;
-    };
-  };
+Difficulty affects bot resources, decision quality, and aggression levels.
 
-  difficulty: "easy" | "normal" | "hard" | "nightmare";
-  // easy: bots make suboptimal choices
-  // normal: balanced bot intelligence
-  // hard: bots play optimally
-  // nightmare: bots get resource bonuses
-}
-```
+For complete BotGameConfig interface, see [Appendix 2.4: BotGameConfig Interface](appendix/BOT-SYSTEM-APPENDIX.md#24-botgameconfig-interface).
 
 ### Difficulty Modifiers
 
@@ -785,7 +638,168 @@ interface BotGameConfig {
 
 ---
 
-# Requirements 
+## 5. UI/UX Design
+
+### 5.1 Bot Communication Interface
+
+Players interact with bots primarily through the messaging system:
+
+**Message Display:**
+```
+┌─────────────────────────────────────────────────────────┐
+│  Messages                                      [Mark All Read]│
+├─────────────────────────────────────────────────────────┤
+│  [!] Admiral Zharkov (Warlord)                Turn 45  │
+│      "Your pathetic defenses won't save you..."        │
+│                                        [Reply] [Archive] │
+│                                                         │
+│  [★] Ambassador Velara (Diplomat)             Turn 44  │
+│      "I propose a Non-Aggression Pact..."              │
+│                                        [Accept] [Decline]│
+│                                                         │
+│  [?] The Broker (Schemer)                     Turn 43  │
+│      "Between you and me, let's form an alliance..."   │
+│                                        [Reply] [Ignore]  │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Visual Indicators:**
+- **[!]** = Threat/warning message (red)
+- **[★]** = Alliance/diplomatic proposal (blue)
+- **[?]** = Trade offer or mysterious message (yellow)
+- **[$]** = Economic message (green)
+
+### 5.2 Bot Behavior Observation
+
+Players observe bot behavior through several UI elements:
+
+**Empire List (Spy Report Style):**
+```
+┌─────────────────────────────────────────────────────────┐
+│  Empires                                    [Sort: Networth]│
+├─────────────────────────────────────────────────────────┤
+│  #1  Admiral Zharkov's Domain          NW: 125,000     │
+│      Recent: Attacked Merchant Guild (turn 43)         │
+│      Stance: [████████░░] Aggressive                   │
+│                                                         │
+│  #2  Diplomatic Corps                  NW: 118,000     │
+│      Recent: Proposed NAP to 3 empires                 │
+│      Stance: [░░████████] Peaceful                     │
+│                                                         │
+│  #3  Shadow Syndicate                  NW: 105,000     │
+│      Recent: Unknown movements                          │
+│      Stance: [░░░░?░░░░░] Unpredictable               │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Key Observations:**
+- Recent activity log (attacks, alliances, trades)
+- Aggression stance indicator (inferred from actions, not labeled as archetype)
+- Coalition membership (if known)
+- Military buildup warnings
+
+### 5.3 Coalition Chat Interface
+
+When invited to or forming coalitions, players see a shared chat:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Coalition: "Galactic Defense Pact"                    │
+│  Members: You, Ambassador Velara, Merchant Tycoon      │
+├─────────────────────────────────────────────────────────┤
+│  [Turn 44] Ambassador Velara:                          │
+│  "Admiral Zharkov is building up forces on our border. │
+│   Requesting defensive support."                        │
+│                                                         │
+│  [Turn 44] You:                                        │
+│  "I can send 200 fighters. What's our strategy?"       │
+│                                                         │
+│  [Turn 45] Merchant Tycoon:                            │
+│  "I'll fund reinforcements. 10,000 credits incoming."  │
+│                                                         │
+│  [Input] _________________________________ [Send]       │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 5.4 Bot Personality Tell System
+
+Players learn to identify bot archetypes through behavioral patterns:
+
+**Warlord Tells:**
+- Frequent military movements visible on map
+- Direct threat messages 2-3 turns before attack
+- Resource allocation: 70% military, 20% economy, 10% research
+
+**Diplomat Tells:**
+- Multiple alliance proposals per game
+- Mediates conflicts between other empires
+- Warns 3-5 turns before taking any aggressive action
+
+**Schemer Tells:**
+- Overly friendly messages ("Between you and me...")
+- Joins coalitions early, leaves after 20+ turns
+- Hidden military buildups (not visible until too late)
+
+**Visual Cues:**
+- Message tone and vocabulary
+- Military movement patterns
+- Alliance longevity
+- Trade behavior (Merchant bots trade frequently)
+
+### 5.5 Post-Game "God Mode" Viewer
+
+After game completion, players can review bot decision logs:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Bot Decision Viewer: Admiral Zharkov (Turn 45)        │
+├─────────────────────────────────────────────────────────┤
+│  Decision: Attack Merchant Guild                       │
+│                                                         │
+│  Reasoning:                                             │
+│  "I just defeated the Merchant Guild and they're       │
+│   rattled. Time to finish them while they're weak.     │
+│   The Diplomatic Corps is a useful ally - maintain     │
+│   that NAP."                                            │
+│                                                         │
+│  Pre-Decision State:                                   │
+│  - Networth: 125,000 (Rank #3)                        │
+│  - Emotion: Triumphant (intensity 0.8)                │
+│  - Relationship with Merchant Guild: -40 (hostile)    │
+│                                                         │
+│  Action Taken:                                          │
+│  - Attack with 300 fighters, 150 bombers              │
+│  - Production focus: 70% military                      │
+│                                                         │
+│  Outcome: Victory - Captured 2 sectors                 │
+│                                                         │
+│  [← Previous] [Next →] [Timeline View] [Close]         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### 5.6 Visual Design Principles
+
+**Color Coding:**
+- Red: Threats, attacks, hostile actions
+- Blue: Diplomatic proposals, alliances
+- Yellow: Warnings, unknown/mystery
+- Green: Economic actions, trades
+- Purple: Coalition activities
+
+**LCARS-Inspired Styling:**
+- Clean, futuristic interface
+- Rounded panel corners
+- High contrast text
+- Minimalist, data-focused design
+
+**Responsive Behavior:**
+- Mobile-friendly message interface
+- Collapsible coalition chat
+- Quick-action buttons for common responses
+
+---
+
+# Requirements
 
 **integrate with new template**
 
@@ -985,39 +999,20 @@ Final Action = argmax(Action Weight for all possible actions)
 
 ### REQ-BOT-005: 100 Unique Personas
 
-**Description:** 100 unique bot personas with structured voice and message templates:
+**Description:** 100 unique bot personas with structured voice and message templates.
 
-```typescript
-interface BotPersona {
-  id: string;                    // "commander_hexen"
-  name: string;                  // "Commander Hexen"
-  archetype: Archetype;          // Warlord, Diplomat, etc.
-
-  voice: {
-    tone: string;                // "gruff military veteran"
-    quirks: string[];            // ["never says please", "addresses by rank"]
-    vocabulary: string[];        // ["soldier", "campaign", "victory"]
-    catchphrase?: string;        // "Victory favors the prepared"
-  };
-
-  templates: {
-    greeting: string[];          // 3-5 variations
-    battleTaunt: string[];
-    victoryGloat: string[];
-    defeat: string[];
-    tradeOffer: string[];
-    allianceProposal: string[];
-    betrayal: string[];
-    // ... 30-45 total templates per persona
-  };
-
-  usedPhrases: Set<string>;      // Prevent phrase repetition within game
-}
-```
+Each persona includes:
+- Unique ID and name
+- Archetype assignment
+- Voice characteristics (tone, quirks, vocabulary, catchphrase)
+- 30-45 message templates across categories (greeting, battle, diplomacy, trade, etc.)
+- Phrase tracking to prevent repetition within a game
 
 **Template Variables:**
 - `{player_name}`, `{empire_name}`, `{target}`, `{sector_count}`, etc.
 - Templates filled dynamically based on game state
+
+For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appendix/BOT-SYSTEM-APPENDIX.md#22-botpersona-interface).
 
 **Rationale:** Creates memorable, distinguishable opponents. Voice and quirks ensure each bot feels unique. Template variety prevents repetitive messages.
 
@@ -1246,6 +1241,28 @@ interface BotDecisionLog {
 
 ---
 
+### Specification Summary
+
+| ID | Title | Status | Tests |
+|----|-------|--------|-------|
+| REQ-BOT-001 | Four-Tier Intelligence | Draft | TBD |
+| REQ-BOT-002 | Eight Archetypes | Draft | TBD |
+| REQ-BOT-003 | Emotional States | Draft | TBD |
+| REQ-BOT-004 | Memory System with Weighted Decay | Draft | `src/lib/game/repositories/__tests__/bot-memory-repository.test.ts` |
+| REQ-BOT-005 | 100 Unique Personas | Draft | `src/lib/messages/__tests__/personas.test.ts` |
+| REQ-BOT-006 | LLM Integration | Draft | TBD |
+| REQ-BOT-007 | Decision Audit System | Draft | TBD |
+| REQ-BOT-008 | Coalition AI Behavior | Draft | `src/lib/game/services/__tests__/coalition-service.test.ts` |
+| REQ-BOT-009 | Behavioral Telegraphing | Draft | TBD |
+| REQ-BOT-010 | Endgame Behavior | Draft | TBD |
+
+**Total Specifications:** 10
+**Implemented:** 0
+**Validated:** 0
+**Draft:** 10
+
+---
+
 ## Migration Plan
 
 ### Current State (January 2026)
@@ -1468,6 +1485,96 @@ const BOT_FEATURES = {
 - Coalition-level coordination
 - Shared enemy lists
 - Attack coordination
+
+---
+
+## 10. Conclusion
+
+### Key Decisions
+
+**1. Four-Tier Intelligence Architecture**
+- **Rationale**: Balances computational cost with gameplay quality. LLM bots (Tier 1) provide premium experience for 5-10 elite opponents, while Tier 2-4 bots create a varied skill landscape without breaking the budget.
+- **Trade-off**: Accepted complexity in bot management to deliver memorable "human-like" opponents.
+
+**2. Hidden Archetypes with Observable Behavior**
+- **Rationale**: Players learn through observation rather than UI labels, creating skill expression and discovery moments.
+- **Trade-off**: Requires careful telegraph design to avoid frustrating unpredictability. Warlord bots telegraph 70% of attacks; Schemer bots only 30%.
+
+**3. Mechanically Meaningful Emotions**
+- **Rationale**: Emotional states (Confident, Arrogant, Desperate, Vengeful, Fearful, Triumphant) directly modify decision weights (±5% to ±50%), ensuring emotions impact gameplay, not just flavor.
+- **Trade-off**: Adds complexity to decision engine but creates dynamic, reactive AI behavior that feels alive.
+
+**4. Relationship Memory with Weighted Decay**
+- **Rationale**: Major betrayals and sector captures resist decay (20% become permanent grudges), while minor trades fade quickly. Mimics human memory patterns.
+- **Trade-off**: Requires ongoing memory cleanup and storage management, but enables persistent rivalries that span 100+ turns.
+
+**5. LLM Provider Fallback Chain**
+- **Rationale**: Groq → Together → OpenAI → Scripted ensures 99%+ uptime while minimizing costs. Primary provider (Groq) is fastest and cheapest.
+- **Trade-off**: Dependency on external APIs, but graceful degradation to Tier 2 scripted behavior prevents game-breaking failures.
+
+### Open Questions
+
+**1. Optimal Tier Distribution for 100-Bot Games**
+- **Context**: Current target is 5-10 LLM, 20-25 Strategic, 50-60 Simple, 10-15 Chaotic.
+- **Options**:
+  - Increase LLM count to 15-20 for more premium experience (higher cost)
+  - Reduce LLM count to 3-5 to minimize API costs (less drama)
+- **Resolution Needed**: Playtest feedback on "bot quality vs. quantity" balance.
+
+**2. Cross-Game Memory for Nemesis System**
+- **Context**: Should bots remember player across multiple games? ("You again! I remember last time...")
+- **Options**:
+  - Enable cross-game memory for Tier 1 LLM bots only (epic rivalries)
+  - Disable cross-game memory entirely (each game is fresh start)
+  - Optional player setting
+- **Resolution Needed**: Design decision on persistent universe vs. isolated games.
+
+**3. Spectator Mode for Bot-Only Games**
+- **Context**: Players want to watch bots play each other with live commentary.
+- **Options**:
+  - Implement "fast-forward" mode for bot-only games
+  - Record replays with decision logs for post-game viewing
+  - Skip entirely for MVP
+- **Resolution Needed**: Prioritization against other features.
+
+**4. Dynamic Difficulty Adjustment**
+- **Context**: Should bot intelligence adapt if player is dominating or struggling?
+- **Options**:
+  - Enable dynamic scaling (bots get smarter if player too strong)
+  - Static difficulty setting only
+  - Per-bot hidden difficulty multiplier based on player performance
+- **Resolution Needed**: Player feedback on "fair challenge" vs. "artificial difficulty."
+
+### Dependencies
+
+**Depends On:**
+- **[COMBAT-SYSTEM.md](COMBAT-SYSTEM.md)** - Battle resolution, commander stats (Section 2.4)
+- **[RESEARCH.md](RESEARCH.md)** - Tech tree for bot research priorities
+- **[DIPLOMACY-SYSTEM.md]** (if exists) - Treaty types, alliance mechanics
+- **[COVERT-OPS.md]** (if exists) - Spy operations for Schemer archetype
+
+**Depended By:**
+- **[GAME-DESIGN.md](GAME-DESIGN.md)** - Overall game flow relies on bot opponents
+- **[VICTORY-SYSTEMS.md](VICTORY-SYSTEMS.md)** - Endgame behavior triggers on victory thresholds
+- **[PROGRESSIVE-SYSTEMS.md](PROGRESSIVE-SYSTEMS.md)** - Unlocks may affect bot behavior
+
+### Implementation Priority
+
+**Critical Path (M12-M14):**
+1. Tier 3 & Tier 2 bots (M12-M13) - Core gameplay functional
+2. Message template system (M13) - Communication with bots
+3. LLM integration (M14) - Premium Tier 1 experience
+
+**Polish Phase (M15-M16):**
+4. Emotional state system (M15) - Dynamic behavior
+5. Memory & grudges (M15) - Persistent relationships
+6. Balance tuning (M16) - Win rate targets
+
+**Post-Launch:**
+7. Cross-game memory (nemesis system)
+8. Spectator mode
+9. Dynamic difficulty
+10. Bot personality evolution
 
 ---
 

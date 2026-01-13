@@ -1,8 +1,9 @@
-# Technology Card System
+# Tech Card System
 
-**Version:** 2.0
-**Status:** Core Game Feature - Beta 3
-**Created:** 2026-01-11
+**Version:** 1.0
+**Status:** FOR IMPLEMENTATION
+**Spec Prefix:** REQ-TECH
+**Created:** 2026-01-12
 **Last Updated:** 2026-01-12
 **Replaces:** 4-tier crafting supply chain concept (explicitly rejected)
 
@@ -11,6 +12,13 @@
 ## Document Purpose
 
 This document defines the **Technology Card (Tech Card) draft system** for Nexus Dominion. Tech Cards provide tactical combat advantages and hidden objectives that complement the Research system's strategic bonuses.
+
+The Tech Card system replaces the originally proposed 4-tier crafting supply chain (22 resources, logistics management) with a streamlined card draft mechanic. This design choice prioritizes strategic decision-making over micromanagement while maintaining depth through card synergies and counter-play.
+
+**Who Should Read This:**
+- **Game Designers**: Understand the 3-tier card system and balance targets
+- **Developers**: Implement draft mechanics, combat integration, and database schema
+- **Testers**: Validate card effects, balance targets, and bot decision-making
 
 **Design Philosophy:**
 - **Draft, Don't Manage** — Pick from options, don't run supply chains
@@ -22,7 +30,7 @@ This document defines the **Technology Card (Tech Card) draft system** for Nexus
 
 **Relationship to Research:**
 - **Research = Foundation:** Permanent empire-wide stat modifiers (+2 STR, +4 AC)
-- **Crafting = Tactical Layer:** Situational combat advantages (+2 first round, cloaking)
+- **Tech Cards = Tactical Layer:** Situational combat advantages (+2 first round, cloaking)
 - **Combined Effect:** War Machine doctrine (+2 STR) + Plasma Torpedoes (+2 first round) = +4 STR opening salvo
 
 ---
@@ -30,18 +38,15 @@ This document defines the **Technology Card (Tech Card) draft system** for Nexus
 ## Table of Contents
 
 1. [Core Concept](#1-core-concept)
-2. [Card Anatomy](#2-card-anatomy)
-3. [Tier 1: Hidden Objectives](#3-tier-1-hidden-objectives)
-4. [Tier 2: Tactical Cards](#4-tier-2-tactical-cards)
-5. [Tier 3: Legendary Cards](#5-tier-3-legendary-cards)
-6. [Draft Events](#6-draft-events)
-7. [Combat Integration](#7-combat-integration)
-8. [Bot Integration](#8-bot-integration)
-9. [UI/UX Design](#9-uiux-design)
-10. [Implementation Requirements](#10-implementation-requirements)
-11. [Balance Targets](#11-balance-targets)
-12. [Migration Plan (Beta 3)](#12-migration-plan-beta-3)
-13. [Conclusion](#13-conclusion)
+2. [Mechanics Overview](#2-mechanics-overview)
+3. [Detailed Rules](#3-detailed-rules)
+4. [Bot Integration](#4-bot-integration)
+5. [UI/UX Design](#5-uiux-design)
+6. [Specifications](#6-specifications)
+7. [Implementation Requirements](#7-implementation-requirements)
+8. [Balance Targets](#8-balance-targets)
+9. [Migration Plan](#9-migration-plan)
+10. [Conclusion](#10-conclusion)
 
 ---
 
@@ -49,15 +54,13 @@ This document defines the **Technology Card (Tech Card) draft system** for Nexus
 
 ### 1.1 Three-Tier Card System
 
-Tech Cards replace crafting supply chains with strategic card drafting:
+Tech Cards replace crafting supply chains with strategic card drafting. The system consists of three distinct tiers, each serving a different strategic purpose:
 
 | Tier | Name | Draw Timing | Visibility | Purpose |
 |------|------|-------------|------------|---------|
 | **Tier 1** | Hidden Objectives | Turn 1 (once) | Revealed at game end | Secret scoring conditions |
 | **Tier 2** | Tactical Cards | Every 10 turns | Public draft | Combat advantages |
 | **Tier 3** | Legendary Cards | Turn 50+ | Public announcement | Game-changing abilities |
-
-### 1.2 The Draft System
 
 **Turn 1 (Hidden Objective):**
 - Draw 3 Tier 1 cards
@@ -70,23 +73,27 @@ Tech Cards replace crafting supply chains with strategic card drafting:
 - Turn 30: Draw 3 Tier 2 cards, pick 1 (public)
 - Turn 50+: Tier 3 Legendary cards enter draft pool
 
+### 1.2 Draft as Strategic Choice
+
 **Key Mechanic:**
 - Drafts are **public** (all players see what you picked)
 - Hand is **public** (enemies know what cards you have)
 - Hidden objective is **private** (no one knows your T1 card)
 - Usage is **visible** (combat log shows which card activated)
 
+This visibility creates natural counter-play: when Emperor Varkus drafts Plasma Torpedoes, savvy opponents will draft Shield Arrays to counter the first-strike bonus.
+
 ### 1.3 Integration with Research
 
-**Example Combo:**
-```
-Empire Build: "Alpha Strike Warlord"
+Tech Cards stack multiplicatively with Research bonuses, creating powerful synergies:
+
+**Example Combo: "Alpha Strike Warlord"**
 
 Foundation (Research):
 - Doctrine: War Machine (+2 STR to all units)
 - Specialization: Shock Troops (surprise round)
 
-Tactical Layer (Crafting):
+Tactical Layer (Tech Cards):
 - Plasma Torpedoes (+2 damage first round)
 - Ion Cannons (disable enemy stations)
 
@@ -98,19 +105,20 @@ Combined Effect in Combat:
 - Ion Cannons shut down defense stations
 
 Counter: Fortress + Shield Arrays (negates surprise round)
-```
 
 **Why Both Systems Work Together:**
 1. Research provides **empire-wide permanent bonuses**
-2. Crafting provides **tactical situational advantages**
+2. Tech Cards provide **tactical situational advantages**
 3. Neither is redundant—they stack multiplicatively
 4. Counter-play exists at both layers
 
 ---
 
-## 2. Card Anatomy
+## 2. Mechanics Overview
 
-### 2.1 Standard Card Format
+### 2.1 Card Anatomy
+
+Every Tech Card follows a standard format for clarity and consistency:
 
 ```
 ┌─────────────────────────────────┐
@@ -137,7 +145,7 @@ Counter: Fortress + Shield Arrays (negates surprise round)
 └─────────────────────────────────┘
 ```
 
-### 2.2 Card Elements
+**Card Elements:**
 
 **Top Bar:**
 - Card name (descriptive, thematic)
@@ -156,34 +164,32 @@ Counter: Fortress + Shield Arrays (negates surprise round)
 - Cost: Credits/resources to activate (if any)
 - Activation: Turn requirement or prerequisite
 
-### 2.3 Card Tiers Explained
+### 2.2 Card Tier Summary
 
-**Tier 1 (Hidden Objectives):**
-- Drawn once at game start
-- Secret until game end
-- Reward specific playstyles
-- Add 0-5 Victory Points at end
-- Example: "Warmonger's Arsenal" (+2 VP per empire eliminated)
+| Tier | Purpose | Example | Mechanical Impact | VP Impact |
+|------|---------|---------|-------------------|-----------|
+| **T1** | Secret scoring conditions | Warmonger's Arsenal (+2 VP per empire eliminated) | None during gameplay | +2-8 VP avg |
+| **T2** | Combat advantages | Plasma Torpedoes (+2 first round damage) | +10-20% win rate | None |
+| **T3** | Game-changing abilities | Planet Cracker (destroy 1 planet permanently) | +30-50% swing | Varies |
 
-**Tier 2 (Tactical Cards):**
-- Drafted every 10 turns
-- Public knowledge
-- Usable in combat immediately
-- Moderate power level
-- Example: "Plasma Torpedoes" (+2 first round damage)
+### 2.3 Draft Schedule
 
-**Tier 3 (Legendary Cards):**
-- Rare, game-changing
-- Appear Turn 50+
-- Galaxy-wide announcement when drafted
-- Single-use (except where noted)
-- Example: "Planet Cracker" (destroy 1 planet permanently)
+| Turn | Event | Cards Offered | Visibility |
+|------|-------|---------------|------------|
+| 1 | Hidden Objective | 3 T1 cards, keep 1 | Private |
+| 10 | First Tactical Draft | 3 T2 cards, pick 1 | Public |
+| 20 | Second Tactical Draft | 3 T2 cards, pick 1 | Public |
+| 30 | Third Tactical Draft | 3 T2 cards, pick 1 | Public |
+| 40 | Fourth Tactical Draft | 3 T2 cards, pick 1 | Public |
+| 50+ | Legendary Drafts | 3 cards (1-2 may be T3) | Public |
 
 ---
 
-## 3. Tier 1: Hidden Objectives
+## 3. Detailed Rules
 
-### 3.1 Purpose
+### 3.1 Tier 1: Hidden Objectives
+
+**Purpose:**
 
 Hidden objectives create **Lord of Waterdeep-style secret scoring** where players don't know each other's end-game goals.
 
@@ -193,7 +199,7 @@ Hidden objectives create **Lord of Waterdeep-style secret scoring** where player
 - Add replayability (different objectives each game)
 - Reward player creativity
 
-### 3.2 Hidden Objective Cards
+**Hidden Objective Card Pool:**
 
 | Card | Scoring Condition | VP Reward | Reveal Text |
 |------|-------------------|-----------|-------------|
@@ -212,9 +218,9 @@ Hidden objectives create **Lord of Waterdeep-style secret scoring** where player
 
 **Total Pool:** 12 cards (ensures variety, players draw 3 and keep 1)
 
-### 3.3 Mechanics
+**Mechanics:**
 
-**At Game Start:**
+**At Game Start:** <!-- @spec REQ-TECH-002 -->
 1. Each player draws 3 random Tier 1 cards
 2. Selects 1 to keep (hidden from all players)
 3. Returns 2 to deck (not shown)
@@ -224,46 +230,15 @@ Hidden objectives create **Lord of Waterdeep-style secret scoring** where player
 - Player sees reminder in "Objectives" panel
 - No mechanical effect during gameplay
 
-**At Game End:**
+**At Game End:** <!-- @spec REQ-TECH-006 -->
 - All hidden objectives revealed simultaneously
 - VP calculated and added to final score
 - Victory screen shows all players' objectives
 - Creates "aha!" moments ("So THAT'S why they were hoarding planets!")
 
-**Example End-Game Reveal:**
-```
-┌─────────────────────────────────────────────────────────┐
-│              HIDDEN OBJECTIVES REVEALED                 │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  PLAYER: Merchant's Ledger                              │
-│  "Every transaction brought me closer to victory."      │
-│  Credits earned: 175,000                                │
-│  Bonus: +7 VP (1 per 25k)                               │
-│                                                         │
-│  EMPEROR VARKUS: Warmonger's Arsenal                    │
-│  "My weapons were always destined for conquest."        │
-│  Empires eliminated: 4                                  │
-│  Bonus: +8 VP (2 per elimination)                       │
-│                                                         │
-│  LADY CHEN: Survivor's Grit                             │
-│  "They never touched my homeworld."                     │
-│  Planets lost: 0                                        │
-│  Bonus: +5 VP                                           │
-│                                                         │
-│  THE COLLECTIVE: Diplomat's Archive                     │
-│  "My alliances were my true strength."                  │
-│  Treaties active: 2                                     │
-│  Bonus: +6 VP (3 per treaty)                            │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
+### 3.2 Tier 2: Tactical Cards
 
----
-
-## 4. Tier 2: Tactical Cards
-
-### 4.1 Purpose
+**Purpose:**
 
 Tier 2 cards provide **combat advantages** that combine with Research bonuses to create diverse tactical options.
 
@@ -273,7 +248,7 @@ Tier 2 cards provide **combat advantages** that combine with Research bonuses to
 - Enable bot drama and reactions
 - Stack multiplicatively with Research bonuses
 
-### 4.2 Tier 2 Card Catalog (20 Cards)
+**Tier 2 Card Catalog (20 Cards):**
 
 #### Offensive Cards
 
@@ -322,16 +297,7 @@ Tier 2 cards provide **combat advantages** that combine with Research bonuses to
 
 **Total Pool:** 20 cards ensures draft variety (draw 3, pick 1 = 1,140 possible combinations over 4 drafts)
 
-### 4.3 Draft Timing
-
-**Regular Drafts:**
-- Turn 10: First draft (3 T2 cards offered, pick 1)
-- Turn 20: Second draft
-- Turn 30: Third draft
-- Turn 40: Fourth draft
-- Turn 50+: T3 cards enter pool (see next section)
-
-**Draft Process:**
+**Draft Process:** <!-- @spec REQ-TECH-003 -->
 1. Game pauses at start of turn
 2. Modal displays 3 random cards
 3. Player has full turn to decide (no timer)
@@ -339,11 +305,9 @@ Tier 2 cards provide **combat advantages** that combine with Research bonuses to
 5. Card added to player's hand immediately
 6. Card usable in next combat
 
----
+### 3.3 Tier 3: Legendary Cards
 
-## 5. Tier 3: Legendary Cards
-
-### 5.1 Purpose
+**Purpose:**
 
 Tier 3 cards are **game-changing abilities** that create dramatic late-game moments and comebacks.
 
@@ -353,7 +317,7 @@ Tier 3 cards are **game-changing abilities** that create dramatic late-game mome
 - High-risk, high-reward choices
 - Enable comebacks for struggling players
 
-### 5.2 Legendary Card Catalog (8 Cards)
+**Legendary Card Catalog (8 Cards):**
 
 | Card | Effect | Announcement | Cost | Use Limit |
 |------|--------|--------------|------|-----------|
@@ -366,54 +330,14 @@ Tier 3 cards are **game-changing abilities** that create dramatic late-game mome
 | **Quantum Superweapon** | Destroy all enemy units in 1 sector | "Witness obliteration." | 100,000 cr | One-use |
 | **Economic Collapse** | Reduce target empire's credits to 0 | "Their economy crumbles to dust." | 50,000 cr | One-use |
 
-### 5.3 Legendary Draft Mechanics
+**Legendary Draft Mechanics:** <!-- @spec REQ-TECH-004 -->
 
 **Availability:**
 - Enter draft pool at Turn 50
 - Appear alongside T2 cards (now draw 3, 1-2 may be T3)
 - Rarity: 30% chance per draft slot after Turn 50
 
-**Draft Announcement:**
-```
-┌─────────────────────────────────────────────────────────┐
-│                 ⚡ LEGENDARY DRAFT EVENT ⚡               │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  Turn 50: Advanced technologies now available          │
-│                                                         │
-│  The galaxy enters its final phase.                    │
-│  Legendary weapons, unimaginable power,                 │
-│  and desperate gambles await those bold enough.         │
-│                                                         │
-│  Choose wisely. These decisions shape destinies.        │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
-
-**Usage Announcement:**
-```
-┌─────────────────────────────────────────────────────────┐
-│                 🌟 PLANET CRACKER ACTIVATED 🌟           │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  Emperor Varkus has deployed the PLANET CRACKER.        │
-│                                                         │
-│  Target: Lady Chen's homeworld (Sector Alpha-7)         │
-│                                                         │
-│  The planet is consumed by cascading fission.           │
-│  4 billion souls. Gone in an instant.                   │
-│                                                         │
-│  The sector is now DEAD SPACE (uninhabitable).          │
-│                                                         │
-│  All empires recoil in horror.                          │
-│  Diplomatic penalties: -50 with all non-Syndicate       │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 5.4 Single-Use vs Permanent
-
-**Design Decision Resolution:**
+**Single-Use vs Permanent:**
 
 Based on playtesting goals, we use a **hybrid model**:
 - **Destructive cards:** One-use (Planet Cracker, Quantum Superweapon)
@@ -425,22 +349,9 @@ Based on playtesting goals, we use a **hybrid model**:
 
 This prevents "optimal save syndrome" (hoarding cards) while maintaining power fantasy.
 
----
+### 3.4 Draft Events
 
-## 6. Draft Events
-
-### 6.1 Draft Timing
-
-| Turn | Event | Cards Offered | Visibility |
-|------|-------|---------------|------------|
-| 1 | Hidden Objective | 3 T1 cards, keep 1 | Private |
-| 10 | First Tactical Draft | 3 T2 cards, pick 1 | Public |
-| 20 | Second Tactical Draft | 3 T2 cards, pick 1 | Public |
-| 30 | Third Tactical Draft | 3 T2 cards, pick 1 | Public |
-| 40 | Fourth Tactical Draft | 3 T2 cards, pick 1 | Public |
-| 50+ | Legendary Drafts | 3 cards (1-2 may be T3) | Public |
-
-### 6.2 Draft Order
+**Draft Order:** <!-- @spec REQ-TECH-009 -->
 
 **Random draft order each event:**
 1. Game rolls initiative: d20 + CHA modifier per empire
@@ -471,9 +382,9 @@ Player picks: Regenerative Hull
 - Next draft (Turn 20), all cards reset
 - Ensures uniqueness and forces adaptation
 
-### 6.3 Draft Drama
+**Draft Drama:**
 
-**Bot Reactions to Draft Picks:**
+Bot Reactions to Draft Picks:
 ```
 [Turn 10: Lady Chen drafts Shield Arrays]
 
@@ -487,16 +398,14 @@ Player picks: Regenerative Hull
                      accordingly."
 ```
 
-**Draft creates immediate strategic conversation:**
+Draft creates immediate strategic conversation:
 - Bots comment on picks
 - Players adjust plans based on enemy cards
 - Counter-play emerges naturally
 
----
+### 3.5 Combat Integration
 
-## 7. Combat Integration
-
-### 7.1 Card Activation
+**Card Activation:**
 
 **Automatic Activation:**
 - Cards activate automatically in combat when conditions met
@@ -507,9 +416,9 @@ Player picks: Regenerative Hull
 - Legendary cards require manual activation (button in combat UI)
 - Example: Planet Cracker must be explicitly used (prevents accidents)
 
-### 7.2 Combat Flow with Cards
+**Combat Flow with Cards:**
 
-**Standard Combat (No Cards):**
+Standard Combat (No Cards):
 ```
 1. Initiative rolls (d20 + DEX)
 2. Higher initiative attacks first
@@ -518,7 +427,7 @@ Player picks: Regenerative Hull
 5. Repeat until one side eliminated
 ```
 
-**Combat with Tier 2 Cards:**
+Combat with Tier 2 Cards:
 ```
 1. Check for surprise rounds (Research: Shock Troops, Cards: First-strike effects)
 2. Apply card modifiers:
@@ -532,9 +441,9 @@ Player picks: Regenerative Hull
    - Salvage Operations: Gain credits from enemy losses
 ```
 
-### 7.3 Combined System Example
+**Combined System Example:**
 
-**Scenario:** War Machine Empire with Plasma Torpedoes vs Fortress Empire with Shield Arrays
+Scenario: War Machine Empire with Plasma Torpedoes vs Fortress Empire with Shield Arrays
 
 ```
 EMPIRE A: War Machine + Shock Troops + Plasma Torpedoes
@@ -576,20 +485,20 @@ RESULT: Empire A wins due to stacked bonuses, but Empire B's Shield Arrays
 prevented total dominance by negating surprise round.
 ```
 
-**Key Insight:** Research + Crafting stack multiplicatively:
+**Key Insight:** Research + Tech Cards stack multiplicatively:
 - War Machine alone: +2 STR
 - Plasma Torpedoes alone: +2 first round
 - Combined: +4 effective STR in opening salvo
 
 But counters exist at both layers:
-- Shield Arrays (Crafting) negates Shock Troops (Research)
-- Fortress doctrine (Research) reduces effectiveness of Plasma Torpedoes (Crafting)
+- Shield Arrays (Tech Cards) negates Shock Troops (Research)
+- Fortress doctrine (Research) reduces effectiveness of Plasma Torpedoes (Tech Cards)
 
 ---
 
-## 8. Bot Integration
+## 4. Bot Integration
 
-### 8.1 Archetype Preferences
+### 4.1 Archetype Preferences
 
 | Archetype | Preferred T1 Objective | Preferred T2 Cards | T3 Priority |
 |-----------|------------------------|-----------------------|-------------|
@@ -602,101 +511,26 @@ But counters exist at both layers:
 | **Blitzkrieg** | Warmonger's Arsenal | Overcharged Weapons, Focus Fire | Temporal Stasis (delay enemies) |
 | **Opportunist** | Opportunist's Eye | Boarding Parties, Salvage Ops | Economic Collapse (weaken targets) |
 
-### 8.2 Bot Draft Decision Logic
+### 4.2 Bot Draft Decision Logic
+
+Bot decision-making follows archetype preferences with strategic awareness. Complete decision logic pseudocode available in [Appendix: Bot Decision Logic](appendix/TECH-CARD-SYSTEM-APPENDIX.md#bot-decision-logic).
 
 **Tier 1 (Hidden Objective):**
-```typescript
-function selectHiddenObjective(bot: Empire, options: Card[]): Card {
-  // 90% follow archetype preference
-  if (Math.random() < 0.9) {
-    const preferred = options.find(c => c.name === bot.archetype.preferredT1);
-    if (preferred) return preferred;
-  }
-
-  // 10% random (unpredictability)
-  return options[Math.floor(Math.random() * options.length)];
-}
-```
+- 90% follow archetype preference
+- 10% random (unpredictability)
 
 **Tier 2 (Tactical Cards):**
-```typescript
-function selectTacticalCard(bot: Empire, options: Card[]): Card {
-  // Strategic bots analyze synergies
-  if (bot.tier === 'strategic') {
-    // If has War Machine doctrine, prefer offensive cards
-    if (bot.researchDoctrine === 'war_machine') {
-      const offensive = options.find(c =>
-        c.name === 'Plasma Torpedoes' || c.name === 'Ion Cannons'
-      );
-      if (offensive) return offensive;
-    }
-
-    // If has Fortress doctrine, prefer defensive cards
-    if (bot.researchDoctrine === 'fortress') {
-      const defensive = options.find(c =>
-        c.name === 'Shield Arrays' || c.name === 'Point Defense'
-      );
-      if (defensive) return defensive;
-    }
-
-    // Counter-pick: If enemy has Shock Troops, draft Shield Arrays
-    const threats = analyzeThreats(bot);
-    if (threats.hasShockTroops) {
-      const counter = options.find(c => c.name === 'Shield Arrays');
-      if (counter) return counter;
-    }
-  }
-
-  // Reactive bots pick based on current game state
-  if (bot.tier === 'reactive') {
-    // If losing, prefer economic cards for recovery
-    if (bot.ranking > 50) {
-      const economic = options.find(c =>
-        c.tags?.includes('economic')
-      );
-      if (economic) return economic;
-    }
-
-    // If winning, prefer offensive cards to press advantage
-    if (bot.ranking <= 10) {
-      const offensive = options.find(c =>
-        c.tags?.includes('offensive')
-      );
-      if (offensive) return offensive;
-    }
-  }
-
-  // Chaotic bots pick randomly
-  return options[Math.floor(Math.random() * options.length)];
-}
-```
+- Strategic bots analyze synergies with Research doctrine
+- Reactive bots pick based on current game state
+- Counter-picking: If enemy has Shock Troops, draft Shield Arrays
+- Chaotic bots pick randomly
 
 **Tier 3 (Legendary Cards):**
-```typescript
-function selectLegendaryCard(bot: Empire, options: Card[]): Card {
-  // Desperate bots (bottom 25%) prioritize comeback cards
-  if (bot.ranking > 75) {
-    const comeback = options.find(c =>
-      c.name === 'Planet Cracker' || c.name === 'Economic Collapse'
-    );
-    if (comeback) return comeback;
-  }
+- Desperate bots (bottom 25%) prioritize comeback cards
+- Dominant bots (top 10%) prioritize finishing cards
+- Default: Follow archetype preference
 
-  // Dominant bots (top 10%) prioritize finishing cards
-  if (bot.ranking <= 10) {
-    const finisher = options.find(c =>
-      c.name === 'Dyson Swarm' || c.name === 'Quantum Superweapon'
-    );
-    if (finisher) return finisher;
-  }
-
-  // Default: Follow archetype preference
-  const preferred = options.find(c => c.name === bot.archetype.preferredT3);
-  return preferred || options[0];
-}
-```
-
-### 8.3 Bot Messaging
+### 4.3 Bot Messages
 
 **Draft Announcement Messages:**
 ```
@@ -741,9 +575,9 @@ function selectLegendaryCard(bot: Empire, options: Card[]): Card {
 
 ---
 
-## 9. UI/UX Design
+## 5. UI/UX Design
 
-### 9.1 Card Display
+### 5.1 Card Display
 
 **Player Hand (Your Cards):**
 ```
@@ -782,7 +616,7 @@ function selectLegendaryCard(bot: Empire, options: Card[]): Card {
 └─────────────────────────────┘
 ```
 
-### 9.2 Draft Modal
+### 5.2 Draft Modal
 
 **Turn 10 Draft Event:**
 ```
@@ -817,7 +651,7 @@ function selectLegendaryCard(bot: Empire, options: Card[]): Card {
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 9.3 Combat Card Display
+### 5.3 Combat Card Display
 
 **During Combat:**
 ```
@@ -834,7 +668,7 @@ function selectLegendaryCard(bot: Empire, options: Card[]): Card {
 │  🔫 Point Defense → -2 to your first-round damage      │
 │                                                         │
 │ Net Effect:                                             │
-│  Your damage: 2d8+4 (+2 from Torpedoes, -2 from PD) = 2d8+4
+│  Your damage: 2d8+4 (+2 from Torpedoes, -2 from PD)    │
 │  Enemy AC: 17 (Fortress +4)                             │
 │  Enemy HP: 25 → 24 (Repair Drones)                     │
 │                                                         │
@@ -843,7 +677,7 @@ function selectLegendaryCard(bot: Empire, options: Card[]): Card {
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 9.4 End-Game Reveal
+### 5.4 End-Game Reveal
 
 **Hidden Objectives Reveal Screen:**
 ```
@@ -885,402 +719,39 @@ function selectLegendaryCard(bot: Empire, options: Card[]): Card {
 
 ---
 
-## 10. Implementation Requirements
+## 6. Specifications
 
-### 10.1 Database Schema
+This section contains formal requirements for spec-driven development. Each specification has a unique ID for traceability, links to code and tests, and can be validated independently.
 
-```sql
--- Card templates (static data)
-CREATE TABLE tech_card_templates (
-  id UUID PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  tier INTEGER NOT NULL, -- 1, 2, 3
-  card_type VARCHAR(30) NOT NULL, -- 'hidden_objective', 'tactical', 'legendary'
+### Specification Status Legend
 
-  -- Card content
-  flavor_text TEXT,
-  effect_description TEXT NOT NULL,
-  effect_mechanics JSONB NOT NULL, -- Structured effect data
-
-  -- Combat integration
-  combat_phase VARCHAR(30), -- 'first_round', 'all_rounds', 'post_combat'
-  modifier_type VARCHAR(30), -- 'damage_bonus', 'ac_bonus', 'special'
-  modifier_value JSONB, -- {amount: 2, condition: 'first_round'}
-
-  -- Counter-play
-  countered_by VARCHAR(100), -- Card name or strategy
-  counters VARCHAR(100), -- What this card counters
-
-  -- Costs
-  activation_cost_credits INTEGER DEFAULT 0,
-  activation_cost_ore INTEGER DEFAULT 0,
-  activation_cost_petroleum INTEGER DEFAULT 0,
-  min_turn INTEGER DEFAULT 1,
-
-  -- Scoring (T1 only)
-  scoring_condition VARCHAR(100), -- 'credits_earned', 'empires_eliminated', etc.
-  vp_per_unit INTEGER, -- VP per scoring unit
-  vp_max INTEGER, -- Maximum VP from this card
-
-  -- Metadata
-  rarity VARCHAR(20), -- 'common', 'uncommon', 'rare', 'legendary'
-  tags TEXT[], -- ['offensive', 'economic', 'defensive']
-  icon VARCHAR(10), -- Emoji or icon identifier
-
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Player/bot card hands
-CREATE TABLE empire_tech_cards (
-  id UUID PRIMARY KEY,
-  empire_id UUID REFERENCES empires(id),
-  card_template_id UUID REFERENCES tech_card_templates(id),
-
-  -- Acquisition
-  acquired_turn INTEGER NOT NULL,
-  is_hidden BOOLEAN DEFAULT FALSE, -- T1 hidden objectives
-  draft_position INTEGER, -- 1st, 2nd, 3rd pick in draft
-
-  -- Usage tracking
-  times_used INTEGER DEFAULT 0,
-  last_used_turn INTEGER,
-  is_expended BOOLEAN DEFAULT FALSE, -- One-use cards
-
-  -- Scoring (T1 only)
-  current_progress INTEGER DEFAULT 0, -- e.g., credits earned toward objective
-  vp_earned INTEGER DEFAULT 0, -- Calculated at game end
-
-  created_at TIMESTAMP DEFAULT NOW(),
-
-  UNIQUE(empire_id, card_template_id) -- Can't have duplicate cards
-);
-
--- Draft events log
-CREATE TABLE tech_card_draft_events (
-  id UUID PRIMARY KEY,
-  game_id UUID REFERENCES games(id),
-  turn_number INTEGER NOT NULL,
-  draft_order UUID[], -- Empire IDs in draft order
-
-  -- Offered cards (for reconstruction/debugging)
-  cards_offered JSONB, -- [{empire_id, cards: [id1, id2, id3]}]
-  cards_selected JSONB, -- [{empire_id, selected_card_id}]
-
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
--- Card usage in combat (for combat log)
-CREATE TABLE tech_card_usage_log (
-  id UUID PRIMARY KEY,
-  combat_id UUID REFERENCES combats(id),
-  empire_id UUID REFERENCES empires(id),
-  card_template_id UUID REFERENCES tech_card_templates(id),
-
-  -- Effect details
-  effect_applied JSONB, -- What actually happened
-  was_countered BOOLEAN DEFAULT FALSE,
-  countered_by_card_id UUID REFERENCES tech_card_templates(id),
-
-  turn_number INTEGER NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-### 10.2 Service Architecture
-
-```typescript
-// src/lib/game/services/tech-card-service.ts
-
-export class TechCardService {
-  // Draft system
-  async generateDraftEvent(
-    gameId: string,
-    turn: number
-  ): Promise<DraftEvent> {
-    const tier = this.determineDraftTier(turn);
-    const empires = await this.getEmpiresInGame(gameId);
-    const draftOrder = this.rollDraftOrder(empires); // d20 + CHA
-
-    const event: DraftEvent = {
-      turn,
-      order: draftOrder,
-      offers: []
-    };
-
-    for (const empire of draftOrder) {
-      const availableCards = await this.getAvailableCards(tier, gameId);
-      const offered = this.selectRandomCards(availableCards, 3);
-      event.offers.push({ empireId: empire.id, cards: offered });
-    }
-
-    return event;
-  }
-
-  async executeDraft(
-    empireId: string,
-    cardId: string,
-    draftEventId: string
-  ): Promise<void> {
-    // Add card to empire's hand
-    await this.addCardToHand(empireId, cardId);
-
-    // Remove card from available pool for this draft
-    await this.removeCardFromDraftPool(draftEventId, cardId);
-
-    // Create public announcement (unless T1 hidden objective)
-    const card = await this.getCard(cardId);
-    if (card.tier !== 1) {
-      await this.announceCardDraft(empireId, cardId);
-    }
-
-    // Trigger bot reactions
-    await botService.reactToDraft(empireId, cardId);
-  }
-
-  // Card activation in combat
-  async applyTechCardsToCommbat(
-    combat: Combat
-  ): Promise<CombatModifiers> {
-    const attackerCards = await this.getActiveCards(combat.attackerId);
-    const defenderCards = await this.getActiveCards(combat.defenderId);
-
-    const modifiers: CombatModifiers = {
-      attackerDamageBonus: 0,
-      attackerACBonus: 0,
-      defenderDamageBonus: 0,
-      defenderACBonus: 0,
-      specialEffects: []
-    };
-
-    // Apply attacker cards
-    for (const card of attackerCards) {
-      if (card.combatPhase === 'first_round' && combat.round === 1) {
-        modifiers.attackerDamageBonus += card.modifierValue.amount;
-        await this.logCardUsage(combat.id, combat.attackerId, card.id);
-      }
-    }
-
-    // Apply defender cards
-    for (const card of defenderCards) {
-      if (card.modifierType === 'negate_surprise') {
-        modifiers.specialEffects.push('surprise_negated');
-      }
-    }
-
-    // Check for counter-play
-    const counters = this.resolveCounters(attackerCards, defenderCards);
-    modifiers.counters = counters;
-
-    return modifiers;
-  }
-
-  // Hidden objective scoring
-  async scoreHiddenObjectives(gameId: string): Promise<Map<string, number>> {
-    const empires = await this.getEmpiresInGame(gameId);
-    const scores = new Map<string, number>();
-
-    for (const empire of empires) {
-      const objective = await this.getHiddenObjective(empire.id);
-      if (!objective) continue;
-
-      const progress = await this.calculateObjectiveProgress(
-        empire,
-        objective
-      );
-
-      const vp = this.calculateVP(objective, progress);
-      scores.set(empire.id, vp);
-
-      // Store in database for reveal screen
-      await this.updateObjectiveScore(empire.id, objective.id, vp);
-    }
-
-    return scores;
-  }
-
-  // Helper methods
-  private determineDraftTier(turn: number): number {
-    if (turn === 1) return 1; // Hidden objective
-    if (turn < 50) return 2; // Tactical cards
-    return 3; // Legendary cards (mixed with T2)
-  }
-
-  private rollDraftOrder(empires: Empire[]): Empire[] {
-    return empires
-      .map(e => ({
-        empire: e,
-        roll: this.rollD20() + this.getCHAModifier(e)
-      }))
-      .sort((a, b) => b.roll - a.roll)
-      .map(r => r.empire);
-  }
-
-  private resolveCounters(
-    attackerCards: Card[],
-    defenderCards: Card[]
-  ): CounterResult[] {
-    const counters: CounterResult[] = [];
-
-    for (const aCard of attackerCards) {
-      for (const dCard of defenderCards) {
-        if (dCard.counters === aCard.name) {
-          counters.push({
-            counteredCard: aCard.name,
-            counterCard: dCard.name,
-            effect: `${dCard.name} negates ${aCard.name}`
-          });
-        }
-      }
-    }
-
-    return counters;
-  }
-}
-```
-
-### 10.3 UI Components
-
-```typescript
-// src/components/game/techcards/TechCardHand.tsx
-// Displays player's current cards
-interface TechCardHandProps {
-  empireId: string;
-  cards: TechCard[];
-  onCardDetails: (cardId: string) => void;
-}
-
-// src/components/game/techcards/DraftModal.tsx
-// Modal for card selection during drafts
-interface DraftModalProps {
-  offeredCards: TechCard[];
-  onSelect: (cardId: string) => void;
-  draftPosition: number;
-  totalEmpires: number;
-}
-
-// src/components/game/techcards/CardDetailPanel.tsx
-// Detailed card view (mechanics, counters, flavor)
-interface CardDetailPanelProps {
-  card: TechCard;
-  showUsageHistory?: boolean;
-}
-
-// src/components/game/techcards/EnemyCardDisplay.tsx
-// Shows known enemy cards
-interface EnemyCardDisplayProps {
-  empireId: string;
-  knownCards: TechCard[];
-}
-
-// src/components/game/techcards/HiddenObjectiveReveal.tsx
-// End-game reveal screen
-interface HiddenObjectiveRevealProps {
-  objectives: Array<{
-    empire: Empire;
-    objective: TechCard;
-    progress: number;
-    vpEarned: number;
-  }>;
-}
-
-// src/components/game/combat/CombatCardEffects.tsx
-// Shows active card effects during combat
-interface CombatCardEffectsProps {
-  combat: Combat;
-  attackerCards: TechCard[];
-  defenderCards: TechCard[];
-  modifiers: CombatModifiers;
-}
-```
-
----
-
-## 11. Balance Targets
-
-### 11.1 Draft Distribution
-
-| Tier | Cards in Pool | Cards per Empire (avg) | Total Picks Over Game |
-|------|---------------|------------------------|----------------------|
-| T1 | 12 | 1 (fixed) | 1 (Turn 1 only) |
-| T2 | 20 | 4-5 | 4-5 (Turn 10, 20, 30, 40, 50) |
-| T3 | 8 | 1-2 | 1-2 (Turn 50+, if game lasts) |
-
-**Goal:** By Turn 50, players have:
-- 1 hidden objective
-- 4-5 tactical cards
-- 0-2 legendary cards (if lucky/game goes long)
-
-### 11.2 Card Power Levels
-
-| Tier | Expected Combat Impact | Expected VP Impact |
-|------|------------------------|-------------------|
-| T1 | None (scoring only) | +2-8 VP average |
-| T2 | +10-20% win rate if synergistic | None |
-| T3 | +30-50% win rate or game-changing | None (except Planet Cracker = territory loss) |
-
-**Example Balance:**
-- War Machine (+2 STR) + Plasma Torpedoes (+2 first round) = +4 STR opening
-- Expected damage increase: 2d8+3 → 2d8+7 = +4 average damage
-- Expected win rate increase: +15-20% vs equivalent force
-
-**Counter-play:**
-- Shield Arrays (T2) negates Shock Troops (Research) surprise round
-- Restores balance to ~50/50 win rate
-
-### 11.3 Hidden Objective Balance
-
-**Target Distribution:**
-
-| Objective | % of Players Expected to Pick | Avg VP Earned |
-|-----------|-------------------------------|---------------|
-| Warmonger's Arsenal | 20-25% | 4-6 VP |
-| Merchant's Ledger | 15-20% | 5-7 VP |
-| Diplomat's Archive | 10-15% | 3-6 VP |
-| Survivor's Grit | 5-10% | 0 or 5 VP (all-or-nothing) |
-| Opportunist's Eye | 15-20% | 4-6 VP |
-| Others | 30-40% | 2-5 VP |
-
-**Goal:** Hidden objectives contribute 3-6 VP on average, enough to swing close games but not dominant.
-
-### 11.4 Legendary Card Balance
-
-**Usage Rate Targets:**
-
-| Card | Expected Usage per Game | Impact if Used | Counter-play Available |
-|------|-------------------------|----------------|------------------------|
-| Planet Cracker | 0-1 uses | Removes 1 planet (huge) | Can't counter, but diplomatic penalty |
-| Dyson Swarm | 0-1 drafts | +100% income (massive) | Target economy before it snowballs |
-| Mind Control | 1-3 uses | Forces enemy conflict | Limited uses prevents spam |
-| Temporal Stasis | 0-1 uses | Skips turn (delays) | One-use, timing critical |
-
-**Goal:** Legendary cards feel epic but don't guarantee wins. A T3 card should swing momentum ~30-40%, not auto-win.
-
-
-# REQUIREMENTS
-
-**INTEGRATE WITH NEW TEMPLATE**
-
-**Source Document:** `docs/design/CRAFTING-SYSTEM.md`
-
-**Design Note:** The original 4-tier crafting system (22 resources, supply chain management) was explicitly rejected as "logistics management bolted onto empire strategy." The Tech Card draft system replaces it with strategic card drafting integrated into the core combat loop. This is a core v1 feature that will be rolled out through progressive playtesting phases.
+| Status | Meaning |
+|--------|---------|
+| **Draft** | Design complete, not yet implemented |
+| **Implemented** | Code exists, tests pending |
+| **Validated** | Code exists and tests pass |
+| **Deprecated** | Superseded by another spec |
 
 ---
 
 ### REQ-TECH-001: Tech Card Draft System
 
 **Description:** Tech progression uses a card draft system instead of resource crafting:
-- 30-40 unique tech cards in three tiers (T1, T2, T3)
+- 40 unique tech cards in three tiers (12 T1, 20 T2, 8 T3)
 - Turn 1: Each player draws 3 T1 cards, keeps 1 (hidden until end game)
-- Every 10 turns: Draft event where players draw 2 cards, keep 1 (public)
+- Every 10 turns: Draft event where players draw 3 cards, pick 1 (public)
 - Turn 50+: Rare T3 cards become available with game-changing effects
 
 **Rationale:** Provides strategic depth through draft choices while avoiding supply chain micromanagement. Every card directly affects combat, creating visible drama and bot reactions.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md`
+**Source:** Section 1.1 - Three-Tier Card System
 
-**Code:** TBD
+**Code:**
+- `src/lib/tech-cards/draft-system.ts` - Draft event generation
+- `src/app/actions/tech-card-actions.ts` - Draft execution actions
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/tech-cards/__tests__/draft-system.test.ts` - Draft generation and execution
 
 **Status:** Draft
 
@@ -1289,19 +760,21 @@ interface CombatCardEffectsProps {
 ### REQ-TECH-002: Hidden Objectives (T1 Cards)
 
 **Description:** T1 cards drawn at Turn 1 are secret objectives that score bonus Victory Points at game end:
-- Warmonger's Arsenal: +2 VP per empire eliminated
-- Merchant's Ledger: +1 VP per 10,000 credits earned
-- Diplomat's Archive: +2 VP per active treaty at game end
-- Survivor's Grit: +3 VP if never lost a sector
-- Opportunist's Eye: +1 VP per sector captured from top 3 players
+- 12 unique hidden objectives (Warmonger's Arsenal, Merchant's Ledger, etc.)
+- Each has specific scoring condition (empires eliminated, credits earned, treaties active, etc.)
+- Rewards range from 0-10 VP depending on achievement
+- Secret until game end, then revealed to all players simultaneously
 
 **Rationale:** Creates Lord of Waterdeep-style hidden incentives. Players don't know each other's objectives, creating post-game reveals and strategic misdirection.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md`
+**Source:** Section 3.1 - Tier 1: Hidden Objectives
 
-**Code:** TBD
+**Code:**
+- `src/lib/tech-cards/hidden-objectives.ts` - Objective tracking and scoring
+- `src/app/actions/game-end-actions.ts` - End-game reveal
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/tech-cards/__tests__/hidden-objectives.test.ts` - VP calculation for each objective type
 
 **Status:** Draft
 
@@ -1310,17 +783,23 @@ interface CombatCardEffectsProps {
 ### REQ-TECH-003: Public Draft Cards (T2)
 
 **Description:** T2 cards drafted publicly every 10 turns provide combat effects with counterplay:
-- Each card has a specific combat effect (e.g., Plasma Torpedoes: +20% first-round damage)
-- Each card lists its counter card (e.g., Shield Arrays counter Plasma Torpedoes)
+- 20 unique tactical cards across 5 categories (Offensive, Defensive, Utility, Economic, Special)
+- Each card has specific combat effect (e.g., Plasma Torpedoes: +2 first-round damage)
+- Each card lists counter card (e.g., Shield Arrays counter Plasma Torpedoes)
 - All players see who drafts what, enabling strategic responses
+- Draft order determined by d20 + CHA modifier
 
 **Rationale:** Creates draft drama ("The Warlord just drafted Plasma Torpedoes!"), encourages counter-picking, and makes tech choices visible to opponents.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md`
+**Source:** Section 3.2 - Tier 2: Tactical Cards
 
-**Code:** TBD
+**Code:**
+- `src/lib/tech-cards/tactical-cards.ts` - Card catalog and effects
+- `src/lib/combat/tech-card-integration.ts` - Combat modifier application
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/tech-cards/__tests__/tactical-cards.test.ts` - Each card's effect
+- `src/lib/combat/__tests__/tech-card-combat.test.ts` - Combat integration
 
 **Status:** Draft
 
@@ -1329,19 +808,23 @@ interface CombatCardEffectsProps {
 ### REQ-TECH-004: Legendary Cards (T3)
 
 **Description:** T3 cards are rare, powerful, and announced to all players:
-- Planet Cracker: Destroy 1 sector permanently (removes from game)
-- Dyson Swarm: Double income from all sectors
-- Mind Control Array: Force one bot to attack another
-- Temporal Stasis: Skip one player's turn
-- Genesis Device: Create a new sector in your territory
+- 8 unique legendary cards (Planet Cracker, Dyson Swarm, Mind Control Array, etc.)
+- Appear in draft pool after Turn 50 (30% chance per slot)
+- Galaxy-wide announcement when drafted
+- Effects are game-changing (destroy planet, double income, force bot conflicts, etc.)
+- Hybrid usage model: one-use (destructive), permanent (economic), limited uses (utility)
 
-**Rationale:** Creates dramatic moments and galaxy-wide reactions. These are "boss abilities" that shift the balance of power.
+**Rationale:** Creates dramatic moments and galaxy-wide reactions. These are "boss abilities" that shift the balance of power while preventing "save syndrome" through varied usage limits.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md`
+**Source:** Section 3.3 - Tier 3: Legendary Cards
 
-**Code:** TBD
+**Code:**
+- `src/lib/tech-cards/legendary-cards.ts` - Legendary card catalog
+- `src/lib/game/galaxy-announcements.ts` - Public announcements
+- `src/app/actions/legendary-card-actions.ts` - Manual activation
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/tech-cards/__tests__/legendary-cards.test.ts` - Each legendary effect
 
 **Status:** Draft
 
@@ -1350,17 +833,23 @@ interface CombatCardEffectsProps {
 ### REQ-TECH-005: Bot Tech Card Integration
 
 **Description:** Bots have archetype preferences for tech cards and announce their picks:
-- Archetypes prefer specific cards (Warlord → Plasma Torpedoes, Turtle → Shield Arrays)
+- 8 archetypes have specific preferences for T1, T2, and T3 cards
 - Bots announce drafts with personality-specific messages
+- Strategic bots analyze synergies (e.g., War Machine + Plasma Torpedoes)
+- Reactive bots adapt based on game state (losing = economic, winning = offensive)
 - Bots react to player's visible tech cards in combat decisions
 
 **Rationale:** Integrates tech cards into bot personality system, creating narrative moments and strategic visibility.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md`
+**Source:** Section 4 - Bot Integration
 
-**Code:** TBD
+**Code:**
+- `src/lib/bots/tech-card-decisions.ts` - Bot draft decision logic
+- `src/lib/bots/tech-card-messages.ts` - Message templates
+- `src/lib/combat/bot-combat-ai.ts` - Combat adaptation
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/bots/__tests__/tech-card-decisions.test.ts` - Decision logic for each archetype
 
 **Status:** Draft
 
@@ -1369,14 +858,21 @@ interface CombatCardEffectsProps {
 ### REQ-TECH-006: End Game Hidden Objective Reveal
 
 **Description:** At game end (turn limit or victory achieved), all hidden T1 cards reveal with bonus VP calculations displayed to all players.
+- Reveal screen shows all players' hidden objectives simultaneously
+- VP calculation shown with progress metrics (e.g., "Credits earned: 225,000 → +9 VP")
+- Reveal messages displayed ("Every transaction brought me closer to victory.")
+- Final scores updated with bonus VP
 
 **Rationale:** Creates post-game discussion ("I thought Varkus was playing aggressively because he's a Warlord, but he was also scoring his hidden objective!").
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md`
+**Source:** Section 3.1 - Hidden Objective Mechanics (At Game End)
 
-**Code:** TBD
+**Code:**
+- `src/lib/game/game-end.ts` - Reveal orchestration
+- `src/components/game/HiddenObjectiveReveal.tsx` - Reveal UI
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/game/__tests__/game-end.test.ts` - Reveal calculation and display
 
 **Status:** Draft
 
@@ -1387,32 +883,28 @@ interface CombatCardEffectsProps {
 **Description:** Specific tech card pool organized by tier:
 
 **TIER 1 - Hidden Objectives (12 cards):**
-- Warmonger's Arsenal (+2 VP per empire eliminated)
-- Merchant's Ledger (+1 VP per 25k credits earned)
-- Diplomat's Archive (+3 VP per active treaty)
-- Survivor's Grit (+5 VP if never lost planet)
-- [8 additional cards covering different victory paths]
+- Warmonger's Arsenal, Merchant's Ledger, Diplomat's Archive, Survivor's Grit, Opportunist's Eye, Tech Supremacy, Economic Hegemon, Fortress Builder, Fleet Admiral, Shadow Operator, Peacekeeper, Research Pioneer
 
 **TIER 2 - Tactical Cards (20 cards, 5 categories):**
-- Offensive (5): Plasma Torpedoes (+2 damage first round), Ion Cannons, Boarding Parties, Overcharged Weapons, Focus Fire
-- Defensive (5): Shield Arrays (negate surprise), Point Defense, Hardened Circuits, Regenerative Hull, Emergency Shields
-- Utility (5): Cloaking Field (-4 enemy to-hit first round), Scanner Arrays (detect cloak), EMP Burst, Shielded Core, Repair Drones
-- Economic (3): Salvage Operations, Rapid Deployment (-10% unit cost), War Bonds
+- Offensive (5): Plasma Torpedoes, Ion Cannons, Boarding Parties, Overcharged Weapons, Focus Fire Protocol
+- Defensive (5): Shield Arrays, Point Defense, Hardened Circuits, Regenerative Hull, Emergency Shields
+- Utility (5): Cloaking Field, Scanner Arrays, EMP Burst, Shielded Core, Repair Drones
+- Economic (3): Salvage Operations, Rapid Deployment, War Bonds
 - Special (2): Morale Boost, Kamikaze Doctrine
 
 **TIER 3 - Legendary Cards (8 cards):**
-- Planet Cracker (destroy 1 planet, one-use)
-- Dyson Swarm (double income, permanent)
-- Mind Control Array (force bot conflict, 3 uses)
-- [5 additional game-changing effects]
+- Planet Cracker, Dyson Swarm, Mind Control Array, Temporal Stasis, Genesis Device, Galactic Broadcast, Quantum Superweapon, Economic Collapse
 
 **Rationale:** Provides concrete card pool for balance testing and bot decision-making. Cards designed to synergize with research doctrines.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md` Sections 3-5
+**Source:** Sections 3.1, 3.2, 3.3 - Card catalogs
 
-**Code:** `src/lib/tech-cards/card-catalog.ts`
+**Code:**
+- `src/lib/tech-cards/card-catalog.ts` - Complete card definitions
+- Database seed: `supabase/seeds/tech_cards.sql`
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/tech-cards/__tests__/card-catalog.test.ts` - Validate all 40 cards exist
 
 **Status:** Draft
 
@@ -1432,11 +924,14 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 
 **Rationale:** Creates strategic drafting decisions beyond "pick strongest card." Rewards intelligence gathering and counter-picking.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md` Section 2.2, 4
+**Source:** Section 2.1 - Card Anatomy (COUNTER field)
 
-**Code:** `src/lib/tech-cards/counter-system.ts`
+**Code:**
+- `src/lib/tech-cards/counter-system.ts` - Counter resolution
+- `src/lib/combat/combat-modifiers.ts` - Counter application in combat
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/combat/__tests__/counter-play.test.ts` - Each counter relationship
 
 **Status:** Draft
 
@@ -1463,23 +958,219 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 
 **Rationale:** Predictable timing enables strategic planning. Stacking with research creates powerful synergies. Automatic activation ensures cards get used.
 
-**Source:** `docs/design/CRAFTING-SYSTEM.md` Sections 6, 7
+**Source:** Section 3.4 - Draft Events, Section 3.5 - Combat Integration
 
-**Code:** `src/lib/tech-cards/draft-engine.ts`, `src/lib/combat/card-integration.ts`
+**Code:**
+- `src/lib/tech-cards/draft-engine.ts` - Draft scheduling
+- `src/lib/combat/card-integration.ts` - Combat modifier stacking
+- `src/lib/turn/turn-processor.ts` - Draft event triggering
 
-**Tests:** TBD
+**Tests:**
+- `src/lib/tech-cards/__tests__/draft-timing.test.ts` - Draft schedule validation
+- `src/lib/combat/__tests__/modifier-stacking.test.ts` - Research + Card synergy
 
 **Status:** Draft
 
+---
+
+### Specification Summary
+
+| ID | Title | Status | Tests |
+|----|-------|--------|-------|
+| REQ-TECH-001 | Tech Card Draft System | Draft | TBD |
+| REQ-TECH-002 | Hidden Objectives (T1 Cards) | Draft | TBD |
+| REQ-TECH-003 | Public Draft Cards (T2) | Draft | TBD |
+| REQ-TECH-004 | Legendary Cards (T3) | Draft | TBD |
+| REQ-TECH-005 | Bot Tech Card Integration | Draft | TBD |
+| REQ-TECH-006 | End Game Hidden Objective Reveal | Draft | TBD |
+| REQ-TECH-007 | Tech Card Catalog (40 Cards Total) | Draft | TBD |
+| REQ-TECH-008 | Tech Card Counter-Play System | Draft | TBD |
+| REQ-TECH-009 | Draft Timing & Combat Integration | Draft | TBD |
+
+**Total Specifications:** 9
+**Implemented:** 0
+**Validated:** 0
+**Draft:** 9
 
 ---
 
-## 12. Migration Plan (Beta 3)
+## 7. Implementation Requirements
 
-### 12.1 Development Timeline
+### 7.1 Database Schema
+
+Complete database schema with tables, indexes, and constraints. For full SQL definitions, see [Appendix: Database Schema](appendix/TECH-CARD-SYSTEM-APPENDIX.md#database-schema).
+
+**Core Tables:**
+- `tech_card_templates` - Static card definitions (40 cards)
+- `empire_tech_cards` - Player/bot card hands
+- `tech_card_draft_events` - Draft history log
+- `tech_card_usage_log` - Combat usage tracking
+
+**Key Relationships:**
+- Empire → Cards (many-to-many through empire_tech_cards)
+- Cards → Templates (many-to-one)
+- Draft Events → Games (many-to-one)
+- Usage Log → Combats (many-to-one)
+
+### 7.2 Service Architecture
+
+For complete service implementation with methods and interfaces, see [Appendix: Service Architecture](appendix/TECH-CARD-SYSTEM-APPENDIX.md#service-architecture).
+
+**TechCardService:**
+- `generateDraftEvent()` - Create draft with random cards
+- `executeDraft()` - Process player/bot selection
+- `applyTechCardsToCombat()` - Calculate modifiers
+- `scoreHiddenObjectives()` - End-game VP calculation
+- `resolveCounters()` - Counter-play resolution
+
+### 7.3 Server Actions
+
+```typescript
+// src/app/actions/tech-card-actions.ts
+"use server";
+
+/**
+ * Execute a draft selection for an empire
+ * @spec REQ-TECH-001, REQ-TECH-003
+ */
+export async function draftTechCard(
+  empireId: string,
+  cardId: string,
+  draftEventId: string
+): Promise<ActionResult> {
+  // Validate empire can draft
+  // Add card to hand
+  // Announce to other players (if T2/T3)
+  // Trigger bot reactions
+}
+
+/**
+ * Activate a legendary card
+ * @spec REQ-TECH-004
+ */
+export async function activateLegendaryCard(
+  empireId: string,
+  cardId: string,
+  targetId?: string
+): Promise<ActionResult> {
+  // Validate card can be used
+  // Apply legendary effect
+  // Galaxy-wide announcement
+  // Mark as expended (if one-use)
+}
+```
+
+### 7.4 UI Components
+
+For complete UI component interfaces and props, see [Appendix: UI Components](appendix/TECH-CARD-SYSTEM-APPENDIX.md#ui-components).
+
+**Core Components:**
+- `TechCardHand.tsx` - Display player's cards
+- `DraftModal.tsx` - Card selection interface
+- `CardDetailPanel.tsx` - Card mechanics viewer
+- `EnemyCardDisplay.tsx` - Known enemy cards
+- `HiddenObjectiveReveal.tsx` - End-game reveal screen
+- `CombatCardEffects.tsx` - Active cards during combat
+
+---
+
+## 8. Balance Targets
+
+### 8.1 Draft Distribution
+
+| Tier | Cards in Pool | Cards per Empire (avg) | Total Picks Over Game |
+|------|---------------|------------------------|----------------------|
+| T1 | 12 | 1 (fixed) | 1 (Turn 1 only) |
+| T2 | 20 | 4-5 | 4-5 (Turn 10, 20, 30, 40, 50) |
+| T3 | 8 | 1-2 | 1-2 (Turn 50+, if game lasts) |
+
+**Goal:** By Turn 50, players have:
+- 1 hidden objective
+- 4-5 tactical cards
+- 0-2 legendary cards (if lucky/game goes long)
+
+### 8.2 Card Power Levels
+
+| Tier | Expected Combat Impact | Expected VP Impact |
+|------|------------------------|-------------------|
+| T1 | None (scoring only) | +2-8 VP average |
+| T2 | +10-20% win rate if synergistic | None |
+| T3 | +30-50% win rate or game-changing | None (except Planet Cracker = territory loss) |
+
+**Example Balance:**
+- War Machine (+2 STR) + Plasma Torpedoes (+2 first round) = +4 STR opening
+- Expected damage increase: 2d8+3 → 2d8+7 = +4 average damage
+- Expected win rate increase: +15-20% vs equivalent force
+
+**Counter-play:**
+- Shield Arrays (T2) negates Shock Troops (Research) surprise round
+- Restores balance to ~50/50 win rate
+
+### 8.3 Hidden Objective Balance
+
+**Target Distribution:**
+
+| Objective | % of Players Expected to Pick | Avg VP Earned |
+|-----------|-------------------------------|---------------|
+| Warmonger's Arsenal | 20-25% | 4-6 VP |
+| Merchant's Ledger | 15-20% | 5-7 VP |
+| Diplomat's Archive | 10-15% | 3-6 VP |
+| Survivor's Grit | 5-10% | 0 or 5 VP (all-or-nothing) |
+| Opportunist's Eye | 15-20% | 4-6 VP |
+| Others | 30-40% | 2-5 VP |
+
+**Goal:** Hidden objectives contribute 3-6 VP on average, enough to swing close games but not dominant.
+
+### 8.4 Legendary Card Balance
+
+**Usage Rate Targets:**
+
+| Card | Expected Usage per Game | Impact if Used | Counter-play Available |
+|------|-------------------------|----------------|------------------------|
+| Planet Cracker | 0-1 uses | Removes 1 planet (huge) | Can't counter, but diplomatic penalty |
+| Dyson Swarm | 0-1 drafts | +100% income (massive) | Target economy before it snowballs |
+| Mind Control | 1-3 uses | Forces enemy conflict | Limited uses prevents spam |
+| Temporal Stasis | 0-1 uses | Skips turn (delays) | One-use, timing critical |
+
+**Goal:** Legendary cards feel epic but don't guarantee wins. A T3 card should swing momentum ~30-40%, not auto-win.
+
+### 8.5 Simulation Requirements
+
+**Monte Carlo Balance Testing:**
+```
+Iterations: 10,000 games
+Variables:
+- Card combination frequency
+- Win rate by research doctrine + card synergy
+- Hidden objective VP distribution
+- Legendary card usage patterns
+
+Success Criteria:
+- No card combination exceeds 65% win rate
+- No card picked >40% of the time (variety check)
+- Hidden objective average: 3-6 VP ±1 VP
+- Legendary usage: 0-2 per game average
+```
+
+### 8.6 Playtest Checklist
+
+- [ ] War Machine + Plasma Torpedoes win rate: 55-60% (not 70%+)
+- [ ] Hidden objectives create "aha!" moments at game end
+- [ ] Legendary cards feel epic (not overpowered or underwhelming)
+- [ ] Draft takes <2 minutes per player (no analysis paralysis)
+- [ ] Players can understand card effects in 10 seconds (visual clarity)
+- [ ] Counter-play is visible and intuitive
+- [ ] Bots make sensible draft choices aligned with archetypes
+- [ ] No card is "must-pick" regardless of strategy
+
+---
+
+## 9. Migration Plan
+
+### 9.1 Development Timeline
 
 **Beta 1 & 2 (Combat, Research):**
-- No crafting system
+- No tech card system
 - Players test core loop + Research bonuses
 - Feedback: "Game feels complete but could use more tactical depth"
 
@@ -1525,7 +1216,7 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 - Full tech card system live
 - Players provide feedback: "Does this add fun or complexity?"
 
-### 12.2 Testing Requirements
+### 9.2 Testing Requirements
 
 **Unit Tests:**
 - [ ] Draft event generation (correct cards offered)
@@ -1555,44 +1246,81 @@ Players can draft cards to counter known opponent strategies (requires intel fro
 - [ ] Hidden objectives create "aha!" moments at game end
 - [ ] Legendary cards feel epic (not overpowered or underwhelming)
 
+### 9.3 Rollback Plan
+
+If Tech Card system proves too complex or unbalanced:
+
+**Immediate Rollback:**
+1. Disable draft events in turn processor
+2. Hide Tech Card UI elements
+3. Remove card modifiers from combat calculations
+4. Preserve database tables (don't drop)
+
+**Recovery:**
+1. Review playtest feedback for specific issues
+2. Adjust card balance values
+3. Simplify draft UI if needed
+4. Re-enable in phases (T1 only → T1+T2 → Full system)
+
 ---
 
-## 13. Conclusion
+## 10. Conclusion
 
-The Technology Card system transforms Nexus Dominion from **"Research provides strategic identity"** to **"Research + Crafting provides strategic identity + tactical depth"**.
+### Key Decisions
+
+The Technology Card system transforms Nexus Dominion from **"Research provides strategic identity"** to **"Research + Tech Cards provides strategic identity + tactical depth"**.
 
 **Key Features:**
-✅ 3-tier card system (Hidden Objectives, Tactical, Legendary)
-✅ **Public drafts** create counter-play and bot drama
-✅ **Hidden objectives** add Lord of Waterdeep-style replayability
-✅ **Combat integration** with D20 bonuses (+2 damage, -4 to hit)
-✅ **Synergy with Research** (War Machine + Plasma Torpedoes = +4 STR)
-✅ **Counter-play at two layers** (Research counters + Card counters)
-✅ **Bot integration** with archetype preferences and messaging
-✅ **Legendary cards** create late-game drama (Turn 50+)
-✅ **Boardgame simplicity** (draft 1 from 3, see effects immediately)
+- ✅ 3-tier card system (Hidden Objectives, Tactical, Legendary)
+- ✅ **Public drafts** create counter-play and bot drama
+- ✅ **Hidden objectives** add Lord of Waterdeep-style replayability
+- ✅ **Combat integration** with D20 bonuses (+2 damage, -4 to hit)
+- ✅ **Synergy with Research** (War Machine + Plasma Torpedoes = +4 STR)
+- ✅ **Counter-play at two layers** (Research counters + Card counters)
+- ✅ **Bot integration** with archetype preferences and messaging
+- ✅ **Legendary cards** create late-game drama (Turn 50+)
+- ✅ **Boardgame simplicity** (draft 1 from 3, see effects immediately)
 
 **Why Include in Core Game:**
 1. **Not complexity for complexity's sake** — Simple draft mechanics (pick 1 of 3)
 2. **Visual and boardgame-like** — Card UI, clear icons, immediate feedback
-3. **Adds strategic depth** — Research + Crafting > Research alone
+3. **Adds strategic depth** — Research + Tech Cards > Research alone
 4. **Enables diverse playstyles** — Hidden objectives reward different strategies
 5. **Creates replayability** — 12 hidden objectives × 20 tactical cards × 8 legendary = massive variety
 6. **Progressive tutorial works** — Turn 1 (1 card), Turn 10 (first draft), Turn 50 (legendaries)
 
 **Implementation Priority:** Core game feature, Beta 3 (after Combat and Research validated in Beta 1-2).
 
-**Design Resolution:** All 4 open design questions resolved in Sections 3.3, 5.4, and throughout.
+### Open Questions
+
+None. All design questions resolved:
+- Card tier structure: 3 tiers (Hidden, Tactical, Legendary) ✅
+- Visibility: Public drafts except T1 ✅
+- Usage limits: Hybrid model (one-use, permanent, limited) ✅
+- Balance targets: Quantified in Section 8 ✅
+
+### Dependencies
+
+**Depends On:**
+- **Combat System** - Tech cards modify combat resolution
+- **Research System** - Cards synergize with research doctrines
+- **Bot System** - Bots need archetype-based draft logic
+- **Turn Processor** - Draft events triggered at specific turns
+
+**Depended By:**
+- **Victory Conditions** - Hidden objectives add VP to final score
+- **UI/UX** - Card display, draft modals, reveal screens
+- **Balance System** - Monte Carlo simulations include card effects
 
 ---
 
 ## Related Documents
 
 - [COMBAT-SYSTEM.md](COMBAT-SYSTEM.md) - D20 combat mechanics, stat modifiers
-- [RESEARCH.md](RESEARCH.md) - Research system synergy, doctrine bonuses
+- [RESEARCH-SYSTEM.md](RESEARCH-SYSTEM.md) - Research system synergy, doctrine bonuses
 - [BOT-SYSTEM.md](BOT-SYSTEM.md) - Bot decision-making, archetype preferences
 - [SYNDICATE-SYSTEM.md](SYNDICATE-SYSTEM.md) - Hidden role mechanics (similar asymmetric info)
-- [PRD.md](../PRD.md) - Product requirements document
+- [PRD-EXECUTIVE.md](../PRD-EXECUTIVE.md) - Product requirements document
 
 ---
 

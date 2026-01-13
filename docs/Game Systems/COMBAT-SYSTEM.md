@@ -726,7 +726,7 @@ Implementation details including database schemas, service architecture, and UI 
 
 ### Open Questions
 
-- None currently - DEV NOTE about covert raids resolved (see COMBAT-SYSTEM-RAID-RESOLUTION.md)
+- None currently
 
 ### Dependencies
 

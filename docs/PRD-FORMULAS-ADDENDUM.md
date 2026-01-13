@@ -186,46 +186,120 @@ Civil Status Multipliers:
 
 ### 2.3 Civil Status Calculation Formula
 
-**⚠️ MISSING FROM DESIGN DOCS**
+**⚠️ DRAFT - NEEDS VALIDATION**
 
-The PRD references civil status but does not provide the calculation formula for *how* civil status is determined. Design docs only indicate Education sectors provide "+civil status" boosts.
+The PRD references civil status but does not provide the complete calculation formula for *how* civil status is determined. Proposed implementation:
 
-**Implementation Needed:**
+**Formula:**
 ```
-Civil Status = f(population, food_ratio, recent_battles, sector_count, ...)
+Civil Status Level = f(population_happiness, food_ratio, battle_trauma, education_bonus)
+
+Where:
+- population_happiness = base happiness from growth
+- food_ratio = (Food Available / Food Required)
+- battle_trauma = negative modifier from recent combat losses
+- education_bonus = +1 level per Education sector (caps at Ecstatic)
 ```
 
-**Recommendation:** Define explicit formula in future PRD update. Possible factors:
-- Food surplus/deficit per capita
-- Recent battle outcomes (losses)
-- Sector growth rate
-- Tax rate (if implemented)
-- Recent events (disasters, victories)
+**Proposed State Transitions (Thresholds):**
+```
+Ecstatic:  Happiness Score ≥ 90  (Education sectors provide direct path)
+Happy:     Happiness Score 70-89
+Content:   Happiness Score 40-69  (baseline)
+Unhappy:   Happiness Score 20-39
+Angry:     Happiness Score 5-19
+Rioting:   Happiness Score < 5
+```
+
+**Education Sector Boost Mechanics:**
+```
+Education sectors provide: +1 civil status level per turn (non-stacking)
+Max Effect: Caps at Ecstatic (cannot go higher)
+Decay: Without Education sector, level decays to Content over 5 turns
+```
+
+**Recommendation:** Define explicit happiness score calculation in future PRD update. Factors to consider:
+- Food surplus/deficit per capita (+/- 20 points)
+- Recent battle outcomes: -10 per lost battle, +5 per victory
+- Sector growth rate: +2 per sector gained
+- Population growth: +1 per 1% growth rate
+- Recent events (disasters: -15, victories: +10)
 
 ---
 
 ## 3. Resource Consumption Formulas
 
-**⚠️ MISSING FROM DESIGN DOCS**
+### 3.1 Population Mechanics
 
-The PRD and design docs do not specify consumption rates for:
-- Food consumption per population unit
-- Ore consumption per military unit (maintenance)
-- Petroleum consumption per military unit (fuel)
-- Population growth/decline rates
+**⚠️ DRAFT - PROPOSED BASELINE VALUES**
 
-**Implementation Needed:**
-
+**Population Growth Rate:**
 ```
-# Example placeholder formulas (NOT OFFICIAL)
-Food Consumption = Population × 0.5 food/capita/turn
-Ore Maintenance = Total Military Units × Unit Ore Cost × 0.05/turn
-Petroleum Fuel = Active Military × Unit Petro Cost × 0.03/turn
-Population Growth = Current Population × 0.02/turn (if food surplus)
-Population Decline = Current Population × 0.10/turn (if food deficit)
+Population Growth = Current Population × Growth Rate × Food Multiplier
+
+Where:
+- Base Growth Rate: 2% per turn (0.02)
+- Food Multiplier: 1.0 if food surplus, 0.0 if deficit
 ```
 
-**Recommendation:** Define explicit consumption rates in future PRD update.
+**Food Consumption Per Capita:**
+```
+Food Required per Turn = Total Population × 0.5 food/capita
+
+Example:
+Population: 10,000
+Food Required: 10,000 × 0.5 = 5,000 food/turn
+```
+
+**Starvation Decline Rate:**
+```
+Population Decline = Current Population × -10% per turn (if food deficit)
+
+Example:
+Population: 10,000
+Food Available: 2,000 (deficit of 3,000)
+Population Loss: 10,000 × 0.10 = -1,000 people/turn
+New Population: 9,000
+```
+
+**Status:** Proposed baseline values from PRD-LEGACY. Requires balancing against sector food production (160 food/sector).
+
+### 3.2 Military Economics
+
+**⚠️ DRAFT - PROPOSED BASELINE VALUES**
+
+**Maintenance Costs (Per Unit Per Turn):**
+```
+Unit Maintenance = (Ore Cost + Petroleum Cost) per military unit per turn
+
+Proposed values (requires balancing):
+- Fighters:      2 ore/turn, 1 petroleum/turn
+- Cruisers:      5 ore/turn, 3 petroleum/turn
+- Dreadnoughts: 10 ore/turn, 6 petroleum/turn
+```
+
+**Construction Costs:**
+```
+Unit Construction Cost = Resource Cost + Credit Cost
+
+Proposed values (requires balancing):
+- Fighters:      100 ore, 50 petroleum, 5,000 credits
+- Cruisers:      250 ore, 120 petroleum, 15,000 credits
+- Dreadnoughts:  500 ore, 250 petroleum, 40,000 credits
+```
+
+**Upkeep Penalties for Oversized Armies:**
+```
+If Total Military Power > (Owned Sectors × 100):
+    Maintenance Multiplier = 1.5× (50% penalty)
+    Morale Penalty = -2 to all combat rolls
+
+Rationale: Discourages military spam, encourages territorial expansion
+```
+
+**Status:** Proposed baseline values from PRD-LEGACY. Requires balancing against sector resource production rates.
+
+**Recommendation:** Define explicit maintenance and construction costs in future PRD update. Validate against economy to ensure military is sustainable but not trivial to maintain.
 
 ---
 
@@ -341,21 +415,79 @@ Opportunist    13 (+1)  14 (+2)  11 (+0)  Calculative vulture
 
 ### 4.5 Base Decision Accuracy (Tier-Dependent)
 
-**⚠️ PARTIALLY MISSING**
+**⚠️ DRAFT - PROPOSED BASELINE VALUES**
 
-The docs don't specify explicit "base decision accuracy" values per tier, only behavioral descriptions. Suggested implementation:
+The docs don't specify explicit "base decision accuracy" values per tier, only behavioral descriptions. Proposed implementation from PRD-LEGACY:
+
+**Decision Accuracy by Tier:**
 
 ```
-# Proposed values (NOT OFFICIAL)
-Tier 1 (LLM):      85% optimal decisions
-Tier 2 (Strategic): 70% optimal decisions
-Tier 3 (Simple):    50% optimal decisions
-Tier 4 (Random):    30% optimal decisions
+Tier 1 (LLM-Powered Elite):     85% optimal decisions
+Tier 2 (Strategic Archetype):   70% optimal decisions
+Tier 3 (Simple Rule-Based):     50% optimal decisions
+Tier 4 (Random/Chaotic):        30% optimal decisions
 
-Modified by emotional state and situational factors
+Modified by emotional state and situational factors (see Section 4.3)
 ```
 
-**Recommendation:** Define explicit accuracy targets in future PRD update.
+**LLM Prompt Templates (Tier 1 Bots):**
+
+```
+⚠️ NEEDS DEFINITION
+
+Proposed template structure:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SYSTEM PROMPT:
+You are {bot_name}, a {archetype} commander in Nexus Dominion.
+Personality: {personality_description}
+Current Emotional State: {emotional_state}
+
+CURRENT SITUATION:
+- Your Empire: {empire_stats}
+- Resources: {resource_summary}
+- Military: {military_summary}
+- Relationships: {relationship_summary}
+- Game Context: Turn {turn_number}, Rank {current_rank}
+
+RECENT EVENTS:
+{last_5_events}
+
+AVAILABLE ACTIONS:
+{action_list_with_costs}
+
+DECISION REQUIRED:
+Choose your top 3 actions for this turn. Explain your strategic reasoning.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Memory Decay Curves:**
+
+```
+⚠️ NEEDS DEFINITION
+
+Proposed decay formula:
+Memory Strength = Initial Importance × e^(-decay_rate × turns_elapsed)
+
+Where:
+- decay_rate = 0.05 (5% decay per turn)
+- Initial Importance: 1.0 (major events), 0.5 (minor events), 0.1 (trivial)
+
+Examples:
+Major Event (treaty broken):
+  Turn 0:  100% memory strength
+  Turn 10:  60% memory strength (e^(-0.05 × 10) = 0.606)
+  Turn 30:  22% memory strength (e^(-0.05 × 30) = 0.223)
+  Turn 50:   8% memory strength (nearly forgotten)
+
+Retention Thresholds:
+- > 50%: Recent event (actively influences decisions)
+- 20-50%: Fading memory (minor influence)
+- < 20%: Ancient history (ignored)
+```
+
+**Status:** Proposed baseline values from PRD-LEGACY. Requires validation through playtesting.
+
+**Recommendation:** Define explicit accuracy targets and LLM prompt templates in future PRD update. Memory decay needs tuning to ensure bots remember important events (wars, betrayals) but don't hold grudges forever.
 
 ---
 
@@ -399,37 +531,160 @@ Commerce Doctrine:
 
 ## 6. Sector Cost Scaling Formula (REQ-SEC-002)
 
-**⚠️ FORMULA NOT SPECIFIED**
+**⚠️ DRAFT - PROPOSED FORMULA**
 
-The PRD references sector cost scaling but doesn't provide the actual formula:
+The PRD references sector cost scaling but doesn't provide the actual formula. Proposed implementation from PRD-LEGACY:
 
-> "The cost to acquire new sectors increases based on current sector count using a scaling formula."
-
-**Implementation Needed:**
+**Sector Acquisition Cost Formula:**
 
 ```
-# Example placeholder formula (NOT OFFICIAL)
-Sector Cost = Base Cost × (1 + Sector Count × Scaling Factor)^Exponent
+Sector Cost = Base Cost × (1 + Sector Count × 0.1)^1.5
 
-Example values:
-Base Cost: 8,000 credits
-Scaling Factor: 0.1
-Exponent: 1.5
+Where:
+- Base Cost: 8,000 credits
+- Scaling Factor: 0.1 (10% per sector owned)
+- Exponent: 1.5 (exponential growth curve)
+```
 
-5 sectors:  8,000 × (1 + 5 × 0.1)^1.5 = 8,000 × 1.837 = 14,696 cr
-10 sectors: 8,000 × (1 + 10 × 0.1)^1.5 = 8,000 × 2.828 = 22,624 cr
-20 sectors: 8,000 × (1 + 20 × 0.1)^1.5 = 8,000 × 5.196 = 41,568 cr
+**Example Calculations:**
+
+```
+Starting (5 sectors):  8,000 × (1 + 5 × 0.1)^1.5 = 8,000 × 1.837 = 14,696 cr
+Early Game (10):       8,000 × (1 + 10 × 0.1)^1.5 = 8,000 × 2.828 = 22,624 cr
+Mid Game (20):         8,000 × (1 + 20 × 0.1)^1.5 = 8,000 × 5.196 = 41,568 cr
+Late Game (40):        8,000 × (1 + 40 × 0.1)^1.5 = 8,000 × 11.180 = 89,440 cr
+Domination (60):       8,000 × (1 + 60 × 0.1)^1.5 = 8,000 × 18.520 = 148,160 cr
+```
+
+**Purchase Limits:**
+
+```
+⚠️ NEEDS DEFINITION
+
+Proposed: No hard limit, but soft limits via:
+1. Cost scaling makes expansion expensive
+2. Border/Wormhole discovery requirements (only adjacent sectors available)
+3. Civil status penalties if expanding too fast
+```
+
+**Destruction/Loss Mechanics:**
+
+```
+⚠️ NEEDS DEFINITION
+
+Proposed scenarios for sector loss:
+1. Military Conquest: Attacker captures defender's sector in invasion
+2. Natural Disasters: (Future feature) Random event destroys sector
+3. Economic Collapse: If negative credits persist for 10+ turns, lose 1 sector/turn
+4. Rebellion: If civil status = Rioting for 5+ turns, lose 1 sector
 ```
 
 **Referenced in:** REQ-SEC-002
 
-**Test file:** `src/lib/formulas/sector-costs.test.ts` (referenced but doesn't exist)
+**Test file:** `src/lib/formulas/sector-costs.test.ts` (needs creation)
 
-**Recommendation:** Define explicit formula in future PRD update. Needs balancing against income rates.
+**Status:** Proposed formula from PRD-LEGACY. Requires balancing against income rates (Commerce sector: 8,000 cr/turn means 1 sector = 1 turn income at baseline).
+
+**Recommendation:** Validate formula ensures territorial expansion is neither too easy nor too punishing. Consider adjusting exponent (1.5) or scaling factor (0.1) based on playtesting.
 
 ---
 
-## 7. Victory Condition Thresholds (REQ-VIC-*)
+## 7. Market System Formulas (REQ-MKT-*)
+
+### 7.1 Market Price Calculation
+
+**⚠️ DRAFT - NEEDS DEFINITION**
+
+The PRD references a market system but does not provide price calculation formulas. Proposed implementation from PRD-LEGACY:
+
+**Supply/Demand Price Formula:**
+
+```
+Market Price = Base Price × (Demand / Supply) × Volatility Factor
+
+Where:
+- Base Price: Fixed baseline per resource type
+- Demand: Total buy orders across all empires
+- Supply: Total sell orders across all empires
+- Volatility Factor: Random fluctuation (0.9 to 1.1)
+```
+
+**Base Prices (Proposed):**
+
+```
+Resource         Base Price (per unit)
+─────────────────────────────────────
+Credits          1.00 (baseline currency)
+Food             2.00 cr/unit
+Ore              3.50 cr/unit
+Petroleum        4.00 cr/unit
+Research Points  10.00 cr/RP (non-tradeable?)
+Spy Points       15.00 cr/SP (non-tradeable?)
+```
+
+### 7.2 Price Volatility Mechanics
+
+**⚠️ DRAFT - NEEDS DEFINITION**
+
+Proposed volatility system:
+
+**Volatility Calculation:**
+
+```
+Volatility Factor = 1.0 + (Random(-0.1, +0.1) × Market Activity)
+
+Where:
+- Random(-0.1, +0.1): Random number between -10% and +10%
+- Market Activity: (Total Trades This Turn / Average Trades)
+  - High activity (2×): Volatility ±20%
+  - Normal activity (1×): Volatility ±10%
+  - Low activity (0.5×): Volatility ±5%
+```
+
+**Price Change Limits:**
+
+```
+Max Price Change per Turn: ±25%
+Price Floor: 0.5× Base Price (can't go below 50%)
+Price Ceiling: 3.0× Base Price (can't exceed 300%)
+```
+
+### 7.3 Trade Volume Limits
+
+**⚠️ DRAFT - NEEDS DEFINITION**
+
+Proposed trade limits to prevent market manipulation:
+
+**Per-Empire Trade Limits:**
+
+```
+Max Sell Volume per Turn = Total Resource Production × 0.5 (can't sell more than 50% of production)
+Max Buy Volume per Turn = Total Credits × 0.3 (can't spend more than 30% of treasury)
+```
+
+**Market Liquidity:**
+
+```
+If Supply < Demand × 0.1:
+    Price increases by +15% (scarcity penalty)
+
+If Supply > Demand × 10:
+    Price decreases by -15% (oversupply penalty)
+```
+
+**Status:** Proposed formulas from PRD-LEGACY. Requires extensive balancing to prevent economic exploits.
+
+**Recommendation:** Market system is complex and needs careful design to avoid:
+1. Price manipulation by large empires
+2. Economic runaway (infinite money loops)
+3. Market crashes that punish all players
+4. Bot AI exploiting market inefficiencies
+
+Consider simpler "fixed NPC market" initially, then add player-to-player trading in expansion.
+
+---
+
+## 8. Victory Condition Thresholds (REQ-VIC-*)
 
 These are well-defined in the PRD but repeated here for completeness:
 
@@ -448,41 +703,48 @@ Survival Victory:    Own score = MAX(all scores) at turn limit
 
 ---
 
-## 8. Missing Formulas Summary
+## 9. Formula Status Summary
 
-The following critical formulas are **missing** from design docs and PRD:
+The following shows the current status of formulas migrated from PRD-LEGACY:
 
-### 8.1 Population & Civil Status
-- ❌ Civil status calculation formula (what determines Content vs Happy vs Ecstatic?)
-- ❌ Population growth rate
-- ❌ Population consumption of food per capita
-- ❌ Civil status change triggers and thresholds
+### 9.1 Population & Civil Status
+- ⚠️ **DRAFT** Civil status calculation formula (Section 2.3)
+- ⚠️ **DRAFT** Population growth rate: 2%/turn (Section 3.1)
+- ⚠️ **DRAFT** Population consumption of food per capita: 0.5 food/capita (Section 3.1)
+- ⚠️ **DRAFT** Starvation decline rate: -10%/turn (Section 3.1)
+- ⚠️ **DRAFT** Civil status change triggers and thresholds (Section 2.3)
 
-### 8.2 Resource Consumption
-- ❌ Military unit maintenance costs (ore/petroleum per turn)
-- ❌ Soldier food consumption rate
-- ❌ Unit construction costs (credits + resources)
+### 9.2 Resource Consumption
+- ⚠️ **DRAFT** Military unit maintenance costs (Section 3.2)
+- ⚠️ **DRAFT** Unit construction costs (Section 3.2)
+- ⚠️ **DRAFT** Upkeep penalties for oversized armies (Section 3.2)
 
-### 8.3 Sector Economics
-- ❌ Sector cost scaling formula (exponential? linear?)
-- ❌ Sector purchase limits (can player buy infinite sectors?)
-- ❌ Sector destruction mechanics (can sectors be lost to disasters?)
+### 9.3 Sector Economics
+- ⚠️ **DRAFT** Sector cost scaling formula: Base × (1 + Count × 0.1)^1.5 (Section 6)
+- ⚠️ **NEEDS DEFINITION** Sector purchase limits (Section 6)
+- ⚠️ **NEEDS DEFINITION** Sector destruction mechanics (Section 6)
 
-### 8.4 Bot Intelligence
-- ❌ Base decision accuracy by tier (numeric values)
-- ❌ LLM prompt templates for Tier 1 bots
-- ❌ Memory decay formulas (how fast do events fade?)
+### 9.4 Bot Intelligence
+- ⚠️ **DRAFT** Base decision accuracy by tier (Section 4.5)
+  - Tier 1: 85%, Tier 2: 70%, Tier 3: 50%, Tier 4: 30%
+- ⚠️ **NEEDS DEFINITION** LLM prompt templates for Tier 1 bots (Section 4.5)
+- ⚠️ **DRAFT** Memory decay formulas: e^(-0.05 × turns) (Section 4.5)
 
-### 8.5 Market System
-- ❌ Market price calculation (supply/demand formula)
-- ❌ Price volatility mechanics
-- ❌ Trade volume limits
+### 9.5 Market System
+- ⚠️ **DRAFT** Market price calculation (Section 7.1)
+- ⚠️ **DRAFT** Price volatility mechanics (Section 7.2)
+- ⚠️ **DRAFT** Trade volume limits (Section 7.3)
+
+**Legend:**
+- ✅ **COMPLETE**: Formula fully defined and validated
+- ⚠️ **DRAFT**: Proposed baseline values from PRD-LEGACY, requires validation
+- ❌ **NEEDS DEFINITION**: Still requires design work
 
 ---
 
-## 9. Recommendations
+## 10. Recommendations
 
-### 9.1 Immediate Actions
+### 10.1 Immediate Actions
 
 1. **Add explicit formulas to PRD v1.6:**
    - Insert combat formulas into REQ-COMBAT-* requirements
@@ -501,7 +763,7 @@ The following critical formulas are **missing** from design docs and PRD:
    - Balance sector costs against income rates
    - Verify bot decision weights create interesting gameplay
 
-### 9.2 Long-Term Process
+### 10.2 Long-Term Process
 
 **Establish "Formula Review" as part of PRD workflow:**
 
@@ -514,7 +776,7 @@ When adding a requirement to the PRD:
 5. Mark requirement as "Draft" until all 4 steps complete
 ```
 
-### 9.3 Implementation Priority
+### 10.3 Implementation Priority
 
 **Critical (cannot implement without):**
 - Combat formulas (D20, HP, AC, damage) - ✅ COMPLETE
@@ -533,7 +795,7 @@ When adding a requirement to the PRD:
 
 ---
 
-## 10. Validation Checklist
+## 11. Validation Checklist
 
 For each formula added to PRD:
 
