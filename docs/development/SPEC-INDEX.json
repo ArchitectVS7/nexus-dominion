@@ -340,7 +340,11 @@
         { "id": "REQ-TURN-019-05", "title": "Covert Victory Check", "atomic": true, "line": 2091, "splitFrom": "REQ-TURN-019" },
         { "id": "REQ-TURN-019-06", "title": "Survival Victory Check", "atomic": true, "line": 2124, "splitFrom": "REQ-TURN-019" },
         { "id": "REQ-TURN-020", "title": "Auto-Save Phase", "atomic": false, "line": 2157, "splitCandidate": "save + rotation + failure" },
-        { "id": "REQ-TURN-021", "title": "Performance Budget", "atomic": false, "line": 1578, "splitCandidate": "4 phase group budgets" }
+        { "id": "REQ-TURN-021", "title": "Performance Budget (Split)", "atomic": true, "line": 2176, "parentOf": ["REQ-TURN-021-A", "REQ-TURN-021-B", "REQ-TURN-021-C", "REQ-TURN-021-D"] },
+        { "id": "REQ-TURN-021-A", "title": "Tier 1 Performance Budget", "atomic": true, "line": 2191, "splitFrom": "REQ-TURN-021" },
+        { "id": "REQ-TURN-021-B", "title": "Bot Decisions Performance Budget", "atomic": true, "line": 2218, "splitFrom": "REQ-TURN-021" },
+        { "id": "REQ-TURN-021-C", "title": "Tier 2 Performance Budget", "atomic": true, "line": 2245, "splitFrom": "REQ-TURN-021" },
+        { "id": "REQ-TURN-021-D", "title": "UI and Animation Performance Budget", "atomic": true, "line": 2272, "splitFrom": "REQ-TURN-021" }
       ]
     },
     "VICTORY": {
@@ -394,9 +398,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 265,
-    "atomicSpecs": 180,
-    "splitCandidates": 78,
+    "totalSpecs": 268,
+    "atomicSpecs": 184,
+    "splitCandidates": 77,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

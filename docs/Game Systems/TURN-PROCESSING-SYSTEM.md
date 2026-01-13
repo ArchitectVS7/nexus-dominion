@@ -2173,36 +2173,133 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 ---
 
-### REQ-TURN-021: Performance Budget
+### REQ-TURN-021: Performance Budget (Split)
 
-**Description:** Turn processing must complete in <2 seconds (2000ms) for 100 empires on target hardware (modern desktop, 8GB RAM, SSD). Budget breakdown:
-- Tier 1 (Phases 1-8): 800ms
-- Bot Decisions (Phase 9): 400ms
-- Tier 2 (Phases 10-17): 300ms
-- UI/Animations: 500ms
-- Total: 2000ms
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-TURN-021-A through REQ-TURN-021-D below.
 
-**Rationale:** Sub-2-second turns feel instantaneous. Enables fluid gameplay without waiting.
+**Overview:** Turn processing must complete in <2 seconds (2000ms) for 100 empires on target hardware (modern desktop, 8GB RAM, SSD).
 
-**Key Values:**
-| Phase Group | Budget | Notes |
-|-------------|--------|-------|
-| Tier 1 | 800ms | Database-heavy transactional |
-| Bot AI | 400ms | Parallelized bot decisions |
-| Tier 2 | 300ms | Logging, events, save |
-| UI | 500ms | Animations, rendering |
-| **Total** | **2000ms** | Target maximum |
+**Budget Breakdown:**
+- Tier 1 (Phases 1-8): 800ms [REQ-TURN-021-A]
+- Bot Decisions (Phase 9): 400ms [REQ-TURN-021-B]
+- Tier 2 (Phases 10-17): 300ms [REQ-TURN-021-C]
+- UI/Animations: 500ms [REQ-TURN-021-D]
+- **Total:** 2000ms
 
-**Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics
+---
 
-**Code:**
-- `src/lib/game/services/core/turn-processor.ts` - Performance logging
-- `src/lib/game/monitoring/performance-tracker.ts` - Phase timing measurement
+### REQ-TURN-021-A: Tier 1 Performance Budget
 
-**Tests:**
-- `src/lib/game/services/__tests__/performance-budget.test.ts` - Load test with 100 empires
+**Description:** Phases 1-8 (database-heavy transactional phases) must complete within 800ms budget for 100 empires.
+
+**Budget Allocation:**
+- Budget: 800ms (40% of total 2000ms)
+- Phases covered: 1-8 (Income, Auto-Production, Population, Civil Status, Research, Build Queue, Covert, Crafting)
+- Characteristics: Database writes, transactional operations
+
+**Rationale:** These are the heaviest computational phases with DB writes. Largest budget allocation reflects this complexity.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Tier 1 Budget
+
+**Code:** TBD - `src/lib/game/monitoring/performance-tracker.ts` - Tier 1 timing
+
+**Tests:** TBD - Load test for Phases 1-8 with 100 empires
 
 **Status:** Draft
+
+> **⚠️ PERFORMANCE TARGET**: 800ms budget requires optimization. Profile each phase to identify bottlenecks.
+
+---
+
+### REQ-TURN-021-B: Bot Decisions Performance Budget
+
+**Description:** Phase 9 (Bot Decisions) must complete within 400ms budget for 100 empires, utilizing parallelization.
+
+**Budget Allocation:**
+- Budget: 400ms (20% of total 2000ms)
+- Phases covered: 9 (Bot Decisions only)
+- Characteristics: Parallelizable, CPU-bound, LLM calls
+
+**Rationale:** Bot AI is expensive but parallelizable. Can utilize multi-core CPUs effectively. Second-largest budget.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Bot AI Budget
+
+**Code:** TBD - `src/lib/game/monitoring/performance-tracker.ts` - Bot phase timing
+
+**Tests:** TBD - Parallel bot decision load test (100 bots)
+
+**Status:** Draft
+
+> **⚠️ PERFORMANCE TARGET**: 400ms for 100 bots = 4ms/bot average. Requires async/parallel execution.
+
+---
+
+### REQ-TURN-021-C: Tier 2 Performance Budget
+
+**Description:** Phases 10-17 (logging, events, checkpoints, save) must complete within 300ms budget for 100 empires.
+
+**Budget Allocation:**
+- Budget: 300ms (15% of total 2000ms)
+- Phases covered: 10-17 (Emotional Decay, Memory Cleanup, Market, Bot Messages, Galactic Events, Alliance Checkpoints, Victory Check, Auto-Save)
+- Characteristics: Lightweight, async-friendly operations
+
+**Rationale:** These phases are lower-priority bookkeeping tasks. Can be optimized aggressively or deferred.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Tier 2 Budget
+
+**Code:** TBD - `src/lib/game/monitoring/performance-tracker.ts` - Tier 2 timing
+
+**Tests:** TBD - Load test for Phases 10-17 with 100 empires
+
+**Status:** Draft
+
+> **⚠️ PERFORMANCE TARGET**: 300ms budget is tight. Consider async operations and debouncing.
+
+---
+
+### REQ-TURN-021-D: UI and Animation Performance Budget
+
+**Description:** UI rendering and animations must complete within 500ms budget to maintain responsive feel.
+
+**Budget Allocation:**
+- Budget: 500ms (25% of total 2000ms)
+- Phases covered: Frontend rendering, animations, state updates
+- Characteristics: Client-side, GPU-accelerated when possible
+
+**Rationale:** UI updates happen after server processing. 500ms budget allows smooth animations without feeling laggy.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, UI Budget
+
+**Code:** TBD - `src/lib/frontend/monitoring/render-tracker.ts` - UI timing
+
+**Tests:** TBD - UI render performance test with 100 empire state changes
+
+**Status:** Draft
+
+> **⚠️ PERFORMANCE TARGET**: 500ms for animations. Use CSS transitions and requestAnimationFrame.
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/game/services/core/turn-processor.ts` - Performance logging orchestration
+- `src/lib/game/monitoring/performance-tracker.ts` - Unified phase timing measurement
+- `src/lib/game/services/__tests__/performance-budget.test.ts` - Full 2000ms budget validation (100 empires)
 
 ---
 
