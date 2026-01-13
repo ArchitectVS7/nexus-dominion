@@ -1,547 +1,504 @@
 {
   "system": "RESOURCE",
+  "analyzedAt": "2026-01-13",
   "totalSpecs": 52,
-  "analyzedAt": "2026-01-13T15:33:25.035Z",
-  "specs": [
-    {
-      "id": "REQ-RES-001",
+  "specs": {
+    "REQ-RES-001": {
       "title": "Five Resource Types",
       "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "blockers": [],
+      "notes": "Foundational spec - defines all resource types (Credits, Food, Ore, Petroleum, Research Points)"
     },
-    {
-      "id": "REQ-RES-002",
+    "REQ-RES-002": {
       "title": "Sector Production Rates (Split)",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-002-01",
-        "REQ-RES-002-02",
-        "REQ-RES-002-03",
-        "REQ-RES-002-04",
-        "REQ-RES-002-05",
-        "REQ-RES-002-06",
-        "REQ-RES-002-07",
-        "REQ-RES-002-08"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Must define resource types before production rates"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Production rates are multiplied by civil status"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["SECTOR"],
+      "notes": "Parent spec for 8 sector production sub-specs"
     },
-    {
-      "id": "REQ-RES-002-01",
+    "REQ-RES-002-01": {
       "title": "Food Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Food resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR"],
+      "notes": "160 food/turn base production"
     },
-    {
-      "id": "REQ-RES-002-02",
+    "REQ-RES-002-02": {
       "title": "Ore Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Ore resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR"],
+      "notes": "112 ore/turn base production"
     },
-    {
-      "id": "REQ-RES-002-03",
+    "REQ-RES-002-03": {
       "title": "Petroleum Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Petroleum resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR"],
+      "notes": "92 petroleum/turn base production"
     },
-    {
-      "id": "REQ-RES-002-04",
+    "REQ-RES-002-04": {
       "title": "Commerce Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Credits resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR"],
+      "notes": "8,000 credits/turn base production"
     },
-    {
-      "id": "REQ-RES-002-05",
+    "REQ-RES-002-05": {
       "title": "Urban Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003", "REQ-RES-010-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Credits resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier for credits"},
+        {"type": "HARD", "spec": "REQ-RES-010-A", "reason": "Provides population capacity"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR"],
+      "notes": "1,000 credits/turn + 1,000 population capacity"
     },
-    {
-      "id": "REQ-RES-002-06",
+    "REQ-RES-002-06": {
       "title": "Education Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-007-F", "REQ-RES-007-G"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-007-F", "reason": "Affects civil status levels"},
+        {"type": "HARD", "spec": "REQ-RES-007-G", "reason": "Grants +1 level transition boost"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR"],
+      "notes": "+1 civil status/turn improvement, caps at Ecstatic"
     },
-    {
-      "id": "REQ-RES-002-07",
+    "REQ-RES-002-07": {
       "title": "Government Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR", "COVERT"],
+      "notes": "300 spy points/turn base production"
     },
-    {
-      "id": "REQ-RES-002-08",
+    "REQ-RES-002-08": {
       "title": "Research Sector Production",
-      "dependencies": [
-        "REQ-RES-002"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003", "REQ-RES-011-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Research Points resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"},
+        {"type": "SOFT", "spec": "REQ-RES-011-A", "reason": "Forward reference to RP calculation"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-002"
-      ]
+      "crossSystem": ["SECTOR", "RESEARCH"],
+      "notes": "100 research points/turn base production"
     },
-    {
-      "id": "REQ-RES-003",
+    "REQ-RES-003": {
       "title": "Civil Status Income Multiplier",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-RES-007-F"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-007-F", "reason": "Requires civil status level definitions"}
+      ],
+      "notes": "Multipliers: Ecstatic 2.5×, Happy 1.5×, Content 1.0×, Unhappy 0.75×, Angry 0.5×, Rioting 0.25×"
     },
-    {
-      "id": "REQ-RES-004",
+    "REQ-RES-004": {
       "title": "Population Food Consumption (Split)",
-      "dependencies": [
-        "REQ-RES-004-A",
-        "REQ-RES-004-B"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Food resource definition"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-004-A",
-        "REQ-RES-004-B"
-      ]
+      "notes": "Parent spec for food consumption calculation and deficit consequences"
     },
-    {
-      "id": "REQ-RES-004-A",
+    "REQ-RES-004-A": {
       "title": "Food Consumption Calculation",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-004"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Food resource definition"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["TURN"],
+      "notes": "Population × 0.5 food/capita/turn"
     },
-    {
-      "id": "REQ-RES-004-B",
+    "REQ-RES-004-B": {
       "title": "Food Deficit Consequences",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-004"
+      "dependencies": ["REQ-RES-004-A", "REQ-RES-006-B", "REQ-RES-007-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-004-A", "reason": "Requires consumption calculation to detect deficit"},
+        {"type": "HARD", "spec": "REQ-RES-006-B", "reason": "Triggers population decline"},
+        {"type": "HARD", "spec": "REQ-RES-007-A", "reason": "Applies -30 civil status penalty"}
       ],
-      "crossSystemDeps": []
+      "notes": "-10%/turn population decline and -30 civil status score"
     },
-    {
-      "id": "REQ-RES-005",
+    "REQ-RES-005": {
       "title": "Military Maintenance Costs (Split)",
-      "dependencies": [
-        "REQ-RES-005-A",
-        "REQ-RES-005-C"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Ore and Petroleum resource definitions"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-005-A",
-        "REQ-RES-005-C"
-      ]
+      "crossSystem": ["MILITARY"],
+      "notes": "Parent spec for military maintenance costs"
     },
-    {
-      "id": "REQ-RES-005-A",
+    "REQ-RES-005-A": {
       "title": "Ore Maintenance Calculation",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-005"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Ore resource definition"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["MILITARY", "TURN"],
+      "notes": "5% of unit ore build cost per turn"
     },
-    {
-      "id": "REQ-RES-005-B",
+    "REQ-RES-005-B": {
       "title": "Petroleum Fuel Calculation",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Petroleum resource definition"}
+      ],
+      "crossSystem": ["MILITARY", "TURN"],
+      "notes": "3% of unit petroleum build cost per turn"
     },
-    {
-      "id": "REQ-RES-005-C",
+    "REQ-RES-005-C": {
       "title": "Military Resource Deficit Consequences",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-005"
+      "dependencies": ["REQ-RES-005-A", "REQ-RES-005-B", "REQ-RES-008-D", "REQ-RES-008-E"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-005-A", "reason": "Requires ore maintenance calculation"},
+        {"type": "HARD", "spec": "REQ-RES-005-B", "reason": "Requires petroleum fuel calculation"},
+        {"type": "HARD", "spec": "REQ-RES-008-D", "reason": "Ore deficit consequences"},
+        {"type": "HARD", "spec": "REQ-RES-008-E", "reason": "Petroleum deficit consequences"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["MILITARY", "COMBAT"],
+      "notes": "Ore deficit: 0% power, Petroleum deficit: 50% power"
     },
-    {
-      "id": "REQ-RES-006",
+    "REQ-RES-006": {
       "title": "Population Growth and Decline (Split)",
-      "dependencies": [
-        "REQ-RES-006-A",
-        "REQ-RES-006-C"
+      "dependencies": ["REQ-RES-004-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-004-A", "reason": "Requires food consumption calculation"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-006-A",
-        "REQ-RES-006-C"
-      ]
+      "notes": "Parent spec (duplicate of REQ-TURN-006)"
     },
-    {
-      "id": "REQ-RES-006-A",
+    "REQ-RES-006-A": {
       "title": "Population Growth Calculation",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-006"
+      "dependencies": ["REQ-RES-004-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-004-A", "reason": "Growth depends on food surplus"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["TURN"],
+      "notes": "+2%/turn with food surplus, capped by food availability"
     },
-    {
-      "id": "REQ-RES-006-B",
+    "REQ-RES-006-B": {
       "title": "Population Decline from Starvation",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-RES-004-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-004-A", "reason": "Decline triggered by food deficit"}
+      ],
+      "crossSystem": ["TURN"],
+      "notes": "-10%/turn when food deficit"
     },
-    {
-      "id": "REQ-RES-006-C",
+    "REQ-RES-006-C": {
       "title": "Population Growth Constraints",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-006"
+      "dependencies": ["REQ-RES-006-A"],
+      "blockers": [
+        {"type": "SOFT", "spec": "REQ-RES-006-A", "reason": "Provides constraints on growth rate"}
       ],
-      "crossSystemDeps": []
+      "notes": "100 minimum population floor, 1.0 food multiplier cap"
     },
-    {
-      "id": "REQ-RES-007",
+    "REQ-RES-007": {
       "title": "Civil Status Calculation Formula (Split)",
-      "dependencies": [
-        "REQ-RES-007-A",
-        "REQ-RES-007-G",
-        "REQ-RES-007-B",
-        "REQ-RES-007-C",
-        "REQ-RES-007-D",
-        "REQ-RES-007-E",
-        "REQ-RES-007-F",
-        "REQ-TURN-007"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-007-A",
-        "REQ-RES-007-G",
-        "REQ-RES-007-B",
-        "REQ-RES-007-C",
-        "REQ-RES-007-D",
-        "REQ-RES-007-E",
-        "REQ-RES-007-F",
-        "REQ-TURN-007"
-      ]
-    },
-    {
-      "id": "REQ-RES-007-A",
-      "title": "Food Security Modifier",
       "dependencies": [],
-      "dependents": [
-        "REQ-RES-007"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "notes": "Parent spec (duplicate of REQ-TURN-007) - foundational civil status system"
     },
-    {
-      "id": "REQ-RES-007-B",
+    "REQ-RES-007-A": {
+      "title": "Food Security Modifier",
+      "dependencies": ["REQ-RES-004-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-004-A", "reason": "Requires food consumption to calculate surplus/deficit"}
+      ],
+      "notes": "Range: -50 to +20 based on food balance"
+    },
+    "REQ-RES-007-B": {
       "title": "Battle Outcome Modifier",
       "dependencies": [],
-      "dependents": [
-        "REQ-RES-007"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["COMBAT"],
+      "notes": "Range: -50 to +25, ±5/-10 per victory/defeat (5-turn window)"
     },
-    {
-      "id": "REQ-RES-007-C",
+    "REQ-RES-007-C": {
       "title": "Territory Growth Modifier",
       "dependencies": [],
-      "dependents": [
-        "REQ-RES-007"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["SECTOR"],
+      "notes": "Range: -50 to +20, +2/-5 per sector gained/lost (10-turn window)"
     },
-    {
-      "id": "REQ-RES-007-D",
+    "REQ-RES-007-D": {
       "title": "Education Sector Bonus",
-      "dependencies": [
-        "REQ-RES-007-G"
-      ],
-      "dependents": [
-        "REQ-RES-007"
-      ],
-      "crossSystemDeps": [
-        "REQ-RES-007-G"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["SECTOR"],
+      "notes": "Range: 0 to +50, +10 per Education sector"
     },
-    {
-      "id": "REQ-RES-007-E",
+    "REQ-RES-007-E": {
       "title": "Overcrowding Penalty",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-007"
+      "dependencies": ["REQ-RES-010-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-010-A", "reason": "Requires population capacity calculation"}
       ],
-      "crossSystemDeps": []
+      "notes": "-20 when population > capacity"
     },
-    {
-      "id": "REQ-RES-007-F",
+    "REQ-RES-007-F": {
       "title": "Civil Status Score to Level Mapping",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-007"
+      "dependencies": ["REQ-RES-007-A", "REQ-RES-007-B", "REQ-RES-007-C", "REQ-RES-007-D", "REQ-RES-007-E"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-007-A", "reason": "Requires all modifier calculations"},
+        {"type": "HARD", "spec": "REQ-RES-007-B", "reason": "Requires all modifier calculations"},
+        {"type": "HARD", "spec": "REQ-RES-007-C", "reason": "Requires all modifier calculations"},
+        {"type": "HARD", "spec": "REQ-RES-007-D", "reason": "Requires all modifier calculations"},
+        {"type": "HARD", "spec": "REQ-RES-007-E", "reason": "Requires all modifier calculations"}
       ],
-      "crossSystemDeps": []
+      "notes": "Ecstatic 150+, Happy 120-149, Content 90-119, Unhappy 70-89, Angry 40-69, Rioting 0-39"
     },
-    {
-      "id": "REQ-RES-007-G",
+    "REQ-RES-007-G": {
       "title": "Civil Status Transition Rules",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-007",
-        "REQ-RES-007-D"
+      "dependencies": ["REQ-RES-007-F"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-007-F", "reason": "Requires level mapping to enforce transitions"}
       ],
-      "crossSystemDeps": []
+      "notes": "Max 1 level change/turn, Education sectors grant +1 level boost"
     },
-    {
-      "id": "REQ-RES-008",
+    "REQ-RES-008": {
       "title": "Resource Storage and Negative Balances (Split)",
-      "dependencies": [
-        "REQ-RES-008-A",
-        "REQ-RES-008-F",
-        "REQ-RES-008-B",
-        "REQ-RES-008-C",
-        "REQ-RES-008-D",
-        "REQ-RES-008-E",
-        "REQ-SEC-006"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires resource type definitions"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-008-A",
-        "REQ-RES-008-F",
-        "REQ-RES-008-B",
-        "REQ-RES-008-C",
-        "REQ-RES-008-D",
-        "REQ-RES-008-E",
-        "REQ-SEC-006"
-      ]
+      "notes": "Parent spec - conflicts with REQ-SEC-006"
     },
-    {
-      "id": "REQ-RES-008-A",
+    "REQ-RES-008-A": {
       "title": "Unlimited Resource Storage Policy",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-008"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Applies to all resource types"}
       ],
-      "crossSystemDeps": []
+      "notes": "No storage caps, unlimited accumulation"
     },
-    {
-      "id": "REQ-RES-008-B",
+    "REQ-RES-008-B": {
       "title": "Negative Credits Consequence",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-008"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Applies to Credits resource"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["SECTOR", "MILITARY", "MARKET"],
+      "notes": "Blocks purchases, no civil status penalty"
     },
-    {
-      "id": "REQ-RES-008-C",
+    "REQ-RES-008-C": {
       "title": "Negative Food Consequence",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-008"
+      "dependencies": ["REQ-RES-001", "REQ-RES-006-B", "REQ-RES-007-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Applies to Food resource"},
+        {"type": "HARD", "spec": "REQ-RES-006-B", "reason": "Triggers population decline"},
+        {"type": "HARD", "spec": "REQ-RES-007-A", "reason": "Applies -30 civil status penalty"}
       ],
-      "crossSystemDeps": []
+      "notes": "-10%/turn population decline, -30 civil status"
     },
-    {
-      "id": "REQ-RES-008-D",
+    "REQ-RES-008-D": {
       "title": "Negative Ore Consequence",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-008"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Applies to Ore resource"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["MILITARY", "COMBAT"],
+      "notes": "Units deactivate (0% combat power)"
     },
-    {
-      "id": "REQ-RES-008-E",
+    "REQ-RES-008-E": {
       "title": "Negative Petroleum Consequence",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-008"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Applies to Petroleum resource"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["MILITARY", "SECTOR"],
+      "notes": "Half speed (50% power), wormhole construction blocked"
     },
-    {
-      "id": "REQ-RES-008-F",
+    "REQ-RES-008-F": {
       "title": "Negative Research Points Handling",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-008"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Applies to Research Points resource"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["RESEARCH"],
+      "notes": "Hard floor at zero, cannot go negative"
     },
-    {
-      "id": "REQ-RES-009",
+    "REQ-RES-009": {
       "title": "Sector Type Conversion (Split)",
-      "dependencies": [
-        "REQ-RES-009-A",
-        "REQ-RES-009-C"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-009-A",
-        "REQ-RES-009-C"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["SECTOR"],
+      "notes": "Parent spec for sector conversion mechanics"
     },
-    {
-      "id": "REQ-RES-009-A",
+    "REQ-RES-009-A": {
       "title": "Sector Conversion Cost Calculation",
       "dependencies": [],
-      "dependents": [
-        "REQ-RES-009"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["SECTOR"],
+      "notes": "50% of target sector build cost"
     },
-    {
-      "id": "REQ-RES-009-B",
+    "REQ-RES-009-B": {
       "title": "Sector Conversion Timing",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-RES-009-A"],
+      "blockers": [
+        {"type": "SOFT", "spec": "REQ-RES-009-A", "reason": "Requires cost calculation"}
+      ],
+      "crossSystem": ["SECTOR"],
+      "notes": "Instant conversion, same turn completion"
     },
-    {
-      "id": "REQ-RES-009-C",
+    "REQ-RES-009-C": {
       "title": "Sector Conversion Restrictions",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-009"
+      "dependencies": ["REQ-RES-010-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-010-A", "reason": "Urban sectors protected due to population capacity"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["SECTOR"],
+      "notes": "Cannot convert Urban sectors (from or to)"
     },
-    {
-      "id": "REQ-RES-010",
+    "REQ-RES-010": {
       "title": "Urban Sectors and Population Capacity (Split)",
-      "dependencies": [
-        "REQ-RES-010-A",
-        "REQ-RES-010-C"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-010-A",
-        "REQ-RES-010-C"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "notes": "Parent spec for population capacity mechanics"
     },
-    {
-      "id": "REQ-RES-010-A",
+    "REQ-RES-010-A": {
       "title": "Population Capacity Calculation",
       "dependencies": [],
-      "dependents": [
-        "REQ-RES-010"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["SECTOR"],
+      "notes": "10,000 people per Urban sector"
     },
-    {
-      "id": "REQ-RES-010-B",
+    "REQ-RES-010-B": {
       "title": "Overcrowding Penalty",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-RES-010-A", "REQ-RES-007-E"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-010-A", "reason": "Requires capacity calculation"},
+        {"type": "SOFT", "spec": "REQ-RES-007-E", "reason": "Forward reference to civil status penalty"}
+      ],
+      "notes": "-20 civil status when population > capacity"
     },
-    {
-      "id": "REQ-RES-010-C",
+    "REQ-RES-010-C": {
       "title": "Starting Urban Infrastructure",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-010"
+      "dependencies": ["REQ-RES-010-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-010-A", "reason": "Starting conditions use capacity calculation"}
       ],
-      "crossSystemDeps": []
+      "notes": "1 Urban sector, 10,000 population at game start"
     },
-    {
-      "id": "REQ-RES-011",
+    "REQ-RES-011": {
       "title": "Research Point Accumulation (Split)",
-      "dependencies": [
-        "REQ-RES-011-A",
-        "REQ-RES-011-C"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Research Points resource definition"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-011-A",
-        "REQ-RES-011-C"
-      ]
+      "crossSystem": ["RESEARCH"],
+      "notes": "Parent spec for research point mechanics"
     },
-    {
-      "id": "REQ-RES-011-A",
+    "REQ-RES-011-A": {
       "title": "Research Point Production Calculation",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-011"
+      "dependencies": ["REQ-RES-001", "REQ-RES-003"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires Research Points resource definition"},
+        {"type": "HARD", "spec": "REQ-RES-003", "reason": "Subject to civil status multiplier"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["SECTOR", "RESEARCH"],
+      "notes": "100 RP per Research sector × civil status multiplier"
     },
-    {
-      "id": "REQ-RES-011-B",
+    "REQ-RES-011-B": {
       "title": "Tech Tier Unlock Thresholds",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-RES-011-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-011-A", "reason": "Requires RP production to reach thresholds"}
+      ],
+      "crossSystem": ["RESEARCH"],
+      "notes": "Tier 1: 1,000 RP, Tier 2: 5,000 RP, Tier 3: 15,000 RP"
     },
-    {
-      "id": "REQ-RES-011-C",
+    "REQ-RES-011-C": {
       "title": "Research Timeline Mechanics",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-011"
+      "dependencies": ["REQ-RES-011-A", "REQ-RES-011-B"],
+      "blockers": [
+        {"type": "SOFT", "spec": "REQ-RES-011-A", "reason": "Timeline examples use production rates"},
+        {"type": "SOFT", "spec": "REQ-RES-011-B", "reason": "Timeline examples use thresholds"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["RESEARCH"],
+      "notes": "Example timelines: 1 sector (150 turns), 3 sectors + Ecstatic (20 turns) to Tier 3"
     },
-    {
-      "id": "REQ-RES-012",
+    "REQ-RES-012": {
       "title": "Economic Victory Condition (Split)",
-      "dependencies": [
-        "REQ-RES-012-A",
-        "REQ-RES-012-B"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Networth calculation requires all resource types"}
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-RES-012-A",
-        "REQ-RES-012-B"
-      ]
+      "crossSystem": ["VICTORY"],
+      "notes": "Parent spec (duplicate of REQ-VIC-002)"
     },
-    {
-      "id": "REQ-RES-012-A",
+    "REQ-RES-012-A": {
       "title": "Empire Networth Calculation",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-012"
+      "dependencies": ["REQ-RES-001"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-001", "reason": "Requires all resource types for calculation"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["SECTOR", "MILITARY", "RESEARCH", "MARKET", "VICTORY"],
+      "notes": "Credits + resources (market price) + sectors (8k avg) + units (build cost) + RP (×10)"
     },
-    {
-      "id": "REQ-RES-012-B",
+    "REQ-RES-012-B": {
       "title": "Economic Victory Threshold",
-      "dependencies": [],
-      "dependents": [
-        "REQ-RES-012"
+      "dependencies": ["REQ-RES-012-A"],
+      "blockers": [
+        {"type": "HARD", "spec": "REQ-RES-012-A", "reason": "Requires networth calculation"}
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["VICTORY"],
+      "notes": "1.5× networth of 2nd place empire, checked after Turn 50"
     }
-  ]
+  },
+  "summary": {
+    "foundationalSpecs": [
+      "REQ-RES-001",
+      "REQ-RES-007",
+      "REQ-RES-010-A"
+    ],
+    "mostDependedOn": [
+      "REQ-RES-001 (43 dependencies)",
+      "REQ-RES-003 (9 dependencies)",
+      "REQ-RES-007-F (3 dependencies)",
+      "REQ-RES-004-A (5 dependencies)"
+    ],
+    "mostDependencies": [
+      "REQ-RES-007-F (5 dependencies)",
+      "REQ-RES-005-C (4 dependencies)",
+      "REQ-RES-004-B (3 dependencies)"
+    ],
+    "crossSystemDeps": {
+      "SECTOR": 18,
+      "MILITARY": 9,
+      "TURN": 5,
+      "COMBAT": 3,
+      "COVERT": 1,
+      "RESEARCH": 7,
+      "MARKET": 2,
+      "VICTORY": 4
+    },
+    "circularDependencies": [
+      "REQ-RES-002-05 ↔ REQ-RES-010-A (Urban sector provides capacity)",
+      "REQ-RES-007-E ↔ REQ-RES-010-B (Overcrowding penalty circular reference)"
+    ],
+    "duplicateSpecs": [
+      "REQ-RES-006 (duplicate of REQ-TURN-006)",
+      "REQ-RES-007 (duplicate of REQ-TURN-007)",
+      "REQ-RES-012 (duplicate of REQ-VIC-002)"
+    ],
+    "conflicts": [
+      "REQ-RES-008 conflicts with REQ-SEC-006 (storage policy)"
+    ]
+  }
 }

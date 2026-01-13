@@ -1,0 +1,33 @@
+╔════════════════════════════════════════════════════════════╗
+║         BATCH DEPENDENCY ANALYSIS SESSION                  ║
+╚════════════════════════════════════════════════════════════╝
+
+Start Time: 2026-01-13T17:44:12
+Total Systems: 15
+Total Specs: 477
+
+Processing Order (Foundations First):
+  Wave 1: RESOURCE, SECTOR, MILITARY
+  Wave 2: COMBAT, DIPLOMACY, VICTORY
+  Wave 3: TURN, BOT, COVERT
+  Wave 4: MARKET, RESEARCH, PROGRESSIVE
+  Wave 5: SYNDICATE, TECH, UI
+
+════════════════════════════════════════════════════════════
+
+[1/15] Analyzing RESOURCE...
+- Expected specs: 52
+- File: docs/Game Systems/RESOURCE-MANAGEMENT-SYSTEM.md
+
+[1/15] RESOURCE ✓ Complete
+- Specs analyzed: 52
+- Intra-system dependencies: 89
+- Cross-system references: SECTOR (18), MILITARY (9), RESEARCH (7), TURN (5), VICTORY (4), COMBAT (3), MARKET (2), COVERT (1)
+- Foundational specs: REQ-RES-001, REQ-RES-007, REQ-RES-010-A
+- Most depended-on: REQ-RES-001 (43 dependents)
+- Most dependencies: REQ-RES-007-F (5 dependencies)
+- Circular dependencies found: 2
+- Duplicate specs: 3 (REQ-RES-006, REQ-RES-007, REQ-RES-012)
+- Conflicts: 1 (REQ-RES-008 vs REQ-SEC-006)
+- Duration: ~60s
+
