@@ -2454,38 +2454,96 @@ Actual RP = Accumulated total (hidden)
 
 ---
 
-### REQ-RSCH-006: Research Information Visibility
+### REQ-RSCH-006: Research Information Visibility (Split)
 
-**Description:** Asymmetric information model:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-006-A through REQ-RSCH-006-C.
 
-**PUBLIC (Always Visible):**
-- Doctrine choices (announced Turn ~10)
-- Capstone unlocks (announced Turn ~60)
-- Research sector count (sector visibility)
+---
 
-**HIDDEN (Private):**
-- Current RP accumulation
-- Progress % toward next tier
-- Specialization choice (Tier 2)
+### REQ-RSCH-006-A: Public Research Information
 
-**REVEALED THROUGH:**
-- Combat (first use of specialization against empire)
-- Espionage (Investigate Specialization, 5,000 cr, 85% success)
-- Alliance membership (auto-share with coalition)
-- Galactic News rumors (50% accuracy, every 10 turns, 3 true + 2 false)
+**Description:** Three categories of research information are always publicly visible to all empires: Doctrine choices (announced Turn ~10), Capstone unlocks (announced Turn ~60), and Research sector count (visible via sector exploration).
 
-**Rationale:** Encourages intelligence gathering and creates deduction gameplay. Players can estimate progress but must verify critical intel.
+**Rationale:** Public announcements create diplomatic consequences and strategic reactions. Sector count allows estimation but not precision.
 
-**Source:** Section 2.2 - Information Visibility Matrix, Section 3.4 - Information Visibility & Intelligence System
+**Public Information:**
+| Category | Visibility | Timing | Purpose |
+|----------|-----------|--------|---------|
+| Doctrine choices | Public | Turn ~10 (1,000 RP unlock) | Creates diplomatic consequences |
+| Capstone unlocks | Public | Turn ~60 (15,000 RP unlock) | Signals endgame phase |
+| Research sector count | Public | Always (via sector visibility) | Allows RP estimation |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2 - Information Visibility Matrix
 
 **Code:**
-- `src/lib/game/research/visibility.ts` - Visibility rules
-- `src/lib/intel/specialization-reveal.ts` - Reveal conditions
+- `src/lib/game/research/visibility.ts` - Public visibility rules
+
+**Tests:**
+- `src/lib/game/__tests__/research-visibility.test.ts` - Test public info is visible
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-006-B: Hidden Research Information
+
+**Description:** Three categories of research information remain hidden from other empires: Current RP accumulation (total RP), Progress percentage toward next tier, and Specialization choice (Tier 2 selection).
+
+**Rationale:** Creates information asymmetry and strategic uncertainty. Enemies can estimate but not know precisely. Encourages intelligence gathering.
+
+**Hidden Information:**
+| Category | Visibility | Rationale |
+|----------|-----------|-----------|
+| Current RP accumulation | Hidden | Prevents precise timing predictions |
+| Progress % toward next tier | Hidden | Creates strategic uncertainty |
+| Specialization choice (Tier 2) | Hidden | Until revealed through specific methods (see REQ-RSCH-006-C) |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2 - Information Visibility Matrix
+
+**Code:**
+- `src/lib/game/research/visibility.ts` - Hidden information rules
+
+**Tests:**
+- `src/lib/game/__tests__/research-visibility.test.ts` - Test hidden info not visible to enemies
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-006-C: Specialization Reveal Methods
+
+**Description:** Hidden specialization choices (Tier 2) can be revealed through four methods: Combat (first use against empire), Espionage (Investigate Specialization operation, 5,000 cr, 85% success), Alliance membership (auto-share with coalition), and Galactic News rumors (50% accuracy, every 10 turns, 3 true + 2 false).
+
+**Rationale:** Multiple reveal paths create deduction gameplay. Players must choose between certainty (espionage cost) vs. uncertainty (rumors) vs. alliance commitment.
+
+**Reveal Methods:**
+| Method | Cost | Accuracy | Notes |
+|--------|------|----------|-------|
+| Combat | Free | 100% | Revealed on first use of specialization |
+| Espionage (Investigate) | 5,000 cr | 85% | Active intelligence gathering |
+| Alliance membership | Free | 100% | Auto-share between coalition members |
+| Galactic News rumors | Free | 50% | Every 10 turns, 3 true + 2 false per cycle |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Information Visibility & Intelligence System
+
+**Code:**
+- `src/lib/intel/specialization-reveal.ts` - Reveal condition logic
 - `src/lib/covert/investigate-specialization.ts` - Espionage operation
 
 **Tests:**
-- `src/lib/game/__tests__/research-visibility.test.ts` - Test what's visible vs hidden
-- `src/lib/intel/__tests__/specialization-reveal.test.ts` - Test reveal conditions work
+- `src/lib/intel/__tests__/specialization-reveal.test.ts` - Test all reveal conditions work
 - `src/lib/covert/__tests__/investigate-specialization.test.ts` - Test espionage success/fail
 
 **Status:** Draft
