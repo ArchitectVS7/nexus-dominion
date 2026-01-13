@@ -876,33 +876,117 @@ Early termination:
 
 ---
 
-### REQ-DIP-010: Reputation Recovery
+### REQ-DIP-010: Reputation Recovery (Split)
 
-**Description:** Reputation can be recovered through positive actions:
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-DIP-010-A through REQ-DIP-010-C below.
 
-**Fast Recovery (10+ turns):**
-- Fulfill 10+ consecutive trades: +20
-- Gift resources to weaker empires: +5 per gift (max 3 per target)
-- Join defensive coalition: +15
+**Overview:** Reputation can be recovered through positive actions, with fast and slow recovery paths, but major betrayals leave permanent scars.
 
-**Slow Recovery (30+ turns):**
-- Maintain peace for 30 turns: +10
-- Honor all treaties for 30 turns: +15
+**Recovery Mechanisms:**
+- Fast Recovery: 10+ turn actions [REQ-DIP-010-A]
+- Slow Recovery: 30+ turn sustained behavior [REQ-DIP-010-B]
+- Permanent Scars: Irreversible penalties [REQ-DIP-010-C]
 
-**Permanent Scars:**
-- Coalition betrayal: -20 permanent (never heals)
-- Repeated treaty breaking (3+): -15 permanent
+---
 
-**Rationale:** Allows redemption but makes betrayal costly long-term. Permanent scars ensure major betrayals have lasting consequences.
+### REQ-DIP-010-A: Fast Reputation Recovery
 
-**Source:** Section 3.4
+**Description:** Players can regain reputation through short-term positive actions that demonstrate reliability and generosity over 10+ turns.
 
-**Code:**
-- `src/lib/diplomacy/reputation.ts` - Recovery logic, permanent scars
-- `src/lib/game/turn-processing.ts` - Reputation recovery per turn
+**Fast Recovery Actions:**
+- **Fulfill 10+ Consecutive Trades:** +20 reputation
+  - Requires: Complete 10 trades in a row without cancellation
+  - Timing: Evaluated after 10th consecutive trade completes
+  - One-time bonus per streak
 
-**Tests:**
-- `src/lib/diplomacy/__tests__/reputation-recovery.test.ts` - Recovery mechanics
+- **Gift Resources to Weaker Empires:** +5 reputation per gift (max +15 per target)
+  - Requires: Target empire has lower power score
+  - Limit: Maximum 3 gifts per target empire
+  - Timing: Immediate reputation gain on gift completion
+
+- **Join Defensive Coalition:** +15 reputation
+  - Requires: Join coalition formed to defend against aggressor
+  - Timing: Immediate reputation gain on joining
+  - Applies to all coalition members
+
+**Rationale:** Fast recovery rewards active diplomatic engagement and generosity. 10+ turn requirement prevents gaming the system while remaining achievable.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Reputation Recovery, Fast Recovery
+
+**Code:** TBD - `src/lib/diplomacy/reputation.ts` - Fast recovery actions
+
+**Tests:** TBD - Verify +20 trade bonus, +5 gift bonus (max 3), +15 coalition bonus
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-010-B: Slow Reputation Recovery
+
+**Description:** Players can gradually rebuild reputation through sustained peaceful behavior over 30+ turns, demonstrating long-term commitment to diplomacy.
+
+**Slow Recovery Actions:**
+- **Maintain Peace for 30 Turns:** +10 reputation
+  - Requires: No attacks initiated for 30 consecutive turns
+  - Defensive actions: Do not break peace streak
+  - Timing: Bonus applied on turn 30
+  - Repeatable: Can earn multiple times
+
+- **Honor All Treaties for 30 Turns:** +15 reputation
+  - Requires: All active treaties honored for 30 consecutive turns
+  - Includes: Non-Aggression, Trade, Defense, Coalition agreements
+  - Breaking any treaty: Resets counter to 0
+  - Timing: Bonus applied on turn 30
+  - Repeatable: Can earn multiple times
+
+**Rationale:** Slow recovery requires sustained commitment, proving genuine behavioral change. 30-turn requirement ensures players can't quickly erase past betrayals.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Reputation Recovery, Slow Recovery
+
+**Code:** TBD - `src/lib/game/turn-processing/reputation-phase.ts` - Slow recovery tracking
+
+**Tests:** TBD - Verify 30-turn peace bonus, 30-turn treaty honoring bonus
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-010-C: Permanent Reputation Scars
+
+**Description:** Certain severe betrayals inflict permanent reputation penalties that can never be removed, ensuring major treachery has lasting consequences.
+
+**Permanent Penalties:**
+- **Coalition Betrayal:** -20 reputation (permanent)
+  - Trigger: Attack coalition member while in coalition
+  - Applies to: All empires aware of the betrayal
+  - Never heals: Penalty persists entire game
+  - Visual indicator: "Coalition Traitor" tag in diplomacy UI
+
+- **Repeated Treaty Breaking (3+ times):** -15 reputation (permanent)
+  - Trigger: Break 3 or more treaties during game
+  - Counted: All treaty types (NAP, Trade, Defense, Coalition)
+  - Never heals: Penalty persists entire game
+  - Visual indicator: "Treaty Breaker" tag in diplomacy UI
+
+**Rationale:** Permanent scars create meaningful consequences for major betrayals. Players can partially recover through positive actions, but the scar remains as a warning to others. Prevents "scorched earth" strategies where players betray everyone with no long-term cost.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Reputation Recovery, Permanent Scars
+
+**Code:** TBD - `src/lib/diplomacy/reputation.ts` - Permanent scar tracking
+
+**Tests:** TBD - Verify -20 coalition betrayal, -15 repeated treaty breaking, persistence across entire game
 
 **Status:** Draft
 

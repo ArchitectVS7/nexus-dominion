@@ -98,7 +98,10 @@
         { "id": "REQ-DIP-009-B", "title": "Allied Attack Alerts", "atomic": true, "line": 790, "splitFrom": "REQ-DIP-009" },
         { "id": "REQ-DIP-009-C", "title": "Coalition Chat Visibility", "atomic": true, "line": 817, "splitFrom": "REQ-DIP-009" },
         { "id": "REQ-DIP-009-D", "title": "Shared Vision of Enemy Units", "atomic": true, "line": 846, "splitFrom": "REQ-DIP-009" },
-        { "id": "REQ-DIP-010", "title": "Reputation Recovery", "atomic": false, "line": 879, "splitCandidate": "fast + slow + permanent scars" }
+        { "id": "REQ-DIP-010", "title": "Reputation Recovery (Split)", "atomic": true, "line": 879, "parentOf": ["REQ-DIP-010-A", "REQ-DIP-010-B", "REQ-DIP-010-C"] },
+        { "id": "REQ-DIP-010-A", "title": "Fast Reputation Recovery", "atomic": true, "line": 892, "splitFrom": "REQ-DIP-010" },
+        { "id": "REQ-DIP-010-B", "title": "Slow Reputation Recovery", "atomic": true, "line": 928, "splitFrom": "REQ-DIP-010" },
+        { "id": "REQ-DIP-010-C", "title": "Permanent Reputation Scars", "atomic": true, "line": 962, "splitFrom": "REQ-DIP-010" }
       ]
     },
     "MARKET": {
@@ -422,9 +425,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 286,
-    "atomicSpecs": 208,
-    "splitCandidates": 71,
+    "totalSpecs": 289,
+    "atomicSpecs": 211,
+    "splitCandidates": 70,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
