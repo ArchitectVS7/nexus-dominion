@@ -1,300 +1,342 @@
 {
   "system": "SECTOR",
+  "analyzedAt": "2026-01-13",
   "totalSpecs": 30,
-  "analyzedAt": "2026-01-13T15:33:25.040Z",
-  "specs": [
-    {
-      "id": "REQ-SEC-001",
+  "specs": {
+    "REQ-SEC-001": {
       "title": "Starting Sectors",
       "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Foundational spec - defines starting configuration. References resource types (Credits, Food, Ore, Petroleum) from RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-002",
+    "REQ-SEC-002": {
       "title": "Sector Cost Scaling",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-001",
+          "reason": "Formula uses current sector count which starts at 5 from REQ-SEC-001"
+        }
+      ],
+      "crossSystem": [],
+      "notes": "Cost formula depends on starting sector count but can work standalone with default value."
     },
-    {
-      "id": "REQ-SEC-003",
+    "REQ-SEC-003": {
       "title": "Eight Sector Types (Split)",
       "dependencies": [],
-      "dependents": [
-        "REQ-SEC-003-01",
-        "REQ-SEC-003-02",
-        "REQ-SEC-003-03",
-        "REQ-SEC-003-04",
-        "REQ-SEC-003-05",
-        "REQ-SEC-003-06",
-        "REQ-SEC-003-07",
-        "REQ-SEC-003-08"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["RESOURCE", "RESEARCH"],
+      "notes": "Parent spec for sector type definitions. References resources from RESOURCE system and research points from RESEARCH system."
     },
-    {
-      "id": "REQ-SEC-003-01",
+    "REQ-SEC-003-01": {
       "title": "Food Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Produces Food resource defined in RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-003-02",
+    "REQ-SEC-003-02": {
       "title": "Ore Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Produces Ore resource defined in RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-003-03",
+    "REQ-SEC-003-03": {
       "title": "Petroleum Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Produces Petroleum resource defined in RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-003-04",
+    "REQ-SEC-003-04": {
       "title": "Commerce Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Produces Credits resource defined in RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-003-05",
+    "REQ-SEC-003-05": {
       "title": "Urban Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Provides population capacity and produces Credits from RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-003-06",
+    "REQ-SEC-003-06": {
       "title": "Education Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": [],
+      "notes": "Provides civil status boost - intangible benefit with no cross-system dependencies."
     },
-    {
-      "id": "REQ-SEC-003-07",
+    "REQ-SEC-003-07": {
       "title": "Government Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["COVERT"],
+      "notes": "Provides agent capacity for COVERT system operations."
     },
-    {
-      "id": "REQ-SEC-003-08",
+    "REQ-SEC-003-08": {
       "title": "Research Sector Type",
-      "dependencies": [
-        "REQ-SEC-003"
-      ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-003"
-      ]
+      "dependencies": [],
+      "blockers": [],
+      "crossSystem": ["RESEARCH"],
+      "notes": "Provides research points for RESEARCH system tech tree progression."
     },
-    {
-      "id": "REQ-SEC-004",
+    "REQ-SEC-004": {
       "title": "Production Timing (Split)",
-      "dependencies": [
-        "REQ-SEC-004-A",
-        "REQ-SEC-004-C"
+      "dependencies": ["REQ-SEC-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-003",
+          "reason": "Must know what sectors produce before calculating production timing"
+        }
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-004-A",
-        "REQ-SEC-004-C"
-      ]
+      "crossSystem": ["TURN"],
+      "notes": "Parent spec for production timing. Depends on TURN system for turn boundary processing."
     },
-    {
-      "id": "REQ-SEC-004-A",
+    "REQ-SEC-004-A": {
       "title": "Turn Boundary Production Timing",
-      "dependencies": [],
-      "dependents": [
-        "REQ-SEC-004"
+      "dependencies": ["REQ-SEC-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-003",
+          "reason": "Requires sector production values to process at turn boundary"
+        }
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["TURN"],
+      "notes": "Server-side turn processing depends on TURN system."
     },
-    {
-      "id": "REQ-SEC-004-B",
+    "REQ-SEC-004-B": {
       "title": "New Sector Production Delay",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-SEC-004-A"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-004-A",
+          "reason": "Delay rule applies to turn boundary production mechanics"
+        }
+      ],
+      "crossSystem": ["TURN"],
+      "notes": "1-turn delay prevents same-turn exploitation."
     },
-    {
-      "id": "REQ-SEC-004-C",
+    "REQ-SEC-004-C": {
       "title": "Production Before Consumption Order",
-      "dependencies": [],
-      "dependents": [
-        "REQ-SEC-004"
+      "dependencies": ["REQ-SEC-004-A"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-004-A",
+          "reason": "Ordering rule for turn boundary processing"
+        }
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["TURN", "RESOURCE"],
+      "notes": "Production ordering affects RESOURCE consumption calculations."
     },
-    {
-      "id": "REQ-SEC-005",
+    "REQ-SEC-005": {
       "title": "Sector Acquisition Action",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-SEC-002", "REQ-SEC-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-002",
+          "reason": "Must calculate cost before allowing acquisition"
+        },
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-003",
+          "reason": "Must know available sector types for selection"
+        }
+      ],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Deducts credits from RESOURCE system treasury."
     },
-    {
-      "id": "REQ-SEC-006",
+    "REQ-SEC-006": {
       "title": "Resource Cap Handling (Split)",
-      "dependencies": [
-        "REQ-SEC-006-A",
-        "REQ-SEC-006-D"
+      "dependencies": ["REQ-SEC-003"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-003",
+          "reason": "Caps apply to resources produced by sectors"
+        }
       ],
-      "dependents": [
-        "REQ-RES-008"
-      ],
-      "crossSystemDeps": [
-        "REQ-SEC-006-A",
-        "REQ-SEC-006-D"
-      ]
+      "crossSystem": ["RESOURCE"],
+      "notes": "Parent spec for resource cap handling. Enforces caps defined in RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-006-A",
+    "REQ-SEC-006-A": {
       "title": "Food Resource Cap",
-      "dependencies": [],
-      "dependents": [
-        "REQ-SEC-006"
+      "dependencies": ["REQ-SEC-003-01"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-003-01",
+          "reason": "Cap applies to Food production from Food sectors"
+        }
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["RESOURCE"],
+      "notes": "10,000 food cap defined in coordination with RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-006-B",
+    "REQ-SEC-006-B": {
       "title": "Ore Resource Cap",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
-    },
-    {
-      "id": "REQ-SEC-006-C",
-      "title": "Petroleum Resource Cap",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
-    },
-    {
-      "id": "REQ-SEC-006-D",
-      "title": "Credits Unlimited Storage",
-      "dependencies": [],
-      "dependents": [
-        "REQ-SEC-006"
+      "dependencies": ["REQ-SEC-003-02"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-003-02",
+          "reason": "Cap applies to Ore production from Ore sectors"
+        }
       ],
-      "crossSystemDeps": []
+      "crossSystem": ["RESOURCE"],
+      "notes": "5,000 ore cap defined in coordination with RESOURCE system."
     },
-    {
-      "id": "REQ-SEC-007",
+    "REQ-SEC-006-C": {
+      "title": "Petroleum Resource Cap",
+      "dependencies": ["REQ-SEC-003-03"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-003-03",
+          "reason": "Cap applies to Petroleum production from Petroleum sectors"
+        }
+      ],
+      "crossSystem": ["RESOURCE"],
+      "notes": "3,000 petroleum cap defined in coordination with RESOURCE system."
+    },
+    "REQ-SEC-006-D": {
+      "title": "Credits Unlimited Storage",
+      "dependencies": ["REQ-SEC-003-04"],
+      "blockers": [
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-003-04",
+          "reason": "No cap for Credits production from Commerce sectors"
+        }
+      ],
+      "crossSystem": ["RESOURCE"],
+      "notes": "Credits unlimited by design in RESOURCE system."
+    },
+    "REQ-SEC-007": {
       "title": "No Maximum Sector Count",
       "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": [],
+      "notes": "Design philosophy spec - no dependencies."
     },
-    {
-      "id": "REQ-SEC-008",
+    "REQ-SEC-008": {
       "title": "Special Sector Stacking",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
-    },
-    {
-      "id": "REQ-SEC-009",
-      "title": "Sector Destruction in Combat (Split)",
-      "dependencies": [
-        "REQ-SEC-009-A",
-        "REQ-SEC-009-B"
+      "dependencies": ["REQ-SEC-003"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-003",
+          "reason": "Must know sector production values to calculate stacking effects"
+        }
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-009-A",
-        "REQ-SEC-009-B"
-      ]
+      "crossSystem": [],
+      "notes": "Additive stacking applies to all sector types."
     },
-    {
-      "id": "REQ-SEC-009-A",
+    "REQ-SEC-009": {
+      "title": "Sector Destruction in Combat (Split)",
+      "dependencies": ["REQ-SEC-001"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Must have sectors to destroy them"
+        }
+      ],
+      "crossSystem": ["COMBAT"],
+      "notes": "Parent spec for combat-related sector destruction. Triggered by COMBAT system."
+    },
+    "REQ-SEC-009-A": {
       "title": "Sector Destruction Formula",
       "dependencies": [],
-      "dependents": [
-        "REQ-SEC-009"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["COMBAT"],
+      "notes": "Destruction formula uses combat overkill from COMBAT system."
     },
-    {
-      "id": "REQ-SEC-009-B",
+    "REQ-SEC-009-B": {
       "title": "Permanent Sector Removal",
-      "dependencies": [],
-      "dependents": [
-        "REQ-SEC-009"
+      "dependencies": ["REQ-SEC-009-A"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-009-A",
+          "reason": "Formula determines which sectors to remove permanently"
+        }
       ],
-      "crossSystemDeps": []
+      "crossSystem": [],
+      "notes": "Database deletion prevents sector transfer snowballing."
     },
-    {
-      "id": "REQ-SEC-010",
+    "REQ-SEC-010": {
       "title": "Sector Capture on Conquest (Split)",
-      "dependencies": [
-        "REQ-SEC-010-A",
-        "REQ-SEC-010-B"
+      "dependencies": ["REQ-SEC-001", "REQ-SEC-009"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-001",
+          "reason": "Must have sectors to transfer them"
+        },
+        {
+          "type": "SOFT",
+          "spec": "REQ-SEC-009",
+          "reason": "Conquest is alternative to destruction - different combat outcome"
+        }
       ],
-      "dependents": [],
-      "crossSystemDeps": [
-        "REQ-SEC-010-A",
-        "REQ-SEC-010-B"
-      ]
+      "crossSystem": ["COMBAT", "VICTORY"],
+      "notes": "Parent spec for conquest sector transfer. Triggered by VICTORY system conquest conditions."
     },
-    {
-      "id": "REQ-SEC-010-A",
+    "REQ-SEC-010-A": {
       "title": "Conquest Sector Transfer Cap",
       "dependencies": [],
-      "dependents": [
-        "REQ-SEC-010"
-      ],
-      "crossSystemDeps": []
+      "blockers": [],
+      "crossSystem": ["VICTORY"],
+      "notes": "50% cap prevents excessive snowballing from conquest victories."
     },
-    {
-      "id": "REQ-SEC-010-B",
+    "REQ-SEC-010-B": {
       "title": "Random Sector Selection",
-      "dependencies": [],
-      "dependents": [
-        "REQ-SEC-010"
+      "dependencies": ["REQ-SEC-010-A"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-010-A",
+          "reason": "Random selection applies to sectors within transfer cap"
+        }
       ],
-      "crossSystemDeps": []
+      "crossSystem": [],
+      "notes": "Randomness prevents cherry-picking valuable sectors."
     },
-    {
-      "id": "REQ-SEC-011",
+    "REQ-SEC-011": {
       "title": "Research Sector Unlock",
-      "dependencies": [],
-      "dependents": [],
-      "crossSystemDeps": []
+      "dependencies": ["REQ-SEC-003-08"],
+      "blockers": [
+        {
+          "type": "HARD",
+          "spec": "REQ-SEC-003-08",
+          "reason": "Must define Research sector before gating it behind unlock"
+        }
+      ],
+      "crossSystem": ["RESEARCH"],
+      "notes": "Requires Research Tier 2 from RESEARCH system tech tree."
     }
-  ]
+  },
+  "summary": {
+    "foundationalSpecs": ["REQ-SEC-001", "REQ-SEC-003", "REQ-SEC-007"],
+    "mostDependedOn": ["REQ-SEC-001", "REQ-SEC-003"],
+    "mostDependencies": ["REQ-SEC-005"],
+    "crossSystemDeps": {
+      "RESOURCE": 16,
+      "RESEARCH": 3,
+      "COVERT": 1,
+      "TURN": 4,
+      "COMBAT": 3,
+      "VICTORY": 2
+    }
+  }
 }
