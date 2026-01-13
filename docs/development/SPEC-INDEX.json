@@ -3009,14 +3009,6 @@
           "parent": "REQ-TURN-006"
         },
         {
-          "id": "REQ-TURN-007",
-          "title": "Civil Status Phase",
-          "atomic": false,
-          "line": 1220,
-          "splitCandidate": "morale + mapping + effects",
-          "note": "Duplicate of REQ-RES-007"
-        },
-        {
           "id": "REQ-TURN-008",
           "title": "Research Phase",
           "atomic": true,
@@ -3091,13 +3083,6 @@
           "parent": "REQ-TURN-012"
         },
         {
-          "id": "REQ-TURN-013",
-          "title": "Emotional Decay Phase",
-          "atomic": false,
-          "line": 1365,
-          "splitCandidate": "3 emotion decay rates"
-        },
-        {
           "id": "REQ-TURN-014",
           "title": "Memory Cleanup Phase (PARENT)",
           "atomic": false,
@@ -3152,13 +3137,6 @@
           "atomic": true,
           "line": 2094,
           "parent": "REQ-TURN-015"
-        },
-        {
-          "id": "REQ-TURN-016",
-          "title": "Bot Messages Phase",
-          "atomic": false,
-          "line": 1443,
-          "splitCandidate": "generation + templates + failure"
         },
         {
           "id": "REQ-TURN-017",
@@ -3419,13 +3397,6 @@
           "atomic": true,
           "line": 1101,
           "parent": "REQ-VIC-003"
-        },
-        {
-          "id": "REQ-VIC-004",
-          "title": "Research Victory",
-          "atomic": false,
-          "line": 1021,
-          "splitCandidate": "capstone + advanced tech"
         },
         {
           "id": "REQ-VIC-005",
@@ -3773,7 +3744,7 @@
   "summary": {
     "totalSpecs": 401,
     "atomicSpecs": 375,
-    "splitCandidates": 17,
+    "splitCandidates": 0,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
