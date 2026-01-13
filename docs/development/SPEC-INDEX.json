@@ -255,7 +255,11 @@
         { "id": "REQ-RSCH-005", "title": "Research Point Economy", "atomic": false, "line": 2123, "splitCandidate": "generation + accumulation + visibility" },
         { "id": "REQ-RSCH-006", "title": "Research Information Visibility", "atomic": false, "line": 2156, "splitCandidate": "public + hidden + reveal methods" },
         { "id": "REQ-RSCH-007", "title": "Research-Combat Integration", "atomic": false, "line": 2194, "splitCandidate": "doctrine + specialization + stacking" },
-        { "id": "REQ-RSCH-008", "title": "Specialization Counter-Play", "atomic": false, "line": 2229, "splitCandidate": "4 counter relationships" },
+        { "id": "REQ-RSCH-008", "title": "Specialization Counter-Play (Split)", "atomic": true, "line": 2229, "parentOf": ["REQ-RSCH-008-A", "REQ-RSCH-008-B", "REQ-RSCH-008-C", "REQ-RSCH-008-D"] },
+        { "id": "REQ-RSCH-008-A", "title": "Shield Arrays Counter Shock Troops", "atomic": true, "line": 2245, "splitFrom": "REQ-RSCH-008" },
+        { "id": "REQ-RSCH-008-B", "title": "Siege Engines Counter Shield Arrays", "atomic": true, "line": 2271, "splitFrom": "REQ-RSCH-008" },
+        { "id": "REQ-RSCH-008-C", "title": "Minefield Networks Counter Siege Engines", "atomic": true, "line": 2297, "splitFrom": "REQ-RSCH-008" },
+        { "id": "REQ-RSCH-008-D", "title": "Shock Troops Counter Minefield Networks", "atomic": true, "line": 2324, "splitFrom": "REQ-RSCH-008" },
         { "id": "REQ-RSCH-009", "title": "Investigate Specialization Operation (Split)", "atomic": true, "line": 2265, "parentOf": ["REQ-RSCH-009-A", "REQ-RSCH-009-B", "REQ-RSCH-009-C", "REQ-RSCH-009-D", "REQ-RSCH-009-E"] },
         { "id": "REQ-RSCH-009-A", "title": "Investigate Specialization Cost", "atomic": true, "line": 2280, "splitFrom": "REQ-RSCH-009" },
         { "id": "REQ-RSCH-009-B", "title": "Investigate Specialization Success Rate", "atomic": true, "line": 2308, "splitFrom": "REQ-RSCH-009" },
@@ -410,9 +414,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 277,
-    "atomicSpecs": 196,
-    "splitCandidates": 74,
+    "totalSpecs": 280,
+    "atomicSpecs": 200,
+    "splitCandidates": 73,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

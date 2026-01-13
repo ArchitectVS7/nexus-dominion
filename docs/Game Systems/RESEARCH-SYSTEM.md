@@ -2226,37 +2226,123 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 ---
 
-### REQ-RSCH-008: Specialization Counter-Play
+### REQ-RSCH-008: Specialization Counter-Play (Split)
 
-**Description:** Specializations counter each other in rock-paper-scissors fashion:
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-RSCH-008-A through REQ-RSCH-008-D below.
 
-- **Shield Arrays** > Shock Troops (immunity to surprise rounds)
-- **Siege Engines** > Shield Arrays (ignore AC bonuses, bypass shields)
-- **Minefield Networks** > Siege Engines (pre-combat damage to attackers)
-- **Shock Troops** > Minefield Networks (clear mines in surprise round)
+**Overview:** Specializations counter each other in rock-paper-scissors fashion, creating tactical depth and rewarding intelligence gathering.
 
-Counter-picking requires knowledge of opponent's specialization (espionage, combat reveal, or alliance intel).
+**Counter Relationships:**
+- Shield Arrays > Shock Troops (immunity) [REQ-RSCH-008-A]
+- Siege Engines > Shield Arrays (bypass) [REQ-RSCH-008-B]
+- Minefield Networks > Siege Engines (pre-damage) [REQ-RSCH-008-C]
+- Shock Troops > Minefield Networks (auto-clear) [REQ-RSCH-008-D]
 
-**Rationale:** Rewards intelligence gathering and creates tactical depth. Knowing enemy specialization allows counter-picking for advantage.
+**Counter-Picking Prerequisite:** Requires knowledge of opponent's specialization through espionage, combat reveal, or alliance intelligence.
 
-**Key Values:**
-| Counter Relationship | Advantage | Notes |
-|----------------------|-----------|-------|
-| Shield Arrays vs Shock Troops | 100% negation | Surprise round blocked completely |
-| Siege Engines vs Shield Arrays | +50% effectiveness | Treat AC as 10, bypass shields |
-| Minefield Networks vs Siege Engines | 10% HP pre-damage | CON save DC 15 to avoid |
-| Shock Troops vs Minefield Networks | Auto-clear | Surprise round clears mines |
+---
 
-**Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Section 3.2.8 - Specialization Counter-Play Matrix
+### REQ-RSCH-008-A: Shield Arrays Counter Shock Troops
 
-**Code:**
-- `src/lib/combat/specialization-counters.ts` - Counter relationship logic
-- `src/lib/combat/specialization-effects.ts` - Individual effects with counter checks
+**Description:** Shield Arrays provide complete immunity to Shock Troops' signature surprise round mechanic, fully negating their primary advantage in combat.
 
-**Tests:**
-- `src/lib/combat/__tests__/specialization-counters.test.ts` - Test all counter relationships work
-- `src/lib/combat/__tests__/shield-arrays-vs-shock-troops.test.ts` - Specific counter scenario
-- `src/lib/combat/__tests__/siege-engines-vs-shield-arrays.test.ts` - Specific counter scenario
+**Counter Rules:**
+- Effect: 100% negation of surprise round
+- Trigger: Defender has Shield Arrays, Attacker has Shock Troops
+- Result: No surprise round occurs (combat starts at regular initiative)
+- Knowledge required: Must know enemy has Shock Troops to counter-pick
+
+**Rationale:** Hard counter that completely shuts down Shock Troops' defining mechanic, creating strong incentive for intelligence gathering before combat.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Shield Arrays vs Shock Troops
+
+**Code:** TBD - `src/lib/combat/specialization-counters.ts` - Shield Arrays counter logic
+
+**Tests:** TBD - Verify surprise rounds are blocked when Shield Arrays face Shock Troops
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-008-B: Siege Engines Counter Shield Arrays
+
+**Description:** Siege Engines ignore Shield Arrays' AC bonuses and bypass their shield protection entirely, gaining +50% effectiveness against them.
+
+**Counter Rules:**
+- Effect: +50% effectiveness against Shield Arrays defenders
+- AC treatment: Treat defender AC as 10 (ignore Shield Array bonuses)
+- Shield bypass: Ignore shield protection entirely
+- Knowledge required: Must know enemy has Shield Arrays to counter-pick
+
+**Rationale:** Siege weapons designed to break fortifications naturally counter defensive shields, creating tactical choice between mobility and protection.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Siege Engines vs Shield Arrays
+
+**Code:** TBD - `src/lib/combat/specialization-counters.ts` - Siege Engines counter logic
+
+**Tests:** TBD - Verify AC reduction and shield bypass vs Shield Arrays
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-008-C: Minefield Networks Counter Siege Engines
+
+**Description:** Minefield Networks deal pre-combat damage to attacking Siege Engines, punishing their slow movement through prepared defensive positions.
+
+**Counter Rules:**
+- Effect: 10% HP damage to attackers before combat starts
+- Trigger: Defender has Minefield Networks, Attacker has Siege Engines
+- Saving throw: CON save DC 15 to avoid damage
+- Timing: Applied before initiative roll
+- Knowledge required: Must know enemy has Siege Engines to counter-pick
+
+**Rationale:** Slow-moving siege equipment is vulnerable to prepared defenses like minefields, creating risk for specialized attackers.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Minefield Networks vs Siege Engines
+
+**Code:** TBD - `src/lib/combat/specialization-counters.ts` - Minefield Networks counter logic
+
+**Tests:** TBD - Verify pre-combat damage and CON saves
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-008-D: Shock Troops Counter Minefield Networks
+
+**Description:** Shock Troops automatically clear Minefield Networks during their surprise round, neutralizing the defender's prepared positions before combat begins.
+
+**Counter Rules:**
+- Effect: Auto-clear all mines during surprise round
+- Trigger: Attacker has Shock Troops, Defender has Minefield Networks
+- No save: Mines are cleared automatically (no roll required)
+- Timing: Surprise round (before regular initiative)
+- Knowledge required: Must know enemy has Minefield Networks to counter-pick
+
+**Rationale:** Elite shock troops trained in rapid breach tactics can clear defensive positions before the enemy can react, closing the counter-play circle.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Shock Troops vs Minefield Networks
+
+**Code:** TBD - `src/lib/combat/specialization-counters.ts` - Shock Troops counter logic
+
+**Tests:** TBD - Verify mines are cleared in surprise round
 
 **Status:** Draft
 
