@@ -81,7 +81,10 @@
         { "id": "REQ-COV-004", "title": "Detection Mechanics (Split)", "atomic": true, "line": 984, "parentOf": ["REQ-COV-004-A", "REQ-COV-004-B"] },
         { "id": "REQ-COV-004-A", "title": "Detection Chance Calculation", "atomic": true, "line": 990, "splitFrom": "REQ-COV-004" },
         { "id": "REQ-COV-004-B", "title": "Diplomatic Consequences of Detection", "atomic": true, "line": 1035, "splitFrom": "REQ-COV-004" },
-        { "id": "REQ-COV-005", "title": "Agent Economy", "atomic": false, "line": 1024, "splitCandidate": "production + consumption + discount" },
+        { "id": "REQ-COV-005", "title": "Agent Economy (Split)", "atomic": true, "line": 1074, "parentOf": ["REQ-COV-005-A", "REQ-COV-005-B", "REQ-COV-005-C"] },
+        { "id": "REQ-COV-005-A", "title": "Agent Production from Government Sectors", "atomic": true, "line": 1080, "splitFrom": "REQ-COV-005" },
+        { "id": "REQ-COV-005-B", "title": "Agent Consumption by Operations", "atomic": true, "line": 1116, "splitFrom": "REQ-COV-005" },
+        { "id": "REQ-COV-005-C", "title": "Schemer Archetype Agent Discount", "atomic": true, "line": 1146, "splitFrom": "REQ-COV-005" },
         { "id": "REQ-COV-006", "title": "Phase 5 Processing Order", "atomic": true, "line": 1060 },
         { "id": "REQ-COV-007", "title": "Steal Credits Operation", "atomic": true, "line": 1092 },
         { "id": "REQ-COV-008", "title": "Schemer Archetype Integration (Split)", "atomic": true, "line": 1117, "parentOf": ["REQ-COV-008-A", "REQ-COV-008-B", "REQ-COV-008-C", "REQ-COV-008-D"] },
@@ -439,9 +442,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 299,
-    "atomicSpecs": 225,
-    "splitCandidates": 65,
+    "totalSpecs": 301,
+    "atomicSpecs": 228,
+    "splitCandidates": 64,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

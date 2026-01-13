@@ -1071,37 +1071,112 @@ Final Detection = Clamp(Base + Modifiers, 5%, 75%)
 
 ---
 
-### REQ-COV-005: Agent Economy
+### REQ-COV-005: Agent Economy (Split)
 
-**Description:** Government sectors produce 300 agents per turn. Agents accumulate in a pool with no cap. Covert operations consume agents based on operation cost. Schemer archetype receives 50% cost reduction via Shadow Network passive.
+> **Note:** This spec has been split into atomic sub-specs. See REQ-COV-005-A through REQ-COV-005-C.
 
-**Rationale:** Agent economy creates strategic trade-offs: Government sectors cost 7,500 credits and provide no direct military/economic benefit. Investment in espionage must be intentional.
+---
+
+### REQ-COV-005-A: Agent Production from Government Sectors
+
+**Description:** Government sectors produce 300 agents per turn. Agents accumulate in an uncapped pool with no maximum limit. Government sectors cost 7,500 credits, creating an opportunity cost versus Commerce sectors.
+
+**Rationale:** Agent production requires dedicated infrastructure investment. Government sectors provide no direct military or economic benefit, making espionage investment intentional and strategic.
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| Government sector production | 300 agents/turn | Per sector |
-| Government sector cost | 7,500 credits | Opportunity cost vs Commerce |
-| Agent pool cap | None | Can accumulate indefinitely |
-| Schemer discount | 50% | Shadow Network passive |
+| Production rate | 300 agents/turn | Per Government sector |
+| Government sector cost | 7,500 credits | Opportunity cost |
+| Agent pool cap | None | Unlimited accumulation |
 
 **Formula:**
 ```
-Agents per turn = Government Sector Count * 300
-Operation cost = Base Cost * (Schemer ? 0.5 : 1.0)
+Agents produced per turn = Government Sector Count * 300
 ```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 1.2 - The Agent Economy
 
 **Code:**
 - `src/lib/resources/agent-production.ts` - Agent generation from Government sectors
-- `src/lib/covert/agent-pool.ts` - Agent accumulation and spending
-- `src/lib/bots/archetypes/schemer.ts` - Shadow Network passive implementation
+- `src/lib/covert/agent-pool.ts` - Agent accumulation tracking
 
 **Tests:**
-- `src/lib/resources/__tests__/agent-production.test.ts` - Verify production rates
-- `src/lib/covert/__tests__/agent-pool.test.ts` - Test spending and tracking
-- `src/lib/bots/__tests__/schemer.test.ts` - Verify 50% discount applies
+- `src/lib/resources/__tests__/agent-production.test.ts` - Verify 300/turn production rate
+- `src/lib/covert/__tests__/agent-pool.test.ts` - Test uncapped accumulation
+
+**Status:** Draft
+
+---
+
+### REQ-COV-005-B: Agent Consumption by Operations
+
+**Description:** Covert operations consume agents from the agent pool based on operation base cost. Each operation type has a specific agent cost that is deducted when the operation is queued.
+
+**Rationale:** Agent consumption creates resource management decisions. Players must balance agent accumulation against operation frequency and type selection.
+
+**Consumption Mechanics:**
+- Agents deducted when operation queued (upfront cost)
+- Base cost varies by operation type (see REQ-COV-001)
+- Insufficient agents prevents operation queueing
+- No partial operations (must have full cost available)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 1.2 - The Agent Economy
+
+**Code:**
+- `src/lib/covert/agent-pool.ts` - Agent spending and validation
+- `src/lib/covert/operation-queue.ts` - Operation cost checking
+
+**Tests:**
+- `src/lib/covert/__tests__/agent-pool.test.ts` - Test agent deduction and validation
+- `src/lib/covert/__tests__/operation-queue.test.ts` - Verify cost enforcement
+
+**Status:** Draft
+
+---
+
+### REQ-COV-005-C: Schemer Archetype Agent Discount
+
+**Description:** Schemer archetype receives a 50% agent cost reduction on all covert operations via the Shadow Network passive ability. This discount applies to the base operation cost before execution.
+
+**Rationale:** Schemer archetype specializes in espionage. The 50% discount enables more frequent operations, reinforcing the archetype's covert focus and providing competitive advantage in intelligence warfare.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Discount multiplier | 50% | Shadow Network passive |
+| Application | All operations | No exceptions |
+
+**Formula:**
+```
+Final agent cost = Base operation cost * (Schemer ? 0.5 : 1.0)
+```
+
+**Example:**
+- Reconnaissance base cost: 500 agents
+- Schemer cost: 250 agents (500 * 0.5)
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 1.2 - The Agent Economy
+
+**Code:**
+- `src/lib/bots/archetypes/schemer.ts` - Shadow Network passive implementation
+- `src/lib/covert/cost-calculator.ts` - Archetype discount application
+
+**Tests:**
+- `src/lib/bots/__tests__/schemer.test.ts` - Verify 50% discount applies to all operations
+- `src/lib/covert/__tests__/cost-calculator.test.ts` - Test archetype discount logic
 
 **Status:** Draft
 
