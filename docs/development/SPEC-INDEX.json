@@ -54,8 +54,11 @@
         { "id": "REQ-BOT-003-F", "title": "Triumphant Emotional State", "atomic": true, "line": 1393, "splitFrom": "REQ-BOT-003" },
         { "id": "REQ-BOT-004", "title": "Memory System with Weighted Decay", "atomic": true, "line": 1169 },
         { "id": "REQ-BOT-005", "title": "100 Unique Personas", "atomic": true, "line": 1209 },
-        { "id": "REQ-BOT-006", "title": "LLM Integration", "atomic": false, "line": 1238, "splitCandidate": "provider chain + rate limits + prompt" },
-        { "id": "REQ-BOT-007", "title": "Decision Audit System", "atomic": true, "line": 1292 },
+        { "id": "REQ-BOT-006", "title": "LLM Integration (Split)", "atomic": true, "line": 1494, "parentOf": ["REQ-BOT-006-A", "REQ-BOT-006-B", "REQ-BOT-006-C"] },
+        { "id": "REQ-BOT-006-A", "title": "LLM Provider Chain and Fallbacks", "atomic": true, "line": 1507, "splitFrom": "REQ-BOT-006" },
+        { "id": "REQ-BOT-006-B", "title": "LLM System Prompt Template", "atomic": true, "line": 1558, "splitFrom": "REQ-BOT-006" },
+        { "id": "REQ-BOT-006-C", "title": "LLM Rate Limits and Cost Controls", "atomic": true, "line": 1644, "splitFrom": "REQ-BOT-006" },
+        { "id": "REQ-BOT-007", "title": "Decision Audit System", "atomic": true, "line": 1694 },
         { "id": "REQ-BOT-008", "title": "Coalition AI Behavior", "atomic": false, "line": 1341, "splitCandidate": "formation + behavior + betrayal" },
         { "id": "REQ-BOT-009", "title": "Behavioral Telegraphing", "atomic": true, "line": 1381 },
         { "id": "REQ-BOT-010", "title": "Endgame Behavior (Split)", "atomic": true, "line": 1668, "parentOf": ["REQ-BOT-010-A", "REQ-BOT-010-B", "REQ-BOT-010-C", "REQ-BOT-010-D"] },
@@ -431,9 +434,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 294,
-    "atomicSpecs": 217,
-    "splitCandidates": 68,
+    "totalSpecs": 296,
+    "atomicSpecs": 220,
+    "splitCandidates": 67,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

@@ -1491,55 +1491,201 @@ For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appe
 
 ---
 
-### REQ-BOT-006: LLM Integration
+### REQ-BOT-006: LLM Integration (Split)
 
-**Description:** Tier 1 bots integrate with LLM APIs for natural language decision-making:
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-BOT-006-A through REQ-BOT-006-C below.
+
+**Overview:** Tier 1 bots integrate with LLM APIs for natural language decision-making, with multi-provider fallback chain, structured prompts, and cost controls.
+
+**Integration Components:**
+- Provider Chain: Multi-provider fallback strategy [REQ-BOT-006-A]
+- System Prompt: Structured context template [REQ-BOT-006-B]
+- Rate Limits: Cost and usage controls [REQ-BOT-006-C]
+
+---
+
+### REQ-BOT-006-A: LLM Provider Chain and Fallbacks
+
+**Description:** Tier 1 bots use a cascading provider chain for LLM calls, starting with fast/cheap providers and falling back to reliable/expensive options or scripted behavior on failure.
 
 **Provider Chain:**
-- Primary: Groq (fast, cost-effective)
-- Fallback 1: Together AI
-- Fallback 2: OpenAI
-- Emergency: Tier 2 scripted behavior
+1. **Primary: Groq**
+   - Speed: Very fast (optimized inference)
+   - Cost: Low ($0.10 per 1M tokens)
+   - Reliability: Good
+   - Fallback trigger: API unavailable, timeout, or error
 
-**System Prompt Template:**
+2. **Fallback 1: Together AI**
+   - Speed: Medium
+   - Cost: Medium ($0.20 per 1M tokens)
+   - Reliability: Very good
+   - Fallback trigger: API unavailable, timeout, or error
+
+3. **Fallback 2: OpenAI**
+   - Speed: Medium
+   - Cost: High ($1.00 per 1M tokens)
+   - Reliability: Excellent
+   - Fallback trigger: API unavailable, timeout, or error
+
+4. **Emergency: Tier 2 Scripted Behavior**
+   - Speed: Instant (no API call)
+   - Cost: Free
+   - Reliability: Guaranteed
+   - Trigger: All LLM providers failed or rate limits exceeded
+
+**Fallback Logic:**
+- Try each provider in sequence with 10-second timeout
+- Cache provider availability status for 5 minutes
+- Log all fallbacks for monitoring
+- Never fail - always fall back to scripted behavior
+
+**Rationale:** Multi-provider strategy balances cost, speed, and reliability. Groq provides fast, cheap responses for most decisions. Together AI and OpenAI provide backup when Groq is down. Scripted fallback ensures game never breaks due to API issues.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 8.3 - LLM Integration, Provider Chain
+
+**Code:** TBD - `src/lib/bots/llm/provider-chain.ts` - Provider fallback logic
+
+**Tests:** TBD - Verify provider failover, timeout handling, emergency fallback
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-006-B: LLM System Prompt Template
+
+**Description:** Structured prompt template that provides LLM with complete game context, personality definition, and response format requirements.
+
+**Prompt Template Structure:**
 ```
 You are {empire_name}, a player in Nexus Dominion.
 
 PERSONALITY: {archetype_description}
-TRAITS: Aggression {aggression}/10, Diplomacy {diplomacy}/10, etc.
+TRAITS: Aggression {aggression}/10, Diplomacy {diplomacy}/10, Economy {economy}/10, Cunning {cunning}/10
 
 CURRENT SITUATION:
-{game_state_summary}
+Turn: {turn_number}
+Sectors: {sector_count}
+Military Power: {military_power}
+Resources: {resource_summary}
+Victory Points: {vp_current}/{vp_target}
 
 YOUR RELATIONSHIPS:
 {relationship_summary}
+- [Empire Name]: Trust {trust_score}, Reputation {reputation}, Treaties: {treaty_list}
 
 RECENT EVENTS:
 {recent_events}
+- Turn N: Event description with impact
+
+AVAILABLE ACTIONS:
+{action_options}
 
 Decide your actions for this turn. Respond in JSON format.
 Stay in character as {archetype}.
 ```
 
 **Response Schema:**
-- `reasoning`: String explaining thought process
-- `actions`: Military, production, diplomacy, research, covert decisions
-- `messages`: Array of messages to send (recipient, subject, content)
-- `coalition`: Invite/accept/leave decisions
+```json
+{
+  "reasoning": "String explaining thought process in-character",
+  "actions": {
+    "military": {
+      "build": [{"unit": "Fighter", "quantity": 5, "sector": "Alpha"}],
+      "attack": [{"target": "EmpireX", "sectors": ["Beta"], "units": {...}}]
+    },
+    "production": {
+      "focus": "military|economy|research"
+    },
+    "diplomacy": {
+      "treaties": [{"type": "NAP", "target": "EmpireY", "duration": 20}]
+    },
+    "research": {
+      "priority": "Military Doctrine Tier 2"
+    },
+    "covert": {
+      "operations": [{"type": "Sabotage Infrastructure", "target": "EmpireZ"}]
+    }
+  },
+  "messages": [
+    {
+      "recipient": "EmpireY",
+      "subject": "Alliance Proposal",
+      "content": "In-character message text"
+    }
+  ],
+  "coalition": {
+    "invite": ["EmpireA"],
+    "accept": ["CoalitionB"],
+    "leave": false
+  }
+}
+```
+
+**Rationale:** Structured prompt ensures LLM has all necessary context to make informed decisions. Personality and traits guide decision-making style. Recent events provide continuity. JSON schema ensures parseable responses.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 8.3 - LLM Integration, Prompt Template
+
+**Code:** TBD - `src/lib/bots/llm/prompt-builder.ts` - Prompt generation
+
+**Tests:** TBD - Verify prompt generation with all context fields
+
+**Status:** Draft
+
+---
+
+### REQ-BOT-006-C: LLM Rate Limits and Cost Controls
+
+**Description:** Hard limits on LLM API usage to prevent runaway costs while ensuring reasonable AI quality throughout the game.
 
 **Rate Limits:**
-- 5000 LLM calls per game maximum
-- 50 LLM calls per turn maximum
-- 500 LLM calls per hour maximum
-- $50.00 daily spend cap
+1. **Per-Game Limit: 5,000 LLM calls**
+   - Purpose: Cap total LLM usage per game
+   - Typical usage: ~50-100 bots × 50-100 turns = 2,500-10,000 potential calls
+   - Enforcement: Track calls per game, fall back to scripted when exceeded
+   - Reset: Never (game-lifetime limit)
 
-**Rationale:** Provides elite-tier AI opponents with natural language communication while controlling costs through fallbacks and rate limits.
+2. **Per-Turn Limit: 50 LLM calls**
+   - Purpose: Prevent turn processing delays
+   - Typical usage: ~10-20 bots per turn
+   - Enforcement: Prioritize high-impact bots, use scripted for others
+   - Reset: Every turn
 
-**Source:** `docs/design/BOT-SYSTEM.md`
+3. **Per-Hour Limit: 500 LLM calls**
+   - Purpose: Respect provider rate limits
+   - Typical usage: ~100-200 calls/hour for active game
+   - Enforcement: Queue calls, distribute across hour
+   - Reset: Rolling 60-minute window
 
-**Code:** `src/lib/bots/llm/`, `src/lib/bots/types.ts`
+4. **Daily Spend Cap: $50.00**
+   - Purpose: Hard cost control
+   - Typical cost: $0.10-1.00 per 1M tokens, ~$10-20/day expected
+   - Enforcement: Stop LLM calls when cap reached, use scripted
+   - Reset: Midnight UTC
 
-**Tests:** TBD
+**Fallback Behavior:**
+- When any limit exceeded: Fall back to Tier 2 scripted behavior
+- Priority: Military decisions > Diplomacy > Economy > Covert
+- Logging: Record all rate limit events for monitoring
+
+**Rationale:** Rate limits prevent cost overruns while maintaining game quality. Per-game limit ensures budget predictability. Per-turn limit prevents slow turn processing. Per-hour limit respects provider constraints. Daily spend cap provides absolute cost safety.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 8.3 - LLM Integration, Rate Limits
+
+**Code:** TBD - `src/lib/bots/llm/rate-limiter.ts` - Rate limiting logic
+
+**Tests:** TBD - Verify all four rate limits enforced, fallback behavior
 
 **Status:** Draft
 
