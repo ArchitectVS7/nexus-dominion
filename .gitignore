@@ -58,3 +58,7 @@ docs/.docusaurus/
 
 # Debug/session files
 **/debug-log.md
+
+# Claude temporary files
+tmpclaude-*-cwd
+nul
