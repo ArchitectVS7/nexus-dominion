@@ -112,8 +112,12 @@
         { "id": "REQ-MKT-002-C", "title": "Demand Modifier", "atomic": true, "line": 808, "splitFrom": "REQ-MKT-002" },
         { "id": "REQ-MKT-002-D", "title": "Event Modifier", "atomic": true, "line": 842, "splitFrom": "REQ-MKT-002" },
         { "id": "REQ-MKT-002-E", "title": "Leader Penalty and Price Decay", "atomic": true, "line": 874, "splitFrom": "REQ-MKT-002" },
-        { "id": "REQ-MKT-003", "title": "Transaction Fees", "atomic": false, "line": 905, "splitCandidate": "buy + sell + bulk + research bonus" },
-        { "id": "REQ-MKT-004", "title": "Market Limits", "atomic": false, "line": 805, "splitCandidate": "max transaction + reserve + clamping" },
+        { "id": "REQ-MKT-003", "title": "Transaction Fees (Split)", "atomic": true, "line": 905, "parentOf": ["REQ-MKT-003-A", "REQ-MKT-003-B", "REQ-MKT-003-C", "REQ-MKT-003-D"] },
+        { "id": "REQ-MKT-003-A", "title": "Buy Transaction Fee", "atomic": true, "line": 921, "splitFrom": "REQ-MKT-003" },
+        { "id": "REQ-MKT-003-B", "title": "Sell Transaction Fee", "atomic": true, "line": 947, "splitFrom": "REQ-MKT-003" },
+        { "id": "REQ-MKT-003-C", "title": "Bulk Transaction Discount", "atomic": true, "line": 973, "splitFrom": "REQ-MKT-003" },
+        { "id": "REQ-MKT-003-D", "title": "Commerce Research Fee Reduction", "atomic": true, "line": 1006, "splitFrom": "REQ-MKT-003" },
+        { "id": "REQ-MKT-004", "title": "Market Limits", "atomic": false, "line": 1038, "splitCandidate": "max transaction + reserve + clamping" },
         { "id": "REQ-MKT-005", "title": "Market Events (Split)", "atomic": true, "line": 840, "parentOf": ["REQ-MKT-005-01", "REQ-MKT-005-02", "REQ-MKT-005-03", "REQ-MKT-005-04", "REQ-MKT-005-05", "REQ-MKT-005-06", "REQ-MKT-005-07", "REQ-MKT-005-08", "REQ-MKT-005-09"] },
         { "id": "REQ-MKT-005-01", "title": "Bumper Harvest Event", "atomic": true, "line": 848, "splitFrom": "REQ-MKT-005" },
         { "id": "REQ-MKT-005-02", "title": "Famine Event", "atomic": true, "line": 877, "splitFrom": "REQ-MKT-005" },
@@ -414,9 +418,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 280,
-    "atomicSpecs": 200,
-    "splitCandidates": 73,
+    "totalSpecs": 283,
+    "atomicSpecs": 204,
+    "splitCandidates": 72,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

@@ -902,38 +902,134 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 
 ---
 
-### REQ-MKT-003: Transaction Fees
+### REQ-MKT-003: Transaction Fees (Split)
 
-**Description:** All market transactions incur fees:
-- **Buy**: 2% of subtotal (minimum 100 credits)
-- **Sell**: 5% of subtotal (minimum 250 credits)
-- **Bulk Discount**: -1% per 10,000 units (max -3%)
-- **Research Bonus**: -2% with Commerce Tier 2 (stacks)
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-MKT-003-A through REQ-MKT-003-D below.
 
-**Rationale:** Prevents zero-risk arbitrage and market manipulation. Higher sell fees discourage rapid buy-resell cycles. Bulk discounts reward strategic large trades.
+**Overview:** Market transactions incur fees to prevent arbitrage and manipulation, with discounts available through volume and research.
 
-**Formula:**
-```
-Buy Fee = max(100, subtotal × 0.02 × (1 - total_discount))
-Sell Fee = max(250, subtotal × 0.05 × (1 - total_discount))
-Total Discount = min(bulk_discount + research_discount, 0.05)
-```
+**Fee Components:**
+- Buy Fee: 2% with 100 cr floor [REQ-MKT-003-A]
+- Sell Fee: 5% with 250 cr floor [REQ-MKT-003-B]
+- Bulk Discount: -1% per 10k units (max -3%) [REQ-MKT-003-C]
+- Research Bonus: -2% with Commerce Tier 2 [REQ-MKT-003-D]
 
-**Key Values:**
-| Parameter | Value | Notes |
-|-----------|-------|-------|
-| Buy Fee | 2% | Minimum 100 cr |
-| Sell Fee | 5% | Minimum 250 cr |
-| Bulk Threshold | 10,000 units | Per -1% discount |
-| Max Discount | 5% | Total across all bonuses |
+**Total Discount Cap:** 5% across all bonuses
 
-**Source:** Section 2.3, 3.3, 3.4
+---
 
-**Code:**
-- `src/lib/market/fees.ts` - `calculateFee()`
+### REQ-MKT-003-A: Buy Transaction Fee
 
-**Tests:**
-- `src/lib/market/__tests__/fees.test.ts` - Fee calculation tests
+**Description:** All market buy orders incur a 2% transaction fee based on the subtotal (price × quantity), with a minimum fee of 100 credits.
+
+**Fee Rules:**
+- Base rate: 2% of subtotal
+- Minimum fee: 100 credits (enforced even if 2% < 100 cr)
+- Applies before discounts are calculated
+- Formula: `max(100, subtotal × 0.02 × (1 - total_discount))`
+
+**Rationale:** Base transaction cost prevents zero-risk arbitrage. Low percentage encourages market use while minimum prevents trivial-cost spam trades.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Transaction Fees, Buy Fee
+
+**Code:** TBD - `src/lib/market/fees.ts` - Buy fee calculation
+
+**Tests:** TBD - Verify 2% calculation and 100 cr minimum floor
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-003-B: Sell Transaction Fee
+
+**Description:** All market sell orders incur a 5% transaction fee based on the subtotal (price × quantity), with a minimum fee of 250 credits.
+
+**Fee Rules:**
+- Base rate: 5% of subtotal (2.5× higher than buy fee)
+- Minimum fee: 250 credits (enforced even if 5% < 250 cr)
+- Applies before discounts are calculated
+- Formula: `max(250, subtotal × 0.05 × (1 - total_discount))`
+
+**Rationale:** Higher sell fees discourage rapid buy-resell arbitrage cycles and market manipulation. Creates natural friction for speculation.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.3 - Transaction Fees, Sell Fee
+
+**Code:** TBD - `src/lib/market/fees.ts` - Sell fee calculation
+
+**Tests:** TBD - Verify 5% calculation and 250 cr minimum floor
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-003-C: Bulk Transaction Discount
+
+**Description:** Large-volume transactions receive automatic fee discounts based on order size, reducing transaction costs by 1% per 10,000 units traded (capped at -3%).
+
+**Discount Rules:**
+- Threshold: 10,000 units per -1% discount
+- Scaling: Linear (20k units = -2%, 30k+ units = -3%)
+- Maximum discount: -3% (reached at 30,000+ units)
+- Applies to both buy and sell fees
+- Stacks with research bonuses (up to 5% total max)
+
+**Examples:**
+- 5,000 units: 0% discount
+- 15,000 units: -1% discount
+- 25,000 units: -2% discount
+- 40,000 units: -3% discount (capped)
+
+**Rationale:** Rewards strategic large trades and encourages bulk transactions over many small orders. Creates meaningful decision point for trade timing.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3 - Bulk Discount
+
+**Code:** TBD - `src/lib/market/fees.ts` - Bulk discount calculation
+
+**Tests:** TBD - Verify discount scaling and -3% cap
+
+**Status:** Draft
+
+---
+
+### REQ-MKT-003-D: Commerce Research Fee Reduction
+
+**Description:** Players who have researched Commerce Tier 2 receive a -2% reduction on all transaction fees, stacking with bulk discounts up to a combined 5% maximum discount.
+
+**Research Bonus Rules:**
+- Requirement: Commerce Tier 2 research completed
+- Discount: -2% on all buy and sell fees
+- Stacking: Combines with bulk discount (REQ-MKT-003-C)
+- Total cap: 5% maximum discount across all sources
+- Permanent: Applies to all transactions once researched
+
+**Examples:**
+- Commerce T2 only: -2% discount
+- Commerce T2 + 10k units: -3% discount (-2% + -1%)
+- Commerce T2 + 30k+ units: -5% discount (-2% + -3%, capped)
+
+**Rationale:** Research investment provides ongoing economic advantage. Commerce specialization creates meaningful strategic choice between military/tech/economic paths.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4 - Research Bonus
+
+**Code:** TBD - `src/lib/market/fees.ts` - Research bonus check
+
+**Tests:** TBD - Verify research requirement and stacking logic
 
 **Status:** Draft
 
