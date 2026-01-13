@@ -748,32 +748,123 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-PROG-001: Feature Unlocks
+### REQ-PROG-001: Feature Unlocks (Split)
 
-**Description:** Certain features unlock at specific turn thresholds:
-- Turn 20: Diplomacy (treaties, alliances, coalitions)
-- Turn 50: Black Market (covert operations, smuggling)
-- Turn 100: Nuclear weapons
+> **Note:** This spec has been split into atomic sub-specs. See REQ-PROG-001-A through REQ-PROG-001-D.
 
-If player selects "Skip Tutorial" or is a veteran account, all features unlock immediately at Turn 1.
+---
 
-**Rationale:** Introduces complexity gradually. New players aren't overwhelmed by all systems at once. Veterans get full access immediately.
+### REQ-PROG-001-A: Diplomacy Feature Unlock
+
+**Description:** Diplomacy features (treaties, alliances, coalitions) unlock at Turn 20. Before Turn 20, diplomacy UI and actions are disabled. At Turn 20 and after, all diplomacy features become available.
+
+**Rationale:** Introduces diplomacy gradually after players establish their initial empire. Prevents overwhelming new players with too many systems at once.
 
 **Key Values:**
-| Feature | Turn | Prerequisites |
-|---------|------|---------------|
-| Diplomacy | 20 | None |
-| Black Market | 50 | None |
-| Nuclear Weapons | 100 | None |
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock Turn | 20 | Diplomacy becomes available |
+| Features Unlocked | Treaties, alliances, coalitions | Full diplomacy system |
 
-**Source:** Section 2.1, 3.2
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1
 
 **Code:**
-- `src/lib/constants/unlocks.ts` - Unlock thresholds
-- `src/lib/game/feature-unlocks.ts` - `isFeatureUnlocked()`
+- `src/lib/constants/unlocks.ts` - Diplomacy unlock threshold
+- `src/lib/game/feature-unlocks.ts` - `isFeatureUnlocked('diplomacy')`
 
 **Tests:**
-- `src/lib/game/__tests__/feature-unlocks.test.ts` - Unlock conditions
+- `src/lib/game/__tests__/feature-unlocks.test.ts` - Diplomacy unlock tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-001-B: Black Market Feature Unlock
+
+**Description:** Black Market features (covert operations, smuggling) unlock at Turn 50. Before Turn 50, covert ops and black market UI are disabled. At Turn 50 and after, all covert operations become available.
+
+**Rationale:** Introduces covert operations at mid-game when players understand basic mechanics. Adds strategic depth after initial expansion phase.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock Turn | 50 | Black Market becomes available |
+| Features Unlocked | Covert operations, smuggling | Full espionage system |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1
+
+**Code:**
+- `src/lib/constants/unlocks.ts` - Black Market unlock threshold
+- `src/lib/game/feature-unlocks.ts` - `isFeatureUnlocked('blackMarket')`
+
+**Tests:**
+- `src/lib/game/__tests__/feature-unlocks.test.ts` - Black Market unlock tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-001-C: Nuclear Weapons Feature Unlock
+
+**Description:** Nuclear weapons unlock at Turn 100. Before Turn 100, nuclear weapons cannot be built or used. At Turn 100 and after, nuclear weapons become available for production and deployment.
+
+**Rationale:** Reserves ultimate weapons for late game. Ensures early/mid game focuses on conventional warfare and strategy before introducing endgame mechanics.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock Turn | 100 | Nuclear weapons become available |
+| Features Unlocked | Nuclear weapon production and use | Endgame weaponry |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.1
+
+**Code:**
+- `src/lib/constants/unlocks.ts` - Nuclear weapons unlock threshold
+- `src/lib/game/feature-unlocks.ts` - `isFeatureUnlocked('nuclearWeapons')`
+
+**Tests:**
+- `src/lib/game/__tests__/feature-unlocks.test.ts` - Nuclear weapons unlock tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-001-D: Veteran Override for Feature Unlocks
+
+**Description:** If player selects "Skip Tutorial" during game setup or has veteran account status, all features (Diplomacy, Black Market, Nuclear Weapons) unlock immediately at Turn 1, bypassing turn threshold requirements.
+
+**Rationale:** Veterans and experienced players get full access immediately. Respects player experience level and reduces friction for returning players.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Override Triggers | "Skip Tutorial" or veteran account | Conditions for override |
+| Override Turn | 1 | All features available immediately |
+| Features Affected | All (Diplomacy, Black Market, Nuclear Weapons) | Complete system access |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/game/feature-unlocks.ts` - Veteran override logic
+
+**Tests:**
+- `src/lib/game/__tests__/feature-unlocks.test.ts` - Veteran override tests
 
 **Status:** Draft
 

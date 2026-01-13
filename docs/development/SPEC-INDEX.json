@@ -206,7 +206,11 @@
       "prefix": "REQ-PROG",
       "file": "docs/Game Systems/PROGRESSIVE-SYSTEMS.md",
       "specs": [
-        { "id": "REQ-PROG-001", "title": "Feature Unlocks", "atomic": false, "line": 751, "splitCandidate": "3 unlocks + veteran override" },
+        { "id": "REQ-PROG-001", "title": "Feature Unlocks (Split)", "atomic": true, "line": 751, "parentOf": ["REQ-PROG-001-A", "REQ-PROG-001-B", "REQ-PROG-001-C", "REQ-PROG-001-D"] },
+        { "id": "REQ-PROG-001-A", "title": "Diplomacy Feature Unlock", "atomic": true, "line": 757, "splitFrom": "REQ-PROG-001" },
+        { "id": "REQ-PROG-001-B", "title": "Black Market Feature Unlock", "atomic": true, "line": 786, "splitFrom": "REQ-PROG-001" },
+        { "id": "REQ-PROG-001-C", "title": "Nuclear Weapons Feature Unlock", "atomic": true, "line": 815, "splitFrom": "REQ-PROG-001" },
+        { "id": "REQ-PROG-001-D", "title": "Veteran Override for Feature Unlocks", "atomic": true, "line": 844, "splitFrom": "REQ-PROG-001" },
         { "id": "REQ-PROG-002", "title": "Game Checkpoints", "atomic": false, "line": 782, "splitCandidate": "auto + manual + cloud" },
         { "id": "REQ-PROG-003", "title": "Galactic Events (Split)", "atomic": true, "line": 814, "parentOf": ["REQ-PROG-003-01", "REQ-PROG-003-02", "REQ-PROG-003-03", "REQ-PROG-003-04", "REQ-PROG-003-05", "REQ-PROG-003-06", "REQ-PROG-003-07", "REQ-PROG-003-08", "REQ-PROG-003-09"] },
         { "id": "REQ-PROG-003-01", "title": "Supernova Event", "atomic": true, "line": 822, "splitFrom": "REQ-PROG-003" },
@@ -463,9 +467,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 316,
-    "atomicSpecs": 251,
-    "splitCandidates": 56,
+    "totalSpecs": 319,
+    "atomicSpecs": 255,
+    "splitCandidates": 55,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
