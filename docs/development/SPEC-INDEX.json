@@ -109,7 +109,9 @@
         { "id": "REQ-DIP-002-C", "title": "Coalition Dissolution Mechanics", "atomic": true, "line": 626, "splitFrom": "REQ-DIP-002" },
         { "id": "REQ-DIP-003", "title": "Reputation System", "atomic": true, "line": 570 },
         { "id": "REQ-DIP-004", "title": "Trust Score Calculation", "atomic": true, "line": 610 },
-        { "id": "REQ-DIP-005", "title": "Automatic Coalition Formation", "atomic": false, "line": 634, "splitCandidate": "auto-formation + leader debuffs" },
+        { "id": "REQ-DIP-005", "title": "Automatic Coalition Formation (Split)", "atomic": true, "line": 733, "parentOf": ["REQ-DIP-005-A", "REQ-DIP-005-B"] },
+        { "id": "REQ-DIP-005-A", "title": "Automatic Coalition Trigger and Formation", "atomic": true, "line": 739, "splitFrom": "REQ-DIP-005" },
+        { "id": "REQ-DIP-005-B", "title": "Leader Debuffs and Restrictions", "atomic": true, "line": 784, "splitFrom": "REQ-DIP-005" },
         { "id": "REQ-DIP-006", "title": "Betrayal Mechanics", "atomic": false, "line": 663, "splitCandidate": "treaty breaking + coalition betrayal + bot rates" },
         { "id": "REQ-DIP-007", "title": "Treaty Duration & Renewal", "atomic": true, "line": 701 },
         { "id": "REQ-DIP-008", "title": "Diplomatic Victory Condition", "atomic": true, "line": 727 },
@@ -445,9 +447,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 303,
-    "atomicSpecs": 231,
-    "splitCandidates": 63,
+    "totalSpecs": 304,
+    "atomicSpecs": 233,
+    "splitCandidates": 62,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

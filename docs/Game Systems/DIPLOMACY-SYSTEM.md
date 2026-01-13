@@ -730,30 +730,93 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 
 ---
 
-### REQ-DIP-005: Automatic Coalition Formation
+### REQ-DIP-005: Automatic Coalition Formation (Split)
 
-**Description:** When any empire reaches 7+ Victory Points:
-1. System broadcasts warning to all empires
-2. All empires with mutual trust > 0 receive coalition invitation
-3. Bots decide based on archetype behavior (see REQ-BOT-008)
-4. Coalition forms with goal: "Defeat [dominant empire]"
-5. Coalition disbands when leader drops below 5 VP or is eliminated
+> **Note:** This spec has been split into atomic sub-specs. See REQ-DIP-005-A through REQ-DIP-005-B.
 
-Leader receives debuffs:
-- +10% attack power to all attackers
-- +5% defense when attacked
-- Cannot form new alliances
+---
 
-**Rationale:** Prevents runaway victories. Creates dramatic "everyone vs the boss" scenarios.
+### REQ-DIP-005-A: Automatic Coalition Trigger and Formation
+
+**Description:** When any empire reaches 7+ Victory Points, the system automatically triggers coalition formation to prevent runaway victories. All empires with mutual trust > 0 receive invitations. The coalition disbands when the leader drops below 5 VP or is eliminated.
+
+**Rationale:** Prevents runaway victories by creating automatic alliance formation against dominant players. Creates dramatic "everyone vs the boss" scenarios without requiring manual coordination.
+
+**Formation Sequence:**
+1. **Trigger Detection:** Empire reaches 7+ Victory Points
+2. **System Broadcast:** Warning sent to all empires ("Empire X is approaching victory!")
+3. **Invitation Logic:** All empires with mutual trust > 0 receive coalition invitation
+4. **Bot Decision:** Bots decide based on archetype behavior (see REQ-BOT-008)
+5. **Coalition Creation:** Coalition forms with goal: "Defeat [dominant empire]"
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Trigger threshold | 7 VP | Coalition formation begins |
+| Trust requirement | > 0 | Minimum trust for invitation |
+| Disbanding threshold | < 5 VP | Coalition automatically dissolves |
+| Elimination | Yes | Coalition dissolves if leader eliminated |
+
+**Disbanding Conditions:**
+- Leader drops below 5 Victory Points
+- Leader is eliminated from game
+- All coalition benefits immediately removed upon disbanding
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.2
 
 **Code:**
-- `src/lib/game/anti-snowball.ts` - Leader detection, coalition trigger
-- `src/lib/diplomacy/coalitions.ts` - Auto-coalition formation
+- `src/lib/game/anti-snowball.ts` - Leader detection and coalition trigger
+- `src/lib/diplomacy/coalitions.ts` - Auto-coalition formation logic
+- `src/lib/diplomacy/trust-system.ts` - Trust-based invitation filtering
 
 **Tests:**
-- `src/lib/game/__tests__/anti-snowball.test.ts` - Coalition trigger thresholds
+- `src/lib/game/__tests__/anti-snowball.test.ts` - Test 7 VP trigger and 5 VP disbanding
+- `src/lib/diplomacy/__tests__/coalitions.test.ts` - Verify invitation logic
+
+**Status:** Draft
+
+---
+
+### REQ-DIP-005-B: Leader Debuffs and Restrictions
+
+**Description:** When an empire reaches 7+ Victory Points and triggers automatic coalition formation, that empire receives combat debuffs and diplomatic restrictions to balance the game and prevent runaway victories.
+
+**Rationale:** Debuffs create meaningful challenge for the leader while making attacking them more viable for weaker empires. Alliance restriction prevents leader from countering the auto-coalition.
+
+**Leader Debuffs:**
+| Debuff | Value | Effect |
+|--------|-------|--------|
+| Attacker power bonus | +10% | All empires gain +10% attack power when attacking leader |
+| Leader defense bonus | +5% | Leader gains +5% defense when attacked |
+| Alliance formation ban | Blocked | Cannot form new alliances or treaties |
+
+**Debuff Duration:**
+- Debuffs active while empire has 7+ Victory Points
+- Debuffs removed when empire drops below 7 VP
+- Alliance ban persists for 10 turns after dropping below threshold
+
+**Stacking with Anti-Snowball Mechanics:**
+- These debuffs stack with REQ-VIC-008 anti-snowball mechanics
+- Creates compound difficulty for dominant leader
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.2
+
+**Code:**
+- `src/lib/game/anti-snowball.ts` - Debuff application and removal
+- `src/lib/combat/leader-debuffs.ts` - Combat modifier implementation
+- `src/lib/diplomacy/alliance-restrictions.ts` - Alliance ban enforcement
+
+**Tests:**
+- `src/lib/game/__tests__/anti-snowball.test.ts` - Verify debuff thresholds
+- `src/lib/combat/__tests__/leader-debuffs.test.ts` - Test combat modifier calculations
 
 **Status:** Draft
 
