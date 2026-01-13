@@ -2568,16 +2568,49 @@
         },
         {
           "id": "REQ-RSCH-011",
-          "title": "Alliance Intel Sharing",
+          "title": "Alliance Intel Sharing (PARENT)",
           "atomic": false,
           "line": 3050,
-          "splitCandidate": "spec reveal + ally reveal + RP sharing + UI"
+          "children": [
+            "REQ-RSCH-011.1",
+            "REQ-RSCH-011.2",
+            "REQ-RSCH-011.3",
+            "REQ-RSCH-011.4"
+          ]
+        },
+        {
+          "id": "REQ-RSCH-011.1",
+          "title": "Player Specialization Reveal to Allies",
+          "atomic": true,
+          "line": 3062,
+          "parent": "REQ-RSCH-011"
+        },
+        {
+          "id": "REQ-RSCH-011.2",
+          "title": "Ally Specialization Reveal to Player",
+          "atomic": true,
+          "line": 3146,
+          "parent": "REQ-RSCH-011"
+        },
+        {
+          "id": "REQ-RSCH-011.3",
+          "title": "RP Progress Estimation Sharing",
+          "atomic": true,
+          "line": 3163,
+          "parent": "REQ-RSCH-011"
+        },
+        {
+          "id": "REQ-RSCH-011.4",
+          "title": "Coalition Intel Summary UI",
+          "atomic": true,
+          "line": 3180,
+          "parent": "REQ-RSCH-011"
         },
         {
           "id": "REQ-RSCH-012",
           "title": "Bot Research Decision Logic",
           "atomic": false,
-          "line": 3075,
+          "line": 3142,
           "splitCandidate": "archetype preferences + counter-picking + tier logic"
         }
       ]
@@ -3408,9 +3441,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 373,
-    "atomicSpecs": 331,
-    "splitCandidates": 33,
+    "totalSpecs": 376,
+    "atomicSpecs": 335,
+    "splitCandidates": 32,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

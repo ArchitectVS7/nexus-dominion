@@ -3047,26 +3047,91 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 ---
 
-### REQ-RSCH-011: Alliance Intel Sharing
+### REQ-RSCH-011: Alliance Intel Sharing (PARENT)
 
-**Description:** Coalition members automatically share research intelligence:
-- Your specialization revealed to allies (no longer secret from coalition)
-- Ally specializations revealed to you (coalition benefit)
-- Estimated RP progress shared based on sector counts
-- Shared intel displayed in "Coalition Intel Summary" panel
+**Description:** Coalition members automatically share research intelligence. This parent spec tracks the complete alliance intel sharing feature.
+
+**Children:**
+- REQ-RSCH-011.1: Player Specialization Reveal to Allies
+- REQ-RSCH-011.2: Ally Specialization Reveal to Player
+- REQ-RSCH-011.3: RP Progress Estimation Sharing
+- REQ-RSCH-011.4: Coalition Intel Summary UI
 
 **Rationale:** Joining coalition trades tactical surprise (specialization secrecy) for coordination and allied intel. Creates strategic tradeoff: maintain secrecy or gain coalition benefits.
 
 **Source:** Section 3.4.4 - Alliance Intel Sharing
 
+**Status:** Draft
+
+---
+
+### REQ-RSCH-011.1: Player Specialization Reveal to Allies
+
+**Description:** When joining a coalition, your specialization is automatically revealed to all coalition members (no longer secret from coalition).
+
+**Rationale:** Coalition membership trades tactical surprise for coordination benefits. Allies need to know your capabilities to coordinate effectively.
+
+**Source:** Section 3.4.4 - Alliance Intel Sharing
+
 **Code:**
-- `src/lib/diplomacy/coalition-intel-sharing.ts` - Auto-share on coalition join
+- `src/lib/diplomacy/coalition-intel-sharing.ts` - Auto-share player spec on coalition join
+
+**Tests:**
+- `src/lib/diplomacy/__tests__/coalition-intel-sharing.test.ts` - Test player spec shared on join
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-011.2: Ally Specialization Reveal to Player
+
+**Description:** When joining a coalition, all ally specializations are automatically revealed to you (coalition benefit).
+
+**Rationale:** Coalition members gain visibility into allied capabilities to enable strategic coordination and planning.
+
+**Source:** Section 3.4.4 - Alliance Intel Sharing
+
+**Code:**
 - `src/lib/game/research/visibility.ts` - Grant visibility to coalition members
+
+**Tests:**
+- `src/lib/diplomacy/__tests__/coalition-visibility.test.ts` - Test allied visibility rules
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-011.3: RP Progress Estimation Sharing
+
+**Description:** Coalition members automatically share estimated RP progress based on sector counts. This allows allies to estimate when coalition members will reach next research tiers.
+
+**Rationale:** Shared progress estimation enables coalition coordination around research milestones without revealing exact RP values.
+
+**Source:** Section 3.4.4 - Alliance Intel Sharing
+
+**Code:**
+- `src/lib/diplomacy/coalition-intel-sharing.ts` - Calculate and share RP estimates
+
+**Tests:**
+- `src/lib/diplomacy/__tests__/coalition-intel-sharing.test.ts` - Test RP estimation sharing
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-011.4: Coalition Intel Summary UI
+
+**Description:** Shared coalition intelligence is displayed in dedicated "Coalition Intel Summary" panel showing ally specializations and RP progress estimates.
+
+**Rationale:** Centralized intel display provides clear visibility of coalition research capabilities and progress.
+
+**Source:** Section 3.4.4 - Alliance Intel Sharing
+
+**Code:**
 - `src/components/diplomacy/CoalitionIntelPanel.tsx` - Display shared intel
 
 **Tests:**
-- `src/lib/diplomacy/__tests__/coalition-intel-sharing.test.ts` - Test auto-share on join
-- `src/lib/diplomacy/__tests__/coalition-visibility.test.ts` - Test allied visibility rules
+- `src/components/diplomacy/__tests__/CoalitionIntelPanel.test.tsx` - Test intel panel display
 
 **Status:** Draft
 
