@@ -704,17 +704,76 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 ---
 
-### REQ-COMBAT-012: Morale & Surrender
+### REQ-COMBAT-012: Morale & Surrender (Split)
 
-**Description:** Morale checks at 50%+ losses (d20 + WIS vs DC 15). Surrender offers at 75%+ losses (Attacker CHA vs Defender WIS).
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-COMBAT-012-A and REQ-COMBAT-012-B below.
 
-**Rationale:** Prevents total annihilation, enables tactical retreats.
+**Overview:** Combat units can retreat or surrender when suffering heavy losses, preventing total annihilation and enabling tactical withdrawals.
 
-**Source:** Section 3.6
+**Loss-Based Mechanics:**
+- Morale Checks: 50%+ losses [REQ-COMBAT-012-A]
+- Surrender Offers: 75%+ losses [REQ-COMBAT-012-B]
 
-**Code:** `src/lib/combat/morale.ts`
+---
 
-**Tests:** TBD
+### REQ-COMBAT-012-A: Morale Checks
+
+**Description:** When a side suffers 50% or greater losses during combat, their units must make morale checks to determine if they continue fighting or retreat from battle.
+
+**Morale Check Rules:**
+- Trigger: 50%+ casualties (measured by HP or unit count loss)
+- Check: d20 + WIS modifier vs DC 15
+- Success: Units continue fighting normally
+- Failure: Units retreat from combat, ending the battle
+- Timing: Checked at end of each combat round after casualties calculated
+- One check per side: Entire side makes single morale check (uses commander WIS if available)
+
+**Rationale:** Prevents unrealistic fights to the death. Forces must consider morale and retreat when suffering heavy losses. Creates strategic decision point - push for total victory or accept costly win.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.6 - Morale & Surrender, Morale Checks
+
+**Code:** TBD - `src/lib/combat/morale.ts` - Morale check logic
+
+**Tests:** TBD - Verify morale checks trigger at 50%+ losses, d20+WIS vs DC 15
+
+**Status:** Draft
+
+---
+
+### REQ-COMBAT-012-B: Surrender Mechanics
+
+**Description:** When a side suffers 75% or greater losses, the attacker can offer surrender terms, resolved through an opposed charisma vs wisdom roll.
+
+**Surrender Rules:**
+- Trigger: 75%+ casualties (measured by HP or unit count loss)
+- Offer: Attacker can propose surrender terms (not required)
+- Resolution: Opposed roll - Attacker CHA vs Defender WIS
+- Attacker wins: Defender surrenders, battle ends, terms applied
+- Defender wins: Defender refuses, combat continues
+- Timing: Offered at end of round after morale check (if morale passed)
+- Terms: Typically sector cession, resource tribute, or treaty obligations
+
+**Examples of Surrender Terms:**
+- Cede 10% of sectors to attacker
+- Pay 50,000 credit tribute
+- Sign Non-Aggression Pact for 20 turns
+- Provide intelligence on third party
+
+**Rationale:** Allows mercy and negotiated endings. Prevents pyrrhic victories where attacker wins but suffers heavy losses. Creates diplomatic opportunities mid-combat. Rewards high-CHA attackers and high-WIS defenders.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.6 - Morale & Surrender, Surrender Mechanics
+
+**Code:** TBD - `src/lib/combat/morale.ts` - Surrender offer logic
+
+**Tests:** TBD - Verify surrender triggers at 75%+ losses, CHA vs WIS resolution
 
 **Status:** Draft
 

@@ -22,7 +22,9 @@
         { "id": "REQ-COMBAT-009-D", "title": "Cross-Domain Victory Bonuses", "atomic": true, "line": 637, "splitFrom": "REQ-COMBAT-009" },
         { "id": "REQ-COMBAT-010", "title": "Three Battle Types", "atomic": true, "line": 669 },
         { "id": "REQ-COMBAT-011", "title": "Unit Rarity Tiers", "atomic": true, "line": 575 },
-        { "id": "REQ-COMBAT-012", "title": "Morale & Surrender", "atomic": false, "line": 594, "splitCandidate": "morale + surrender mechanics" }
+        { "id": "REQ-COMBAT-012", "title": "Morale & Surrender (Split)", "atomic": true, "line": 707, "parentOf": ["REQ-COMBAT-012-A", "REQ-COMBAT-012-B"] },
+        { "id": "REQ-COMBAT-012-A", "title": "Morale Checks", "atomic": true, "line": 719, "splitFrom": "REQ-COMBAT-012" },
+        { "id": "REQ-COMBAT-012-B", "title": "Surrender Mechanics", "atomic": true, "line": 747, "splitFrom": "REQ-COMBAT-012" }
       ]
     },
     "BOT": {
@@ -429,9 +431,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 292,
-    "atomicSpecs": 215,
-    "splitCandidates": 69,
+    "totalSpecs": 294,
+    "atomicSpecs": 217,
+    "splitCandidates": 68,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
