@@ -282,10 +282,13 @@
         { "id": "REQ-RES-008-D", "title": "Negative Ore Consequence", "atomic": true, "line": 1784, "splitFrom": "REQ-RES-008" },
         { "id": "REQ-RES-008-E", "title": "Negative Petroleum Consequence", "atomic": true, "line": 1812, "splitFrom": "REQ-RES-008" },
         { "id": "REQ-RES-008-F", "title": "Negative Research Points Handling", "atomic": true, "line": 1838, "splitFrom": "REQ-RES-008" },
-        { "id": "REQ-RES-009", "title": "Sector Type Conversion", "atomic": false, "line": 1870, "splitCandidate": "cost + timing + restrictions" },
-        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1903, "splitCandidate": "capacity + overcrowding + starting" },
-        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1938, "splitCandidate": "accumulation + thresholds + timeline" },
-        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 1972, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+        { "id": "REQ-RES-009", "title": "Sector Type Conversion (Split)", "atomic": true, "line": 1870, "parentOf": ["REQ-RES-009-A", "REQ-RES-009-B", "REQ-RES-009-C"] },
+        { "id": "REQ-RES-009-A", "title": "Sector Conversion Cost Calculation", "atomic": true, "line": 1876, "splitFrom": "REQ-RES-009" },
+        { "id": "REQ-RES-009-B", "title": "Sector Conversion Timing", "atomic": true, "line": 1910, "splitFrom": "REQ-RES-009" },
+        { "id": "REQ-RES-009-C", "title": "Sector Conversion Restrictions", "atomic": true, "line": 1935, "splitFrom": "REQ-RES-009" },
+        { "id": "REQ-RES-010", "title": "Urban Sectors and Population Capacity", "atomic": false, "line": 1959, "splitCandidate": "capacity + overcrowding + starting" },
+        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 1994, "splitCandidate": "accumulation + thresholds + timeline" },
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 2028, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
       ]
     },
     "SECTOR": {
@@ -489,9 +492,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 337,
-    "atomicSpecs": 280,
-    "splitCandidates": 48,
+    "totalSpecs": 340,
+    "atomicSpecs": 284,
+    "splitCandidates": 47,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

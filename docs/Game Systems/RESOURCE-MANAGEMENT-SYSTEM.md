@@ -1867,9 +1867,17 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 
 ---
 
-### REQ-RES-009: Sector Type Conversion
+### REQ-RES-009: Sector Type Conversion (Split)
 
-**Description:** Players can convert existing sectors to new types at 50% of target sector build cost. Conversion is instant (same turn). Urban sectors cannot be converted (population housing required).
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-009-A through REQ-RES-009-C.
+
+---
+
+### REQ-RES-009-A: Sector Conversion Cost Calculation
+
+**Description:** Players can convert existing sectors to new types at 50% of target sector build cost. Conversion cost represents "repurposing infrastructure" discount compared to destroying and rebuilding.
+
+**Rationale:** Enables strategic pivots (early Food sectors → late Commerce sectors) without requiring sector destruction and rebuild. 50% cost represents infrastructure reuse discount.
 
 **Conversion Formula:**
 ```
@@ -1880,11 +1888,59 @@ Examples:
 - Commerce → Research: 23,000 cr × 0.5 = 11,500 cr
 ```
 
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Conversion cost multiplier | 50% of target cost | Infrastructure reuse discount |
+
+**Source:** Section 3.3 - Sector Type Conversion
+
+**Code:**
+- `src/lib/game/services/sector-conversion.ts` - `convertSectorType()` function
+- `src/app/actions/sector-actions.ts` - `convertSectorAction()` server action
+
+**Tests:**
+- `src/lib/game/services/__tests__/sector-conversion.test.ts` - Conversion cost and restrictions
+
+**Status:** Draft
+
+---
+
+### REQ-RES-009-B: Sector Conversion Timing
+
+**Description:** Sector conversion is instant and completes same turn. No construction delay or multi-turn process.
+
+**Rationale:** Enables strategic pivots without timing penalty. Conversion represents repurposing existing infrastructure, not new construction.
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Conversion duration | Instant (same turn) | No construction delay |
+
+**Source:** Section 3.3 - Sector Type Conversion
+
+**Code:**
+- `src/lib/game/services/sector-conversion.ts` - `convertSectorType()` function
+- `src/app/actions/sector-actions.ts` - `convertSectorAction()` server action
+
+**Tests:**
+- `src/lib/game/services/__tests__/sector-conversion.test.ts` - Conversion cost and restrictions
+
+**Status:** Draft
+
+---
+
+### REQ-RES-009-C: Sector Conversion Restrictions
+
+**Description:** Urban sectors cannot be converted from or to. Cannot convert Urban sectors to other types (protects population capacity). Cannot convert other sectors to Urban (must build new for population growth).
+
+**Rationale:** Urban sectors provide population housing capacity. Preventing conversion protects population from displacement and ensures intentional population capacity planning.
+
 **Restrictions:**
 - Cannot convert Urban sectors (protects population capacity)
 - Cannot convert sectors to Urban (must build new for population growth)
-
-**Rationale:** Enables strategic pivots (early Food sectors → late Commerce sectors) without requiring sector destruction and rebuild. 50% cost represents "repurposing infrastructure" discount.
 
 **Source:** Section 3.3 - Sector Type Conversion
 
