@@ -2055,25 +2055,91 @@ Growth Dynamics Example:
 
 ---
 
-### REQ-RES-011: Research Point Accumulation
+### REQ-RES-011: Research Point Accumulation (Split)
 
-**Description:** Research points accumulate from Research sectors to unlock tech tiers:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RES-011-A through REQ-RES-011-C.
 
+---
+
+### REQ-RES-011-A: Research Point Production Calculation
+
+**Description:** Research sectors generate 100 research points per turn, scaled by civil status multiplier. Total research production calculated as number of Research sectors multiplied by 100 RP, then multiplied by civil status multiplier.
+
+**Rationale:** Research sectors are expensive (23,000 credits) but necessary for tech victory. Civil status multiplier creates strategic choice between happiness and research speed.
+
+**Formula:**
 ```
 Research Points per Turn = (Research Sectors × 100 RP) × Civil Status Multiplier
 
-Tier Unlock Thresholds:
+Examples:
+- 1 Research sector, Content (1.0×): 100 RP/turn
+- 2 Research sectors, Content (1.0×): 200 RP/turn
+- 3 Research sectors, Ecstatic (2.5×): 750 RP/turn
+```
+
+**Key Values:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Base RP per Research sector | 100 RP/turn | Before civil status multiplier |
+
+**Source:** Section 3.5 - Research Point Accumulation and Tech Unlocks
+
+**Code:**
+- `src/lib/game/services/research-service.ts` - `calculateResearchProduction()` function
+
+**Tests:**
+- `src/lib/game/services/__tests__/research-accumulation.test.ts` - RP production tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-011-B: Tech Tier Unlock Thresholds
+
+**Description:** Three tech tier thresholds require accumulated research points to unlock. Tier 1 (Doctrine) at 1,000 RP, Tier 2 (Specialization) at 5,000 RP, Tier 3 (Capstone) at 15,000 RP.
+
+**Rationale:** Progressive tech unlocks create meaningful mid-game and late-game milestones. Thresholds calibrated to require sustained research investment.
+
+**Tier Unlock Thresholds:**
+```
 - Tier 1 (Doctrine): 1,000 RP
 - Tier 2 (Specialization): 5,000 RP
 - Tier 3 (Capstone): 15,000 RP
 ```
 
-**Timeline Examples:**
-- 1 Research sector, Content status: ~150 turns to Tier 3
-- 2 Research sectors, Content status: ~75 turns to Tier 3
-- 3 Research sectors, Ecstatic status: ~20 turns to Tier 3
+**Key Values:**
 
-**Rationale:** Research sectors are expensive (23,000 credits) but necessary for tech victory. Multiple paths to Tier 3 (spam sectors, boost civil status, or slow grind).
+| Tier | RP Required | Tech Type |
+|------|-------------|-----------|
+| Tier 1 | 1,000 RP | Doctrine |
+| Tier 2 | 5,000 RP | Specialization |
+| Tier 3 | 15,000 RP | Capstone |
+
+**Source:** Section 3.5 - Research Point Accumulation and Tech Unlocks
+
+**Code:**
+- `src/lib/game/services/tech-unlock.ts` - Tier threshold checking
+
+**Tests:**
+- `src/lib/game/services/__tests__/tech-tier-unlocks.test.ts` - Threshold tests
+
+**Status:** Draft
+
+---
+
+### REQ-RES-011-C: Research Timeline Mechanics
+
+**Description:** Timeline examples demonstrate paths to Tier 3 through sector expansion or civil status optimization. Multiple viable strategies: spam sectors, boost civil status, or slow grind.
+
+**Rationale:** Multiple paths to Tier 3 create strategic choices. Fast path (3 sectors + Ecstatic) requires heavy investment. Slow path (1 sector + Content) more economical but slower.
+
+**Timeline Examples:**
+```
+- 1 Research sector, Content status (100 RP/turn): ~150 turns to Tier 3 (15,000 RP)
+- 2 Research sectors, Content status (200 RP/turn): ~75 turns to Tier 3
+- 3 Research sectors, Ecstatic status (750 RP/turn): ~20 turns to Tier 3
+```
 
 **Source:** Section 3.5 - Research Point Accumulation and Tech Unlocks
 
@@ -2083,7 +2149,6 @@ Tier Unlock Thresholds:
 
 **Tests:**
 - `src/lib/game/services/__tests__/research-accumulation.test.ts` - RP production tests
-- `src/lib/game/services/__tests__/tech-tier-unlocks.test.ts` - Threshold tests
 
 **Status:** Draft
 

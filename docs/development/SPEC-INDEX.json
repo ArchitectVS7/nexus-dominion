@@ -290,8 +290,11 @@
         { "id": "REQ-RES-010-A", "title": "Population Capacity Calculation", "atomic": true, "line": 1965, "splitFrom": "REQ-RES-010" },
         { "id": "REQ-RES-010-B", "title": "Overcrowding Penalty", "atomic": true, "line": 1999, "splitFrom": "REQ-RES-010" },
         { "id": "REQ-RES-010-C", "title": "Starting Urban Infrastructure", "atomic": true, "line": 2035, "splitFrom": "REQ-RES-010" },
-        { "id": "REQ-RES-011", "title": "Research Point Accumulation", "atomic": false, "line": 2058, "splitCandidate": "accumulation + thresholds + timeline" },
-        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 2092, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
+        { "id": "REQ-RES-011", "title": "Research Point Accumulation (Split)", "atomic": true, "line": 2058, "parentOf": ["REQ-RES-011-A", "REQ-RES-011-B", "REQ-RES-011-C"] },
+        { "id": "REQ-RES-011-A", "title": "Research Point Production Calculation", "atomic": true, "line": 2064, "splitFrom": "REQ-RES-011" },
+        { "id": "REQ-RES-011-B", "title": "Tech Tier Unlock Thresholds", "atomic": true, "line": 2098, "splitFrom": "REQ-RES-011" },
+        { "id": "REQ-RES-011-C", "title": "Research Timeline Mechanics", "atomic": true, "line": 2131, "splitFrom": "REQ-RES-011" },
+        { "id": "REQ-RES-012", "title": "Economic Victory Condition", "atomic": false, "line": 2157, "splitCandidate": "networth + threshold", "note": "Duplicate of REQ-VIC-002" }
       ]
     },
     "SECTOR": {
@@ -495,9 +498,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 343,
-    "atomicSpecs": 288,
-    "splitCandidates": 46,
+    "totalSpecs": 346,
+    "atomicSpecs": 292,
+    "splitCandidates": 45,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },
