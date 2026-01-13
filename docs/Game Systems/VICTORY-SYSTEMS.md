@@ -1181,21 +1181,32 @@ military_victory = your_military >= (sum_all_others × 2)
 
 ---
 
-### REQ-VIC-006: Survival Victory
+### REQ-VIC-006: Survival Victory (PARENT)
 
-**Description:** Achieved by having the highest score when the turn limit is reached.
+**Description:** Achieved by having the highest score when the turn limit is reached. This parent spec tracks the complete survival victory system.
 
-**Rationale:** Default victory for balanced play when no empire achieves other victory conditions. Score formula rewards well-rounded empires (networth + military + territory + reputation + tech). Creates tense endgame as turn limit approaches.
+**Children:**
+- REQ-VIC-006.1: Score Calculation Formula
+- REQ-VIC-006.2: Turn Limit Trigger
+- REQ-VIC-006.3: Tiebreaker Rules
 
-**Formula:**
+**Rationale:** Default victory for balanced play when no empire achieves other victory conditions. Creates tense endgame as turn limit approaches.
+
+**Source:** Section 3.6 - Survival Victory
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-006.1: Score Calculation Formula
+
+**Description:** Score calculated using formula:
 ```typescript
 score = networth
         + (military_power × 10)
         + (sectors × 500)
         + (reputation × 100)
         + (tech_tier_average × 1000)
-
-survival_victory = (turn === turn_limit) AND (your_score === highest_score)
 ```
 
 **Key Values:**
@@ -1206,26 +1217,66 @@ survival_victory = (turn === turn_limit) AND (your_score === highest_score)
 | sector_weight | 500 | per sector |
 | reputation_weight | 100 | per reputation point |
 | tech_weight | 1000 | per average tier level |
+
+**Rationale:** Score formula rewards well-rounded empires (networth + military + territory + reputation + tech).
+
+**Source:** Section 3.6 - Survival Victory
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - `calculateScore()`
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Score calculation includes all components"
+
+**Status:** Draft
+
+---
+
+### REQ-VIC-006.2: Turn Limit Trigger
+
+**Description:** Survival victory checked when turn limit is reached:
+```typescript
+survival_victory = (turn === turn_limit) AND (your_score === highest_score)
+```
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
 | turn_limit_standard | 200 | Standard game mode |
+
+**Rationale:** Turn limit ensures games don't run indefinitely.
 
 **Source:** Section 3.6 - Survival Victory
 
 **Code:**
 - `src/lib/game/services/core/victory-service.ts` - `checkSurvivalVictory()`
-- `src/lib/game/services/core/victory-service.ts` - `calculateScore()`
 - `src/lib/game/services/core/game-service.ts` - `checkTurnLimit()`
 
 **Tests:**
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "Survival victory when turn limit reached"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Survival victory with highest score"
-- `src/lib/game/services/__tests__/victory-service.test.ts` - "Tiebreaker: networth > military > sectors"
 - `src/lib/game/services/__tests__/victory-service.test.ts` - "No survival victory if turn limit not reached"
 
 **Status:** Draft
 
 ---
 
-### REQ-VIC-007: Victory Point Calculation (Split)
+### REQ-VIC-006.3: Tiebreaker Rules
+
+**Description:** When multiple empires have same score at turn limit, tiebreaker: networth > military > sectors.
+
+**Rationale:** Clear tiebreaker rules ensure deterministic winner selection.
+
+**Source:** Section 3.6 - Survival Victory
+
+**Code:**
+- `src/lib/game/services/core/victory-service.ts` - Tiebreaker logic
+
+**Tests:**
+- `src/lib/game/services/__tests__/victory-service.test.ts` - "Tiebreaker: networth > military > sectors"
+
+**Status:** Draft
+
+---
 
 > **Note:** This spec has been split into atomic sub-specs. See REQ-VIC-007-A through REQ-VIC-007-G below.
 
