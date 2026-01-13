@@ -211,7 +211,10 @@
         { "id": "REQ-PROG-001-B", "title": "Black Market Feature Unlock", "atomic": true, "line": 786, "splitFrom": "REQ-PROG-001" },
         { "id": "REQ-PROG-001-C", "title": "Nuclear Weapons Feature Unlock", "atomic": true, "line": 815, "splitFrom": "REQ-PROG-001" },
         { "id": "REQ-PROG-001-D", "title": "Veteran Override for Feature Unlocks", "atomic": true, "line": 844, "splitFrom": "REQ-PROG-001" },
-        { "id": "REQ-PROG-002", "title": "Game Checkpoints", "atomic": false, "line": 782, "splitCandidate": "auto + manual + cloud" },
+        { "id": "REQ-PROG-002", "title": "Game Checkpoints (Split)", "atomic": true, "line": 873, "parentOf": ["REQ-PROG-002-A", "REQ-PROG-002-B", "REQ-PROG-002-C"] },
+        { "id": "REQ-PROG-002-A", "title": "Automatic Checkpoint System", "atomic": true, "line": 879, "splitFrom": "REQ-PROG-002" },
+        { "id": "REQ-PROG-002-B", "title": "Manual Checkpoint System", "atomic": true, "line": 910, "splitFrom": "REQ-PROG-002" },
+        { "id": "REQ-PROG-002-C", "title": "Checkpoint Resume and Cloud Storage", "atomic": true, "line": 951, "splitFrom": "REQ-PROG-002" },
         { "id": "REQ-PROG-003", "title": "Galactic Events (Split)", "atomic": true, "line": 814, "parentOf": ["REQ-PROG-003-01", "REQ-PROG-003-02", "REQ-PROG-003-03", "REQ-PROG-003-04", "REQ-PROG-003-05", "REQ-PROG-003-06", "REQ-PROG-003-07", "REQ-PROG-003-08", "REQ-PROG-003-09"] },
         { "id": "REQ-PROG-003-01", "title": "Supernova Event", "atomic": true, "line": 822, "splitFrom": "REQ-PROG-003" },
         { "id": "REQ-PROG-003-02", "title": "Plague Event", "atomic": true, "line": 854, "splitFrom": "REQ-PROG-003" },
@@ -467,9 +470,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 319,
-    "atomicSpecs": 255,
-    "splitCandidates": 55,
+    "totalSpecs": 321,
+    "atomicSpecs": 258,
+    "splitCandidates": 54,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

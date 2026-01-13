@@ -870,33 +870,120 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-PROG-002: Game Checkpoints
+### REQ-PROG-002: Game Checkpoints (Split)
 
-**Description:** Game state can be saved at checkpoints for campaign continuation:
-- Automatic checkpoints every 20 turns
-- Manual checkpoints (max 3 per game)
-- Cloud storage with 7-day retention (auto) or 30-day (manual)
-- Resume from checkpoint within retention period
+> **Note:** This spec has been split into atomic sub-specs. See REQ-PROG-002-A through REQ-PROG-002-C.
 
-**Rationale:** Supports long campaign games (200+ turns) across multiple sessions. Players can stop and resume without losing progress.
+---
+
+### REQ-PROG-002-A: Automatic Checkpoint System
+
+**Description:** Game state automatically saves every 20 turns (Turn 20, 40, 60, 80...). Automatic checkpoints have 7-day retention in cloud storage before expiring and being deleted.
+
+**Rationale:** Provides safety net for long campaign games. Players protected from data loss without manual action. Short retention keeps storage costs manageable.
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
-| Auto Checkpoint Interval | 20 turns | Turn 20, 40, 60, ... |
-| Manual Checkpoint Limit | 3 saves | Per game |
-| Auto Retention | 7 days | Cloud storage |
-| Manual Retention | 30 days | Cloud storage |
-| Checkpoint Size | ~500KB | Compressed JSON |
+| Auto Checkpoint Interval | 20 turns | Triggers at Turn 20, 40, 60... |
+| Auto Retention | 7 days | Cloud storage before expiry |
+| Checkpoint Size | ~500KB | Compressed JSON format |
+| Trigger Timing | End of turn processing | After turn completion |
 
-**Source:** Section 2.2, 3.3
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2
 
 **Code:**
-- `src/lib/game/services/events/checkpoint-service.ts` - Save/load
-- `src/lib/storage/cloud-save.ts` - Cloud sync
+- `src/lib/game/services/events/checkpoint-service.ts` - Auto-save logic
+- `src/lib/storage/cloud-save.ts` - Cloud upload
 
 **Tests:**
-- `src/lib/game/services/events/__tests__/checkpoint-service.test.ts`
+- `src/lib/game/services/events/__tests__/checkpoint-service.test.ts` - Auto-save tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-002-B: Manual Checkpoint System
+
+**Description:** Players can manually trigger checkpoint saves with maximum 3 manual checkpoints per game. Manual checkpoints have 30-day retention in cloud storage. Exceeding 3 saves requires deleting an existing manual checkpoint first.
+
+**Rationale:** Gives players control over important game moments. Longer retention rewards deliberate saves. Limit prevents storage abuse.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Manual Checkpoint Limit | 3 saves | Per game |
+| Manual Retention | 30 days | Cloud storage before expiry |
+| Checkpoint Size | ~500KB | Compressed JSON format |
+| UI Trigger | Player-initiated | Save button in game menu |
+
+**Enforcement Logic:**
+```
+if (manual_checkpoints.length >= 3) {
+  show_error("Maximum 3 manual checkpoints. Delete one first.")
+} else {
+  create_manual_checkpoint()
+}
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 2.2
+
+**Code:**
+- `src/lib/game/services/events/checkpoint-service.ts` - Manual save logic
+- `src/lib/storage/cloud-save.ts` - Cloud upload
+- `src/app/game/GameMenu.tsx` - Manual save UI
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/checkpoint-service.test.ts` - Manual save tests
+
+**Status:** Draft
+
+---
+
+### REQ-PROG-002-C: Checkpoint Resume and Cloud Storage
+
+**Description:** Players can resume from any checkpoint (automatic or manual) within its retention period. Checkpoints stored as compressed JSON (~500KB) in cloud storage. Expired checkpoints automatically deleted and unavailable for resume.
+
+**Rationale:** Enables campaign continuation across sessions. Cloud storage ensures saves persist across devices. Automatic expiry manages storage costs.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Checkpoint Format | Compressed JSON | ~500KB per save |
+| Storage Location | Cloud | Cross-device sync |
+| Resume Availability | Within retention window | 7 days (auto) or 30 days (manual) |
+| Expired Behavior | Deleted, unavailable | Automatic cleanup |
+
+**Resume Flow:**
+```
+1. Player selects "Load Game"
+2. Fetch available checkpoints from cloud (within retention)
+3. Display list with metadata (turn, date, type)
+4. Player selects checkpoint
+5. Load game state from checkpoint
+6. Resume gameplay from saved turn
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3
+
+**Code:**
+- `src/lib/game/services/events/checkpoint-service.ts` - Resume logic
+- `src/lib/storage/cloud-save.ts` - Cloud fetch and cleanup
+
+**Tests:**
+- `src/lib/game/services/events/__tests__/checkpoint-service.test.ts` - Resume tests
 
 **Status:** Draft
 
