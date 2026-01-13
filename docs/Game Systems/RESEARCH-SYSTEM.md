@@ -2236,42 +2236,114 @@ This section contains formal requirements for spec-driven development. Each spec
 
 ---
 
-### REQ-RSCH-004: Capstone System (Tier 3)
+### REQ-RSCH-004: Capstone System (Tier 3) (Split)
 
-**Description:** Automatic capstone unlock at 15,000 RP (~Turn 60) based on doctrine:
+> **Note:** This spec has been split into atomic sub-specs. See REQ-RSCH-004-A through REQ-RSCH-004-C.
 
-- **War Machine → Dreadnought:** Build unique super-unit (STR 20, HP 200, 4d12+5 damage, multi-attack, once per game, 100k credits + 10 pop)
-- **Fortress → Citadel World:** One planet becomes AC 25 (nearly invulnerable fortress)
-- **Commerce → Economic Hegemony:** Generate 50% of 2nd-place empire's income passively each turn
+---
 
-Triggers galaxy-wide announcement and bot reactions (coalitions form, preemptive strikes).
+### REQ-RSCH-004-A: Dreadnought Capstone (War Machine)
 
-**Rationale:** Provides late-game power spike and endgame drama. Public announcement signals endgame phase has begun.
+**Description:** War Machine capstone unlocks automatically at 15,000 RP (~Turn 60). Grants ability to build one Dreadnought super-unit per game (STR 20, HP 200, 4d12+5 damage, multi-attack). Costs 100,000 credits + 10 population. Triggers galaxy-wide announcement and bot reactions (coalitions form, preemptive strikes).
+
+**Rationale:** Provides late-game offensive power spike. One-per-game limit prevents spam. High cost creates strategic decision point. Public announcement signals endgame phase.
 
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
 | Unlock threshold | 15,000 RP | ~Turn 60 with 3 research sectors |
-| Dreadnought STR | 20 (+5) | Highest in game |
-| Dreadnought HP | 200 | Double cruiser HP |
-| Dreadnought damage | 4d12+5 | Average 31 damage/hit |
-| Dreadnought cost | 100,000 cr + 10 pop | Major investment |
-| Citadel World AC | 25 | Near-invulnerable |
-| Economic Hegemony % | 50% | Of 2nd place income |
+| Build limit | 1 per game | Cannot build multiple |
+| STR | 20 (+5) | Highest in game |
+| HP | 200 | Double cruiser HP (100) |
+| Damage | 4d12+5 | Average 31 damage/hit |
+| Cost | 100,000 cr + 10 pop | Major investment |
+| Special ability | Multi-attack | Can attack multiple times per round |
+| Visibility | Galaxy-wide | Announcement to all players |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
 
 **Source:** Section 3.3 - Tier 3: Capstone System
 
 **Code:**
 - `src/lib/game/services/research-service.ts:unlockCapstone` - Auto-unlock logic
 - `src/lib/units/dreadnought.ts` - Dreadnought unit definition
-- `src/lib/sectors/citadel-world.ts` - Citadel AC bonus
+
+**Tests:**
+- `src/lib/game/__tests__/capstone-unlock.test.ts` - Test Dreadnought unlock at 15k RP
+- `src/lib/combat/__tests__/dreadnought.test.ts` - Test Dreadnought stats and abilities
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-004-B: Citadel World Capstone (Fortress)
+
+**Description:** Fortress capstone unlocks automatically at 15,000 RP (~Turn 60). Allows player to designate one planet as a Citadel World, granting it AC 25 (nearly invulnerable fortress). Triggers galaxy-wide announcement and bot reactions (coalitions form, preemptive strikes).
+
+**Rationale:** Provides late-game defensive power spike. Near-invulnerability creates strategic anchor point. Public announcement signals endgame phase.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock threshold | 15,000 RP | ~Turn 60 with 3 research sectors |
+| Citadel limit | 1 planet | Cannot designate multiple |
+| AC bonus | AC 25 | Near-invulnerable (normal AC 10-15) |
+| Permanence | Permanent | Cannot be changed once designated |
+| Visibility | Galaxy-wide | Announcement to all players |
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3 - Tier 3: Capstone System
+
+**Code:**
+- `src/lib/game/services/research-service.ts:unlockCapstone` - Auto-unlock logic
+- `src/lib/sectors/citadel-world.ts` - Citadel AC bonus application
+
+**Tests:**
+- `src/lib/game/__tests__/capstone-unlock.test.ts` - Test Citadel unlock at 15k RP
+- `src/lib/sectors/__tests__/citadel-world.test.ts` - Test AC 25 application
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-004-C: Economic Hegemony Capstone (Commerce)
+
+**Description:** Commerce capstone unlocks automatically at 15,000 RP (~Turn 60). Grants passive income equal to 50% of the 2nd-place empire's income each turn. Triggers galaxy-wide announcement and bot reactions (coalitions form, preemptive strikes).
+
+**Rationale:** Provides late-game economic power spike. Passive income creates snowball effect. Percentage-based ensures relevance regardless of game state. Public announcement signals endgame phase.
+
+**Key Values:**
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| Unlock threshold | 15,000 RP | ~Turn 60 with 3 research sectors |
+| Income percentage | 50% | Of 2nd-place empire's income |
+| Target empire | 2nd place | By networth ranking |
+| Timing | Each turn | Passive income generation |
+| Visibility | Galaxy-wide | Announcement to all players |
+
+**Formula:**
+```
+Economic Hegemony Income = floor(2nd_place_empire_income × 0.5)
+```
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.3 - Tier 3: Capstone System
+
+**Code:**
+- `src/lib/game/services/research-service.ts:unlockCapstone` - Auto-unlock logic
 - `src/lib/economy/economic-hegemony.ts` - Passive income calculation
 
 **Tests:**
-- `src/lib/game/__tests__/capstone-unlock.test.ts` - Test all 3 capstones unlock at 15k RP
-- `src/lib/combat/__tests__/dreadnought.test.ts` - Test Dreadnought stats and abilities
-- `src/lib/sectors/__tests__/citadel-world.test.ts` - Test AC 25 application
-- `src/lib/economy/__tests__/economic-hegemony.test.ts` - Test income siphoning
+- `src/lib/game/__tests__/capstone-unlock.test.ts` - Test Economic Hegemony unlock at 15k RP
+- `src/lib/economy/__tests__/economic-hegemony.test.ts` - Test income siphoning calculation
 
 **Status:** Draft
 
