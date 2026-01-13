@@ -248,10 +248,15 @@
         { "id": "REQ-RSCH-006", "title": "Research Information Visibility", "atomic": false, "line": 2156, "splitCandidate": "public + hidden + reveal methods" },
         { "id": "REQ-RSCH-007", "title": "Research-Combat Integration", "atomic": false, "line": 2194, "splitCandidate": "doctrine + specialization + stacking" },
         { "id": "REQ-RSCH-008", "title": "Specialization Counter-Play", "atomic": false, "line": 2229, "splitCandidate": "4 counter relationships" },
-        { "id": "REQ-RSCH-009", "title": "Investigate Specialization Operation", "atomic": false, "line": 2265, "splitCandidate": "cost + rate + processing + results + failure" },
-        { "id": "REQ-RSCH-010", "title": "Galactic News Rumor System", "atomic": false, "line": 2293, "splitCandidate": "generation + frequency + verification" },
-        { "id": "REQ-RSCH-011", "title": "Alliance Intel Sharing", "atomic": false, "line": 2327, "splitCandidate": "spec reveal + ally reveal + RP sharing + UI" },
-        { "id": "REQ-RSCH-012", "title": "Bot Research Decision Logic", "atomic": false, "line": 2352, "splitCandidate": "archetype preferences + counter-picking + tier logic" }
+        { "id": "REQ-RSCH-009", "title": "Investigate Specialization Operation (Split)", "atomic": true, "line": 2265, "parentOf": ["REQ-RSCH-009-A", "REQ-RSCH-009-B", "REQ-RSCH-009-C", "REQ-RSCH-009-D", "REQ-RSCH-009-E"] },
+        { "id": "REQ-RSCH-009-A", "title": "Investigate Specialization Cost", "atomic": true, "line": 2280, "splitFrom": "REQ-RSCH-009" },
+        { "id": "REQ-RSCH-009-B", "title": "Investigate Specialization Success Rate", "atomic": true, "line": 2308, "splitFrom": "REQ-RSCH-009" },
+        { "id": "REQ-RSCH-009-C", "title": "Investigate Specialization Processing Timing", "atomic": true, "line": 2336, "splitFrom": "REQ-RSCH-009" },
+        { "id": "REQ-RSCH-009-D", "title": "Investigate Specialization Success Result", "atomic": true, "line": 2362, "splitFrom": "REQ-RSCH-009" },
+        { "id": "REQ-RSCH-009-E", "title": "Investigate Specialization Failure Result", "atomic": true, "line": 2388, "splitFrom": "REQ-RSCH-009" },
+        { "id": "REQ-RSCH-010", "title": "Galactic News Rumor System", "atomic": false, "line": 2423, "splitCandidate": "generation + frequency + verification" },
+        { "id": "REQ-RSCH-011", "title": "Alliance Intel Sharing", "atomic": false, "line": 2457, "splitCandidate": "spec reveal + ally reveal + RP sharing + UI" },
+        { "id": "REQ-RSCH-012", "title": "Bot Research Decision Logic", "atomic": false, "line": 2482, "splitCandidate": "archetype preferences + counter-picking + tier logic" }
       ]
     },
     "SYNDICATE": {
@@ -389,9 +394,9 @@
     }
   },
   "summary": {
-    "totalSpecs": 261,
-    "atomicSpecs": 175,
-    "splitCandidates": 79,
+    "totalSpecs": 265,
+    "atomicSpecs": 180,
+    "splitCandidates": 78,
     "duplicatesIdentified": 8,
     "conflictsIdentified": 1
   },

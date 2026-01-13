@@ -2262,31 +2262,161 @@ Counter-picking requires knowledge of opponent's specialization (espionage, comb
 
 ---
 
-### REQ-RSCH-009: Investigate Specialization Operation
+### REQ-RSCH-009: Investigate Specialization Operation (Split)
 
-**Description:** New espionage operation "Investigate Specialization":
-- Cost: 5,000 credits
-- Target: Any empire (must know doctrine first, which is public)
-- Success Rate: 85%
-- Processing: Phase 5 (Covert Operations)
-- Success Result: Reveals target's specialization + counter recommendations
-- Failure Result: Credits lost, no info gained, reputation -10 with target (detected)
+> **Note:** This spec has been split into atomic sub-specs for independent implementation and testing. See REQ-RSCH-009-A through REQ-RSCH-009-E below.
 
-**Rationale:** Provides paid method to discover hidden specializations. 85% success rate creates risk/reward decision. Cost (5,000 cr) is significant but affordable mid-game.
+**Overview:** Covert operation to discover enemy specializations through espionage, with credit cost, success probability, and failure consequences.
 
-**Source:** Section 3.4.3 - Investigate Specialization Operation
+**Operation Components:**
+- Cost: 5,000 credits [REQ-RSCH-009-A]
+- Success Rate: 85% [REQ-RSCH-009-B]
+- Processing: Phase 5 timing [REQ-RSCH-009-C]
+- Success Result: Specialization reveal [REQ-RSCH-009-D]
+- Failure Result: Detection and penalties [REQ-RSCH-009-E]
 
-**Code:**
-- `src/lib/covert/operations/investigate-specialization.ts` - Operation implementation
-- `src/lib/covert/covert-operations-service.ts` - Integration with Phase 5
-- `src/lib/intel/specialization-reveal.ts` - Reveal logic on success
+---
 
-**Tests:**
-- `src/lib/covert/__tests__/investigate-specialization.test.ts` - Test success/failure at 85%/15%
-- `src/lib/covert/__tests__/investigate-cost.test.ts` - Test 5k credit deduction
-- `src/lib/covert/__tests__/investigate-reputation.test.ts` - Test -10 reputation on failure
+### REQ-RSCH-009-A: Investigate Specialization Cost
+
+**Description:** The "Investigate Specialization" covert operation costs 5,000 credits to execute, paid upfront when the operation is queued.
+
+**Cost Rules:**
+- Fixed cost: 5,000 credits
+- Paid upfront (when queued, not when processed)
+- Non-refundable (lost even on failure)
+- Must have sufficient credits to queue operation
+
+**Rationale:** Significant but affordable mid-game cost creates meaningful decision point. Not trivial (can't spam), but accessible when needed.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.3 - Investigate Specialization, Cost
+
+**Code:** TBD - `src/lib/covert/operations/investigate-specialization.ts` - Cost validation
+
+**Tests:** TBD - Upfront credit deduction, insufficient credits blocking
 
 **Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Cost (5,000 cr) requires balance testing relative to mid-game economy.
+
+---
+
+### REQ-RSCH-009-B: Investigate Specialization Success Rate
+
+**Description:** The operation has an 85% chance of success, rolled when processed in Phase 5.
+
+**Success Rate Rules:**
+- Base success rate: 85%
+- Failure rate: 15%
+- RNG rolled during Phase 5 processing
+- No modifiers (flat 85% regardless of circumstances)
+
+**Rationale:** High success rate (85%) makes the operation reliable but not guaranteed, creating tension and replayability.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.3 - Investigate Specialization, Success Rate
+
+**Code:** TBD - `src/lib/covert/operations/investigate-specialization.ts` - RNG check
+
+**Tests:** TBD - Success/failure distribution over many runs
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Success rate (85%) requires playtesting. Consider adding covert tech modifiers?
+
+---
+
+### REQ-RSCH-009-C: Investigate Specialization Processing Timing
+
+**Description:** The operation is processed during Phase 5 (Covert Operations) of the turn processing pipeline.
+
+**Processing Rules:**
+- Processed in Phase 5 (Covert Operations phase)
+- Queued operations execute in Phase 5 of next turn
+- Results available immediately after Phase 5 completes
+- Integrates with standard covert operations queue
+
+**Rationale:** Aligns with all other covert operations for consistent turn processing behavior.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.3 - Investigate Specialization, Processing
+
+**Code:** TBD - `src/lib/covert/covert-operations-service.ts` - Phase 5 integration
+
+**Tests:** TBD - Verify Phase 5 execution timing
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-009-D: Investigate Specialization Success Result
+
+**Description:** On success, the operation reveals the target empire's specialization (Tier 2 research) and provides counter-play recommendations.
+
+**Success Result Rules:**
+- Reveals target's Tier 2 specialization (which of 6 specializations they researched)
+- Provides counter-play recommendations (which specializations counter theirs)
+- Information is permanent (doesn't decay)
+- Target empire is NOT notified of the investigation
+
+**Rationale:** Success provides actionable intel for strategic counter-picking. Counter recommendations help less experienced players.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.3 - Investigate Specialization, Success Result
+
+**Code:** TBD - `src/lib/intel/specialization-reveal.ts` - Reveal logic
+
+**Tests:** TBD - Verify correct specialization revealed, counter recs provided
+
+**Status:** Draft
+
+---
+
+### REQ-RSCH-009-E: Investigate Specialization Failure Result
+
+**Description:** On failure (15% chance), the operation is detected, credits are lost, no information is gained, and diplomatic reputation with the target drops by 10 points.
+
+**Failure Result Rules:**
+- Credits (5,000) are lost (non-refundable)
+- No intelligence gained
+- Target empire is notified (operation detected)
+- Reputation penalty: -10 with target empire
+- Does NOT trigger war or automatic retaliation
+
+**Rationale:** Failure has meaningful consequences (wasted credits, diplomatic damage) but isn't catastrophic. Creates risk/reward tension.
+
+**Dependencies:** (to be filled by /spec-analyze)
+
+**Blockers:** (to be filled by /spec-analyze)
+
+**Source:** Section 3.4.3 - Investigate Specialization, Failure Result
+
+**Code:** TBD - `src/lib/covert/operations/investigate-specialization.ts` - Failure handling
+
+**Tests:** TBD - Detection notification, reputation penalty (-10)
+
+**Status:** Draft
+
+> **⚠️ PLACEHOLDER VALUES**: Reputation penalty (-10) requires balance testing. Too lenient or too harsh?
+
+---
+
+**Common Code & Tests (All Sub-Specs):**
+- `src/lib/covert/operations/investigate-specialization.ts` - Main operation logic
+- `src/lib/covert/__tests__/investigate-specialization.test.ts` - Comprehensive operation tests
 
 ---
 
