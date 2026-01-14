@@ -33,6 +33,14 @@ const colors = {
 };
 
 /**
+ * Checks if a spec is a PARENT spec (container for child specs)
+ */
+function isParentSpec(title, specContent) {
+  // PARENT specs have "(Split)" in title or "This spec has been split" in content
+  return title.includes('(Split)') || specContent.includes('This spec has been split');
+}
+
+/**
  * Extracts all specifications from a markdown file
  */
 function extractSpecs(filePath) {
@@ -59,6 +67,9 @@ function extractSpecs(filePath) {
     // Extract the spec content block
     const specContent = content.substring(startPos, endPos);
 
+    // Check if this is a PARENT spec
+    const isParent = isParentSpec(title, specContent);
+
     // Extract fields from spec content
     const descMatch = specContent.match(/\*\*Description:\*\*\s*(.+?)(?=\n\n|\*\*)/s);
     const statusMatch = specContent.match(/\*\*Status:\*\*\s*(.+?)$/m);
@@ -74,6 +85,7 @@ function extractSpecs(filePath) {
       code: codeMatch ? codeMatch[1].trim() : null,
       tests: testsMatch ? testsMatch[1].trim() : null,
       source: sourceMatch ? sourceMatch[1].trim() : null,
+      isParent: isParent,
       file: path.basename(filePath),
       filePath: filePath
     });
@@ -137,7 +149,7 @@ function validateSpecs() {
 
   // Find all markdown files in design directory
   const files = fs.readdirSync(DESIGN_DOCS_DIR)
-    .filter(f => f.endsWith('.md') && f !== 'README.md')
+    .filter(f => f.endsWith('.md') && f !== 'README.md' && !f.includes('MIGRATION-SUMMARY'))
     .map(f => path.join(DESIGN_DOCS_DIR, f));
 
   if (files.length === 0) {
@@ -195,6 +207,14 @@ function validateSpecs() {
   // Check 3: Required Fields
   // ===========================
   allSpecs.forEach(spec => {
+    // PARENT specs (containers for child specs) have different requirements
+    if (spec.isParent) {
+      // PARENT specs don't need Description, Status, Code, Tests
+      // They just need to reference their children
+      return; // Skip all field validations for PARENT specs
+    }
+
+    // For regular (non-PARENT) specs, check required fields
     if (!spec.description || spec.description === 'TBD') {
       errors.push(`${spec.id}: Missing Description field`);
     }
@@ -232,18 +252,20 @@ function validateSpecs() {
 
   Object.keys(specsBySystem).forEach(system => {
     const systemSpecs = specsBySystem[system];
-    const numbers = systemSpecs.map(s => getSpecNumber(s.id)).sort((a, b) => a - b);
 
-    // Check for gaps in numbering
-    for (let i = 1; i < numbers.length; i++) {
-      if (numbers[i] !== numbers[i-1] + 1) {
-        warnings.push(`REQ-${system}: Gap in numbering between ${numbers[i-1]} and ${numbers[i]}`);
+    // Get unique base numbers (child specs like REQ-XXX-001-A share base number with REQ-XXX-001)
+    const baseNumbers = [...new Set(systemSpecs.map(s => getSpecNumber(s.id)))].sort((a, b) => a - b);
+
+    // Check for gaps in numbering (only between unique base numbers)
+    for (let i = 1; i < baseNumbers.length; i++) {
+      if (baseNumbers[i] !== baseNumbers[i-1] + 1) {
+        warnings.push(`REQ-${system}: Gap in numbering between ${baseNumbers[i-1]} and ${baseNumbers[i]}`);
       }
     }
 
     // Check if numbering starts at 001
-    if (numbers[0] !== 1) {
-      warnings.push(`REQ-${system}: Numbering should start at 001, found ${numbers[0].toString().padStart(3, '0')}`);
+    if (baseNumbers.length > 0 && baseNumbers[0] !== 1) {
+      warnings.push(`REQ-${system}: Numbering should start at 001, found ${baseNumbers[0].toString().padStart(3, '0')}`);
     }
   });
 
@@ -261,6 +283,11 @@ function validateSpecs() {
   // Check 6: Status Consistency
   // ===========================
   allSpecs.forEach(spec => {
+    // Skip PARENT specs - they don't have Status/Code/Tests
+    if (spec.isParent) {
+      return;
+    }
+
     const hasCode = spec.code && spec.code !== 'TBD' && spec.code.trim() !== '';
     const hasTests = spec.tests && spec.tests !== 'TBD' && spec.tests.trim() !== '';
 
