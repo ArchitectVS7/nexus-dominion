@@ -332,9 +332,9 @@ class DependencyAnalyzer {
     const [fullMatch, header, specBody, ending] = match;
 
     // Check if already has dependencies (not placeholder)
+    // Note: "**Dependencies:** None" is a valid analyzed state, don't re-update
     if (specBody.includes('**Dependencies:**') &&
-        !specBody.includes('(to be filled by /spec-analyze)') &&
-        !specBody.includes('**Dependencies:** None')) {
+        !specBody.includes('(to be filled by /spec-analyze)')) {
       return content; // Already analyzed
     }
 
