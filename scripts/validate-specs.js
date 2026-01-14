@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const DESIGN_DOCS_DIR = path.join(__dirname, '..', 'docs', 'design');
+const DESIGN_DOCS_DIR = path.join(__dirname, '..', 'docs', 'Game Systems');
 const VALID_STATUSES = ['Draft', 'Implemented', 'Validated', 'Validated ✓', 'Deprecated'];
 
 // ANSI color codes for terminal output
@@ -40,8 +40,8 @@ function extractSpecs(filePath) {
   const specs = [];
 
   // Regex to match specification blocks
-  // Matches: ### REQ-XXX-NNN: Title
-  const specHeaderRegex = /^### (REQ-[A-Z]+-\d+):\s*(.+)$/gm;
+  // Matches: ### REQ-XXX-NNN: Title or ### REQ-XXX-NNN-A: Title or ### REQ-XXX-NNN.N: Title
+  const specHeaderRegex = /^### (REQ-[A-Z]+-[0-9A-Z.-]+):\s*(.+)$/gm;
 
   let match;
   while ((match = specHeaderRegex.exec(content)) !== null) {
@@ -90,7 +90,7 @@ function extractSpecTags(filePath) {
   const tags = [];
 
   // Regex to match @spec tags in comments
-  const tagRegex = /<!--\s*@spec\s+(REQ-[A-Z]+-\d+)\s*-->/g;
+  const tagRegex = /<!--\s*@spec\s+(REQ-[A-Z]+-[0-9A-Z.-]+)\s*-->/g;
 
   let match;
   while ((match = tagRegex.exec(content)) !== null) {
@@ -107,7 +107,8 @@ function extractSpecTags(filePath) {
  * Validates spec ID format
  */
 function validateSpecIdFormat(specId) {
-  const pattern = /^REQ-[A-Z]+-\d+$/;
+  // Matches: REQ-XXX-NNN or REQ-XXX-NNN-A or REQ-XXX-NNN-01 or REQ-XXX-NNN.N
+  const pattern = /^REQ-[A-Z]+-[0-9A-Z.-]+$/;
   return pattern.test(specId);
 }
 
@@ -115,7 +116,7 @@ function validateSpecIdFormat(specId) {
  * Extracts system prefix from spec ID
  */
 function getSystemPrefix(specId) {
-  const match = specId.match(/^REQ-([A-Z]+)-\d+$/);
+  const match = specId.match(/^REQ-([A-Z]+)-[0-9A-Z.-]+$/);
   return match ? match[1] : null;
 }
 
@@ -123,7 +124,8 @@ function getSystemPrefix(specId) {
  * Extracts number from spec ID
  */
 function getSpecNumber(specId) {
-  const match = specId.match(/^REQ-[A-Z]+-(\d+)$/);
+  // Extract base number (before any suffix like -A or .1)
+  const match = specId.match(/^REQ-[A-Z]+-(\d+)/);
   return match ? parseInt(match[1], 10) : null;
 }
 
