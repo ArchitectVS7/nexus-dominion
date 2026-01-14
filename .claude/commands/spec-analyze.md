@@ -1,217 +1,257 @@
 ---
 argument-hint: [SYSTEM]
-description: Analyze dependencies for all specs in a system. Usage: /spec-analyze COMBAT
+description: AI-powered dependency analysis for a single system, writes directly to specs. Usage: /spec-analyze COMBAT
 ---
 
-# Spec Dependency Analysis Skill
+# Spec Dependency Analysis Skill (Single System)
 
-Analyze all specifications in a game system document to identify dependencies and blockers. This skill is designed for token-efficient batch processing.
+Interactive, AI-powered dependency analysis for one game system. Writes Dependencies and Blockers fields directly to the specification markdown document.
+
+## When to Use This
+
+- **Manual analysis** of a single system (e.g., after design changes)
+- **Deep analysis** requiring Claude's understanding (not just pattern matching)
+- **Review and verification** of existing dependencies
+- **Interactive refinement** - you can guide the analysis
+
+## When NOT to Use This
+
+- **Batch processing all 15 systems** - Use `node analyze-dependencies.js` instead (autonomous, no stopping)
+- **Simple pattern-based analysis** - Use `node analyze-dependencies.js` (faster)
 
 ## Parameters
 
-- **System**: `$1` (e.g., "COMBAT", "BOT", "DIPLOMACY", "MARKET", "MILITARY", "RESOURCE", "SECTOR", "PROGRESSIVE", "VICTORY", "TURN", "RESEARCH", "SYNDICATE", "TECH", "COVERT", "UI")
+- **System**: `$1` (e.g., "COMBAT", "BOT", "DIPLOMACY")
 
 ## Pre-Flight
 
 Current git status: !`git status --short`
+
 Target system: **$1**
 
 ## Workflow
 
-### Step 1: Load Context (Token-Efficient)
+### Step 1: Load Context
 
-Read these files in parallel:
-1. `docs/development/SPEC-INDEX.json` - All spec IDs and titles (lightweight lookup)
-2. The target system document from SPEC-INDEX.json
+Read the target system document from `docs/Game Systems/{SYSTEM}.md`.
 
-Token budget: ~20K (index ~8K + system doc ~12K avg)
+Also read `docs/development/SPEC-INDEX.json` (first 5000 lines) to get cross-system spec references.
 
-### Step 2: Identify System Specs
+**Token budget:** ~40K total
 
-From SPEC-INDEX.json, get the list of specs for `$1`:
-- Extract spec IDs, titles, and atomic status
-- Note any `splitCandidate` or `note` fields for context
-
-### Step 3: Intra-System Analysis
+### Step 2: Analyze Dependencies
 
 For each spec in the system:
 
-1. **Read the spec description and formula**
-2. **Identify referenced concepts**:
-   - Resources (Credits, Food, Ore, Petroleum, Research Points)
-   - Game objects (Units, Sectors, Empires, Treaties, Coalitions)
-   - Calculations (Power, Networth, VP, Trust, Reputation)
-   - Other specs mentioned by ID (REQ-XXX-NNN)
+1. **Read spec description, formula, and rationale**
+2. **Identify dependencies:**
+   - Explicit REQ-XXX-NNN references in the text
+   - Implicit dependencies (mentions "units" → depends on REQ-MIL-001)
+   - Cross-system dependencies (references to Resources, Sectors, Victory, etc.)
+   - Parent-child relationships (split specs depend on parent)
 
-3. **Match to other specs in SAME system**:
-   - If Spec A mentions concept X, and Spec B defines concept X, A depends on B
-   - Example: REQ-COMBAT-005 mentions "unit types" → depends on REQ-MIL-001
+3. **Classify dependency type:**
+   - **HARD**: Cannot implement without the dependency (blocks implementation)
+   - **SOFT**: Enhanced by dependency but can work without it
+   - **REFERENCE**: Mentions another spec but doesn't depend on it
 
-4. **Classify dependency type**:
-   - **HARD**: Cannot implement A without B existing first
-     - A uses B's output as input
-     - A extends B's functionality
-     - A's formula includes B's result
-   - **SOFT**: A is enhanced by B, but can work standalone
-     - A could use default/placeholder if B not ready
-     - A references B for optimization only
+4. **Find blockers (reverse dependencies):**
+   - Which other specs depend on THIS spec?
+   - Search for references to this spec's ID across all specs
 
-### Step 4: Cross-System Reference Detection
+### Step 3: Update Specs Directly
 
-For each spec:
-1. **Identify external concepts** not defined in current system
-2. **Lookup in SPEC-INDEX.json** to find the defining system and spec
-3. **Record as cross-system dependency**
+For each spec, construct the Dependencies and Blockers fields:
 
-Common cross-system patterns:
-| Concept | Defining System | Typical Spec |
-|---------|-----------------|--------------|
-| Unit types, power | MILITARY | REQ-MIL-001, REQ-MIL-006 |
-| Resources, production | RESOURCE | REQ-RES-001, REQ-RES-002 |
-| Sectors, acquisition | SECTOR | REQ-SEC-001, REQ-SEC-003 |
-| Treaties, reputation | DIPLOMACY | REQ-DIP-001, REQ-DIP-003 |
-| Victory Points | VICTORY | REQ-VIC-007 |
-| Turn processing | TURN | REQ-TURN-001 |
-| Bot archetypes | BOT | REQ-BOT-002 |
-| Covert ops | COVERT | REQ-COV-001 |
-| Research tiers | RESEARCH | REQ-RSCH-001 |
-
-### Step 5: Output Analysis File
-
-Write to `docs/development/analysis/{SYSTEM}-deps.json`:
-
-```json
-{
-  "system": "{SYSTEM}",
-  "analyzedAt": "2026-01-12",
-  "totalSpecs": 12,
-  "specs": {
-    "REQ-XXX-001": {
-      "title": "Spec Title",
-      "dependencies": [],
-      "blockers": [],
-      "notes": "Foundational spec, no dependencies"
-    },
-    "REQ-XXX-002": {
-      "title": "Another Spec",
-      "dependencies": [
-        "REQ-XXX-001",
-        "REQ-YYY-003"
-      ],
-      "blockers": [
-        {
-          "type": "HARD",
-          "spec": "REQ-XXX-001",
-          "reason": "Requires base definition to extend"
-        },
-        {
-          "type": "SOFT",
-          "spec": "REQ-YYY-003",
-          "reason": "Uses for optimization, can use default"
-        }
-      ],
-      "crossSystem": ["RESOURCE", "MILITARY"],
-      "notes": "Depends on resource types and unit definitions"
-    }
-  },
-  "summary": {
-    "foundationalSpecs": ["REQ-XXX-001"],
-    "mostDependedOn": ["REQ-XXX-001"],
-    "mostDependencies": ["REQ-XXX-005"],
-    "crossSystemDeps": {
-      "RESOURCE": 3,
-      "MILITARY": 2
-    }
-  }
-}
-```
-
-### Step 6: Update Source Document (Optional)
-
-If `--update-docs` flag is passed, add fields to each spec in the system document:
-
+**If dependencies exist:**
 ```markdown
-### REQ-XXX-002: Spec Title
-
-**Description:** ...
-
 **Dependencies:**
-- REQ-XXX-001 (base definition required)
-- REQ-YYY-003 (resource types for calculation)
+- REQ-XXX-001 (reason why this is needed)
+- REQ-YYY-002 (HARD: cannot implement without this)
+- REQ-ZZZ-003 (SOFT: enhances but optional)
+```
 
+**If no dependencies:**
+```markdown
+**Dependencies:** None (foundational spec)
+```
+
+**For blockers:**
+```markdown
 **Blockers:**
-- HARD: REQ-XXX-001 - Cannot implement without base attack mechanics
-- SOFT: REQ-YYY-003 - Can use placeholder resources initially
-
-**Formula:** ...
+- REQ-XXX-005 (depends on this spec)
+- REQ-YYY-007 (depends on this spec)
 ```
 
-### Step 7: Commit Analysis
-
-Create commit:
+**Or:**
+```markdown
+**Blockers:** None
 ```
-spec-analyze: Complete dependency analysis for {SYSTEM}
 
-- Analyzed {N} specifications
-- Found {M} intra-system dependencies
-- Found {K} cross-system dependencies
-- Foundational specs: {list}
+**Use the Edit tool** to update each spec in the markdown document:
+- Find the spec by ### heading
+- Locate insertion point (after Rationale, or after Description)
+- Replace existing Dependencies/Blockers or insert new ones
+- Make ONE edit per document if possible (batch multiple specs)
 
-Outputs: docs/development/analysis/{SYSTEM}-deps.json
+### Step 4: Verify Updates
+
+After all specs updated:
+
+1. **Count specs updated:**
+   ```bash
+   grep -c "**Dependencies:**" "docs/Game Systems/{SYSTEM}.md"
+   ```
+
+2. **Check for placeholders:**
+   ```bash
+   grep "to be filled by" "docs/Game Systems/{SYSTEM}.md"
+   ```
+   Should be empty.
+
+3. **Validate spec references:**
+   - All REQ-XXX-NNN references should exist in SPEC-INDEX.json
+
+### Step 5: Summary Report
+
+Display to user:
+
 ```
+╔════════════════════════════════════════════════════════════╗
+║      DEPENDENCY ANALYSIS COMPLETE - {SYSTEM}               ║
+╚════════════════════════════════════════════════════════════╝
+
+Specs Analyzed:           {count}
+Specs Updated:            {count}
+Dependencies Found:       {count}
+Cross-System References:  {count}
+Foundational Specs:       {count}
+
+Top Dependencies:
+  - REQ-XXX-001 (referenced by {N} specs)
+  - REQ-YYY-002 (referenced by {M} specs)
+
+System Dependencies:
+  - {SYSTEM_A}: {count} references
+  - {SYSTEM_B}: {count} references
+
+✓ All updates written directly to markdown
+✓ No placeholder text remaining
+
+Ready to commit:
+  git add "docs/Game Systems/{SYSTEM}.md"
+  git commit -m "spec-analyze: Update dependencies for {SYSTEM}"
+```
+
+## Example Analysis Patterns
+
+### Pattern 1: Explicit Reference
+```markdown
+**Description:** Combat uses D20 resolution (REQ-COMBAT-001) and unit power (REQ-MIL-006).
+```
+
+**Detected Dependencies:**
+- REQ-COMBAT-001
+- REQ-MIL-006
+
+### Pattern 2: Keyword Pattern
+```markdown
+**Description:** Production generates Credits, Food, and Ore per sector.
+```
+
+**Detected Dependencies:**
+- REQ-RES-001 (defines the five resource types)
+- REQ-SEC-001 (defines sector types)
+
+### Pattern 3: Formula Dependency
+```markdown
+**Formula:** victory_points = networth * 0.1 + sectors_controlled * 5
+```
+
+**Detected Dependencies:**
+- REQ-RES-XXX (networth calculation)
+- REQ-SEC-XXX (sector control tracking)
+
+### Pattern 4: Split Parent-Child
+```markdown
+### REQ-COMBAT-009-A: Space Domain Resolution
+
+**Description:** First phase of multi-domain combat.
+```
+
+**Detected Dependencies:**
+- REQ-COMBAT-009 (parent spec)
+
+**Detected Blockers:**
+- REQ-COMBAT-009 (parent depends on this child)
+
+## Cross-System Mapping
+
+Common cross-system dependencies:
+
+| Mentions | Likely Depends On |
+|----------|-------------------|
+| Credits, Food, Ore, Petroleum | REQ-RES-001 (resource types) |
+| Units, Soldiers, Fighters | REQ-MIL-001 (unit types) |
+| Sectors, territory, planets | REQ-SEC-001 (sector types) |
+| Victory, networth, VP | REQ-VIC-XXX (victory conditions) |
+| Treaties, alliances | REQ-DIP-XXX (diplomacy) |
+| Research, tech, doctrine | REQ-RSCH-XXX (research) |
+| Turn processing, phases | REQ-TURN-001 (turn pipeline) |
+| Bots, AI, archetypes | REQ-BOT-XXX (bot system) |
+| Spies, intel, covert | REQ-COV-XXX (covert ops) |
+| Market, trade, prices | REQ-MKT-XXX (market system) |
+
+## Error Handling
+
+### Spec not found in markdown
+- Log error, continue to next spec
+- Report at end
+
+### Circular dependency detected
+- Log warning (e.g., REQ-A-001 depends on REQ-A-002, which depends on REQ-A-001)
+- Still write both dependencies (let validation catch it)
+
+### Cross-system spec not found
+- Log warning
+- Still write the reference (might be valid but not in index)
+
+## Success Criteria
+
+Analysis is successful when:
+1. All specs in the system have Dependencies/Blockers fields
+2. No placeholder text "(to be filled by /spec-analyze)" remains
+3. All dependency references are valid spec IDs
+4. Blockers correctly reflect reverse dependencies
+5. Updates written directly to markdown (no intermediate JSON)
 
 ## Invocation Examples
 
 ```bash
-# Analyze single system
+# Analyze COMBAT system
 /spec-analyze COMBAT
 
-# Analyze with doc updates
-/spec-analyze COMBAT --update-docs
+# Analyze BOT system (complex cross-system dependencies)
+/spec-analyze BOT
 
-# Batch analysis (run sequentially)
-/spec-analyze COMBAT && /spec-analyze BOT && /spec-analyze DIPLOMACY
+# Re-analyze after design changes
+/spec-analyze RESEARCH
 ```
 
-## System Processing Order
+## For Batch Processing
 
-Recommended order (foundations first):
-1. RESOURCE - Base resources, production
-2. SECTOR - Sector types, acquisition
-3. MILITARY - Unit types, power
-4. COMBAT - Combat mechanics
-5. DIPLOMACY - Treaties, reputation
-6. VICTORY - Victory conditions
-7. TURN - Turn processing phases
-8. BOT - AI archetypes
-9. COVERT - Covert operations
-10. MARKET - Market mechanics
-11. RESEARCH - Tech tree
-12. PROGRESSIVE - Unlocks, events
-13. SYNDICATE - Hidden roles
-14. TECH - Tech cards
-15. UI - Frontend requirements
+**Don't use this skill for all 15 systems.** Instead, run:
 
-## Stop Conditions
+```bash
+node analyze-dependencies.js
+```
 
-- System not found in SPEC-INDEX.json
-- System document file not found
-- Analysis file already exists (use --force to overwrite)
-- Error parsing spec format
+That autonomous script:
+- Runs without Claude intervention
+- Processes all 15 systems
+- Never stops to ask questions
+- Uses temp JSON for validation only
+- Cleans up after itself
+- Takes ~30-60 seconds total
 
-## Success Criteria
-
-A system analysis is complete when:
-1. All specs in the system have been processed
-2. All dependencies are classified (HARD/SOFT)
-3. Cross-system references are mapped
-4. Output JSON is valid
-5. Summary statistics are accurate
-
-## Token Efficiency Notes
-
-- **DO NOT** read other system documents during analysis
-- **DO** use SPEC-INDEX.json for cross-system lookups (ID/title only)
-- **DO** batch process all specs in one session
-- Estimated tokens per system: ~20-30K
-- Full 15-system analysis: ~300-450K tokens
+This skill (/spec-analyze) is for **interactive, manual, one-system-at-a-time** analysis where you need Claude's intelligence and can guide the process.
