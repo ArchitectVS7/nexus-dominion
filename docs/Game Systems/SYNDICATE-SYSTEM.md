@@ -684,9 +684,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Hidden roles create paranoia, suspicion, and dramatic betrayal moments. The "Who is the traitor?" mechanic transforms standard diplomacy into social deduction gameplay. Archetype weighting creates natural suspicion patterns (Schemers always suspect, creating dramatic irony).
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 1.1, 1.2, 2.1
 
 **Code:**
@@ -717,9 +721,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Creates a narrative turning point where the game shifts from standard 4X to paranoid social deduction. Players now question every action and alliance. The delay (Turn 50) ensures players learn base mechanics before paranoia kicks in.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 1.3
 
 **Code:**
@@ -763,9 +771,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Provides Syndicate players with alternative progression path while generating observable events that Loyalists can investigate. Tiered contracts create progression similar to tech tree for Loyalists.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.1
 
 **Code:**
@@ -813,9 +825,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Creates progression system for Syndicate players similar to standard tech/economy progression for Loyalists. Trust gates access to WMDs and high-impact contracts. Decay prevents inactive Syndicate players from maintaining access.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.3, 3.2
 
 **Code:**
@@ -855,9 +871,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Provides Syndicate-exclusive power spike options that risk high suspicion. WMDs create dramatic moments and give struggling players comeback potential. Economic premium balances power with cost.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.2
 
 **Code:**
@@ -905,9 +925,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Creates risk/reward balance for Syndicate players. High-impact contracts generate high suspicion. Staying hidden requires mixing contracts with legitimate play.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.3, 3.1
 
 **Code:**
@@ -954,9 +978,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Creates high-stakes social deduction mechanics. False accusations have severe penalties to prevent spam. Outed Syndicate players can still win but lose stealth advantage. 3-turn voting period allows for political maneuvering.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.3
 
 **Code:**
@@ -992,9 +1020,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Provides investigation tools for Loyalists and creates betrayal temptation for Syndicate players. Coordinator acts as counterbalance to Syndicate power. False reports have consequences to prevent abuse.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.4
 
 **Code:**
@@ -1046,9 +1078,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Creates alternative win condition that doesn't require territory or economic dominance. Syndicate can win from behind, providing comeback mechanics and dramatic reveals.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.5
 
 **Code:**
@@ -1100,9 +1136,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Integrates Syndicate mechanics into existing bot AI system. Scheming bots create natural paranoia. Bot accusations and suspicions make solo play feel dynamic.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 4
 
 **Code:**
@@ -1134,9 +1174,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Creates economy around investigation to prevent accusation spam. Players must choose between investigating multiple suspects or making formal accusations. Limited storage (50 max) prevents hoarding.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.2
 
 **Code:**
@@ -1179,9 +1223,13 @@ Suspicion Score = Σ(Contract Suspicion + WMD Use + Black Market Purchases) × I
 **Rationale:** Provides information to Loyalists without explicitly revealing Syndicate contracts. Creates detective gameplay where players piece together clues. Investigation cost prevents spam while allowing targeted detective work.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.2
 
 **Code:**

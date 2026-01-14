@@ -532,9 +532,13 @@ Progress bar showing remaining turns until auto-renewal decision.
 **Rationale:** Enables diplomatic gameplay with meaningful choices. NAP is low-commitment, Alliance is strategic partnership.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.1
 
 **Code:**
@@ -561,10 +565,15 @@ Progress bar showing remaining turns until auto-renewal decision.
 **Rationale:** The 3-member minimum prevents two-player alliances from dominating. Creates meaningful groupings that require broader diplomatic coordination.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-002
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-002 (depends on this spec)
+
+
 
 **Formation Rules:**
 - Minimum members: 3 empires
@@ -699,10 +708,15 @@ Progress bar showing remaining turns until auto-renewal decision.
 **Rationale:** Creates consequences for diplomatic actions. Reputation affects bot behavior and treaty acceptance rates.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-002-C
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-002-C (depends on this spec)
+
+
 
 **Formula:**
 ```
@@ -742,9 +756,13 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 **Rationale:** Separates short-term opportunism from long-term relationships. Recent actions matter more than ancient history.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.3
 
 **Code:**
@@ -875,10 +893,15 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 **Rationale:** Treaty breaking must have meaningful consequences to prevent exploitation. Reputation penalties scale with treaty importance. Betrayed status creates lasting diplomatic damage.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-006
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-006 (depends on this spec)
+
+
 
 **Treaty Breaking Penalties:**
 | Treaty Type | Reputation Penalty | Notes |
@@ -922,9 +945,14 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 **Rationale:** Coalition betrayal is more severe than treaty breaking because it affects multiple empires and breaks collective trust. Pariah status prevents betrayers from immediately forming new alliances.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
+- REQ-DIP-006
 
 **Blockers:** None
+
+
 **Coalition Betrayal Penalties:**
 | Penalty | Value | Scope |
 |---------|-------|-------|
@@ -973,10 +1001,15 @@ Trust scores decay toward 0 at 1 point per 5 turns, except major events (betraya
 **Rationale:** Creates tension in alliances with Schemer bots. Other archetypes betray rarely or under specific conditions, making them more reliable but not perfectly trustworthy.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-006
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-006 (depends on this spec)
+
+
 
 **Betrayal Rates by Archetype:**
 | Archetype | Betrayal Rate | Conditions |
@@ -1031,9 +1064,13 @@ Early termination:
 **Rationale:** Prevents exploit of forming/breaking treaties for temporary benefits. Enforces meaningful commitment.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.6
 
 **Code:**
@@ -1057,9 +1094,13 @@ Early termination:
 **Rationale:** Provides non-military victory path. Encourages cooperation. Alternative to conquest for diplomatic players.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.4
 
 **Code:**
@@ -1101,10 +1142,15 @@ Early termination:
 **Rationale:** Makes alliances tangibly useful. Players can coordinate strategy, identify weak allies needing support, and plan joint operations.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-009
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-009 (depends on this spec)
+
+
 
 
 
@@ -1132,10 +1178,15 @@ Early termination:
 **Rationale:** Enables coordinated defense and creates dramatic "allies under siege" moments. Builds strategic interdependence.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-009
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-009 (depends on this spec)
+
+
 
 
 
@@ -1163,10 +1214,15 @@ Early termination:
 **Rationale:** Builds narrative and reveals bot personalities. Creates dramatic irony when bots plot betrayal or discuss human player.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-009
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-009 (depends on this spec)
+
+
 
 
 
@@ -1196,10 +1252,15 @@ Early termination:
 **Rationale:** Enables tactical coordination. Players can identify threats, plan joint attacks, and warn allies of impending invasions.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-009
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-009 (depends on this spec)
+
+
 
 
 
@@ -1255,10 +1316,15 @@ Early termination:
 **Rationale:** Fast recovery rewards active diplomatic engagement and generosity. 10+ turn requirement prevents gaming the system while remaining achievable.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-010
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-010 (depends on this spec)
+
+
 
 
 
@@ -1293,10 +1359,15 @@ Early termination:
 **Rationale:** Slow recovery requires sustained commitment, proving genuine behavioral change. 30-turn requirement ensures players can't quickly erase past betrayals.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-010
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-010 (depends on this spec)
+
+
 
 
 
@@ -1330,10 +1401,15 @@ Early termination:
 **Rationale:** Permanent scars create meaningful consequences for major betrayals. Players can partially recover through positive actions, but the scar remains as a warning to others. Prevents "scorched earth" strategies where players betray everyone with no long-term cost.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-010
+- REQ-VIC-001
+- REQ-BOT-001
 
 **Blockers:**
 - REQ-DIP-010 (depends on this spec)
+
+
 
 
 

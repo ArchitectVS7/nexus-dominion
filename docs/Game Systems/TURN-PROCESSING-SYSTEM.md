@@ -1107,10 +1107,11 @@ food_income = 75 * num_sectors * civil_status_multiplier
 | civil_status_multiplier (Unrest) | 0.8 | -20% income penalty |
 | civil_status_multiplier (Rebellion) | 0.5 | -50% income penalty |
 
-**Dependencies:**
-- REQ-TURN-001
 
-**Blockers:** None
+
+
+
+
 
 **Source:** Section 3.1
 
@@ -1133,6 +1134,8 @@ food_income = 75 * num_sectors * civil_status_multiplier
 
 **Dependencies:**
 - REQ-TURN-001
+
+
 
 **Blockers:** None
 
@@ -1180,6 +1183,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.3
@@ -1211,6 +1216,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.4
@@ -1233,6 +1240,8 @@ else:
 
 **Dependencies:**
 - REQ-TURN-001
+
+
 
 **Blockers:** None
 
@@ -1257,6 +1266,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.6
@@ -1279,6 +1290,8 @@ else:
 
 **Dependencies:**
 - REQ-TURN-001
+
+
 
 **Blockers:** None
 
@@ -1304,6 +1317,8 @@ else:
 - REQ-TURN-001
 - REQ-COV-006
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.8
@@ -1327,6 +1342,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.9
@@ -1349,6 +1366,8 @@ else:
 
 **Dependencies:**
 - REQ-TURN-001
+
+
 
 **Blockers:** None
 
@@ -1379,6 +1398,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.11
@@ -1402,6 +1423,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.12
@@ -1424,6 +1447,8 @@ else:
 
 **Dependencies:**
 - REQ-TURN-001
+
+
 
 **Blockers:** None
 
@@ -1453,6 +1478,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.14
@@ -1481,6 +1508,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.15
@@ -1504,6 +1533,8 @@ else:
 **Dependencies:**
 - REQ-TURN-001
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.16
@@ -1526,6 +1557,8 @@ else:
 
 **Dependencies:**
 - REQ-TURN-001
+
+
 
 **Blockers:** None
 
@@ -2344,7 +2377,8 @@ event_chance = base_event_chance * (current_turn / max_turns)
 **Dependencies:**
 - REQ-TURN-001
 
-**Blockers:** None
+
+
 
 **Source:** Section 3.16
 
@@ -2375,8 +2409,43 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Measurement | Stockpile (not income) |
 | Check Timing | Phase 16 (end of turn) |
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-RSCH-001
+- REQ-BOT-001
+- REQ-COV-001
+- REQ-MKT-001
+
+**Blockers:** None
 **Blockers:** None
 
 **Source:** Section 3.16
@@ -2411,6 +2480,8 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Dependencies:** None (foundational spec)
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.16
@@ -2443,6 +2514,8 @@ event_chance = base_event_chance * (current_turn / max_turns)
 | Check Timing | Phase 16 (end of turn) |
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-TURN-004.1 (depends on this spec)
@@ -2480,6 +2553,8 @@ event_chance = base_event_chance * (current_turn / max_turns)
 **Dependencies:**
 - REQ-TURN-004
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.16
@@ -2513,6 +2588,8 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Dependencies:**
 - REQ-TURN-004
+
+
 
 **Blockers:** None
 
@@ -2631,7 +2708,8 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:** None
+
+
 
 **Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, Tier 1 Budget
 
@@ -2656,8 +2734,35 @@ event_chance = base_event_chance * (current_turn / max_turns)
 
 **Rationale:** Bot AI is expensive but parallelizable. Can utilize multi-core CPUs effectively. Second-largest budget.
 
-**Dependencies:** None (foundational spec)
 
+
+**Dependencies:**
+- REQ-TURN-021-A
+- REQ-TURN-021-D
+- REQ-TURN-021-B
+- REQ-TURN-021-C
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-RSCH-001
+- REQ-BOT-001
+- REQ-COV-001
+- REQ-MKT-001
+
+**Blockers:**
+- REQ-TURN-021-A (depends on this spec)
+- REQ-TURN-021-B (depends on this spec)
+- REQ-TURN-021-C (depends on this spec)
+- REQ-TURN-021-D (depends on this spec)
+
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-RSCH-001
+- REQ-BOT-001
+- REQ-COV-001
+- REQ-MKT-001
+
+**Blockers:** None
 **Blockers:**
 - REQ-TURN-006.1 (depends on this spec)
 - REQ-TURN-006.2 (depends on this spec)
@@ -2718,6 +2823,19 @@ event_chance = base_event_chance * (current_turn / max_turns)
 - REQ-TURN-006
 
 **Blockers:** None
+
+**Dependencies:**
+- REQ-TURN-006
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-RSCH-001
+- REQ-BOT-001
+- REQ-COV-001
+- REQ-MKT-001
+- REQ-TURN-021
+
+**Blockers:**
+- REQ-TURN-021 (depends on this spec)
 
 **Source:** Section 2.2, PRD-EXECUTIVE.md Success Metrics, UI Budget
 

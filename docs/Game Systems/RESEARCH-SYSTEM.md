@@ -1898,10 +1898,11 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Hidden | Until revealed through specific conditions |
 | Permanence | Permanent | Cannot be changed once selected |
 
-**Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-RSCH-001 (depends on this spec)
+
+
+
+
 
 **Source:** Section 1.1 - Three-Tier Draft Structure
 
@@ -1934,6 +1935,8 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Galaxy-wide | Announcement to all players |
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:** None
 
@@ -1975,8 +1978,8 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-RSCH-001 (depends on this spec)
+
+
 
 **Source:** Section 3.1 - Tier 1: Doctrine System
 
@@ -2010,10 +2013,22 @@ This section contains formal requirements for spec-driven development. Each spec
 | Visibility | Public | Galaxy-wide announcement |
 | Permanence | Permanent | Cannot be changed once selected |
 
+
+
+
+
 **Dependencies:**
 - REQ-RSCH-002-A
 - REQ-RSCH-002-C
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
 
+**Blockers:**
+- REQ-RSCH-002-A (depends on this spec)
+- REQ-RSCH-002-B (depends on this spec)
+- REQ-RSCH-002-C (depends on this spec)
+- REQ-RSCH-003-B (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 3.1 - Tier 1: Doctrine System
@@ -2049,6 +2064,8 @@ This section contains formal requirements for spec-driven development. Each spec
 | Permanence | Permanent | Cannot be changed once selected |
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-RSCH-002 (depends on this spec)
@@ -2109,7 +2126,8 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:** None
+
+
 
 **Source:** Section 3.2
 
@@ -2131,7 +2149,6 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Highly effective against defensive structures and stations, bypassing their armor protection.
 
-**Dependencies:** None (foundational spec)
 
 **Blockers:**
 - REQ-RSCH-002 (depends on this spec)
@@ -2158,11 +2175,7 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Counters:** Shock Troops (REQ-RSCH-003-A)
 
-**Dependencies:**
-- REQ-RSCH-003-A
-- REQ-RSCH-003-F
 
-**Blockers:** None
 
 **Source:** Section 3.2
 
@@ -2184,12 +2197,7 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Weakens attacking forces before combat begins, providing defensive attrition advantage.
 
-**Dependencies:**
-- REQ-RSCH-003-C
 
-**Blockers:**
-- REQ-RSCH-003 (depends on this spec)
-- REQ-RSCH-003-C (depends on this spec)
 
 **Source:** Section 3.2
 
@@ -2211,9 +2219,7 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Maximizes economic efficiency in market transactions, accelerating economic growth.
 
-**Dependencies:** None (foundational spec)
 
-**Blockers:** None
 
 **Source:** Section 3.2
 
@@ -2235,11 +2241,7 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Tactical Use:** Converts economic resources into temporary military advantage on demand.
 
-**Dependencies:**
-- REQ-RSCH-003-A
 
-**Blockers:**
-- REQ-RSCH-003-A (depends on this spec)
 
 **Source:** Section 3.2
 
@@ -2275,8 +2277,68 @@ This section contains formal requirements for spec-driven development. Each spec
 | Special ability | Multi-attack | Can attack multiple times per round |
 | Visibility | Galaxy-wide | Announcement to all players |
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+
+
+**Dependencies:**
+- REQ-RSCH-003-C
+- REQ-RSCH-003
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+
+**Dependencies:**
+- REQ-RSCH-003-A
+- REQ-RSCH-003-F
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+- REQ-RSCH-003
+
+**Blockers:**
+- REQ-RSCH-003-A (depends on this spec)
+- REQ-RSCH-003-D (depends on this spec)
+
+**Dependencies:**
+- REQ-RSCH-002
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+- REQ-RSCH-003
+
+**Blockers:** None
+
+**Dependencies:**
+- REQ-RSCH-003-C
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+- REQ-RSCH-003
+
+**Blockers:**
+- REQ-RSCH-003 (depends on this spec)
+- REQ-RSCH-003-C (depends on this spec)
+- REQ-RSCH-003-F (depends on this spec)
+
+**Dependencies:**
+- REQ-RSCH-003-A
+- REQ-RSCH-003-F
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+**Blockers:**
+- REQ-RSCH-003-A (depends on this spec)
+- REQ-RSCH-003-B (depends on this spec)
+- REQ-RSCH-003-C (depends on this spec)
+- REQ-RSCH-003-D (depends on this spec)
+- REQ-RSCH-003-E (depends on this spec)
+- REQ-RSCH-003-F (depends on this spec)
+- REQ-RSCH-004-C (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 3.3 - Tier 3: Capstone System
@@ -2310,6 +2372,20 @@ This section contains formal requirements for spec-driven development. Each spec
 
 **Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-004-A
+- REQ-RSCH-004-C
+
+**Blockers:**
+- REQ-RSCH-004-A (depends on this spec)
+- REQ-RSCH-004-B (depends on this spec)
+- REQ-RSCH-004-C (depends on this spec)
+- REQ-RSCH-005-A (depends on this spec)
+- REQ-RSCH-005-B (depends on this spec)
+- REQ-RSCH-006-A (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 3.3 - Tier 3: Capstone System
@@ -2347,6 +2423,8 @@ Economic Hegemony Income = floor(2nd_place_empire_income × 0.5)
 ```
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-RSCH-003 (depends on this spec)
@@ -2392,7 +2470,8 @@ RP per turn = Research Sector Count × 100
 - REQ-RSCH-004-A
 - REQ-RSCH-004-C
 
-**Blockers:** None
+
+
 
 **Source:** Section 1.2 - Research Points (RP) Economy
 
@@ -2420,8 +2499,24 @@ RP per turn = Research Sector Count × 100
 | Tier 3 threshold | 15,000 RP | ~Turn 60 with 3 research sectors (300 RP/turn from Turn 30) |
 | Advancement | Manual | Player must select when threshold reached |
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-005-A
+- REQ-RSCH-005-C
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+**Blockers:**
+- REQ-RSCH-005-A (depends on this spec)
+- REQ-RSCH-005-B (depends on this spec)
+- REQ-RSCH-005-C (depends on this spec)
+- REQ-RSCH-006-B (depends on this spec)
+- REQ-RSCH-006-C (depends on this spec)
+- REQ-RSCH-007-B (depends on this spec)
 **Blockers:**
 - REQ-RSCH-004 (depends on this spec)
 
@@ -2459,6 +2554,8 @@ Actual RP = Accumulated total (hidden)
 
 **Dependencies:** None (foundational spec)
 
+
+
 **Blockers:** None
 
 **Source:** Section 1.2 - Research Points (RP) Economy
@@ -2494,8 +2591,8 @@ Actual RP = Accumulated total (hidden)
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-RSCH-004 (depends on this spec)
+
+
 
 **Source:** Section 2.2 - Information Visibility Matrix
 
@@ -2522,10 +2619,25 @@ Actual RP = Accumulated total (hidden)
 | Progress % toward next tier | Hidden | Creates strategic uncertainty |
 | Specialization choice (Tier 2) | Hidden | Until revealed through specific methods (see REQ-RSCH-006-C) |
 
-**Dependencies:**
-- REQ-RSCH-005-A
-- REQ-RSCH-005-C
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-006-A
+- REQ-RSCH-006-C
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+**Blockers:**
+- REQ-RSCH-006-A (depends on this spec)
+- REQ-RSCH-006-B (depends on this spec)
+- REQ-RSCH-006-C (depends on this spec)
+- REQ-RSCH-007-C (depends on this spec)
+- REQ-RSCH-008-A (depends on this spec)
+- REQ-RSCH-008-B (depends on this spec)
+- REQ-RSCH-008-C (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 2.2 - Information Visibility Matrix
@@ -2555,6 +2667,8 @@ Actual RP = Accumulated total (hidden)
 | Galactic News rumors | Free | 50% | Every 10 turns, 3 true + 2 false per cycle |
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-RSCH-005 (depends on this spec)
@@ -2601,7 +2715,8 @@ War Machine Cruiser:
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:** None
+
+
 
 **Source:** Section 2.4 - Research-Combat Integration Flow
 
@@ -2639,8 +2754,24 @@ Shock Troops (surprise round):
 - Then proceed to normal initiative
 ```
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-007-A
+- REQ-RSCH-007-C
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+**Blockers:**
+- REQ-RSCH-007-A (depends on this spec)
+- REQ-RSCH-007-B (depends on this spec)
+- REQ-RSCH-007-C (depends on this spec)
+- REQ-RSCH-008-D (depends on this spec)
+- REQ-RSCH-009-A (depends on this spec)
+- REQ-RSCH-009-C (depends on this spec)
 **Blockers:**
 - REQ-RSCH-005 (depends on this spec)
 
@@ -2683,6 +2814,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 **Dependencies:**
 - REQ-RSCH-006-A
 - REQ-RSCH-006-C
+
+
 
 **Blockers:** None
 
@@ -2728,8 +2861,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-RSCH-006 (depends on this spec)
+
+
 
 **Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Shield Arrays vs Shock Troops
 
@@ -2753,9 +2886,29 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** Siege weapons designed to break fortifications naturally counter defensive shields, creating tactical choice between mobility and protection.
 
-**Dependencies:**
-- REQ-RSCH-006-C
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-008-A
+- REQ-RSCH-008-D
+- REQ-RSCH-008-B
+- REQ-RSCH-008-C
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+**Blockers:**
+- REQ-RSCH-008-A (depends on this spec)
+- REQ-RSCH-008-B (depends on this spec)
+- REQ-RSCH-008-C (depends on this spec)
+- REQ-RSCH-008-D (depends on this spec)
+- REQ-RSCH-009-D (depends on this spec)
+- REQ-RSCH-009-E (depends on this spec)
+- REQ-RSCH-010-A (depends on this spec)
+- REQ-RSCH-010-B (depends on this spec)
+- REQ-RSCH-010-C (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 2.3 - Rock-Paper-Scissors Counter-Play, Siege Engines vs Shield Arrays
@@ -2782,6 +2935,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 **Rationale:** Slow-moving siege equipment is vulnerable to prepared defenses like minefields, creating risk for specialized attackers.
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-RSCH-006 (depends on this spec)
@@ -2813,6 +2968,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 **Dependencies:**
 - REQ-RSCH-007-A
 - REQ-RSCH-007-C
+
+
 
 **Blockers:** None
 
@@ -2855,8 +3012,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-RSCH-007 (depends on this spec)
+
+
 
 **Source:** Section 3.4.3 - Investigate Specialization, Cost
 
@@ -2882,8 +3039,27 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Rationale:** High success rate (85%) makes the operation reliable but not guaranteed, creating tension and replayability.
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-009-A
+- REQ-RSCH-009-E
+- REQ-RSCH-009-B
+- REQ-RSCH-009-C
+- REQ-RSCH-009-D
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+
+**Blockers:**
+- REQ-RSCH-009-A (depends on this spec)
+- REQ-RSCH-009-B (depends on this spec)
+- REQ-RSCH-009-C (depends on this spec)
+- REQ-RSCH-009-D (depends on this spec)
+- REQ-RSCH-009-E (depends on this spec)
+- REQ-RSCH-010-C (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 3.4.3 - Investigate Specialization, Success Rate
@@ -2911,6 +3087,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 **Rationale:** Aligns with all other covert operations for consistent turn processing behavior.
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-RSCH-007 (depends on this spec)
@@ -2943,6 +3121,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 - REQ-RSCH-008-B
 - REQ-RSCH-008-C
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.4.3 - Investigate Specialization, Success Result
@@ -2969,6 +3149,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 **Rationale:** Failure has meaningful consequences (wasted credits, diplomatic damage) but isn't catastrophic. Creates risk/reward tension.
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-RSCH-008 (depends on this spec)
@@ -3013,8 +3195,8 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-RSCH-008 (depends on this spec)
+
+
 
 **Source:** Section 3.4.5 - Galactic News Rumor System
 
@@ -3042,8 +3224,18 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 | First bulletin | Turn 10 | After first doctrines unlock |
 | Last bulletin | No cap | Continues until game end |
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-RSCH-010-A
+- REQ-RSCH-010-C
+
+**Blockers:**
+- REQ-RSCH-010-A (depends on this spec)
+- REQ-RSCH-010-B (depends on this spec)
+- REQ-RSCH-010-C (depends on this spec)
 **Blockers:**
 - REQ-RSCH-008 (depends on this spec)
 
@@ -3074,6 +3266,15 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 
 **Dependencies:** None (foundational spec)
 
+
+**Dependencies:**
+- REQ-RSCH-008
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MIL-001
+- REQ-RSCH-010
+
+**Blockers:** None
 **Blockers:**
 - REQ-RSCH-008 (depends on this spec)
 
@@ -3100,6 +3301,15 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 - REQ-RSCH-011.4: Coalition Intel Summary UI
 
 **Rationale:** Joining coalition trades tactical surprise (specialization secrecy) for coordination and allied intel. Creates strategic tradeoff: maintain secrecy or gain coalition benefits.
+
+**Dependencies:**
+- REQ-RSCH-011.1 (child spec)
+- REQ-RSCH-011.2 (child spec)
+- REQ-RSCH-011.3 (child spec)
+- REQ-RSCH-011.4 (child spec)
+- REQ-DIP-001 (coalition system)
+
+**Blockers:** None
 
 **Source:** Section 3.4.4 - Alliance Intel Sharing
 
@@ -3189,6 +3399,14 @@ War Machine (+2 STR) + Shock Troops (surprise round):
 - REQ-RSCH-012.3: Bot Tier Intelligence Levels
 
 **Rationale:** Creates diverse bot research paths while maintaining archetype identity. Counter-picking prevents monoculture (all bots choosing same doctrine). Strategic bots create challenge by adapting to threats.
+
+**Dependencies:**
+- REQ-RSCH-012.1 (child spec)
+- REQ-RSCH-012.2 (child spec)
+- REQ-RSCH-012.3 (child spec)
+- REQ-BOT-002 (bot archetype system)
+
+**Blockers:** None
 
 **Source:** Section 4.2 - Bot Decision Logic
 

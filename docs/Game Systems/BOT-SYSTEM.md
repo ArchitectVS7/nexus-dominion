@@ -825,10 +825,15 @@ After game completion, players can review bot decision logs:
 **Rationale:** Creates most sophisticated bot opponents using AI for realistic decision-making. Fallback chain ensures reliability.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-001
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-001 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value |
@@ -904,9 +909,14 @@ After game completion, players can review bot decision logs:
 **Rationale:** Provides competent but predictable opposition for majority of bots. Low computational cost enables scaling to 100 total bots.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
+- REQ-BOT-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -942,10 +952,15 @@ After game completion, players can review bot decision logs:
 **Rationale:** Creates unpredictable wild-card opponents. Provides entertainment value through chaos while maintaining minimal viability through constraints.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-001
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-001 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value |
@@ -990,7 +1005,22 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Creates diverse, memorable opponents with distinct mechanical advantages and playstyles. Priority matrix ensures predictable but varied behavior.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-002-01
+- REQ-BOT-002-08
+- REQ-BOT-001-B
+- REQ-BOT-002-02
+- REQ-BOT-002-03
+- REQ-BOT-002-04
+- REQ-BOT-002-05
+- REQ-BOT-002-06
+- REQ-BOT-002-07
+- REQ-MKT-008-A
+- REQ-MKT-008-B
+- REQ-MKT-008-C
+- REQ-MKT-008-D
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-001-B (depends on this spec)
@@ -1006,6 +1036,8 @@ Final Action = argmax(Action Weight for all possible actions)
 - REQ-MKT-008-B (depends on this spec)
 - REQ-MKT-008-C (depends on this spec)
 - REQ-MKT-008-D (depends on this spec)
+
+
 
 **Source:** Section 7.6
 
@@ -1316,10 +1348,15 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Baseline state for successful bots. Slight bonuses without extreme behavior changes.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-003
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-003 (depends on this spec)
+
+
 
 **Key Values:**
 | Modifier | Value |
@@ -1350,9 +1387,14 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Punishes excessive success with poor decision-making and diplomatic isolation. Creates comeback opportunities for trailing players.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
+- REQ-BOT-003
 
 **Blockers:** None
+
+
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1382,9 +1424,14 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Losing bots become alliance-seeking and unpredictable. Creates dramatic comeback attempts.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
+- REQ-BOT-003
 
 **Blockers:** None
+
+
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1414,9 +1461,14 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Emotional override creates irrational but narratively compelling behavior. Target-specific aggression adds drama.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
+- REQ-BOT-003
 
 **Blockers:** None
+
+
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1446,9 +1498,14 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Survival instinct creates defensive coalitions. Highest alliance willingness encourages diplomatic gameplay.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
+- REQ-BOT-003
 
 **Blockers:** None
+
+
 **Key Values:**
 | Modifier | Value |
 |----------|-------|
@@ -1478,10 +1535,15 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Victory momentum creates aggressive expansion phase. Temporary power spike after major wins.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-003
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-003 (depends on this spec)
+
+
 
 **Key Values:**
 | Modifier | Value |
@@ -1536,9 +1598,13 @@ Final Action = argmax(Action Weight for all possible actions)
 **Rationale:** Creates persistent relationships and grudges without hard-coding alliances. Major events (betrayals, conquests) resist being "washed away" by minor positive actions. Permanent scars ensure some grudges last the entire game.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:** None
+
+
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `src/lib/bots/memory/`, `src/lib/game/repositories/bot-memory-repository.ts`
@@ -1571,9 +1637,13 @@ For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appe
 **Rationale:** Creates memorable, distinguishable opponents. Voice and quirks ensure each bot feels unique. Template variety prevents repetitive messages.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:** None
+
+
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `data/personas.json`, `src/lib/bots/personas.ts`
@@ -1635,10 +1705,15 @@ For complete BotPersona interface, see [Appendix 2.2: BotPersona Interface](appe
 **Rationale:** Multi-provider strategy balances cost, speed, and reliability. Groq provides fast, cheap responses for most decisions. Together AI and OpenAI provide backup when Groq is down. Scripted fallback ensures game never breaks due to API issues.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-006
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-006 (depends on this spec)
+
+
 
 
 
@@ -1725,10 +1800,15 @@ Stay in character as {archetype}.
 **Rationale:** Structured prompt ensures LLM has all necessary context to make informed decisions. Personality and traits guide decision-making style. Recent events provide continuity. JSON schema ensures parseable responses.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-006
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-006 (depends on this spec)
+
+
 
 
 
@@ -1779,10 +1859,15 @@ Stay in character as {archetype}.
 **Rationale:** Rate limits prevent cost overruns while maintaining game quality. Per-game limit ensures budget predictability. Per-turn limit prevents slow turn processing. Per-hour limit respects provider constraints. Daily spend cap provides absolute cost safety.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-006
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-006 (depends on this spec)
+
+
 
 
 
@@ -1836,9 +1921,13 @@ interface BotDecisionLog {
 **Rationale:** Transparency for debugging, entertainment value seeing bot thought process, learning tool for understanding AI behavior.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:** None
+
+
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `src/lib/game/repositories/bot-decision-log-repository.ts`
@@ -1911,10 +2000,15 @@ interface BotDecisionLog {
 **Rationale:** Archetype-specific formation creates personality-driven diplomacy. Warlords form power blocs, Diplomats build webs, Schemers infiltrate for betrayal. Turn 10 gate prevents instant alliance spam.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-008
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-008 (depends on this spec)
+
+
 
 
 
@@ -1964,10 +2058,15 @@ interface BotDecisionLog {
 **Rationale:** Coalition coordination makes bot alliances feel like coordinated opponents rather than independent actors. Defense pact honoring creates reliable allies. Intelligence sharing rewards diplomatic investment.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-008
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-008 (depends on this spec)
+
+
 
 
 
@@ -2030,10 +2129,15 @@ interface BotDecisionLog {
 **Rationale:** Schemer betrayal creates dramatic political moments and makes all alliances feel risky. Conditional betrayal ensures severe mistreatment has consequences. Leave conditions prevent bots being trapped in bad alliances.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-008
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-008 (depends on this spec)
+
+
 
 
 
@@ -2069,9 +2173,13 @@ interface BotDecisionLog {
 **Rationale:** Players can read bot intentions and respond strategically. Scheming bots are intentionally hard to read. Creates skill expression in "reading" bot behavior.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:** None
+
+
 **Source:** `docs/design/BOT-SYSTEM.md`
 
 **Code:** `src/lib/bots/messaging.ts`
@@ -2097,10 +2205,15 @@ interface BotDecisionLog {
 **Rationale:** Creates sense of urgency as game progresses. Increased aggression and coalition formation drive action toward conclusion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-BOT-010
+- REQ-DIP-001
+- REQ-COMBAT-001
 
 **Blockers:**
 - REQ-BOT-010 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value |
@@ -2166,9 +2279,14 @@ interface BotDecisionLog {
 **Rationale:** Endgame deserves epic storytelling. Final three scenario feels like climactic finale with dramatic bot roleplay.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-DIP-001
+- REQ-COMBAT-001
+- REQ-BOT-010
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|

@@ -584,9 +584,15 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Provides meaningful starting position without overwhelming new players. Ensures every empire can sustain population, build military, and afford expansion. Balanced configuration prevents starting advantage/disadvantage.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-002 (depends on this spec)
+
+
 **Key Values:**
 
 | Sector Type | Count | Production |
@@ -674,9 +680,16 @@ Where:
 **Rationale:** Primary food production building. Essential for feeding population and preventing starvation. Standard cost makes it accessible for early expansion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-003 (depends on this spec)
+- REQ-SEC-006-A (depends on this spec)
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -708,9 +721,15 @@ Where:
 **Rationale:** Primary ore production building. Essential for military unit construction. Lowest acquisition cost encourages military-focused expansion strategies.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-006-B (depends on this spec)
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -742,9 +761,15 @@ Where:
 **Rationale:** Primary petroleum production building. Essential for military maintenance and operations. Higher cost reflects strategic importance and environmental trade-offs (pollution).
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-006-C (depends on this spec)
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -776,9 +801,15 @@ Where:
 **Rationale:** Primary income source. Self-financing after 1 turn. Standard cost (pays for itself) makes it fundamental choice for economic expansion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-006-D (depends on this spec)
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -810,9 +841,14 @@ Where:
 **Rationale:** Hybrid building providing both population capacity and income. Essential for empires experiencing population growth. Dual benefits create unique strategic value.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -845,9 +881,14 @@ Where:
 **Rationale:** Increases empire happiness and stability. Essential for maintaining high morale during wars or resource scarcity. Intangible benefit creates strategic depth.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -879,9 +920,14 @@ Where:
 **Rationale:** Enables covert operations system. Lower cost (7,500 cr) encourages intelligence-focused strategies. Essential for Schemer archetype and espionage gameplay.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -913,9 +959,16 @@ Where:
 **Rationale:** Accelerates tech tree progression. High cost (23,000 cr) creates meaningful trade-off between economic expansion and technological advancement. Strategic advantage justifies premium price.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-003 (depends on this spec)
+- REQ-SEC-011 (depends on this spec)
+
+
 **Key Values:**
 | Parameter | Value |
 |-----------|-------|
@@ -1188,9 +1241,14 @@ Where:
 **Rationale:** Design philosophy "consequence over limits". No artificial caps - let economic pressure provide natural saturation point. Allows extreme strategies (hyper-expansion if player can afford it).
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.5 - Sector Limits and Caps
 
 **Code:**
@@ -1243,9 +1301,17 @@ Where:
 **Rationale:** Consequences for military defeat without eliminating empire entirely. Random component adds tension. Overkill bonus rewards decisive victories.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
+- REQ-SEC-009
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-009 (depends on this spec)
+- REQ-SEC-009-B (depends on this spec)
+
+
 **Formula:**
 ```
 sectors_lost = floor(1 + random(0, 2) + overkill_bonus)
@@ -1318,9 +1384,17 @@ Examples:
 **Rationale:** Rewards conquest without creating unstoppable snowball. 50% cap ensures even total victory doesn't double empire size instantly.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-COMBAT-001
+- REQ-VIC-001
+- REQ-SEC-010
 
-**Blockers:** None
+**Blockers:**
+- REQ-SEC-010 (depends on this spec)
+- REQ-SEC-010-B (depends on this spec)
+
+
 **Formula:**
 ```
 sectors_transferred = floor(conquered_empire_sectors × 0.5)

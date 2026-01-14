@@ -404,10 +404,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Simplifies combat while maintaining drama. Single-roll resolution is faster and more intuitive.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-009-A
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-COMBAT-009-A (depends on this spec)
+
+
 
 **Source:** Section 1.1
 
@@ -426,9 +431,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Slight defender advantage encourages defensive play and alliances.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Source:** Section 8.1
 
 **Code:** `src/lib/formulas/combat-power.ts`
@@ -446,9 +455,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Makes conquest harder, rewards defense.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.4
 
 **Code:** `src/lib/formulas/combat-power.ts:DEFENDER_ADVANTAGE`
@@ -472,10 +485,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Creates unit hierarchy and strategic choices.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-006
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-MIL-006 (depends on this spec)
+
+
 
 **Source:** Section 2.3
 
@@ -494,10 +512,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Encourages balanced fleet composition over mono-unit strategies.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-008
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-MIL-008 (depends on this spec)
+
+
 
 **Source:** Section 3.5
 
@@ -516,10 +539,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Stations are defensive installations, not offensive units.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-009-B
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-COMBAT-009-B (depends on this spec)
+
+
 
 **Source:** Section 3.5
 
@@ -538,9 +566,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Allows new players to establish their empire before combat.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Source:** VISION.md
 
 **Code:** `src/lib/game/constants.ts:PROTECTION_TURNS`
@@ -564,9 +596,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Creates narrative variety in battle reports.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.4
 
 **Code:** `src/lib/combat/outcomes.ts`
@@ -664,10 +700,17 @@ Stat Modifier = floor((Stat - 10) / 2)
 
 **Rationale:** Ground combat is the decisive phase where sectors change hands. Even with space and orbital superiority, attackers must win on the ground to capture territory.
 
-**Dependencies:** None (foundational ground combat)
+
+**Dependencies:**
+- REQ-COMBAT-010
+- REQ-COMBAT-009
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
-- REQ-COMBAT-009 (Multi-Domain Resolution parent spec depends on this)
+- REQ-COMBAT-009 (depends on this spec)
+- REQ-COMBAT-010 (depends on this spec)
+
 
 **Source:** Section 3.4 - Multi-Domain Resolution, Ground Domain
 
@@ -698,10 +741,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Victory bonuses create narrative momentum and reward balanced fleet composition. Winning space makes orbital assault easier, winning orbital makes ground invasion easier. Encourages investing in all three domains rather than specializing.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-009
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-COMBAT-009 (depends on this spec)
+
+
 
 
 
@@ -725,10 +773,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Provides strategic alternatives to direct conquest.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-009-C
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-COMBAT-009-C (depends on this spec)
+
+
 
 **Source:** Section 2.2
 
@@ -750,9 +803,13 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Creates power progression and late-game escalation.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.7
 
 **Code:** `src/lib/combat/unit-cards.ts`
@@ -790,10 +847,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Prevents unrealistic fights to the death. Forces must consider morale and retreat when suffering heavy losses. Creates strategic decision point - push for total victory or accept costly win.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-012
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-COMBAT-012 (depends on this spec)
+
+
 
 
 
@@ -829,10 +891,15 @@ Stat Modifier = floor((Stat - 10) / 2)
 **Rationale:** Allows mercy and negotiated endings. Prevents pyrrhic victories where attacker wins but suffers heavy losses. Creates diplomatic opportunities mid-combat. Rewards high-CHA attackers and high-WIS defenders.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-012
+- REQ-MIL-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-COMBAT-012 (depends on this spec)
+
+
 
 
 

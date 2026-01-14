@@ -1905,6 +1905,8 @@ Visual characteristics:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 1
 
 **Code:** `src/components/`, `tailwind.config.ts`
@@ -1932,6 +1934,8 @@ Visual characteristics:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 3.1
 
 **Code:** `src/app/game/starmap/page.tsx`, `src/components/game/OverlayPanel.tsx`, `src/components/game/OverlayPanelController.tsx`
@@ -1964,6 +1968,8 @@ Panel routing:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 3.3
 
 **Code:** `src/components/game/OverlayPanel.tsx`, `src/components/game/OverlayPanelController.tsx`
@@ -1997,6 +2003,8 @@ Applies to:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 4.3, `docs/design/UX-ROADMAP.md` (archived analysis)
 
 **Code:** `src/components/game/market/MarketPanel.tsx`, `src/components/game/military/BuildUnitsPanel.tsx`
@@ -2029,6 +2037,8 @@ Turn 42/200 | Phase 6/6: Player Actions | ⏰ 4:23 remaining
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.1, `docs/design/UX-ROADMAP.md` Priority 1
 
 **Code:** `src/components/game/PhaseIndicator.tsx`, `src/app/game/layout.tsx`
@@ -2059,6 +2069,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.2, `docs/design/UX-ROADMAP.md` Priority 2
 
 **Code:** `src/components/game/ActionPrompt.tsx`, replaces `FoodWarning.tsx`
@@ -2094,6 +2106,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 6.3, `docs/design/UX-ROADMAP.md` Priority 5
 
 **Code:** Component-specific styles, `src/components/game/*/styles.ts`
@@ -2116,6 +2130,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** SDD Migration (Phase 3)
 
 **Code:** `src/lib/api/queries/`, `src/lib/api/mutations/`
@@ -2136,6 +2152,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** SDD Migration (Phase 3)
 
 **Code:** `src/stores/`
@@ -2163,6 +2181,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 7
 
 **Code:** `src/styles/globals.css`, `src/lib/animations/`
@@ -2188,6 +2208,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 8, `docs/design/frontend-developer-manual.md`
 
 **Code:** `src/components/game/starmap/StarMap.tsx`
@@ -2219,6 +2241,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 9.1
 
 **Code:** `src/hooks/useKeyboardShortcuts.ts`, `src/components/game/GameShell.tsx`
@@ -2242,6 +2266,8 @@ Example - Food shortage:
 **Dependencies:** None (foundational spec)
 
 **Blockers:** None
+
+
 **Source:** `docs/design/FRONTEND-DESIGN.md` Section 9.3
 
 **Code:** `tailwind.config.ts` color definitions

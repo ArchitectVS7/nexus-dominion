@@ -1334,13 +1334,19 @@ economic_vp = (your_networth / second_networth) × (10 / 1.5)
 | economic_threshold | 1.5 | 1.5x second place required for 10 VP |
 | vp_scale | 0-10 | Linear scaling |
 
-**Dependencies:** None (foundational spec)
 
-**Blockers:**
-- REQ-VIC-002.1 (depends on this spec)
-- REQ-VIC-002.2 (depends on this spec)
-- REQ-VIC-010.3 (depends on this spec)
-- REQ-TURN-019-02 (depends on this spec)
+
+
+
+
+
+
+
+
+
+
+
+
 
 **Source:** Section 3.7 - Victory Point System
 
@@ -1373,6 +1379,8 @@ diplomatic_vp = (coalition_territory / total_sectors) × (10 / 0.5)
 
 **Dependencies:**
 - REQ-VIC-002
+
+
 
 **Blockers:** None
 
@@ -1410,6 +1418,8 @@ research_vp = ((capstone_progress × 0.5) + (advanced_techs / 10 × 0.5)) × 10
 **Dependencies:**
 - REQ-VIC-002
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System
@@ -1442,6 +1452,8 @@ military_vp = (your_military / sum_all_others) × (10 / 2.0)
 | vp_scale | 0-10 | Linear scaling |
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-VIC-003.1 (depends on this spec)
@@ -1482,6 +1494,8 @@ survival_vp = (your_score / highest_score) × 10
 **Dependencies:**
 - REQ-VIC-003
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System
@@ -1517,6 +1531,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Dependencies:**
 - REQ-VIC-003
+
+
 
 **Blockers:** None
 
@@ -1558,7 +1574,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 **Dependencies:**
 - REQ-VIC-003
 
-**Blockers:** None
+
+
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
 
@@ -1585,8 +1602,25 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | attack_bonus_vs_leader | +10% | Applied to all attack rolls vs leader |
 | applies_to | All empires except leader | Leader does not receive this bonus |
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-VIC-008-A
+- REQ-VIC-008-G
+
+**Blockers:**
+- REQ-DIP-005-B (depends on this spec)
+- REQ-VIC-008-A (depends on this spec)
+- REQ-VIC-008-B (depends on this spec)
+- REQ-VIC-008-C (depends on this spec)
+- REQ-VIC-008-D (depends on this spec)
+- REQ-VIC-008-E (depends on this spec)
+- REQ-VIC-008-F (depends on this spec)
+- REQ-VIC-008-G (depends on this spec)
+- REQ-BOT-010-B (depends on this spec)
+- REQ-MKT-002-E (depends on this spec)
 **Blockers:**
 - REQ-VIC-005.1 (depends on this spec)
 - REQ-VIC-005.2 (depends on this spec)
@@ -1621,6 +1655,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 **Dependencies:**
 - REQ-VIC-005
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
@@ -1652,6 +1688,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 **Dependencies:**
 - REQ-VIC-005
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
@@ -1682,6 +1720,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 | min_reputation | 0 | Decay stops at 0, doesn't go negative |
 
 **Dependencies:** None (foundational spec)
+
+
 
 **Blockers:**
 - REQ-VIC-006.1 (depends on this spec)
@@ -1720,6 +1760,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 **Dependencies:**
 - REQ-VIC-006
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.8 - Anti-Snowball Triggers
@@ -1744,6 +1786,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Dependencies:**
 - REQ-VIC-006
+
+
 
 **Blockers:** None
 
@@ -1796,7 +1840,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 - REQ-VIC-007-A
 - REQ-VIC-007-G
 
-**Blockers:** None
+
+
 
 **Source:** Section 3.7 - Victory Point System, 5 VP Milestone
 
@@ -1823,8 +1868,26 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Rationale:** Critical threshold where anti-snowball kicks in. Orange indicates elevated threat. Klaxon signals urgent attention needed.
 
-**Dependencies:** None (foundational spec)
 
+
+
+
+**Dependencies:**
+- REQ-VIC-009-A
+- REQ-VIC-009-D
+- REQ-VIC-009-B
+- REQ-VIC-009-C
+- REQ-RES-001
+- REQ-SEC-001
+- REQ-COMBAT-001
+- REQ-DIP-001
+- REQ-RSCH-001
+
+**Blockers:**
+- REQ-VIC-009-A (depends on this spec)
+- REQ-VIC-009-B (depends on this spec)
+- REQ-VIC-009-C (depends on this spec)
+- REQ-VIC-009-D (depends on this spec)
 **Blockers:**
 - REQ-VIC-006.3 (depends on this spec)
 - REQ-VIC-007 (depends on this spec)
@@ -1856,6 +1919,8 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Dependencies:** None (foundational spec)
 
+
+
 **Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System, 9 VP Milestone
@@ -1885,6 +1950,17 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 
 **Dependencies:** None (foundational spec)
 
+
+**Dependencies:**
+- REQ-RES-001
+- REQ-SEC-001
+- REQ-COMBAT-001
+- REQ-DIP-001
+- REQ-RSCH-001
+- REQ-VIC-009
+
+**Blockers:**
+- REQ-VIC-009 (depends on this spec)
 **Blockers:** None
 
 **Source:** Section 3.7 - Victory Point System, 10 VP Milestone
@@ -1915,6 +1991,13 @@ total_vp = MAX(conquest_vp, economic_vp, diplomatic_vp, research_vp, military_vp
 - REQ-VIC-010.3: Final Statistics Display
 
 **Rationale:** Victory is the most important moment in the game and deserves dramatic presentation.
+
+**Dependencies:**
+- REQ-VIC-010.1 (child spec)
+- REQ-VIC-010.2 (child spec)
+- REQ-VIC-010.3 (child spec)
+
+**Blockers:** None
 
 **Source:** Section 5.1 - UI Mockups
 

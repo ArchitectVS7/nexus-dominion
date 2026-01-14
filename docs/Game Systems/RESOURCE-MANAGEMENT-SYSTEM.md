@@ -860,9 +860,32 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Five resources create strategic depth without overwhelming cognitive load. Each resource has clear production sources and consumption uses, enabling informed player decisions and bot AI specialization.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-SEC-001
+- REQ-TURN-001
+- REQ-MKT-001
+- REQ-RSCH-001
 
-**Blockers:** None
+**Blockers:**
+- REQ-RES-002-01 (depends on this spec)
+- REQ-RES-002-02 (depends on this spec)
+- REQ-RES-002-03 (depends on this spec)
+- REQ-RES-002-04 (depends on this spec)
+- REQ-RES-002-05 (depends on this spec)
+- REQ-RES-002-08 (depends on this spec)
+- REQ-RES-004-A (depends on this spec)
+- REQ-RES-005-A (depends on this spec)
+- REQ-RES-005-B (depends on this spec)
+- REQ-RES-008-A (depends on this spec)
+- REQ-RES-008-B (depends on this spec)
+- REQ-RES-008-C (depends on this spec)
+- REQ-RES-008-D (depends on this spec)
+- REQ-RES-008-E (depends on this spec)
+- REQ-RES-008-F (depends on this spec)
+- REQ-RES-011-A (depends on this spec)
+- REQ-RES-012-A (depends on this spec)
+
+
 **Source:** Section 1.1 - The Five Resource Types
 
 **Code:**
@@ -1622,9 +1645,14 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 **Rationale:** Recent battles affect morale. Victories boost confidence, defeats damage morale. Asymmetric values reflect loss aversion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-007
 
-**Blockers:** None
+**Blockers:**
+- REQ-RES-007 (depends on this spec)
+- REQ-RES-007-F (depends on this spec)
+
+
 
 
 **Source:** Section 3.1 - Civil Status Calculation, Battle Outcome Factor
@@ -1653,9 +1681,14 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 **Rationale:** Territorial expansion signals progress and prosperity, while losses indicate decline. Asymmetric penalties reflect loss aversion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-007
 
-**Blockers:** None
+**Blockers:**
+- REQ-RES-007 (depends on this spec)
+- REQ-RES-007-F (depends on this spec)
+
+
 
 
 **Source:** Section 3.1 - Civil Status Calculation, Territory Growth Factor
@@ -1684,9 +1717,19 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 **Rationale:** Education sectors represent luxury investment in citizen welfare. They provide both score bonus and special transition boost (see REQ-RES-007-G).
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-007-G
+- REQ-SEC-001
+- REQ-TURN-001
+- REQ-MKT-001
+- REQ-RSCH-001
+- REQ-RES-007
 
-**Blockers:** None
+**Blockers:**
+- REQ-RES-007 (depends on this spec)
+- REQ-RES-007-F (depends on this spec)
+
+
 
 
 **Source:** Section 3.1 - Civil Status Calculation, Education Bonus Factor
@@ -2032,9 +2075,18 @@ Transition Rules (max 1 level/turn)                              [REQ-RES-007-G]
 **Rationale:** Enables strategic pivots (early Food sectors → late Commerce sectors) without requiring sector destruction and rebuild. 50% cost represents infrastructure reuse discount.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-SEC-001
+- REQ-TURN-001
+- REQ-MKT-001
+- REQ-RSCH-001
+- REQ-RES-009
 
-**Blockers:** None
+**Blockers:**
+- REQ-RES-009 (depends on this spec)
+- REQ-RES-009-B (depends on this spec)
+
+
 **Conversion Formula:**
 ```
 Conversion Cost = Target Sector Build Cost × 0.5
@@ -2137,9 +2189,18 @@ Examples:
 **Rationale:** Forces infrastructure investment alongside population growth. Prevents runaway population without corresponding sector expansion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-010
 
-**Blockers:** None
+**Blockers:**
+- REQ-RES-002-05 (depends on this spec)
+- REQ-RES-007-E (depends on this spec)
+- REQ-RES-009-C (depends on this spec)
+- REQ-RES-010 (depends on this spec)
+- REQ-RES-010-B (depends on this spec)
+- REQ-RES-010-C (depends on this spec)
+
+
 **Formula:**
 ```
 Population Capacity = Urban Sectors × 10,000 people

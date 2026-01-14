@@ -715,9 +715,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Enables economic strategy and resource conversion. Players can sell surplus production for credits and buy deficits to support expansion.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Source:** Section 1.1, 3.3, 3.4
 
 **Code:**
@@ -751,10 +755,15 @@ Price = Base Price × Supply Modifier × Demand Modifier × Event Modifier × Le
 **Rationale:** Establishes price stability and prevents market manipulation through artificial scarcity or oversupply.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-002
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-002 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value |
@@ -786,9 +795,14 @@ Price = Base Price × Supply Modifier × Demand Modifier × Event Modifier × Le
 **Rationale:** High supply (heavy selling) reduces prices. Creates incentive to sell during low supply periods.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MKT-002
 
 **Blockers:** None
+
+
 **Formula:**
 ```
 Supply Modifier = 1.0 - (Net Sell Volume / 100,000) × 0.5
@@ -822,9 +836,14 @@ Supply Modifier = 1.0 - (Net Sell Volume / 100,000) × 0.5
 **Rationale:** High demand (heavy buying) increases prices. Creates incentive to buy during low demand periods.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MKT-002
 
 **Blockers:** None
+
+
 **Formula:**
 ```
 Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
@@ -953,10 +972,15 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 **Rationale:** Base transaction cost prevents zero-risk arbitrage. Low percentage encourages market use while minimum prevents trivial-cost spam trades.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-003
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-003 (depends on this spec)
+
+
 
 
 
@@ -983,10 +1007,15 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 **Rationale:** Higher sell fees discourage rapid buy-resell arbitrage cycles and market manipulation. Creates natural friction for speculation.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-003
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-003 (depends on this spec)
+
+
 
 
 
@@ -1020,11 +1049,17 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 **Rationale:** Rewards strategic large trades and encourages bulk transactions over many small orders. Creates meaningful decision point for trade timing.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-003
+- REQ-MKT-003-D
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-003 (depends on this spec)
 - REQ-MKT-003-D (depends on this spec)
+
+
 
 
 
@@ -1089,10 +1124,15 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 **Rationale:** Prevents market manipulation through massive single transactions. Forces players to spread large trades across multiple turns, creating strategic planning requirements and preventing instant market corner attempts.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-004
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-004 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1130,9 +1170,14 @@ Demand Modifier = 1.0 + (Net Buy Volume / 100,000) × 0.5
 **Rationale:** Prevents players from selling themselves into economic collapse. Ensures minimum resource availability for empire operations. Creates strategic decisions about production vs selling.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MKT-004
 
 **Blockers:** None
+
+
 **Formula:**
 ```
 Reserve = sector_production × 0.10
@@ -1180,10 +1225,15 @@ Max Sellable = current_storage - reserve
 **Rationale:** Prevents extreme inflation/deflation that would make the market unusable. Ensures prices remain within reasonable bounds for strategic planning. Protects against edge cases in price formula.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-004
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-004 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1533,9 +1583,13 @@ final_price = clamp(calculated_price, base_price * 0.5, base_price * 2.0)
 **Rationale:** Integrates with global anti-snowball mechanics. Dominant empires face economic headwinds, giving trailing empires catch-up opportunities.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Formula:**
 ```
 Buy Price = Base Price × (Modifiers) × (1.2 if VP >= 7 else 1.0)
@@ -1573,11 +1627,17 @@ Buy Price = Base Price × (Modifiers) × (1.2 if VP >= 7 else 1.0)
 **Rationale:** Provides Merchant archetype with information advantage for strategic buying/selling. The ±10% variance prevents perfect prediction while still being useful. Coalition sharing spreads benefit to allies.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-007
+- REQ-MKT-009-B
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-007 (depends on this spec)
 - REQ-MKT-009-B (depends on this spec)
+
+
 
 **Formula:**
 ```
@@ -1621,10 +1681,16 @@ Predicted Price = Next Turn Price + random(-10%, +10%)
 **Rationale:** Allows Merchant to anticipate market movements from bot activity. Creates strategic opportunities to front-run large orders or avoid being on wrong side of price movements.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-009-B
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MKT-007
 
 **Blockers:**
 - REQ-MKT-009-B (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1894,10 +1960,15 @@ When market event generated (for turn T):
 **Rationale:** Informed decision-making requires historical data. Public transparency creates fair market conditions while allowing skilled players to identify patterns and opportunities.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-009
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-009 (depends on this spec)
+
+
 
 **Public Information:**
 | Information Type | Details | Display |
@@ -2002,9 +2073,13 @@ When market event generated (for turn T):
 **Rationale:** Reflects resource importance and scarcity. Food is abundant (always needed, stable). Ore is war-dependent (moderate swings). Petroleum is luxury/strategic (extreme volatility).
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Resource | Base Price | Volatility | Max Swing |
 |----------|-----------|------------|-----------|
@@ -2031,9 +2106,13 @@ When market event generated (for turn T):
 **Rationale:** Rewards investment in Commerce research tree. Makes trading more profitable for dedicated economic players.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Formula:**
 ```
 Research Discount = has_commerce_tier2 ? 0.02 : 0.0
@@ -2066,10 +2145,15 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 **Rationale:** Provides real-time price updates during active trading while minimizing unnecessary polling when market is idle.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-012
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-012 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -2098,9 +2182,14 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 **Rationale:** Defines activity window for efficient resource management. Prevents unnecessary polling during quiet periods.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-RES-001
+- REQ-TURN-001
+- REQ-MKT-012
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -2129,10 +2218,15 @@ Total Discount = min(bulk_discount + research_discount, 0.05)
 **Rationale:** Smooth animations provide visual feedback on market changes. Dynamic calculations give immediate price impact visibility.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MKT-012
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MKT-012 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |

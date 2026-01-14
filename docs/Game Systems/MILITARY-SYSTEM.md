@@ -559,9 +559,14 @@ When viewing individual units:
 **Rationale:** Unit variety creates strategic depth. Six types provide enough diversity for meaningful fleet composition choices without overwhelming complexity.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.1, COMBAT-SYSTEM.md Section 2.3
 
 **Code:**
@@ -603,10 +608,16 @@ When viewing individual units:
 **Rationale:** Parallel building allows strategic investment across multiple unit types. No arbitrary queue limits - only economic constraints matter.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-002
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MIL-002 (depends on this spec)
+
+
 
 
 
@@ -634,10 +645,16 @@ When viewing individual units:
 **Rationale:** Upfront payment creates meaningful economic decisions. Players must have resources available now, preventing overextension. Simplifies turn processing (no per-turn payment tracking).
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-002
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MIL-002 (depends on this spec)
+
+
 
 
 
@@ -711,10 +728,16 @@ When viewing individual units:
 **Rationale:** Cancellation option provides flexibility for strategic pivots. 50% penalty creates meaningful sunk cost - not free to change plans, but not catastrophic. Encourages thoughtful queueing without locking players into bad decisions.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-002
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MIL-002 (depends on this spec)
+
+
 
 
 
@@ -745,10 +768,16 @@ When viewing individual units:
 **Rationale:** Resource scarcity (especially petroleum) limits production of high-tier units. Forces economic strategy alongside military planning.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-002-C
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MIL-002-C (depends on this spec)
+
+
 
 **Source:** Section 2.1, Section 3.2
 
@@ -776,10 +805,16 @@ When viewing individual units:
 **Rationale:** Prevents runaway military growth. Forces economic sustainability for large fleets.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-004
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MIL-004 (depends on this spec)
+
+
 
 **Maintenance Cost Table:**
 | Unit | Credits/turn | Ore/turn | Petroleum/turn |
@@ -820,10 +855,16 @@ Deducted each turn during maintenance phase
 **Rationale:** Creates consequences for unsustainable military expansion. Forces players to maintain economic balance.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-MIL-004
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:**
 - REQ-MIL-004 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -868,9 +909,14 @@ Production progress increments by 1 each turn. Units complete on turn = (start_t
 **Rationale:** Longer production times for powerful units create strategic planning. Cannot rapidly mobilize heavy fleets.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Source:** Section 2.1, Section 3.1
 
 **Code:**
@@ -943,9 +989,14 @@ Military Power = Σ (Unit Count × Unit Power Multiplier × Situational Bonuses)
 **Rationale:** Fighters and Bombers are most cost-efficient, encouraging balanced fleets. Higher-tier units provide raw power but at premium.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.2
 
 **Code:**
@@ -995,9 +1046,14 @@ All other units restricted to single domain.
 **Rationale:** Creates tactical assignment decisions. Fighters' flexibility provides strategic options.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.6, COMBAT-SYSTEM.md Section 3.4
 
 **Code:**
@@ -1024,9 +1080,14 @@ Natural limits:
 **Rationale:** "Consequence over limits" design philosophy. Players constrained by economics, not arbitrary caps.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-COMBAT-001
+- REQ-RES-001
+- REQ-TURN-001
 
 **Blockers:** None
+
+
 **Source:** Section 3.5, PRD-EXECUTIVE.md
 
 **Code:**

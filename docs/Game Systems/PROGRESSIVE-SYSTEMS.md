@@ -761,10 +761,15 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Introduces diplomacy gradually after players establish their initial empire. Prevents overwhelming new players with too many systems at once.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-001
+- REQ-TURN-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-PROG-001 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -794,9 +799,14 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Introduces covert operations at mid-game when players understand basic mechanics. Adds strategic depth after initial expansion phase.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-TURN-001
+- REQ-VIC-001
+- REQ-PROG-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -825,9 +835,14 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Reserves ultimate weapons for late game. Ensures early/mid game focuses on conventional warfare and strategy before introducing endgame mechanics.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-TURN-001
+- REQ-VIC-001
+- REQ-PROG-001
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -856,10 +871,15 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Veterans and experienced players get full access immediately. Respects player experience level and reduces friction for returning players.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-001
+- REQ-TURN-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-PROG-001 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -895,10 +915,13 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Provides safety net for long campaign games. Players protected from data loss without manual action. Short retention keeps storage costs manageable.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-002
 
 **Blockers:**
 - REQ-PROG-002 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -930,9 +953,12 @@ This section contains formal requirements for spec-driven development. Each spec
 **Rationale:** Gives players control over important game moments. Longer retention rewards deliberate saves. Limit prevents storage abuse.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-002
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -973,10 +999,13 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Enables campaign continuation across sessions. Cloud storage ensures saves persist across devices. Automatic expiry manages storage costs.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-002
 
 **Blockers:**
 - REQ-PROG-002 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1355,10 +1384,15 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Teaches core mechanics progressively without overwhelming new players. Context-based learning more effective than abstract instruction.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-004
+- REQ-TURN-001
+- REQ-VIC-001
 
 **Blockers:**
 - REQ-PROG-004 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1390,9 +1424,12 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Clear goals give players immediate targets. Success criteria provide measurable progress. Objectives demonstrate practical use of mechanics.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-004
 
 **Blockers:** None
+
+
 **Objective Examples:**
 | Turn | Objective | Mechanic Taught | Success Criteria |
 |------|-----------|-----------------|------------------|
@@ -1422,9 +1459,14 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Rewards incentivize objective completion. Early resources help new players establish foothold. Completion bonus celebrates achievement.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-TURN-001
+- REQ-VIC-001
+- REQ-PROG-004
 
 **Blockers:** None
+
+
 **Reward Table:**
 | Turn/Milestone | Objective | Reward | Notes |
 |----------------|-----------|--------|-------|
@@ -1453,10 +1495,13 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Respects player autonomy. Veterans shouldn't be forced through tutorial. Turn 3 threshold ensures minimal introduction before allowing skip.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-004
 
 **Blockers:**
 - REQ-PROG-004 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1493,10 +1538,13 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Reduces likelihood of aggressive early attacks on new players. Warlord/Blitzkrieg archetypes most likely to attack early, so priority reduction creates breathing room for learning.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-005
 
 **Blockers:**
 - REQ-PROG-005 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Tutorial Value | Normal Value | Notes |
@@ -1528,9 +1576,12 @@ if (manual_checkpoints.length >= 3) {
 **Rationale:** Softens impact when bots do attack. New players can survive early mistakes without being immediately eliminated. Creates forgiving learning environment.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-005
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Tutorial Value | Normal Value | Notes |
 |-----------|---------------|--------------|-------|
@@ -1566,10 +1617,13 @@ Normal Damage = Base Damage × 1.0
 **Rationale:** Prevents overwhelming early aggression from Blitzkrieg's signature rush strategy. Gives new players time to establish defenses before facing coordinated early-game assault.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-005
 
 **Blockers:**
 - REQ-PROG-005 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Tutorial Value | Normal Value | Notes |
@@ -1606,10 +1660,13 @@ Normal Damage = Base Damage × 1.0
 **Rationale:** Gives players time to react and prepare for most events. Supernova exception creates dramatic surprise element.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-006
 
 **Blockers:**
 - REQ-PROG-006 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
@@ -1639,9 +1696,12 @@ Normal Damage = Base Damage × 1.0
 **Rationale:** Ensures players aware of active event effects. Persistent visibility prevents confusion about current game state.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-006
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1670,9 +1730,12 @@ Normal Damage = Base Damage × 1.0
 **Rationale:** Provides clear timeline for event effects. Players can plan strategy around known end date.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-006
 
 **Blockers:** None
+
+
 **Key Values:**
 | Parameter | Value | Notes |
 |-----------|-------|-------|
@@ -1701,10 +1764,13 @@ Normal Damage = Base Damage × 1.0
 **Rationale:** Clear closure for event. Players know when effects end and normal gameplay resumes.
 
 
-**Dependencies:** None (foundational spec)
+**Dependencies:**
+- REQ-PROG-006
 
 **Blockers:**
 - REQ-PROG-006 (depends on this spec)
+
+
 
 **Key Values:**
 | Parameter | Value | Notes |
