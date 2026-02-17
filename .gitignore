@@ -62,3 +62,4 @@ docs/.docusaurus/
 # Claude temporary files
 tmpclaude*
 nul
+.context-snapshot.md
