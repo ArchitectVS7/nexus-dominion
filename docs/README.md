@@ -4,6 +4,12 @@ Welcome to the Nexus Dominion documentation hub. This guide helps you find what 
 
 ---
 
+## Reports & Project Status
+
+**[REPORTS.md](REPORTS.md)** - Current project status, assessment findings, and implementation priorities. Start here if you want to know where things stand right now.
+
+---
+
 ## Start Here
 
 **[PRD-EXECUTIVE.md](PRD-EXECUTIVE.md)** - The strategic overview. Vision, success metrics, architecture principles, and system dependencies in 3-5 pages.
