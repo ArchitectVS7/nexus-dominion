@@ -1,57 +1,110 @@
 # Nexus Dominion — Product Requirements Document
 
-> **Status:** Active - Strategic Reference
-> **Version:** 2.0
-> **Last Updated:** March 2026
-> **Author:** Nexus Dominion Design Team
+> **Status:** In Review
+> **Version:** 3.0
+> **Last Updated:** 2026-03-08
+> **Author:** VS7
 
 ---
 
 ## Executive Summary
 
-Nexus Dominion is a single-player 4X strategy game that delivers MMO-style emergent drama without requiring a multiplayer environment. It targets single-player enthusiasts who want a rich, deep 4X experience — players familiar with titles like Master of Orion, Stellaris, or Civilization — but who want sessions that conclude in a sitting. The core problem it solves is that traditional 4X games either demand enormous time investment or expose solo players to being steamrolled by power gamers in multiplayer. Nexus Dominion is complete when a player can start a game, engage with up to 100 uniquely-personalised bot opponents across a 10-sector galaxy, and reach one of 6 victory conditions within a typical 1–3 hour session.
+Nexus Dominion is a single-player 4X space strategy game that simulates the emergent drama of a living multiplayer world without requiring other players. The player commands one empire in a persistent galaxy alongside up to one hundred bot opponents — each with a distinct personality, emotional state, and relationship memory — who advance, fight each other, form alliances, and accumulate power through the same mechanics available to the player. The game has no forced ending: achievements mark milestones within an ongoing campaign, and each achievement triggers a galaxy-wide response that generates new challenges. For players who want a bounded session, scenario packs provide a defined objective and optional constraints on top of the same engine. The game is complete when a player can launch a campaign, engage meaningfully with the galaxy across multiple play sessions, earn achievements through distinct strategic paths, and experience a simulation that feels genuinely alive.
 
 ---
 
 ## Overview
 
-Nexus Dominion is best described as **"Crusader Kings meets Eve Online, simulated."** The game delivers MMO-style emergent drama in a single-player environment, allowing players to command a galactic empire, navigate dynamic bot personalities, and achieve victory through military conquest, economic dominance, or diplomatic mastery.
+Nexus Dominion is best described as **"Crusader Kings meets Eve Online, simulated."** It targets single-player enthusiasts who want strategic depth, emergent narrative, and genuine rivals — without the scheduling demands of multiplayer or the predatory dynamics of live-service games.
 
-The galaxy is divided into 10 sectors, creating meaningful expansion paths and natural phases of play: consolidate your sector, push into adjacent regions, build wormholes to distant territory, then fight for galactic dominance. Players face up to 100 bot opponents with unique personas, emotional states, and relationship memory. The bots fight each other independently — natural selection occurs, empires rise and fall, emergent "bosses" accumulate power — and the player navigates this living ecosystem rather than a static list of enemies.
+The game draws inspiration from Solar Realms Elite (1990), a browser-based BBS game where players competed in a persistent galaxy of multiple players, and from the emergent storytelling of Crusader Kings and the player-driven political economy of Eve Online. The core insight is that the most compelling 4X experiences are social — rivalries, betrayals, alliances, and power struggles — and that these can be fully simulated with sufficiently characterised AI opponents.
 
-At its heart, Nexus Dominion is a **digital boardgame**. The star map is the table that never leaves view. Panels slide in like cards being examined and then set back down. Every turn has weight and clarity. The LCARS (Star Trek) aesthetic makes the player feel like an admiral at a tactical command display, not a manager clicking through spreadsheets.
+The galaxy has two levels of geography. At the strategic level, it is divided into **ten sectors** — geographic regions with distinct characteristics, adjacency relationships, and resource profiles. No empire "owns" a sector; sectors are contested regions where empires compete. At the operational level, each sector contains **25 star systems** — the basic unit of empire ownership. Star systems are the nodes on the star map: individual worlds that empires colonise, build on, fight over, and produce resources from. The galaxy begins with 250 total star systems: 100 claimed (one home system per empire) and 150 unclaimed, available for colonisation from turn one.
 
-For the complete design philosophy and principles behind these decisions, see [VISION.md](other/VISION.md) and [BOARDGAME-VISION.md](other/BOARDGAME-VISION.md).
+Players start with their home system inside one sector alongside roughly nine other empires. The early game is a land rush — claim unclaimed systems in your sector before neighbours do. As unclaimed space runs out, expansion becomes zero-sum: every new system requires colonisation of the last unclaimed worlds, a diplomatic arrangement, or conquest. This geographic structure creates natural phases of play — consolidate your sector, push into adjacent sectors, build wormholes to distant regions, contest galaxy-wide dominance — without scripting them.
+
+The one hundred bot opponents are not uniform: they operate on different **Momentum Ratings** (determining how many actions they take per Cycle relative to the player), belong to one of eight personality archetypes, and maintain relationship memory with each other and with the player. Bosses emerge from this simulation organically — a bot that has eliminated five rivals and operated at a high Momentum Rating for many Cycles becomes genuinely powerful, not because it was designed to be, but because it has had more time and used it.
+
+The galaxy itself is governed by a poorly-understood energy phenomenon called **the Nexus** — the origin of the game's title and the cosmological force around which galactic civilisation has organised itself. Every ten Cycles, the Nexus undergoes a measurable shift called a **Confluence**. During a Confluence, the **Galactic Commons** — the ancient diplomatic institution that interprets Nexus behaviour — formally reassesses the standing of every empire and updates the **Cosmic Order**: the ranked hierarchy that determines initiative and priority for the coming ten Cycles.
+
+---
+
+## The Nexus, the Cosmic Order, and In-World Design Language
+
+### Design Principle: Every Mechanic Has an In-World Name
+
+Game systems are never presented to the player in bare mechanical terms. Turn order is not "you go last because you're winning" — it is the **Weight of Dominion**, a known consequence of Sovereign standing that every empire accepts when they rise. Catchup mechanics are not invisible difficulty adjustments — they are **Nexus Favour**, a phenomenon the lore of the game world explains and that other empires reference in diplomatic communications.
+
+The goal is that a player who has never read a manual can infer *why* things happen from the language the game uses to describe them. Every rule, every threshold, every mechanical event should have a name that belongs to the world of Nexus Dominion — not to the spreadsheet underneath it.
+
+### Design Principle: Combat and Negotiation Resolution Use the D20 System
+
+> **⚠ Pending Decision — Requires Further Design Review**
+
+Nexus Dominion intends to base its combat and potentially its negotiation resolution mechanics on the **d20 System Reference Document (SRD)**, based on the 3.5 era of the D20 System published by Wizards of the Coast under the Open Game License (OGL). This approach follows precedent set by games such as *d20 Modern* and *Star Wars: Saga Edition*, which adapted the d20 core mechanic to non-fantasy genres while retaining the foundational stat structure (STR, DEX, CON, INT, WIS, CHA), derived stats (HP, AC, BAB, saving throws), and resolution model (d20 roll vs. target number).
+
+**Intended scope:**
+- All military units defined by D20 stat blocks (STR, DEX, CON, HP, AC, BAB, damage dice)
+- Special abilities expressed in D20 language (saving throws, conditional modifiers, unique passive effects)
+- Combat resolution (Fleet Engagement, Orbital Bombardment, Ground Invasion) using d20 roll mechanics
+- Negotiation outcomes potentially resolved with skill-equivalent checks (CHA-based, with situational modifiers)
+
+**Status:** The OGL text will be located and included in this repository when available. The exact adaptation of D20 mechanics to space-based 4X play (unit scale, fleet aggregation, etc.) requires design review before full commitment. All unit stat blocks in system documents should be written in D20 format as design references; exact values are tuning targets subject to this review.
+
+**Reference:** The D20 SRD and OGL were originally published by Wizards of the Coast. The OGL permits use of the core mechanic in derivative works under specified conditions. Compliance with the OGL terms must be confirmed before the game ships.
+
+### The Nexus
+
+The Nexus is an ancient, incompletely understood energy field that permeates the galaxy. Its origins are contested: some civilisations believe it is the remnant signature of a predecessor civilisation that predates all current empires; others hold that it is simply a measurable property of the universe at galactic scale. What is empirically established is that the Nexus is *reactive* — its measurable properties shift in response to the balance of power across the galaxy. When dominance concentrates in too few empires, the Nexus shifts. When civilisations are diminished, the Nexus appears to allocate priority toward their recovery.
+
+Whether the Nexus is conscious, mechanical, or something else entirely is one of the great unresolved questions of galactic civilisation. The Syndicate claims to have found a way to manipulate it. Most empires simply accept it as the governing physics of political life.
+
+### The Galactic Commons
+
+The Galactic Commons is the ancient diplomatic institution that formed around the interpretation of Nexus behaviour. It is not a government — no empire has ever agreed to be governed — but it is the framework within which all empires conduct diplomacy, sign treaties, declare war, and acknowledge each other's standing. The Commons has no military. Its power is entirely reputational. Violating Commons conventions is legal; it marks you as an empire the galaxy cannot trust.
+
+The Commons maintains the **Cosmic Order**: the formal ranking of every empire in the galaxy, updated at each **Nexus Reckoning**.
+
+### In-World Terminology Reference
+
+| Game Mechanic | In-World Term | In-World Explanation |
+|---|---|---|
+| One player turn | **Cycle** | A full rotation of action across the galaxy |
+| Ten cycles | **Confluence** | The period governed by one state of the Nexus; ends with a Reckoning |
+| The 10-cycle recalculation event | **Nexus Reckoning** | The formal moment when the Commons updates the Cosmic Order |
+| Power band ranking | **Cosmic Order** | The three-tier standing classification maintained by the Galactic Commons |
+| Dominant band (top 20%) | **Sovereign Tier** | Recognised dominant powers — granted prestige, subjected to scrutiny |
+| Field band (middle 60%) | **Ascendant Tier** | Empires in active competition — the contested majority of the galaxy |
+| Struggling band (bottom 20%) | **Stricken Tier** | Empires in adversity — the Nexus shows them priority; the Commons grants them initiative |
+| First-mover advantage for Stricken | **Nexus Favour** | The Nexus actively resists complete collapse of weakened civilisations; concentrated power is believed to destabilise the galactic field |
+| Acting last as Sovereign | **Weight of Dominion** | Dominant empires find their every action is anticipated and countered; momentum is greater, but initiative is constrained by the scrutiny dominance attracts |
+| Bot advancement rate | **Momentum Rating** | Each empire's inherent expansion velocity — a measure of infrastructure, ambition, and historical trajectory |
+| Anti-snowball coalition trigger | **Convergence Alert** | Issued by the Galactic Commons when any empire's standing threatens to destabilise the Cosmic Order; not a command, but a diplomatic signal of enormous weight |
+| Achievement threshold approached | **Nexus Signal** | Observable distortion in the Nexus field that indicates an empire approaching a threshold of galactic significance; other empires can sense it before the Commons formalises it |
 
 ---
 
 ## Goals
 
-- Players can start a game, play turns, and reach a victory condition in a typical 1–3 hour session.
-- All 6 victory conditions (Conquest, Economic, Diplomatic, Research, Military, Survival) are functional and reachable.
-- Up to 100 bot personas are active with working emotional state and relationship memory systems; bots feel like distinct personalities, not decision-tree clones.
-- The 10-sector galaxy is fully implemented with wormhole connectivity and phase-gated expansion (same-sector → adjacent sector → wormhole).
-- The LCARS UI is complete for all major screens, with the star map as the persistent command hub.
-- Turn processing completes in under 2 seconds (alpha target) and under 300ms (release target) at 100 active empires.
-- New players can learn the game through play and be engaging meaningfully within 10 minutes via a 5-step progressive tutorial.
-- The Syndicate hidden-role system and Tech Card draft system are integrated as core v1.0 features, not post-launch DLC.
+1. A player can launch a new campaign, receive embedded onboarding through early sector play, and understand their position in the galaxy without reading a manual.
+2. One hundred bot opponents advance via individual turn ratios, producing emergent power dynamics where dominant empires accumulate strength through gameplay rather than scripting.
+3. All achievement paths (Conquest, Trade Prince, Market Overlord, Cartel Boss, Grand Architect, Singularity, Warlord, Endurance, Shadow Throne) are simultaneously tracked, accessible through distinct playstyles, and can each be legitimately pursued to completion.
+4. The galaxy responds to every major achievement with a specific emergent event — a new threat, a new opportunity, or a coalition — that extends the campaign rather than ending it.
+5. Turn processing handles one hundred active empires and produces a resolved game state within acceptable performance targets (defined per phase in the Timeline section).
+6. The Syndicate is discoverable through play without upfront explanation; the discovery moment is a meaningful experience, not a tutorial prompt.
+7. Scenario packs can define a starting state, a target achievement, and optional constraints without modifying the base engine.
 
 ---
 
 ## Non-Goals
 
-The following are explicitly out of scope for v1.0 and should not be designed for or built toward:
-
-- **No human-vs-human multiplayer.** Nexus Dominion is a single-player experience. The "100 opponents" are all bots. Multiplayer infrastructure, matchmaking, and synchronisation are not part of this product.
-- **No real-time gameplay.** The game is turn-based. There are no timers that force player decisions. The player acts, then cycles the turn. Bot actions resolve after the player commits.
-- **No live-service or persistent accounts.** Each game is self-contained. There is no account progression, no daily quests, no seasonal content, and no between-session meta-progression in v1.0.
-- **No hard session time limit.** While a typical session is designed to conclude in 1–3 hours, there is no game-imposed timer or forced ending. Long-form campaigns with extended turn counts are valid play modes.
-- **No authored campaign or scripted narrative.** Story emerges from gameplay (the "natural selection" philosophy). There are no authored cutscenes, scripted boss encounters, or hand-crafted missions. Drama is emergent, not written.
-- **No pay-to-win or monetisation mechanics.** No in-game purchases, premium currency, or paywalled content exist in the v1.0 scope.
-- **No mobile-first design.** Mobile support is a Beta 2 objective. Alpha and Beta 1 target desktop/tablet browsers. Mobile optimisation (touch targets, responsive layouts, bundle size) is explicitly deferred.
-- **No LLM-powered bots in Alpha.** Tier 1 elite bots powered by LLM are a Beta 2 feature. Alpha ships with archetype-driven strategic bots (Tier 2), rule-based bots (Tier 3), and chaotic random bots (Tier 4).
-- **No WMD systems in Alpha.** Chemical, nuclear, and bioweapon systems are a Beta 1 feature, gated behind Syndicate Black Market and high research. They are not part of the Alpha combat system.
-- **No post-launch expansion content.** Features documented in FUTURE.md (psionic weapons, information warfare, advanced coalition raids, branching tech trees) are not part of v1.0 scope.
+- **No multiplayer.** The simulation is the multiplayer. No server infrastructure, no player accounts, no live-service features in the base game.
+- **No forced time or turn limits in the base campaign.** The game does not end because a turn counter expired. Scenarios may impose constraints; the base campaign does not.
+- **No authored narrative arcs.** There is no scripted storyline. Events, rivalries, and alliances emerge from simulation. The game does not direct the player toward a predetermined story.
+- **No real-time elements.** The game is strictly turn-based. Bot advancement is measured in actions per player turn, not in real clock time.
+- **No tech stack commitment in this document.** Architecture and technology decisions are deferred to the architecture document and will be decided after this PRD is approved.
+- **No mobile-first design.** The primary target is desktop browser. Mobile responsiveness is a post-v1.0 consideration.
+- **No cloud save or account system in v1.0.** Campaign persistence is local.
 
 ---
 
@@ -59,605 +112,557 @@ The following are explicitly out of scope for v1.0 and should not be designed fo
 
 ### Personas
 
-**Single-player 4X enthusiast:** A player familiar with Master of Orion, Stellaris, or Civilization who wants strategic depth but cannot commit to multi-day campaigns. They want sessions that conclude in a sitting and prefer not to compete against power gamers in multiplayer environments. They appreciate systems with depth, emergent stories, and meaningful choices — not busywork.
+**The Admiral** — Primary persona. A single-player 4X enthusiast who has logged hundreds of hours in Stellaris, Crusader Kings, or Civilization. Wants strategic depth, genuine rivals, and a game that respects their time without being shallow. Does not want to schedule multiplayer sessions or compete with power gamers. Plays in long sessions when available, shorter sessions when not — and wants the game to accommodate both.
 
-**New player:** Someone new to the 4X genre who needs guided onboarding. They should be able to learn the game through play, not through a manual. They are comfortable with digital interfaces and light strategy games, but have never managed a galactic empire before.
+**The Challenger** — Wants a defined objective with a clear sense of completion. Prefers curated scenario packs to open-ended campaigns. Measures success by whether they hit the target achievement within the scenario constraints. Will return to the base campaign once they understand the systems.
 
-**Returning player:** A player who has completed at least one game and understands the core loop. They want replayability: different bot behaviours, varied starting conditions, and new strategies unlocked by the Syndicate and Tech Card systems.
+**The Explorer** — Plays primarily to discover. Delights in finding hidden systems (the Syndicate), understanding emergent dynamics (why a particular bot became the galaxy's dominant power), and uncovering the relationships between systems. Reads event logs, studies bot behaviour, and treats the galaxy as a mystery to be decoded.
 
 ### Stories
 
-**Core Loop:**
-- As a **single-player 4X enthusiast**, I want to **pursue multiple viable victory paths** so that **each playthrough feels distinct and strategically meaningful**.
-- As a **single-player 4X enthusiast**, I want to **face bot opponents with unique personalities and emotional states** so that **the game generates emergent drama comparable to a multiplayer experience**.
-- As a **single-player 4X enthusiast**, I want to **complete a full game in a single sitting** so that **I experience a complete strategic arc — beginning, escalation, and resolution — without scheduling multiple sessions**.
-- As a **returning player**, I want to **discover hidden Syndicate roles and draft Tech Cards** so that **each game has a distinct tactical flavour and creates moments of surprise and deduction**.
+**Onboarding and Early Game**
 
-**Onboarding:**
-- As a **new player**, I want to **learn the game through a 5-step progressive tutorial** so that **I am playing meaningfully within 10 minutes without reading documentation**.
-- As a **new player**, I want to **receive protection from bot aggression for my first turns** so that **I have time to establish my empire and learn core mechanics before facing attacks**.
-- As a **new player**, I want to **see complexity unlock gradually over the first 60 turns** so that **I am never overwhelmed and always feel competent**.
+- As **The Admiral**, I want to start a new campaign and be guided into my first sector without a mandatory tutorial screen, so that the game feels alive from the first moment rather than administrative.
+- As **The Admiral**, I want to see which neighbouring empires are the greatest immediate threats and which are manageable, so that I can make meaningful decisions in turn one.
+- As **The Challenger**, I want to select a scenario pack with a defined objective before starting, so that I know what I am working toward from the beginning.
 
-**Empire Management:**
-- As a **player**, I want to **see my star map at all times as the central reference point** so that **I never lose spatial context or strategic awareness**.
-- As a **player**, I want to **manage five distinct resources with clear production and consumption feedback** so that **economic decisions feel meaningful and legible**.
-- As a **player**, I want to **build diverse military units across three combat domains** so that **fleet composition and strategic planning matter**.
+**Mid-Game Expansion and Strategy**
 
-**Diplomacy & Social:**
-- As a **player**, I want to **form treaties, alliances, and coalitions with bot opponents** so that **diplomacy is a genuine strategic tool, not window dressing**.
-- As a **player**, I want to **observe bot behaviour and deduce their archetypes** so that **reading the political situation is a skill I can develop**.
-- As a **player**, I want to **see the galaxy react when I near victory (automatic coalition formation)** so that **endgame is a climactic struggle against the field, not a foregone conclusion**.
+- As **The Admiral**, I want to pursue territorial expansion through multiple means — military conquest, economic acquisition, diplomatic arrangement — so that my playstyle determines my path rather than the game choosing it for me.
+- As **The Admiral**, I want to observe other empires fighting each other without my involvement, and see their relative power shift as a result, so that the galaxy feels like a living simulation rather than a static backdrop.
+- As **The Admiral**, I want to enter into treaties, form alliances, and join or lead coalitions, and have those choices remembered by the empires I made them with, so that diplomacy has genuine weight.
+- As **The Explorer**, I want to discover the Syndicate through play — a reference in an intercepted message, an unusual contract offer, a rumour from a bot contact — so that the discovery feels earned rather than delivered by a tooltip.
 
-**Syndicate (Hidden Roles):**
-- As a **Syndicate player**, I want to **complete shadow contracts while appearing loyal** so that **the hidden role creates a dual narrative tension between my public and secret objectives**.
-- As a **Loyalist player**, I want to **investigate suspicious behaviour and accuse potential Syndicate members** so that **the deduction layer adds a social thriller quality to strategic play**.
+**Late Game and Achievements**
+
+- As **The Admiral**, I want to see my progress toward multiple achievement paths simultaneously, so that I can choose which to pursue based on my current position rather than a declaration I made at game start.
+- As **The Admiral**, I want the galaxy to react when I approach a major achievement threshold — rivals forming cartels, coalitions mobilising, pirates emerging — so that the final push feels like a climax rather than a formality.
+- As **The Admiral**, I want to see when a bot earns an achievement — particularly Grand Architect, if a bot leads the coalition that stops a dominant empire — as a galaxy-wide event, so that the simulation feels as competitive as multiplayer.
+- As **The Explorer**, I want to discover that I can control the Syndicate, pursue that path, and understand the risk of exposure, so that the Shadow Throne feels like a hidden depth layer rather than a listed objective.
+
+**Campaign Persistence**
+
+- As **The Admiral**, I want to save my campaign, close the game, and return to exactly the state I left, so that I can play across multiple sessions without losing progress.
+- As **The Admiral**, I want each achievement I earn to persist as a title in my campaign record, so that my history in the galaxy is cumulative and meaningful.
+
+---
+
+## Requirements
+
+### 1. Game Loop and Turn Processing
+
+**In-world language:** A single player turn is a **Cycle**. Ten Cycles constitute a **Confluence**. At the end of each Confluence, the **Nexus Reckoning** reassesses empire standings and updates the **Cosmic Order** for the next Confluence.
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Player can submit a Cycle by queuing actions and committing them; the engine resolves all actions and returns an updated game state. |
+| P0 | Bot actions are resolved each Cycle according to each bot's Momentum Rating; a bot with a rating of 0.5 takes one action for every two player Cycles, a bot with rating 2.0 takes two actions per player Cycle. |
+| P0 | Cycle processing is atomic — the game state is either fully resolved or not committed; partial resolution does not persist. |
+| P0 | **The Cosmic Order governs Cycle resolution order.** Empires are sorted into three tiers, recalculated at each Nexus Reckoning (every 10 Cycles): **Stricken** (bottom 20% by power), **Ascendant** (middle 60%), **Sovereign** (top 20%). Within each Cycle, Stricken empires resolve first (**Nexus Favour**), then Ascendant, then Sovereign (**Weight of Dominion**). Within each tier, resolution order is randomised per Cycle. |
+| P0 | The Nexus Reckoning fires at the end of every 10th Cycle. It recalculates tier membership using a rolling 5-Cycle average of empire power scores, not the instantaneous score, to prevent single-Cycle oscillation. |
+| P0 | The Nexus Reckoning is a surfaced game event — it appears in the turn summary modal and the event log with the updated Cosmic Order. Tier changes for notable empires (player, named rivals, achievement-holders) are called out explicitly. |
+| P0 | Cycle processing completes within 5 seconds per Cycle in alpha (100 empires). Target for release is under 1 second. |
+| P1 | A turn summary modal (the **Cycle Report**) displays after each committed Cycle, showing: combat outcomes, diplomatic changes, market movements, achievement progress, and galaxy-wide events. If a Nexus Reckoning occurred, the updated Cosmic Order is displayed first. |
+| P1 | The full event log of the Cycle is accessible to the player for review after the Cycle Report. |
+| P1 | The Cycle counter and current Confluence number are always visible in the HUD (e.g., "Cycle 47 · Confluence 4"). |
+| P1 | The HUD shows cycles remaining until the next Nexus Reckoning (e.g., "3 cycles until Reckoning"). |
+| P2 | Cycle history is browsable so the player can review how the game state evolved over prior Cycles. |
+
+### 2. Galaxy and Sector System
+
+**Geographic Model:** The galaxy has two tiers. **Sectors** (10 total) are strategic geographic regions — not owned, but contested. **Star Systems** (250 total, 25 per sector) are the basic unit of ownership: individual worlds that empires colonise, build on, and fight over. Holding a majority of star systems within a sector constitutes **Sector Dominance**, which confers strategic bonuses.
+
+**Starting Configuration:** 100 star systems are claimed at campaign start (one home system per empire). 150 star systems are unclaimed and available for colonisation. Per sector: ~10 empires, 10 home systems, ~15 unclaimed systems.
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | The galaxy contains 10 sectors and 250 star systems (25 per sector). Sectors are geographic regions; star systems are the unit of ownership. |
+| P0 | Each empire starts with exactly one home system inside a starting sector. Home systems cannot be purchased or colonised — only taken by conquest. |
+| P0 | The star map displays all 250 star systems as nodes, coloured by controlling empire, grouped visually by sector. Active alliance lines connect allied empires. |
+| P0 | Unclaimed star systems (150 at campaign start) can be colonised by any empire; colonisation has a resource cost and a construction time measured in turns. |
+| P0 | Sectors have adjacency relationships. Claiming a **border system** (a star system at the edge of a sector) is the prerequisite for expanding into the adjacent sector. |
+| P0 | All 250 star systems can be claimed. When unclaimed space runs out, every expansion requires combat, a diplomatic trade, or staying within current holdings. |
+| P1 | **Sector Dominance** is achieved by holding 13 or more of the 25 star systems in a sector. Dominance confers resource bonuses and contributes to territorial achievement thresholds. |
+| P1 | Sector types produce different resource mixes (e.g. a mineral-rich sector produces more Ore; a populated sector produces more Food and Credits). Strategic value varies across the galaxy. |
+| P1 | Wormhole construction creates a direct connection between two specific star systems in non-adjacent sectors. Wormholes require significant resource investment and construction time. |
+| P1 | Star system development level is tracked; developed systems produce more resources but cost more to maintain and are more valuable targets. |
+| P1 | Empire star system count, sector dominance count, and total controlled territory are visible on the star map and in the empire panel. |
+| P2 | Galaxy configuration (sector layout, adjacency graph, resource distribution across star systems) can be procedurally generated with tunable parameters for variety across campaigns. |
+
+### 3. Empire Management
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Each empire tracks five resource types: Credits, Food, Ore, Petroleum, Research Points. |
+| P0 | Resources are produced and consumed each turn based on the empire's star systems, their development level, military, and infrastructure. |
+| P0 | Military units require maintenance resources each turn; failure to pay maintenance degrades unit effectiveness or causes attrition. |
+| P0 | Player can view their full resource ledger: production, consumption, net income per turn, and reserves. |
+| P1 | Empire net worth is calculated from resources, territory, military strength, and research level; this figure drives several achievement thresholds. |
+| P1 | Civil status system (a measure of internal stability) affects resource income multipliers; overextension or sustained conflict degrades civil status. |
+| P1 | Population per star system is tracked; food shortfalls cause population decline, which reduces that system's production capacity. |
+
+### 4. Military System
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Six unit types exist across three domains: Space (fleet units), Orbital (defence platforms and bombardment units), and Ground (troop units). |
+| P0 | Military units are produced in a build queue; production takes turns and consumes resources. |
+| P0 | Military power is calculated from unit composition and used in achievement tracking and anti-snowball coalition triggering. |
+| P1 | Fleet composition affects combat effectiveness; balanced fleets outperform single-type stacks in some contexts. |
+| P1 | Military maintenance costs scale with total force size; overextended militaries create economic strain. |
+| P2 | Unit upgrade paths are available through the research system. |
+
+### 5. Combat System
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Three distinct combat modes exist: Fleet Engagement, Sector Blockade, and Ground Invasion. Each has different mechanics, risk profiles, and outcomes. |
+| P0 | **Fleet Engagement:** Attacking and defending fleets resolve in the space around a contested star system. Outcome is determined by fleet composition, military power, and strategic modifiers. Results produce clear casualty counts and a victor. Fleet victory is required before orbital bombardment or ground invasion can proceed. |
+| P0 | **Blockade:** A blockading force seals the trade and supply routes of a target star system without occupying it. Over sustained turns, the blockaded system suffers resource shortfalls, population strain, and military degradation. Blockades can be broken by a relieving fleet. A blockade can target a single system or, with sufficient force, multiple systems within a sector simultaneously. |
+| P0 | **Ground Invasion:** Requires prior fleet superiority over the target star system and optionally orbital bombardment. Troop forces engage in surface combat; victory transfers ownership of the star system to the attacker. Orbital bombardment phase is optional but reduces defender troop strength and system defences before ground engagement. |
+| P0 | Defender advantage: defending forces at their home system receive a structural bonus to combat effectiveness. |
+| P0 | Combat outcomes are reported to the player with enough detail to understand why the result occurred (force comparison, modifiers applied, key moments). |
+| P1 | Orbital bombardment is a distinct phase between fleet victory and ground invasion; it reduces defender troop strength and star system defences at the cost of turns and ordnance. |
+| P1 | Covert infiltration enables targeted damage (sabotage, assassination, intelligence gathering) without formal declaration of war; see Covert Operations. |
+| P2 | Historical combat log is browsable per empire and per star system. |
+
+### 6. Bot AI System
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Each bot is assigned a turn ratio at campaign generation: Fodder (0.5–0.75), Standard (1.0), Elite (1.25–1.5), or Nemesis (2.0). Specific values within each tier are tunable and will be calibrated through simulation. |
+| P0 | Each bot belongs to one of eight archetypes: Warlord, Diplomat, Merchant, Schemer, Turtle, Blitzkrieg, Tech Rush, Opportunist. Archetype determines decision priorities and default behaviour. |
+| P0 | Each bot maintains an emotional state (anger, fear, greed, ambition) that modifies decision-making and shifts in response to events. |
+| P0 | Each bot maintains relationship memory with every other empire (including the player) — tracking past agreements, violations, conflicts, and favours. |
+| P0 | Bots take actions each turn cycle in accordance with their turn ratio; bot-vs-bot conflicts resolve without player involvement. |
+| P0 | Bot decisions are deterministic given the same game state (no hidden random seeds that cannot be traced); this supports simulation and debugging. |
+| P1 | Four intelligence tiers determine decision quality: Nemesis (highest — adversarial, adaptive), Elite (strategic — goal-tree with personality), Standard (rules-based with archetype flavour), Fodder (weighted random). |
+| P1 | Bots pursue achievement paths aligned with their archetype; Warlords pursue military achievements, Merchants pursue economic achievements, etc. |
+| P1 | Bots form coalitions against dominant empires independently when self-preservation instincts trigger. |
+| P1 | Bot names, titles, and achievement history are surfaced to the player through the star map and event log. |
+| P2 | Nemesis-tier bots optionally use an external LLM API for decision generation; the system degrades gracefully to Elite tier behaviour if the API is unavailable. |
+| P2 | One hundred distinct bot personas with names, backstories, and behavioural flavour text are included; each feels meaningfully different from others. |
+
+### 7. Diplomacy System
+
+> **Full design:** `docs/systems/DIPLOMACY-SYSTEM.md`
+
+All diplomatic instruments are formally registered with the **Galactic Commons** and are visible to all empires. Violations are witnessed galaxy-wide — not only by the aggrieved party. The three treaty types are defined below; full mechanical rules, reputation formulas, bot integration, and balance targets are in the system design document.
+
+**Treaty Types:**
+
+| In-World Name | Common Name | Summary |
+|---|---|---|
+| **Stillness Accord** | NAP | Mutual non-aggression. Minimum unit of trust. Opens basic trade access. No military or intelligence obligations. |
+| **Star Covenant** | Alliance | Shared destiny. Mutual military defence, 15% trade discount, full intelligence sharing. Publicly visible as Covenant Lines on the star map. |
+| **Nexus Compact** | Coalition | Vow with a purpose. Multi-party military action against a declared target. Shared War Chest, combat bonus vs target, path to Grand Architect achievement for the Compact leader. |
+
+**Violation Consequences (summary):**
+
+| Violation | In-World Designation | Reputation Hit | Key Consequence | Recovery |
+|---|---|---|---|---|
+| Break a Stillness Accord | *Breach of Accord* | −20 | Victim: +25% combat vs you for 10 Cycles | ~20 Cycles |
+| Break a Star Covenant | *Covenant Breaker* | −50 | All Covenant members hostile; −60% Covenant acceptance for 30 Cycles | ~30 Cycles |
+| Abandon a Nexus Compact | *Compact Traitor* | −40 | All Compact members hostile; −50% Compact leadership acceptance for 50 Cycles | ~50 Cycles |
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Player can propose, accept, and reject all three treaty types: Stillness Accord, Star Covenant, Nexus Compact. All treaties are registered with the Galactic Commons and visible to all empires. |
+| P0 | Each treaty type provides defined mechanical benefits (trade discounts, military obligations, intelligence sharing, combat bonuses) as specified in `docs/systems/DIPLOMACY-SYSTEM.md`. |
+| P0 | Treaty violations trigger the designated Commons response, the specified reputation penalty, and the victim's combat bonus — applied immediately and galaxy-wide. |
+| P0 | Bots respect and violate treaties according to their archetype, emotional state, and strategic situation — not randomly. Schemer-archetype bots are specifically designed to enter Covenants with intent to betray them at a strategically chosen moment. |
+| P1 | Reputation is a persistent per-empire score (range and rebuild mechanic defined in the system doc). It affects treaty offer acceptance rates and negotiation terms for all other empires. |
+| P1 | Convergence Alert fires when any empire approaches a major achievement threshold; the Commons notifies all empires and invites Nexus Compact formation. |
+| P1 | Bots form Nexus Compacts against dominant empires without player prompting, driven by self-preservation instincts and archetype priorities. |
+| P1 | Grand Architect achievement is earnable by any empire (player or bot) that leads the Compact which topples the dominant power. Bot Grand Architect events are surfaced as galaxy-wide events in the Cycle Report and event log. |
+| P1 | Covenant Lines (active Star Covenants) are visible on the star map as connecting lines between allied empire home systems. Nexus Compact membership is indicated by a distinct visual marker. |
+| P2 | Diplomatic communications use bot persona flavour — messages from bots reflect their archetype, emotional state, and relationship history with the player. |
+| P2 | Reconciliation mechanic: former Covenant or Compact partners can pursue reputation repair through sustained non-hostile behaviour over multiple Confluences. |
+
+### 8. Research System
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Research advances through eight levels; each level unlocks capabilities and stat improvements. |
+| P1 | Research is structured as a draft: the player selects a Doctrine from a limited set of options, permanently forgoing alternatives. Doctrines determine strategic identity. |
+| P1 | Three strategic research paths exist (War Machine, Fortress, Commerce) each with a distinct Capstone ability unlocked at full completion. |
+| P1 | Completing a full research path to Capstone contributes toward the Singularity achievement. |
+| P1 | Research investments provide meaningful capability improvements, not incremental percentage bonuses; each level should change what the player can do. |
+| P2 | Bots pursue research paths aligned with their archetype and compete for doctrine availability where applicable. |
+| P2 | Capstone abilities are unique and game-changing — they should visibly shift the player's strategic position when unlocked. |
+
+### 9. Market System
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | Player can buy and sell resources at market prices that fluctuate based on supply and demand each turn. |
+| P0 | Market prices are affected by empire trade activity, blockades, and resource production across the galaxy. |
+| P1 | Trade routes form between star systems and generate ongoing income; they can be disrupted by blockades or covert operations. Routes crossing sector borders are more valuable but more exposed. |
+| P1 | A Black Market is accessible through Syndicate engagement; it offers prohibited resources and capabilities unavailable on the open market. |
+| P2 | Market manipulation is a viable strategy: cornering a critical resource for a sustained period triggers the Cartel Boss achievement conditions. |
+| P2 | Anti-manipulation detection: sustained cornering triggers galactic sanctions as an organic galaxy response, not a punitive game mechanic. |
+
+### 10. Covert Operations
+
+| Priority | Requirement |
+|----------|-------------|
+| P1 | Player can assign agents to covert operations targeting rival empires: espionage (gather intelligence), sabotage (damage infrastructure or military), and elimination (targeted assassination of bot leaders). |
+| P1 | Operations carry a detection probability; detected operations trigger diplomatic consequences and may cause declarations of war. |
+| P1 | Intelligence operations can reveal information about rival empires: resource levels, military strength, treaty relationships, research progress. |
+| P2 | Intelligence operations at sufficient depth can reveal Syndicate affiliation of a rival empire (or expose the player's own affiliation to rivals). |
+| P2 | Covert operations are a viable path to territorial weakening without formal military engagement, enabling strategic flexibility. |
+
+### 11. Syndicate System
+
+| Priority | Requirement |
+|----------|-------------|
+| P1 | The Syndicate exists as a galaxy-wide shadow organisation in every campaign. Its existence is not explained to the player at campaign start. |
+| P1 | The player discovers the Syndicate through organic gameplay cues: intercepted communications, unusual contract offers, rumours surfaced through diplomacy or intelligence operations. |
+| P1 | Once discovered, the player can engage with the Syndicate for access to the Black Market and covert contracts. |
+| P1 | Syndicate contracts offer significant rewards in exchange for activities that may conflict with overt diplomatic relationships. |
+| P2 | The player can work toward Syndicate control by completing a sequence of escalating contracts and accumulating influence within the organisation. |
+| P2 | Syndicate control is a hidden game state — it is not announced to the galaxy. The controlling empire appears to be a normal participant in galactic politics. |
+| P2 | Any empire (player or bot) can potentially uncover another empire's Syndicate affiliation through high-level intelligence operations. |
+| P2 | Exposure of Syndicate control triggers a "burn the hidden hand" response from the galaxy — a distinct coalition threat aimed at eliminating the shadow power, qualitatively different from standard anti-snowball coalitions. |
+| P2 | Shadow Throne is the prestige achievement for controlling the Syndicate while holding another major achievement — and never being exposed. It is the rarest achievement in the game. |
+
+### 12. Achievement System
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | All achievement paths are tracked simultaneously in game state; the player does not declare a single victory path at campaign start. |
+| P0 | When any empire reaches an achievement threshold, the achievement is commemorated with a title badge and a galaxy-wide event. The campaign continues. |
+| P0 | The galaxy responds to each achievement with a specific emergent event that creates new strategic conditions (see Achievement Table in VISION.md). |
+| P1 | Bots can earn achievements; bot achievements are surfaced as galaxy events in the turn summary and event log. |
+| P1 | Achievement progress is visible to the player for their own empire across all paths. |
+| P1 | Anti-snowball coalitions scale to all achievement paths: economic approach to Trade Prince triggers cartel formation, research approach to Singularity triggers military prioritisation, etc. |
+| P2 | Prestige combinations are tracked: Shadow Throne requires Syndicate control plus any other achievement, with no exposure event having occurred. |
+| P2 | Earned titles accumulate across the campaign and form a persistent campaign record. |
+
+**Achievement Definitions:**
+
+| Achievement | Trigger Condition | Galaxy State at Trigger (estimated) |
+|---|---|---|
+| **Conquest** | Holds a dominant share of star systems; sufficient rivals eliminated | ~45 eliminated, ~55 remaining, achiever holds ~80 systems |
+| **Trade Prince** | Net worth exceeds nearest rival by a sustained margin | ~25 eliminated, ~75 remaining, achiever holds ~10 high-value systems |
+| **Market Overlord** | Controls the majority of high-volume galactic trade hub systems for a sustained period | ~30 eliminated, ~70 remaining, achiever holds ~12 hub systems |
+| **Cartel Boss** | Corners a critical resource (holds its producing systems) and sustains it for a defined period | ~18 eliminated, ~82 remaining, achiever holds ~8 critical systems |
+| **Grand Architect** | Leads the coalition that topples the dominant power at time of achievement | ~50 eliminated (dominant power drove this), ~50 remaining |
+| **Singularity** | Completes a full research path through all eight levels to Capstone | ~20 eliminated, ~80 remaining, achiever holds ~6 well-developed systems |
+| **Warlord** | Directly defeats-in-detail a defined number of rival empires; holds every star system taken | ~40 eliminated by achiever, ~55 remaining, achiever holds ~40 systems |
+| **Endurance** | Survives a defined number of coalition attempts as the primary target | ~30 eliminated, ~70 remaining, achiever holds ~15 defensible systems |
+| **Shadow Throne** | Holds Syndicate control while holding any other achievement; was never exposed | Co-occurs with another achievement's galaxy state |
+
+> **Design Note:** Specific numeric thresholds for each achievement (star system counts, wealth ratios, coalition attempts survived, etc.) will be defined and calibrated through simulation. The galaxy state estimates above were derived by working backwards from expected end-state conditions for each path across a 250-system galaxy with 100 starting empires. They are starting points for simulation, not final values.
+
+### 13. Scenario Pack System
+
+| Priority | Requirement |
+|----------|-------------|
+| P2 | A scenario pack is a configuration layer that defines: starting galaxy state, target achievement, and optional constraints (turn limits, resource limits, starting handicaps). |
+| P2 | The base game engine runs without modification under a scenario configuration. |
+| P2 | Scenario packs may include additional code blocks for mechanics not present in the base engine (e.g. a scenario-specific resource type or event). |
+| P2 | Completing a scenario earns a scenario-specific badge distinct from base campaign achievements. |
+| P2 | Scenario packs are designed to be authored without deep engine knowledge — goals, parameters, and any scenario-specific code. |
+
+### 14. UI and Interface
+
+| Priority | Requirement |
+|----------|-------------|
+| P0 | The star map is always visible as the primary view. It is never replaced by a full-screen menu or panel. |
+| P0 | The star map renders all 250 star systems as individual nodes. Node colour indicates controlling empire (or unclaimed status). Sector boundaries are visible as grouped regions. |
+| P0 | All game actions are accessible via slide-in panels that overlay the dimmed star map. Panels are dismissed to return to full map view. |
+| P0 | A turn order sidebar or HUD shows current turn number, available action categories, and the commit turn control. |
+| P0 | A turn summary modal displays after each committed turn cycle before returning to the star map. |
+| P0 | The interface communicates the player's resource state, military strength, star system count, sector dominance count, and achievement progress without requiring navigation to a separate screen. |
+| P1 | LCARS aesthetic (Star Trek command console) is applied consistently: panel borders, colour language, typography. |
+| P1 | Star system nodes scale visually to reflect the controlling empire's military presence at that system. |
+| P1 | Active alliance and coalition lines are visible on the star map as connecting lines between empire home systems. |
+| P1 | Unclaimed star systems are visually distinct from claimed ones; their resource type is discoverable via hover or selection. |
+| P1 | Events in the event log are filterable (combat, diplomatic, economic, galaxy-wide, Syndicate). |
+| P2 | Animated resource counters and combat resolution displays add visual feedback for key moments. |
+| P2 | Bot persona flavour is communicated through styled communication panels when interacting diplomatically. |
+
+---
+
+## UI / UX
+
+### Key Screens / Views
+
+1. **Star Map** — The persistent primary view. Displays the galaxy, empire positions, territory, alliances, and relative power. Never leaves view; all other screens overlay it.
+2. **Empire Panel** — Slides in when the player selects their empire. Shows resource ledger, military summary, research progress, achievement tracking, and active treaties.
+3. **Star System Panel** — Slides in when the player selects a star system. Shows owner, development level, population, resource production, military presence, and available actions (colonise, develop, blockade, invade). Also shows the containing sector's dominance status and adjacency to other sectors.
+4. **Sector Overview Panel** — Slides in when the player selects a sector region. Shows all 25 star systems within it, ownership breakdown, dominance status, and which empires are competing for control.
+5. **Rival Empire Panel** — Slides in when the player selects a bot empire. Shows known intelligence, relationship status, treaty options, and combat history.
+6. **Military Panel** — Slides in for unit management, build queue, and fleet assignment.
+7. **Diplomacy Panel** — Slides in for treaty management, reputation display, and coalition status.
+8. **Research Panel** — Slides in for research progress, doctrine selection, and capstone status.
+9. **Market Panel** — Slides in for resource trading and active trade route management.
+10. **Covert Ops Panel** — Slides in for agent assignment and operation management. (Discovered, not upfront.)
+11. **Syndicate Panel** — Unlocked through discovery. Slides in for contract management, Black Market access, and (at higher progression) influence tracking. (Hidden until discovered.)
+12. **Turn Summary Modal** — Full-screen overlay after each committed turn. Shows combat outcomes, galaxy events, achievement progress, and bot achievement announcements. Dismisses to star map.
+13. **Achievement Log** — Persistent record of earned titles and campaign milestones.
+
+### Design Principles
+
+- **The star map is the board.** The game is played in relation to the map at all times. No action should require the player to lose spatial context.
+- **Panels are cards.** Information is examined temporarily and returned to context. Panels slide in, serve their purpose, and dismiss.
+- **Complexity scales with reach.** The player sees what is relevant to their current position. The full galaxy reveals itself as they expand, not at the start.
+- **Every Cycle has weight.** The Cycle commit is a decisive action. The Cycle Report is the payoff. The rhythm of plan → commit → receive should feel satisfying.
+- **The galaxy narrates itself.** Combat outcomes, bot achievements, coalition formations, Nexus Reckonings, and Syndicate events are surfaced through the event log and Cycle Report. The player learns the story of the galaxy by playing, not by reading encyclopaedia entries.
+- **Every mechanic has an in-world name.** No game system is presented to the player in bare mechanical terms. Turn order is the Cosmic Order. Catchup advantage is Nexus Favour. A power threshold crossed is a Nexus Signal. The UI uses in-world language at all times. Tooltips and help text explain what things *mean* in the world before they explain what they *do* mechanically.
+
+---
+
+## Architecture
+
+> **Note:** Architecture decisions are deferred. The technology stack, persistence model, runtime environment, and component boundaries will be defined in `docs/architecture.md` after this PRD is approved. The requirements above are written to be stack-agnostic.
+
+### Logical Components (Stack-Agnostic)
+
+```
+┌────────────────────────────────────────────────────┐
+│                  UI Layer                           │
+│  Star Map · Slide-in Panels · Turn HUD · Modals    │
+└──────────────────────┬─────────────────────────────┘
+                       │
+┌──────────────────────▼─────────────────────────────┐
+│               Game Engine Core                      │
+│  Cycle Processor · Combat Engine · Economy Engine   │
+│  Diplomacy Engine · Research Engine · Covert Engine │
+│  Achievement Checker · Syndicate Engine             │
+│  Nexus Engine (Cosmic Order · Reckoning · Signals)  │
+└──────────────────────┬─────────────────────────────┘
+                       │
+┌──────────────────────▼─────────────────────────────┐
+│                Bot AI System                        │
+│  Turn Ratio Scheduler · Archetype Decision Engine  │
+│  Emotional State Engine · Relationship Memory       │
+│  (Nemesis tier: optional LLM integration)          │
+└──────────────────────┬─────────────────────────────┘
+                       │
+┌──────────────────────▼─────────────────────────────┐
+│               Game State Store                      │
+│  Galaxy                                            │
+│  ├── Sectors [10] — geographic regions             │
+│  │   └── Star Systems [25 per sector, 250 total]  │
+│  │       ├── owner: EmpireId | null (unclaimed)   │
+│  │       ├── development_level                    │
+│  │       ├── population                           │
+│  │       ├── resource_profile                     │
+│  │       └── is_border_system: bool               │
+│  ├── Empires [1..100]                              │
+│  │   ├── resources · military · research          │
+│  │   └── relationships · achievement_progress     │
+│  ├── Bots [100] — momentum ratings · personas · state│
+│  ├── Cosmic Order                                  │
+│  │   ├── current_cycle · current_confluence        │
+│  │   ├── cycles_until_reckoning                   │
+│  │   ├── sovereign_tier: EmpireId[]               │
+│  │   ├── ascendant_tier: EmpireId[]               │
+│  │   └── stricken_tier: EmpireId[]                │
+│  ├── Diplomacy — treaties · reputation · coalitions│
+│  ├── Market — prices · trade routes · black market │
+│  ├── Syndicate — contracts · influence · exposure  │
+│  ├── Achievements — per-empire tracking + history  │
+│  └── Event Log — full campaign history            │
+└────────────────────────────────────────────────────┘
+```
+
+### Key Design Decisions (Agreed)
+
+| Decision | Rationale |
+|----------|-----------|
+| Persistent campaign, no forced ending | Core design identity; avoids session-length artificial constraint |
+| Turn-based, not real-time | Player should never feel pressured by clock time; bot advancement is measured in turn ratios, not real time |
+| Bot turn ratios as natural selection engine | Organic boss dynamics without scripting; same mechanics as player |
+| Achievements as milestones, not terminals | Campaign continues after each achievement; galaxy responds and generates new challenges |
+| Syndicate hidden at campaign start | Discovery is part of the experience; unlocks a depth layer for players who find it |
+| Ten-sector galaxy (bounded) | Geographic constraint creates phases of play and manageable cognitive load |
+| Scenario packs as configuration layer | Single engine; scenarios are goals and parameters, not a separate game |
+| The Nexus as cosmological framework | All mechanical decisions have in-world names derived from a consistent lore framework; the player experiences rules as world-behaviour, not game-behaviour |
+| Cosmic Order (power band turn ordering) via Nexus Reckoning | Preserves catchup mechanic without single-Cycle oscillation; 5-Cycle rolling average smooths tier transitions; in-world framing makes the mechanic feel earned rather than arbitrary |
+| Tech stack deferred | Game design should drive architecture, not the reverse |
+
+---
+
+## Tech Stack
+
+> **Deferred.** To be defined in `docs/architecture.md` after PRD approval. Constraints to carry into the architecture discussion:
+> - Persistence: campaign data must survive application close and re-open (database persistence required; local JSON is not sufficient)
+> - Performance: turn processing for 100 empires must meet targets defined in Requirements §1
+> - Deployment: browser-based primary target; desktop (Electron or equivalent) as secondary
+> - LLM integration: Nemesis-tier bots optionally use an external LLM API; system must degrade gracefully without it
+
+---
+
+## API
+
+### External Dependencies
+
+| Service | Used For | Risk |
+|---------|----------|------|
+| LLM API (provider TBD) | Nemesis-tier bot decision generation | Optional; system degrades to Elite tier if unavailable |
+
+### Internal Interfaces
+
+The game engine exposes the following logical interfaces (implementation form TBD):
+
+- **CycleProcessor.submitCycle(playerActions)** → GameStateDelta
+- **CombatEngine.resolve(engagement)** → CombatResult
+- **BotAI.generateActions(botId, gameState)** → BotActions
+- **NexusEngine.evaluateReckoning(gameState)** → CosmicOrderUpdate (fires every 10th Cycle)
+- **NexusEngine.checkSignals(gameState)** → NexusSignal[] (achievement threshold proximity alerts)
+- **AchievementChecker.evaluate(gameState)** → AchievementEvent[]
+- **SyndicateEngine.processContracts(gameState)** → SyndicateStateDelta
+- **GameState.save()** / **GameState.load(saveId)** → persistence operations
+
+---
+
+## Security
+
+- **Auth model:** No user accounts in v1.0. The game is local and single-player.
+- **Permissions:** Not applicable (single-user local application).
+- **Sensitive data:** LLM API key (if Nemesis bots are enabled). Key must not be embedded in client-side code; handling model to be defined in architecture.
+- **Secrets management:** API keys managed via environment configuration; not committed to source control.
+- **Compliance:** No PII collected. No server-side storage of user data. Not applicable in v1.0.
+- **Save file integrity:** Campaign save files should be validated on load to detect corruption; corrupted saves should fail gracefully with a clear error.
 
 ---
 
 ## Success Metrics
 
-| Metric | Alpha Target | Release Target | Measurement |
-|--------|-------------|----------------|-------------|
-| **Game Completion Rate** | 50%+ finish first game | 60%+ | Session analytics |
-| **Session Length** | Median 45–90 min | Median 60–120 min | Session analytics |
-| **Turn Processing** | < 2 seconds | < 300ms | Perceived instant response |
-| **Attacker Win Rate** | 40–50% | 47.6% ± 3% | Monte Carlo validation |
-| **Eliminations per Game** | 3–5 | 3–5 | Natural selection creates drama |
-| **Tutorial Completion** | > 70% | > 80% | Funnel analytics |
-| **Victory Variety** | 3+ conditions achieved | All 6 conditions achieved | Playtester reports |
-| **Bot Distinctiveness** | Playtesters identify archetypes | 100 unique personas feel distinct | Qualitative feedback |
-| **Feedback Sentiment** | — | > 80% positive | Beta survey |
+### Launch Criteria (Internal Alpha)
 
-### Definition of Done (v1.0)
+- A player can start a new campaign, play through at least 50 turns, and reach one achievement via at least two distinct paths.
+- Turn processing handles 100 active empires within the 5-second alpha target.
+- Bot archetypes are distinguishable — playtesters can identify which archetype a bot belongs to from its behaviour without being told.
+- The Syndicate is discoverable through normal play within 30 turns by a player who is looking, and within 60 turns by a player who is not.
+- Zero P0 bugs (crashes, data loss, game state corruption).
 
-1. Complete playable loop: start game → play turns → achieve victory.
-2. All 6 victory conditions functional and reachable in playtesting.
-3. 100 bot personas active with emotional state and relationship memory.
-4. 10-sector galaxy with wormhole connectivity.
-5. LCARS UI complete for all major screens; star map is persistent hub.
-6. Syndicate System active: hidden loyalty, contracts, accusation trials, Black Market.
-7. Tech Card System active: 40 cards, 3 tiers, draft mechanics, hidden objectives.
-8. Research System: 3-tier draft structure (Doctrines → Specialisations → Capstones).
-9. Turn processing < 300ms at 100 active empires.
-10. WCAG 2.1 AA compliance; full keyboard navigation.
-11. Crash rate < 0.1% of sessions; zero data loss incidents.
+### Growth Targets (Post-Launch)
+
+- 40% of players who start a campaign return for a second session.
+- All nine achievement types are earned by the community within the first month.
+- Shadow Throne is earned by at least one player within the first three months.
+
+### Health Signals (Ongoing)
+
+- Turn processing p95 under 1 second at 100 empires (release target).
+- Save/load round-trip completes with zero data loss.
+- Bot coalition formation triggers appropriately at achievement thresholds (detectable through simulation runs).
+- No achievement path is statistically dominant — achievement distribution across campaigns is meaningfully varied.
 
 ---
 
-## Architecture & Design Principles
+## Testing
 
-### 1. "Every Game Is Someone's First Game"
-*(Stan Lee / Mark Rosewater)*
+### Coverage Targets
 
-- New players can learn in 5 minutes.
-- Complexity unlocks progressively over 200 turns: sectors (1–20), borders (21–40), wormholes (41–60), galaxy domination (61+).
-- Required 5-step tutorial on first play; skippable on subsequent games.
-- Bot aggression is suppressed for the player's first turns to provide a safe learning environment.
+- **Unit:** Game mechanics functions (combat resolution, resource calculation, turn processing phases, achievement threshold evaluation) — 90% coverage target.
+- **Integration:** Full turn cycle end-to-end; coalition formation trigger; achievement detection and galaxy response; save/load round-trip.
+- **Simulation:** Automated 100-turn campaign runs with 100 bots to validate bot behaviour, turn ratio dynamics, and performance targets.
 
-### 2. "Foundation Before Complexity"
+### Critical Test Paths
 
-Build systems in dependency order. Combat must work before Covert Ops. Resource balance before market manipulation. Core loop validated before Syndicate hidden roles are layered on top. This is not just a development principle — it is a player experience principle. Complexity that arrives before the foundation is understood creates frustration, not depth.
+1. **Full turn cycle:** Player queues actions → commits turn → engine resolves player actions, all bot actions per turn ratio, diplomacy, market, achievements → game state updated → turn summary generated.
+2. **Combat resolution (all three modes):** Fleet engagement, blockade (sustained over multiple turns), ground invasion (with and without orbital bombardment phase).
+3. **Achievement detection and response:** Each of the nine achievements triggers correctly at threshold; galaxy response event is generated and surfaces in event log.
+4. **Coalition formation:** When any empire crosses the dominant power threshold, at least two other empires form defensive agreements within the next three turn cycles.
+5. **Syndicate discovery path:** A new campaign run includes detectable Syndicate discovery cues within the expected turn window.
+6. **Save/load fidelity:** Campaign saved at turn N and reloaded produces identical game state at turn N+1 as if never saved.
 
-### 3. "Backend-Frontend Completeness"
+### Definition of Done
 
-Every feature must be complete end-to-end:
-
-- Database schema defined.
-- Server actions implemented.
-- UI components rendered.
-- Tests validate behaviour.
-
-No orphaned backend logic or UI shells without data. A feature is not done until the player can see and interact with it.
-
-### 4. "Consequence Over Limits"
-
-No hard caps — the game responds to player behaviour rather than blocking it:
-
-- Leader hits 7 VP: automatic coalition forms across the galaxy.
-- Weak empires move first each turn (built-in catch-up mechanic).
-- Break treaties: reputation penalties make future diplomacy harder and bots more hostile.
-- Overextend militarily: economic collapse follows naturally from maintenance costs.
-- Run out of food: population declines, civil status drops, income craters.
-
-This philosophy keeps the player feeling in control while the world reacts to their choices.
-
-### 5. "Clarity Through Constraints"
-
-- 100 empires exist, but only ~10 are relevant at any moment (your sector's neighbours).
-- Fewer systems with deeper interactions beat many shallow systems.
-- Every feature must earn its place by serving the core experience.
-- Sectors are neighbourhoods, borders are roads, wormholes are highways.
-- Six well-designed victory paths beat twenty shallow ones.
-
-### 6. "Natural Selection Is the Content"
-
-Do not script boss encounters. Let them emerge from bot-vs-bot conflict. A bot that survived by eliminating five rivals and accumulating their territory IS the threat — organically powerful, not artificially inflated. The drama comes from watching the galaxy evolve, then choosing when and how to intervene.
-
-### 7. "The Map Never Leaves the Table"
-
-Inspired by boardgame design philosophy: the star map is the playing surface, and it is always visible. All other screens are overlays — panels examined like cards and set back down. Players should never lose spatial context. The board never gets put away.
+- [ ] All P0 requirements implemented and passing critical test paths
+- [ ] All P1 requirements implemented and covered by integration tests
+- [ ] Simulation runs pass performance targets (5s alpha, 1s release)
+- [ ] No open P0 bugs
+- [ ] Save/load round-trip verified with no data loss
+- [ ] Playtester feedback confirms bot archetypes are distinguishable
+- [ ] Playtester feedback confirms Syndicate is discoverable without prompting
 
 ---
 
-## What Makes This Special
+## Timeline
 
-| Differentiator | Description |
-|----------------|-------------|
-| **Geographic Strategy** | Galaxy divided into 10 sectors creates meaningful expansion phases (consolidate → expand → reach → dominate) |
-| **100 Unique Opponents** | Bot personas with 8 archetypes, emotional states, and persistent relationship memory create emergent drama |
-| **Progressive Complexity** | Onboarding teaches as you play; new mechanics surface naturally turn-by-turn |
-| **Anti-Snowball Design** | Coalition mechanics trigger automatically against any dominant power; victory is never inevitable |
-| **Hidden Roles (Syndicate)** | 10% of empires secretly serve the Syndicate; social deduction and paranoia layer over strategic play |
-| **Tech Card Draft** | Tactical card drafts every 10 turns add a CCG-lite layer of surprise and counter-play |
-| **Command Centre UI** | LCARS-inspired starmap is always visible; panels slide in like cards; boardgame feel in a digital medium |
+### Phase 1 — Foundation (Internal Alpha)
 
----
+**Goal:** The core loop is playable and verifiably fun. A campaign can be started, played through 50+ turns, and produce a first achievement.
 
-## System Overview
+**Delivers:**
+- Turn processor with all phases (production, combat, market, diplomacy, research, achievement check)
+- Galaxy and sector system (10 sectors, adjacency, border expansion)
+- Empire management (5 resources, military build queue, civil status)
+- Combat system: Fleet Engagement and Ground Invasion (P0 modes)
+- Bot AI: all four intelligence tiers, 8 archetypes, turn ratio scheduling, emotional state, relationship memory
+- Basic diplomacy (NAP, Alliance, Coalition treaties)
+- Research system (8 levels, linear progression — draft mechanic deferred to Phase 2)
+- Market system (buy/sell, dynamic pricing)
+- Achievement tracking: Conquest, Trade Prince, Warlord (three paths for alpha validation)
+- Star map UI, slide-in panels, turn summary modal
+- Save/load (local persistence)
 
-The game is composed of thirteen interdependent systems. They are listed here in priority order for development clarity (see also Build Strategy below). Each entry links to its detailed Tier 2 design document.
+**Explicitly deferred from Phase 1:** Blockade combat mode, Covert Operations, Syndicate, Research draft mechanic, full 100 bot personas, LLM Nemesis bots, Scenario packs, all P2 requirements.
 
----
+### Phase 2 — Core Systems (Closed Beta)
 
-### 1. Turn Processing System
+**Goal:** All major game systems are operational. All nine achievement paths can be reached. The game is deep enough for extended campaign play.
 
-The heartbeat of the galaxy. An atomic 17-phase execution pipeline ensures all 100 empires process in a deterministic order per turn. The pipeline separates transactional state updates (resources, combat results, sector ownership) from cosmetic bot logic (messages, personality reactions) for robust failure handling. Weak empires act first; dominant empires act last — a systemic catch-up mechanic baked into the turn sequence itself.
+**Delivers:**
+- Blockade combat mode
+- Covert Operations system
+- Syndicate system (discovery, engagement, contracts, Black Market)
+- Research draft mechanic (Doctrines, Specialisations, Capstones)
+- All nine achievement paths active and producing galaxy responses
+- Full anti-snowball coalition formation across all achievement types
+- Grand Architect achievement earnable by bots; surfaced as galaxy event
+- Reputation system and diplomatic memory fully operational
+- Wormhole construction
+- Full LCARS UI polish
 
-**Key Numbers:** Target < 2s (Alpha), < 300ms (Release) at 100 empires.
+### Phase 3 — Depth Layer (Open Beta)
 
-**Tier 2 Reference:** [TURN-PROCESSING-SYSTEM.md](other/Game%20Systems/TURN-PROCESSING-SYSTEM.md)
+**Goal:** The deepest systems work correctly. Syndicate control and Shadow Throne are reachable. Bot personas feel genuinely distinct.
 
----
+**Delivers:**
+- Syndicate control path and exposure mechanic
+- Shadow Throne prestige achievement
+- LLM Nemesis-tier bots (with graceful degradation)
+- Full 100 bot personas with names and backstory flavour
+- Scenario pack system (configuration layer)
+- Procedural expansion arcs triggered by achievements
+- Performance tuned to 1-second turn processing target
 
-### 2. Resource Economy
+### Phase 4 — Release (v1.0)
 
-Five resources power the empire: **Credits** (universal currency), **Food** (population and soldiers), **Ore** (military maintenance), **Petroleum** (military fuel and wormhole construction), and **Research Points** (technology advancement). Eight sector types produce different resource mixes, forcing specialisation decisions.
+**Goal:** Production-ready. All systems balanced. All achievement paths viable and distinct.
 
-Civil status multipliers (0.25× rioting → 1.0× content → 2.5× ecstatic) mean happiness is not cosmetic — it is a direct economic amplifier. Population grows on food surplus, declines on deficit. Consequences, not caps.
-
-**Key Numbers:** Commerce sectors: 8,000 credits/turn (content). Food sectors: 160 food/turn. Research sectors: 100 RP/turn.
-
-**Tier 2 Reference:** [RESOURCE-MANAGEMENT-SYSTEM.md](other/Game%20Systems/RESOURCE-MANAGEMENT-SYSTEM.md)
-
----
-
-### 3. Sector Management & Galaxy Structure
-
-Ten sectors of 8–10 empires each form the galaxy. Spatial relationships drive strategic phases:
-
-- **Same-sector attacks:** Free. These are your immediate neighbours.
-- **Adjacent-sector attacks:** Require border discovery (1.2× cost). These are your expansion targets.
-- **Distant attacks:** Require wormhole construction (1.5× cost, petroleum-intensive). These are your late-game reach.
-
-This structure eliminates analysis paralysis: you always know who matters now and who requires investment to reach. Sectors are neighbourhoods; expansion is earned.
-
-**Key Numbers:** 10 sectors × 10 empires = 100 total empires. 5 starting sectors per empire. Coalition trigger: 7+ VP.
-
-**Tier 2 Reference:** [SECTOR-MANAGEMENT-SYSTEM.md](other/Game%20Systems/SECTOR-MANAGEMENT-SYSTEM.md)
-
----
-
-### 4. Combat System
-
-Unified D20 resolution determines battle outcomes. The familiar 5% granularity (roll + stat modifier + bonuses ≥ target defence) creates clear probability, dramatic critical moments (nat 20 / nat 1), and transparent tactics.
-
-Full invasions resolve across three sequential domains — **Space → Orbital → Ground** — with cascading victory bonuses (+2 per domain won). Defenders receive a 10% home turf advantage. Three battle types offer strategic variety:
-
-- **Full Invasion:** Multi-domain, can capture 5–15% of defender's sectors.
-- **Covert Strike:** Ground-only sabotage; weakens without capturing territory.
-- **Blockade:** Economic strangulation; no combat, no capture.
-
-Six dramatic outcomes (Decisive Victory through Decisive Defeat) produce varied battle reports and ensure no two engagements feel identical. Unit cards use D&D-style STR/DEX/CON ability scores with derived HP, AC, and attack bonuses — familiar mechanics, space opera flavour.
-
-**Key Numbers:** Attacker win rate 47.6% at equal forces. Defender advantage 1.10×. Morale check at 50% losses (d20 + WIS vs DC 15). Surrender offer at 75% losses (CHA vs WIS opposed check).
-
-**Tier 2 Reference:** [COMBAT-SYSTEM.md](other/Game%20Systems/COMBAT-SYSTEM.md)
+**Delivers:**
+- All P0, P1, P2 requirements implemented
+- Balance pass across all achievement paths (numeric thresholds calibrated through simulation)
+- Full test coverage meeting targets
+- Documentation complete (in-game and developer-facing)
+- Zero P0/P1 bugs
 
 ---
 
-### 5. Military System
+## Open Questions
 
-Six unit types across three combat domains: **Fighters** and **Light/Heavy Cruisers** (Space), **Stations** (Orbital), **Carriers** (Space, support), and **Soldiers** (Ground). Production queues require multi-turn investment and resource management (Credits, Ore, Petroleum for maintenance).
-
-Three rarity tiers create power progression:
-- **Tier I (Standard):** Available Turn 1; stats 8–12.
-- **Tier II (Prototype):** Research-unlocked; stats 12–16; drafted every 10 turns (draw 2, keep 1).
-- **Tier III (Singularity):** Ultra-rare; stats 16–20; available Turn 50+; public announcement on acquisition.
-
-Fleet composition bonuses reward strategic diversity: a balanced fleet (4+ distinct unit types) gains +15% to all stats, discouraging mono-unit strategies.
-
-**Tier 2 Reference:** [MILITARY-SYSTEM.md](other/Game%20Systems/MILITARY-SYSTEM.md)
+| Question | Owner | Due |
+|----------|-------|-----|
+| Tech stack: language, framework, persistence technology, deployment model | VS7 | Before Phase 1 implementation |
+| LLM provider for Nemesis-tier bots: external API (Groq, OpenAI) or bundled local model? | VS7 | Before Phase 3 |
+| Achievement numeric thresholds: sector % for Conquest, wealth ratio for Trade Prince, etc. | Design + simulation | During Phase 1 balance pass |
+| Turn ratio specific values within each tier (simulation-calibrated) | Design + simulation | During Phase 1 |
+| Scenario pack authoring format: configuration file schema, supported constraint types | VS7 | Before Phase 3 |
+| How are Syndicate discovery cues seeded — random, scripted triggers, or player-action-gated? | VS7 | Before Phase 2 |
 
 ---
 
-### 6. Bot AI System
-
-Four-tier intelligence architecture creates varied opposition without requiring every bot to be computationally expensive:
-
-- **Tier 1 (Elite / LLM):** 10 bots powered by LLM reasoning; can adapt, remember, and surprise. *(Beta 2)*
-- **Tier 2 (Strategic / Archetype):** Rule-following bots with strong doctrinal behaviour.
-- **Tier 3 (Simple / Rule-Based):** Predictable but varied; good for filling out sectors.
-- **Tier 4 (Chaotic / Random):** Wildcard agents of entropy; create unpredictable events.
-
-Eight archetypes define strategic identities: **Warlord** (expand aggressively), **Diplomat** (seek alliances), **Merchant** (economic dominance), **Schemer** (covert ops and betrayal), **Turtle** (fortify and research), **Blitzkrieg** (fast early rush), **Tech Rush** (tech-to-win), **Opportunist** (attack the weakened).
-
-Bots track relationship memory and emotional states: a bot you helped becomes **Grateful** and offers favourable terms; a bot whose treaty you broke becomes **Vengeful** and coordinates against you. These states persist and evolve, creating the sense that your neighbours are characters, not scripts.
-
-**Tier 2 Reference:** [BOT-SYSTEM.md](other/Game%20Systems/BOT-SYSTEM.md)
-
----
-
-### 7. Victory Systems
-
-Six distinct paths to victory ensure every playstyle is viable:
-
-| Victory Type | Threshold | Typical Archetype |
-|--------------|-----------|-------------------|
-| **Conquest** | Control 60% of galaxy territory | Warlord, Blitzkrieg |
-| **Economic** | 1.5× networth of 2nd-place empire | Merchant, Opportunist |
-| **Diplomatic** | Coalition controls 50% of territory | Diplomat, Schemer |
-| **Research** | Complete Tier 3 capstone tech path | Tech Rush, Turtle |
-| **Military** | 2× military power of all others combined | Warlord |
-| **Survival** | Highest composite score at turn limit | Balanced play |
-
-**Victory Points (VP)** unify progress tracking on a 0–10 scale. Ten VP in any category triggers instant victory. Seven or more VP triggers the **anti-snowball coalition**: other empires receive combat bonuses against the leader, diplomatic penalties hamper the leader's treaties, and the galaxy telegraphs "this empire is the threat." Victory must be earned against a galaxy that fights back.
-
-**Tier 2 Reference:** [VICTORY-SYSTEMS.md](other/Game%20Systems/VICTORY-SYSTEMS.md)
-
----
-
-### 8. Diplomacy System
-
-Treaties (NAP, Alliance, Coalition) with reputation consequences. The system treats diplomatic relationships as **evolving states** influenced by reputation, trust scores, and observable behaviour — not binary switches.
-
-- **Non-Aggression Pact (NAP):** 20-turn minimum; breaking costs reputation.
-- **Alliance:** 30-turn minimum; shared intel, +10% trade bonus; breaking costs severe reputation.
-- **Coalition:** Formal multi-empire group; enables Diplomatic Victory; can be dissolved by vote or betrayal.
-
-Reputation tracks across the galaxy. Low reputation makes bots target you preferentially and makes treaties harder to form. High reputation opens diplomatic opportunities and makes bots extend good faith. Breaking treaties is always an option — but the galaxy remembers.
-
-Players cannot see bot archetype labels. Reading behaviour is the skill: does this empire's history suggest Diplomat or Schemer? Trust or prepare?
-
-**Tier 2 Reference:** [DIPLOMACY-SYSTEM.md](other/Game%20Systems/DIPLOMACY-SYSTEM.md)
-
----
-
-### 9. Research System
-
-Three-tier draft structure replaces passive tech-tree grinding with meaningful strategic choices at natural game phase transitions:
-
-| Tier | Name | Unlock Threshold | Visibility | Impact |
-|------|------|-----------------|------------|--------|
-| **Tier 1** | Doctrine | ~1,000 RP (~Turn 10) | PUBLIC | Strategic identity, combat stat bonuses |
-| **Tier 2** | Specialisation | ~5,000 RP (~Turn 30) | HIDDEN | Tactical advantage, counter-play potential |
-| **Tier 3** | Capstone | ~15,000 RP (~Turn 60) | PUBLIC | Game-changing power spike; Research Victory trigger |
-
-Three strategic paths: **War Machine** (offensive bonuses), **Fortress** (defensive and sustainability), **Commerce** (economic and expansion). Doctrines are publicly announced — opponents adapt. Specialisations are hidden — creating intel gameplay and deduction. Capstones are game-changing abilities that mark the endgame escalation.
-
-**Tier 2 Reference:** [RESEARCH-SYSTEM.md](other/Game%20Systems/RESEARCH-SYSTEM.md)
-
----
-
-### 10. Syndicate System
-
-A hidden criminal organisation transforms Nexus Dominion from pure 4X into **hidden role 4X with social deduction**. At game start, each empire (player and bots) secretly receives a Loyalty Card:
-
-- **90% Loyalist:** Play normally; pursue standard victory conditions; access the Suspicious Activity Feed; accuse suspected Syndicate members using Intel Points.
-- **10% Syndicate:** Play normally to avoid suspicion; access the hidden Syndicate Contract panel; complete 3 contracts for Syndicate Victory; access the Black Market for WMDs and forbidden tech.
-
-The Revelation Moment (Turn 50 or first contract completion) announces to the galaxy that a Syndicate operative is active — without identifying who. Paranoia sets in. Every unexplained production drop, market anomaly, and political assassination becomes a clue. Accusation trials create dramatic confrontations. The Schemer archetype's natural deceptive behaviour generates false positives, protecting real Syndicate agents behind a fog of suspicion.
-
-**Tier 2 Reference:** [SYNDICATE-SYSTEM.md](other/Game%20Systems/SYNDICATE-SYSTEM.md)
-
----
-
-### 11. Tech Card System
-
-A CCG-lite draft layer over the strategic Research system. Tech Cards are tactical tools that create emergent counter-play and in-session variation:
-
-- **Tier 1 (Hidden Objectives):** Drawn at Turn 1; secret bonus scoring conditions revealed at game end.
-- **Tier 2 (Tactical Cards):** Drafted publicly every 10 turns; 40 unique cards with combat, economic, and diplomatic effects; opponent drafts are visible, enabling counter-picks.
-- **Tier 3 (Legendary Cards):** Ultra-rare drafts from Turn 50+; game-changing effects; public announcement.
-
-Tech Cards integrate directly with the D20 combat system (modifying STR/DEX/CON stats), not as abstract passive buffs. The draft cadence creates regular strategic inflection points across the entire game.
-
-**Tier 2 Reference:** [TECH-CARD-SYSTEM.md](other/Game%20Systems/TECH-CARD-SYSTEM.md)
-
----
-
-### 12. Market System
-
-A dynamic galactic market where prices fluctuate based on supply, demand, and random events. Players can profit by buying low and selling high, or deliberately manipulate prices to drain rival economies. The Merchant archetype uses predictive insight to dominate trade routes.
-
-Market activity creates indirect player interaction without requiring direct combat: an economic player can throttle a rival's military production by cornering Ore supply, without firing a shot.
-
-**Tier 2 Reference:** [MARKET-SYSTEM.md](other/Game%20Systems/MARKET-SYSTEM.md)
-
----
-
-### 13. Covert Ops System
-
-Asymmetric warfare that allows weaker empires to punch above their weight. Ten operation types span three categories:
-
-- **Theft:** Steal Credits, steal tech blueprints.
-- **Disruption:** Sabotage production, destroy units, poison food supply.
-- **Influence:** Assassinate commanders, incite civil unrest, plant false intel.
-
-Success depends on agent allocation and risk management. Failed operations expose the player to diplomatic consequences — detected ops damage relationships with the target and may be used as accusation evidence in Syndicate trials. Covert Ops pairs naturally with Syndicate contracts as an underdog comeback path.
-
-**Tier 2 Reference:** [COVERT-OPS-SYSTEM.md](other/Game%20Systems/COVERT-OPS-SYSTEM.md)
-
----
-
-### 14. Frontend / UI Design System
-
-LCARS (Star Trek) inspired design: glass panels over deep space backgrounds, orange/peach/violet colour palette, curved corners, animated resource counters, and ambient atmosphere. The UI expresses the **digital boardgame** philosophy:
-
-- **Star map as hub:** Always visible. All other screens are slide-in overlays, not separate pages.
-- **Panels as cards:** Examine and dismiss; map re-emerges. Spatial context never lost.
-- **Turn Order Panel:** Right-sidebar action checklist showing phase, completed actions, and the Cycle Turn button.
-- **Turn Summary Modal:** Post-turn event digest (like end-of-round cards in Pandemic): "You earned 10,500 credits. The Merchant Coalition declared war. Research completed."
-- **Unit cards:** D&D-style stat blocks with colour-coded tier borders (green Tier I, blue Tier II, purple Tier III) and 10-segment visual stat bars.
-
-Five UX problems specifically designed against: turn phase invisibility, passive-only warnings (no actionable guidance), buried star map, scroll-heavy interfaces, and administrative feel.
-
-**Tier 2 Reference:** [FRONTEND-DESIGN.md](other/Game%20Systems/FRONTEND-DESIGN.md)
-
----
-
-## Player Experience Arc
-
-Understanding the intended player journey is essential for prioritising which systems matter most, and when. The arc below describes a single game session.
-
-### Opening: The Board State (Turns 1–20)
-
-The player boots the game and sees the galaxy. Not a loading screen, not a menu — the star map. Their empire glows. Around them, 9–10 neighbours in their sector. This is their neighbourhood in space.
-
-The 5-step tutorial introduces one mechanic per prompt: collect resources → build a unit → attack a neighbour → form a treaty → end the turn. By Turn 5 the player is acting independently. By Turn 20 they understand their sector.
-
-During this phase, bot aggression is suppressed toward the new player, giving them breathing room. Bots fight among themselves. Natural selection begins. Some neighbours are already at war.
-
-### Early Game: Building the Engine (Turns 21–60)
-
-The player discovers borders — connections to adjacent sectors. Each border outpost opened is a strategic decision: fortify my position or race to grab that territory before a rival does?
-
-At Turn 10, the first research Doctrine draft fires. A choice of three identities: War Machine, Fortress, or Commerce. This public announcement lands in the galaxy feed — bots react. "The player has declared War Machine doctrine. Expect aggression."
-
-The market opens. The Tech Card draft cycle begins (every 10 turns). The player's empire starts to feel like theirs — a specific economic composition, a research identity, a roster of named bot relationships.
-
-### Mid Game: Competing for Dominance (Turns 61–150)
-
-Research Specialisation fires at Turn 30 (hidden). Research Capstone fires at Turn 60 (public). The player has a strategic identity and a tactical edge.
-
-Wormhole construction unlocks reach to distant sectors. The scope of the relevant galaxy expands from ~10 neighbours to ~30. Some bots have been eliminated. Emergent bosses — empires that won 5 fights and accumulated their victims' territory — now represent genuine threats.
-
-Victory Point tracking becomes visible on the HUD. Someone in the galaxy hits 5 VP in Conquest. Tension rises. The player must now think about both pursuing their own path and disrupting the leading threat.
-
-At some point between Turns 50–100, the Syndicate reveals itself. The message is galaxy-wide: "A Syndicate operative has completed their first contract." Paranoia sets in. The suspicious activity feed starts generating leads. Accusation Intel Points accumulate.
-
-### Endgame: The Board Fights Back (Turns 100–200+)
-
-As any empire approaches 7 VP, the anti-snowball coalition activates. If the player is leading, every other empire receives combat bonuses against them, diplomatic penalties hamper their alliances, and the galaxy sends a coordinated resistance. Victory must be seized against opposition.
-
-If a bot is leading, the player must decide: pursue their own path to victory, or join the coalition to pull the leader down first?
-
-Multiple empires near victory in different categories simultaneously creates a race: "I need 3 more sectors for Conquest, but Bot #47 is one research step from their Capstone."
-
-Endgame is a climax, not a grind. The winner earns it.
-
-### Victory Moment
-
-The screen freezes. LCARS panels flash victory gold. A cinematic announcement names the winner and victory type. The final galaxy state is displayed with territory, statistics, and the timeline of key moments. The player sees exactly how their choices shaped history.
-
----
-
-## Build Strategy
-
-Development proceeds in four phases, each gated by the success criteria of the previous phase. Systems are built in dependency order.
-
-### Phase 1: Internal Alpha — Validate the Core Loop
-
-**Goal:** Prove the game is fun at its most fundamental level.
-**Target:** Development team + 5–10 trusted playtesters.
-
-**Systems in scope:**
-- Turn Processing (17-phase pipeline)
-- Resource Economy (5 resources, 8 sector types, civil status)
-- Sector Management & Galaxy Structure (10 sectors, same/adjacent/wormhole)
-- Combat System (D20, 3 domains, 6 units, 3 battle types)
-- Military System (Tier I units, production queues)
-- Bot AI System (Tiers 2–4 only; 8 archetypes; ~25 functional personas)
-- Victory Systems (all 6 conditions; VP tracking)
-- Diplomacy System (NAP, Alliance, Coalition; reputation)
-- Market System (dynamic pricing, buy/sell)
-- Research System (linear progression as interim; draft system in Beta 1)
-- Frontend UI (LCARS shell, star map hub, turn order panel, tutorial)
-
-**Systems deferred:**
-- Syndicate System (Beta 1)
-- Tech Card System (Beta 1)
-- Covert Ops (Beta 1)
-- Advanced Research Draft (Beta 1)
-- Coalition Raids (Beta 1)
-- WMD Systems (Beta 1)
-- LLM-powered bots (Beta 2)
-- Full 100 unique personas (Beta 2)
-- Mobile optimisation (Beta 2)
-
-**Alpha exits when:** Complete playable loop functional; zero P0 bugs; turn processing < 2 seconds; tutorial completion > 70%; 3+ victory conditions achieved by playtesters; bot archetypes feel distinct.
-
----
-
-### Phase 2: Beta 1 (Closed) — Add Complexity Layers
-
-**Goal:** Layer hidden role, tactical card, and asymmetric warfare systems onto the validated core loop.
-**Target:** 50–100 invited beta testers.
-
-**New systems:**
-- Syndicate System (hidden roles, contracts, Black Market, accusation trials)
-- Tech Card System (40 cards, 3 tiers, draft mechanics)
-- Advanced Research (3-tier draft: Doctrines → Specialisations → Capstones)
-- Covert Ops System (10 operation types)
-- WMD Systems (via Syndicate Black Market)
-- Coalition Raids (coordinated multi-empire attacks)
-
-**Beta 1 exits when:** Syndicate victory achieved at least once; all 40 Tech Cards drafted; hidden objectives reveal correctly; coalition formation works; no P0/P1 bugs; feedback sentiment > 75% positive.
-
----
-
-### Phase 3: Beta 2 (Open) — Scale, Polish, and Performance
-
-**Goal:** Harden the full system for public release at scale.
-**Target:** 1,000+ public beta players.
-
-**Focus areas:**
-- LLM-powered Tier 1 elite bots (10 opponents)
-- Full 100 unique bot personas
-- Performance optimisation (< 300ms turn processing)
-- Mobile experience (tablet and phone responsive design)
-- Accessibility (WCAG 2.1 AA compliance)
-- Animations, sound effects, visual polish
-- Replay/history viewer; screenshot/share features
-- Complete documentation (How to Play, strategy guides, Bot Archetype recognition guide, Syndicate playbook, Tech Card catalogue)
-
-**Beta 2 exits when:** Crash rate < 0.1%; turn processing < 300ms; Lighthouse score > 95; WCAG AA certified; all 100 personas distinct; tutorial completion > 80%; three consecutive clean builds; zero P0/P1 bugs; feedback sentiment > 80% positive.
-
----
-
-### Phase 4: v1.0 Release — Feature Complete
-
-**Goal:** Production-ready public release with all systems active.
-
-The v1.0 Definition of Done is listed in the Success Metrics section above. Key production quality bars:
-
-| Metric | Requirement |
-|--------|-------------|
-| Crash rate | < 0.1% of sessions |
-| Data loss incidents | Zero |
-| API error rate | < 1% |
-| Average uptime | 99.5% |
-| Initial load | < 2 seconds |
-| Turn processing | < 300ms |
-| Lighthouse score | 95+ |
-| WCAG 2.1 Level AA | 100% compliant |
-
----
-
-## System Dependency Map
-
-```
-                    ┌─────────────────────────────────────────┐
-                    │            TURN PROCESSOR               │
-                    │    (Orchestrates all phase execution)   │
-                    └───────────────────┬─────────────────────┘
-                                        │
-        ┌───────────────────────────────┼───────────────────────────────┐
-        │                               │                               │
-        ▼                               ▼                               ▼
-┌───────────────┐               ┌───────────────┐               ┌───────────────┐
-│   RESOURCES   │◄──────────────│    COMBAT     │──────────────►│     BOTS      │
-│   (Economy)   │   casualties  │   (Battles)   │   decisions   │     (AI)      │
-└───────┬───────┘   affect      └───────┬───────┘               └───────┬───────┘
-        │           production          │                               │
-        │                               │                               │
-        ▼                               ▼                               ▼
-┌───────────────┐               ┌───────────────┐               ┌───────────────┐
-│    SECTORS    │◄──────────────│   MILITARY    │               │   DIPLOMACY   │
-│  (Territory)  │   conquest    │    (Units)    │               │  (Treaties)   │
-└───────┬───────┘   transfers   └───────────────┘               └───────┬───────┘
-        │                               ▲                               │
-        │                               │                               │
-        │                       ┌───────┴───────┐                       │
-        └──────────────────────►│   RESEARCH    │◄──────────────────────┘
-                  unlocks       │    (Tech)     │     affects
-                  sectors       └───────┬───────┘     modifiers
-                                        │
-                            ┌───────────┼───────────┐
-                            ▼           ▼           ▼
-                    ┌───────────┐ ┌─────────┐ ┌─────────┐
-                    │  VICTORY  │ │SYNDICATE│ │TECH CARD│
-                    │(Win Check)│ │ (Roles) │ │ (Draft) │
-                    └───────────┘ └─────────┘ └─────────┘
-```
-
-**Implementation Order (Phase 1 → Phase 2 → Phase 3):**
-
-```
-Phase 1 (Foundation)      Phase 2 (Core Loop)       Phase 3 (Complexity)
-├── Database Schema       ├── Combat Resolution     ├── Syndicate System
-├── Turn Processor        ├── Military Production   ├── Tech Card Draft
-├── Resource Engine       ├── Sector Acquisition    ├── Covert Ops
-├── Galaxy Structure      ├── Victory Checks        ├── Advanced Research
-├── Bot Archetypes        ├── Diplomacy             ├── WMD Systems
-└── Basic UI Shell        └── Market System         └── Coalition Raids
-```
-
----
-
-## Key Numbers Quick Reference
-
-| Aspect | Value |
-|--------|-------|
-| **Bot opponents** | 10–100 (configurable) |
-| **Bot archetypes** | 8 |
-| **Galaxy sectors** | 10 |
-| **Empires per sector** | ~10 |
-| **Starting sectors per empire** | 5 |
-| **Victory conditions** | 6 |
-| **Anti-snowball coalition trigger** | 7+ Victory Points |
-| **Resource types** | 5 (Credits, Food, Ore, Petroleum, Research Points) |
-| **Unit types** | 6 (Soldiers, Fighters, Bombers, Light Cruisers, Heavy Cruisers, Carriers, Stations) |
-| **Combat unit tiers** | 3 (Standard, Prototype, Singularity) |
-| **Research tiers** | 3 (Doctrine, Specialisation, Capstone) |
-| **Research paths** | 3 (War Machine, Fortress, Commerce) |
-| **Tech Cards (v1.0)** | 40 across 3 tiers |
-| **Attacker win rate (equal forces)** | 47.6% |
-| **Defender advantage** | 1.10× (home turf) |
-| **Syndicate ratio** | 10% Syndicate / 90% Loyalist |
-| **Syndicate contracts to win** | 3 (by Turn 200) |
-| **Turn processing target (Alpha)** | < 2 seconds |
-| **Turn processing target (Release)** | < 300ms |
-| **Tutorial steps** | 5 |
-
----
-
-## Document Hierarchy
-
-### Tier 0: Vision & Philosophy
-- [VISION.md](other/VISION.md) — Design philosophy, principles, and the "why" behind decisions
-- [BOARDGAME-VISION.md](other/BOARDGAME-VISION.md) — Digital boardgame design philosophy
-
-### Tier 1: Product Requirements (This Document)
-Strategic overview, system index, player experience arc, build strategy, success metrics.
-
-### Tier 2: Design Documents
-
-| Document | Scope |
-|----------|-------|
-| [BOT-SYSTEM.md](other/Game%20Systems/BOT-SYSTEM.md) | AI architecture, archetypes, emotional states |
-| [COMBAT-SYSTEM.md](other/Game%20Systems/COMBAT-SYSTEM.md) | D20 mechanics, multi-domain battle resolution |
-| [COVERT-OPS-SYSTEM.md](other/Game%20Systems/COVERT-OPS-SYSTEM.md) | Espionage, sabotage, assassination |
-| [DIPLOMACY-SYSTEM.md](other/Game%20Systems/DIPLOMACY-SYSTEM.md) | Treaties, reputation, coalition formation |
-| [FRONTEND-DESIGN.md](other/Game%20Systems/FRONTEND-DESIGN.md) | LCARS UI/UX design system |
-| [MARKET-SYSTEM.md](other/Game%20Systems/MARKET-SYSTEM.md) | Dynamic trading, price manipulation |
-| [MILITARY-SYSTEM.md](other/Game%20Systems/MILITARY-SYSTEM.md) | Unit types, tiers, production, fleet composition |
-| [RESEARCH-SYSTEM.md](other/Game%20Systems/RESEARCH-SYSTEM.md) | 3-tier draft tech system |
-| [RESOURCE-MANAGEMENT-SYSTEM.md](other/Game%20Systems/RESOURCE-MANAGEMENT-SYSTEM.md) | Economy, production, civil status |
-| [SECTOR-MANAGEMENT-SYSTEM.md](other/Game%20Systems/SECTOR-MANAGEMENT-SYSTEM.md) | Galaxy structure, expansion phases |
-| [SYNDICATE-SYSTEM.md](other/Game%20Systems/SYNDICATE-SYSTEM.md) | Hidden roles, contracts, Black Market |
-| [TECH-CARD-SYSTEM.md](other/Game%20Systems/TECH-CARD-SYSTEM.md) | Card draft, tactical effects, hidden objectives |
-| [TURN-PROCESSING-SYSTEM.md](other/Game%20Systems/TURN-PROCESSING-SYSTEM.md) | Execution pipeline, phase ordering |
-| [VICTORY-SYSTEMS.md](other/Game%20Systems/VICTORY-SYSTEMS.md) | Victory conditions, VP tracking, anti-snowball |
-
-### Tier 3: Implementation References
-
-| Document | Purpose |
-|----------|---------|
-| [ARCHITECTURE.md](other/development/ARCHITECTURE.md) | Technical stack and patterns |
-| [SCHEMA.md](other/development/SCHEMA.md) | Database schema reference |
-| [SPEC-REGISTRY.md](other/development/SPEC-REGISTRY.md) | Spec-to-code mapping |
-| [PHASED-ROLLOUT-PLAN.md](other/development/PHASED-ROLLOUT-PLAN.md) | Detailed Alpha → Beta → Release plan |
-
----
-
-*Nexus Dominion — "Command your empire from the bridge of your flagship. Consolidate your sector, expand through borders and wormholes, form coalitions against rising threats, and achieve victory through military conquest, economic dominance, or diplomatic mastery."*
+## Revision History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0–2.1 | 2026-01 to 2026-03 | VS7 | Previous iteration — extensive design docs, no implementation |
+| 3.0 | 2026-03-08 | VS7 | Full redesign — persistent campaign, achievement model, bot turn ratios, Syndicate discovery, tech stack deferred |
