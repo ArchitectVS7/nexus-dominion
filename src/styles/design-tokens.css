@@ -1,0 +1,118 @@
+/* ══════════════════════════════════════════════════════════════
+   NEXUS DOMINION — LCARS Design Tokens
+   ══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=Roboto+Mono:wght@300;400;500;700&display=swap');
+
+:root {
+    /* ── Colour Palette ── */
+
+    /* Primary — Orange (LCARS signature) */
+    --lcars-orange: #F4A629;
+    --lcars-orange-light: #F7BF5E;
+    --lcars-orange-dark: #C47E10;
+    --lcars-orange-glow: rgba(244, 166, 41, 0.35);
+    --lcars-orange-subtle: rgba(244, 166, 41, 0.08);
+
+    /* Accent — Purple */
+    --lcars-purple: #9B59B6;
+    --lcars-purple-light: #BB80D3;
+    --lcars-purple-dark: #6E3A80;
+    --lcars-purple-glow: rgba(155, 89, 182, 0.30);
+    --lcars-purple-subtle: rgba(155, 89, 182, 0.08);
+
+    /* Accent — Blue */
+    --lcars-blue: #3498DB;
+    --lcars-blue-light: #5DADE2;
+    --lcars-blue-dark: #1A6FA0;
+    --lcars-blue-glow: rgba(52, 152, 219, 0.30);
+    --lcars-blue-subtle: rgba(52, 152, 219, 0.08);
+
+    /* Semantic */
+    --lcars-success: #2ECC71;
+    --lcars-success-glow: rgba(46, 204, 113, 0.30);
+    --lcars-danger: #E74C3C;
+    --lcars-danger-glow: rgba(231, 76, 60, 0.30);
+    --lcars-warning: #F39C12;
+
+    /* Surfaces */
+    --surface-deep: #050510;
+    --surface-base: #0A0A1A;
+    --surface-raised: #0F0F2A;
+    --surface-overlay: rgba(10, 10, 30, 0.85);
+    --surface-glass: rgba(15, 15, 42, 0.65);
+    --surface-glass-border: rgba(244, 166, 41, 0.12);
+
+    /* Text */
+    --text-primary: #D0D8E8;
+    --text-secondary: #8B96AB;
+    --text-dim: #4A5568;
+    --text-label: #6B7A94;
+
+    /* ── Typography ── */
+
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Exo 2', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+
+    --text-xs: 0.675rem;
+    /* 10.8px */
+    --text-sm: 0.8rem;
+    /* 12.8px */
+    --text-base: 0.9rem;
+    /* 14.4px */
+    --text-md: 1rem;
+    /* 16px   */
+    --text-lg: 1.25rem;
+    /* 20px   */
+    --text-xl: 1.5rem;
+    /* 24px   */
+    --text-2xl: 2rem;
+    /* 32px   */
+    --text-3xl: 3rem;
+    /* 48px   */
+
+    /* ── Spacing (4px base) ── */
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* ── Borders & Radii ── */
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 100px;
+    --radius-round: 50%;
+
+    --border-dim: 1px solid rgba(255, 255, 255, 0.06);
+    --border-subtle: 1px solid rgba(244, 166, 41, 0.12);
+    --border-accent: 1px solid rgba(244, 166, 41, 0.25);
+
+    /* ── Glass Material ── */
+
+    --glass-blur: blur(16px);
+    --glass-bg: rgba(15, 15, 42, 0.65);
+    --glass-border: 1px solid rgba(244, 166, 41, 0.12);
+    --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(244, 166, 41, 0.1);
+    --glass-shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 2px rgba(244, 166, 41, 0.15);
+
+    /* ── Transitions ── */
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+    --ease-both: cubic-bezier(0.76, 0, 0.24, 1);
+
+    --duration-fast: 120ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --duration-slide: 350ms;
+}

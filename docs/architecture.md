@@ -1,8 +1,8 @@
 # Nexus Dominion — Architecture
 
-> **Status:** Active — Specification Phase (no game implementation yet)
-> **Version:** 2.1
-> **Last Updated:** 2026-03-06
+> **Status:** Active — Specification Phase
+> **Version:** 3.0
+> **Last Updated:** 2026-03-09
 > **Author:** VS7
 > **PRD:** [docs/prd.md](./prd.md)
 
@@ -10,39 +10,39 @@
 
 ## System Overview
 
-Nexus Dominion is a turn-based single-player 4X space empire strategy game targeting 1–3 hour sessions. It is currently in a specification-driven design phase: the repository contains 15 detailed system-specification documents and Node.js tooling for validating those specs, but no game implementation exists yet.
+Nexus Dominion is a turn-based single-player 4X space empire strategy game targeting long, persistent campaigns. It is currently transitioning into active development based on **PRD 3.0**.
 
-The planned runtime is a browser-based or Electron-hosted JavaScript application (Node.js 14+). The LCARS (Star Trek command console) aesthetic defines the UI paradigm: a persistent star-map at centre, panels that slide in like cards, every turn action weighted and clear.
+The agreed runtime architecture is a **Hybrid Native/Web Application** (e.g., Tauri or Electron encapsulating a React/TypeScript frontend). This approach has been selected to leverage modern web technologies for the complex, panel-heavy LCARS interface while utilizing native OS capabilities (and potentially Rust via Tauri) to handle the computationally heavy simulation of 100 concurrent AI empires and ensure performant turn resolution.
 
-Up to 100 bot opponents operate simultaneously with independent emotional states, relationship memory, and the 4-tier AI architecture. Bots fight each other between player turns, producing emergent "natural selection" dynamics where dominant empires rise and weaker ones fall without player involvement.
+Up to 100 bot opponents operate simultaneously, advancing based on individual **Momentum Ratings** rather than fixed algorithmic tiers. They fight each other, form alliances, and pursue Achievements between player turns, producing an emergent simulation of a living galaxy.
 
 ### Top-Level Diagram
 
 ```
 ┌───────────────────────────────────────────────────────────────┐
-│                     Player Browser / Client                   │
+│              Desktop Client (Tauri / Electron)                │
 │                                                               │
 │  ┌─────────────────────────────────────────────────────────┐  │
-│  │                    UI Layer (LCARS)                     │  │
-│  │  Star Map (persistent) · Slide-in Panels · Turn HUD    │  │
+│  │                   Frontend (React/TS)                   │  │
+│  │  Star Map (WebGL/Canvas) · LCARS Panels · Turn HUD      │  │
 │  └───────────────────────────┬─────────────────────────────┘  │
 │                              │                                │
 │  ┌───────────────────────────▼─────────────────────────────┐  │
 │  │                  Game Engine Core                       │  │
-│  │  Turn Processor · Combat Engine · Economy Engine        │  │
-│  │  Diplomacy Engine · Research Engine · Victory Checker   │  │
+│  │  Cycle Processor · Combat Engine · Economy Engine       │  │
+│  │  Diplomacy Engine · Research Engine · Syndicate Engine  │  │
+│  │  Nexus Engine (Cosmic Order · Confluences · Signals)    │  │
 │  └───────────────────────────┬─────────────────────────────┘  │
 │                              │                                │
 │  ┌───────────────────────────▼─────────────────────────────┐  │
 │  │                   Bot AI System                         │  │
-│  │  Tier 1 (LLM Elite) · Tier 2 (Strategic Decision Tree) │  │
-│  │  Tier 3 (Rules-Based) · Tier 4 (Probabilistic Random)  │  │
-│  │  Emotional State · Relationship Memory · 100 Personas  │  │
+│  │  Momentum Scheduler · Archetype Decision Weights        │  │
+│  │  Emotional State · Relationship Memory                  │  │
 │  └───────────────────────────┬─────────────────────────────┘  │
 │                              │                                │
 │  ┌───────────────────────────▼─────────────────────────────┐  │
-│  │                   Game State Store                      │  │
-│  │  Galaxy · Sectors · Empires · Relationships · History   │  │
+│  │                   Database / State Store                │  │
+│  │  Database State Chronicle (Auto-Saves)                  │  │
 │  └─────────────────────────────────────────────────────────┘  │
 └───────────────────────────────────────────────────────────────┘
 ```
@@ -51,116 +51,78 @@ Up to 100 bot opponents operate simultaneously with independent emotional states
 
 ## Component Architecture
 
-### 1. Turn Processing System
-- **Responsibility:** Sequence and resolve all player and bot actions per turn; enforce action ordering; advance game state
-- **Technology:** JavaScript (planned)
-- **Inputs:** Player action queue, bot decision outputs
-- **Outputs:** Updated game state; event log for UI
-- **Notes:** Performance target is <2s per turn in alpha, <300ms at release with 100 active empires. Specification: `docs/other/Game Systems/TURN-PROCESSING-SYSTEM.md`
+### 1. Game Loop & Cycle Processing
+- **Responsibility:** Sequence and resolve all player and bot actions per Cycle; update the Cosmic Order every Confluence.
+- **Inputs:** Player action queue, bot decision outputs governed by Momentum Ratings.
+- **Outputs:** Updated game state; event log for the Cycle Report.
+- **Notes:** Performance target is <5s per turn in alpha, <1s at release with 100 active empires calculating simultaneous moves.
 
 ### 2. Galaxy and Sector System
-- **Responsibility:** Manage the 10-sector galaxy map, wormhole connectivity, and phase-gated expansion
-- **Technology:** JavaScript graph data structure (planned)
-- **Inputs:** Empire expansion actions, wormhole construction events
-- **Outputs:** Sector ownership state, adjacency graph, wormhole network
-- **Notes:** Expansion phases: same-sector consolidation → adjacent sector push → wormhole bridging to distant sectors. Spec: `SECTOR-MANAGEMENT-SYSTEM.md`
+- **Responsibility:** Manage the 10-sector galaxy map, wormhole connectivity, and territorial expansion.
+- **Inputs:** Empire expansion actions, wormhole construction events.
+- **Outputs:** Sector ownership state, adjacency graph, wormhole network.
 
 ### 3. Combat System
-- **Responsibility:** Resolve military engagements in three sequential phases
-- **Technology:** JavaScript (planned)
+- **Responsibility:** Resolve military engagements using d20-style stat block comparisons across three distinct phases.
 - **Three phases:**
-  1. Space Battle — fleet vs fleet in orbit
-  2. Orbital Bombardment — fleet attacks planetary defences
-  3. Ground Assault — troops vs troops on surface
-- **Inputs:** Attacking and defending fleet/troop compositions, sector modifiers
-- **Outputs:** Combat result, casualties, sector ownership change
-- **Notes:** Spec: `COMBAT-SYSTEM.md`
+  1. Fleet Engagement — space combat in orbit
+  2. Blockade / Orbital Bombardment — structural and economic targeting
+  3. Ground Assault — planetary invasion
+- **Outputs:** Combat result, casualties, sector ownership change, rep hits.
 
 ### 4. Economy Engine
-- **Responsibility:** Manage Credits, Food, and other resources; process market pricing; enforce Black Market
-- **Technology:** JavaScript (planned)
-- **Inputs:** Player and bot trade/production actions, supply/demand curves
-- **Outputs:** Per-empire resource deltas, market price updates
-- **Notes:** Dynamic market with supply/demand pricing. Spec: `MARKET-SYSTEM.md`, `RESOURCE-MANAGEMENT-SYSTEM.md`
+- **Responsibility:** Process the rigorous Production-Consumption cycle at the end of every turn, enforce limits on populations and military maintenance.
+- **Inputs:** Player and bot infrastructure, Civil Status modifiers.
+- **Outputs:** Per-empire resource deltas, Market adjustments.
 
 ### 5. Bot AI System
-- **Responsibility:** Generate bot decisions each turn; maintain emotional state and relationship memory across 100 personas
-- **Technology:** JavaScript (planned); Tier 1 bots optionally use an external LLM API
-- **4-tier architecture:**
-
-| Tier | Name | Mechanism | Count |
-|---|---|---|---|
-| 1 | LLM Elite | Natural language prompt to LLM API | Few (high-value personas) |
-| 2 | Strategic | Decision tree + weights | Many |
-| 3 | Simple | Rules-based lookup | Many |
-| 4 | Random | Probabilistic selection | Remainder |
-
-- **8 archetypes:** Warlord, Diplomat, Merchant, Schemer, Turtle, Blitzkrieg, Tech Rush, Opportunist
-- **State tracked per bot:** emotional state (anger, fear, greed, ambition), relationship memory with each other bot and with the player
-- **Notes:** Bots fight each other between player turns; "natural selection" means weak empires collapse without player involvement. Spec: `BOT-SYSTEM.md`, `AI-SYSTEM.md`
+- **Responsibility:** Generate bot decisions each turn; maintain emotional state and relationship memory across 100 personas.
+- **Architecture:** 
+  - Bots no longer use strict "Intelligence Tiers". Instead, they use a **Momentum Rating** which directly scales the number of actions they can take per standard player Cycle.
+  - **8 Archetypes:** Warlord, Diplomat, Merchant, Schemer, Turtle, Blitzkrieg, Tech Rush, Opportunist. These dictate *what* they do, while Momentum dictates *how much* they can do.
+  - Tier 1 LLM integration is optionally reserved for high-momentum "Boss" interactions.
 
 ### 6. Diplomacy System
-- **Responsibility:** Manage pacts, alliances, and the Coalition victory path
-- **Technology:** JavaScript (planned)
-- **Key structures:** Non-Aggression Pacts, Alliance treaties, Coalition formation (50% territory threshold triggers Diplomatic victory)
-- **Notes:** Spec: `DIPLOMACY-SYSTEM.md`
+- **Responsibility:** Manage Commons-registered pacts (Stillness Accord, Star Covenant, Nexus Compact).
+- **Key structures:** Formation of massive anti-snowballing Nexus Compacts against empires nearing achievements.
 
-### 7. Research System
-- **Responsibility:** Gate technology advancement through 8 tech levels
-- **Technology:** JavaScript (planned)
-- **Notes:** Completing all 8 levels triggers Research victory. Spec: `RESEARCH-SYSTEM.md`
+### 7. Tech Card & Research System
+- **Responsibility:** Gate baseline stat advancement through the 8-tier tech tree and handle Public Draft Events for Tech Cards.
+- **Notes:** Draft events occur dynamically during the "Nexus Reckoning" at the end of a 10-Cycle Confluence.
 
 ### 8. Syndicate System
-- **Responsibility:** Hidden-role overlay; one or more bots secretly belong to the Syndicate faction with concealed objectives
-- **Technology:** JavaScript (planned)
-- **Notes:** Core v1.0 feature, not post-launch DLC. Spec: `SYNDICATE-SYSTEM.md`
+- **Responsibility:** Discoverable hidden-role overlay controlling the Black Market and covert assassination contracts.
+- **Notes:** Controlling the Syndicate without exposure is required for the "Shadow Throne" achievement.
 
-### 9. Tech Card System
-- **Responsibility:** Draft-style technology acquisition layer separate from the core research tree
-- **Technology:** JavaScript (planned)
-- **Notes:** Core v1.0 feature. Spec: `TECH-CARD-SYSTEM.md`
+### 9. Achievement Checker
+- **Responsibility:** Monitor game state against the 9 continuous milestones.
+- **Achievements:** Conquest, Trade Prince, Market Overlord, Cartel Boss, Grand Architect, Singularity, Warlord, Endurance, Shadow Throne.
+- **Action:** Generates "Nexus Signals" and "Convergence Alerts" to trigger organic coalition pushback when an empire crosses 80% completion of a threshold. 
 
-### 10. Victory Checker
-- **Responsibility:** Evaluate victory conditions after each turn resolution
-- **Technology:** JavaScript (planned)
-- **6 victory conditions:**
-
-| Victory | Trigger |
-|---|---|
-| Conquest | Control 60% of sectors |
-| Economic | 1.5x net worth of nearest rival |
-| Diplomatic | Coalition controls 50% of territory |
-| Research | All 8 tech levels completed |
-| Military | Military score 2x all opponents combined |
-| Survival | Highest net worth at turn 200 |
-
-- **Notes:** Spec: `VICTORY-SYSTEMS.md`
-
-### 11. LCARS UI
-- **Responsibility:** Render the persistent star map, slide-in panel system, turn HUD, and all game screens in the LCARS aesthetic
-- **Technology:** JavaScript + browser rendering (planned; framework TBD)
-- **Notes:** Star map never leaves view. Panels animate in/out like cards being examined. Spec: `FRONTEND-DESIGN.md`
+### 10. Frontend (React/LCARS)
+- **Responsibility:** Render the persistent WebGL/Canvas star map, slide-in card panels, turn HUD, and all game screens.
+- **Notes:** The Star Map never leaves view. Panels animate in/out like board game cards being examined on a table.
 
 ---
 
-## Specification Tooling (Current State)
+## Deployment Architecture
 
-The repository's current deliverables are documentation and validation scripts, not game code.
+Nexus Dominion is deployed as a self-contained single-player application designed to run natively on Desktop.
 
-| Tool | File | Purpose |
+| Target Platform | Deployment Method | Notes |
 |---|---|---|
-| Spec validator | `scripts/validate-specs.js` | Validates system spec documents for completeness and cross-references |
-| System analyser | `analyze-all-systems.js` | Analyses all system docs and produces a summary report |
-| Dependency analyser | `analyze-dependencies.js` | Maps inter-system dependencies |
-| Registry generator | `scripts/generate-registry.js` | Generates a system registry from spec files |
+| Desktop (Steam) | Tauri or Electron | Main target. Combines web-native UI tools with OS-level computational power for the engine. |
 
-No automated tests exist yet. Validation is spec-level (document structure) rather than code-level.
+### Development Stack (Agreed)
+- **Frontend Framework:** React + TypeScript (for mature component ecosystem and structured states).
+- **Desktop Wrapper:** Tauri (Rust) or Electron (Node.js). Tauri is preferred moving forward for reduced memory overhead and the ability to port heavy pathfinding/simulation math to Rust if the 100-empire bottleneck requires it.
+- **Styling:** CSS Modules / Styled-Components tailored to strict LCARS design constraints.
 
 ---
 
 ## Data Architecture
 
-### Game State (Planned In-Memory Model)
+### Game State (In-Memory Model)
 
 ```
 GameState
@@ -177,45 +139,21 @@ GameState
 ├── bots[]: BotAgent
 │   ├── persona: PersonaProfile
 │   ├── archetype: Archetype
-│   ├── tier: AiTier
+│   ├── momentumRating: float
 │   └── emotionalState: EmotionalState
 ├── diplomacy: DiplomacyState
 │   ├── pacts: Pact[]
 │   └── coalitions: Coalition[]
-├── market: MarketState
+├── economy: EconomyState
 ├── syndicateState: SyndicateState
-└── turn: number
+└── time: TimeState
+    ├── currentCycle: number
+    ├── currentConfluence: number
+    └── cosmicOrder: CosmicOrder
 ```
 
-### Persistence (Planned)
-
-Save/load to local JSON file (single-player, no server required). No cloud save or account system in v1.0.
-
----
-
-## Deployment Architecture
-
-Nexus Dominion is planned as a self-contained single-player application. No multiplayer infrastructure, no server, no accounts.
-
-| Target Platform | Deployment Method | Notes |
-|---|---|---|
-| Browser | Static HTML/JS bundle | No server required |
-| Desktop (optional) | Electron wrapper | Same codebase |
-
-Implementation platform and bundler are not yet decided. The PRD specifies Node.js 14+ compatibility for tooling but does not commit to a frontend framework.
-
----
-
-## Decision Log
-
-| # | Decision | Alternatives Considered | Rationale | Consequence |
-|---|---|---|---|---|
-| 1 | Specification-first development (no code yet) | Build-first | 15 complex interdependent game systems require upfront design to avoid cascading rewrites | Game implementation has not started; spec completeness is the current risk |
-| 2 | 4-tier bot AI (not uniform AI) | Single decision-tree AI for all bots | Differentiated personas require differentiated intelligence; Tier 1 LLM bots create "boss" behaviour; Tier 4 adds noise and unpredictability | LLM API dependency for Tier 1 bots; need graceful degradation when API unavailable |
-| 3 | 10-sector galaxy (not open/unlimited map) | Infinite procedural galaxy | Bounded map creates meaningful phases, natural chokepoints, and session completion in 1–3 hours | Map size limits late-game expansion options; compensated by wormhole system |
-| 4 | 6 distinct victory conditions | Single victory condition | Multiple paths support different player archetypes (aggressor, economist, diplomat) and replayability | Victory checker complexity; balance across 6 conditions is non-trivial |
-| 5 | No multiplayer in v1.0 | Human-vs-human multiplayer | Multiplayer infrastructure conflicts with session-length and solo-drama design goals; 100 bots simulate multiplayer feel | No player-vs-player; community play is not a launch feature |
-| 6 | Syndicate and Tech Card systems as core v1.0 (not DLC) | Post-launch additions | Both systems are load-bearing for depth and replayability; retrofitting hidden-role mechanics post-launch would require major refactor | Higher initial complexity; more spec surface area |
+### Persistence (State Chronicle)
+Save/load to local database/JSON file via the database State Chronicle. Saves are fired explicitly by the user, or automatically before major acts of war/nexus reckonings. No cloud save or account system in v1.0.
 
 ---
 
@@ -223,16 +161,6 @@ Implementation platform and bundler are not yet decided. The PRD specifies Node.
 
 | Question | Owner | Due | Status |
 |---|---|---|---|
-| What JavaScript framework (if any) for the UI? | VS7 | Pre-implementation | Open |
-| Will Tier 1 LLM bots use a bundled local model or call an external API? | VS7 | Pre-implementation | Open |
-| What is the save-game format and how are save slots managed? | VS7 | Pre-implementation | Open |
-| How is the tutorial integrated — separate tutorial game state or inline progressive unlocks? | VS7 | Pre-implementation | Open |
-| Are spec documents considered frozen, or can they change during implementation? | VS7 | Ongoing | Open |
-
----
-
-## Revision History
-
-| Version | Date | Author | Changes |
-|---|---|---|---|
-| 1.0 | 2026-03-06 | VS7 | Initial draft — derived from codebase survey and spec documents |
+| Tauri vs Electron: Final prototype validation? | VS7 | Pre-implementation | Open |
+| Will LLM boss bots use a bundled local model (Llama.cpp) or call an external API? | VS7 | Pre-implementation | Open |
+| What is the exact Database schema for the State Chronicle? | VS7 | Pre-implementation | Open |

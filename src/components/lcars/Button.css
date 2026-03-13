@@ -1,0 +1,99 @@
+/* ── Button ── */
+
+.lcars-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition:
+        background var(--duration-fast) var(--ease-out),
+        box-shadow var(--duration-normal) var(--ease-out),
+        transform var(--duration-fast) var(--ease-out);
+}
+
+/* Sizes */
+.lcars-btn--sm {
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-4);
+    height: 28px;
+    min-width: 72px;
+}
+
+.lcars-btn--md {
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-6);
+    height: 36px;
+    min-width: 100px;
+}
+
+.lcars-btn--lg {
+    font-size: var(--text-base);
+    padding: var(--space-3) var(--space-8);
+    height: 44px;
+    min-width: 140px;
+}
+
+/* Primary — Orange */
+.lcars-btn--primary {
+    background: var(--lcars-orange);
+    color: var(--surface-deep);
+}
+
+.lcars-btn--primary:hover:not(:disabled) {
+    background: var(--lcars-orange-light);
+    box-shadow: 0 0 16px var(--lcars-orange-glow), 0 0 4px var(--lcars-orange-glow);
+}
+
+.lcars-btn--primary:active:not(:disabled) {
+    transform: scale(0.97);
+    background: var(--lcars-orange-dark);
+}
+
+/* Secondary — Purple */
+.lcars-btn--secondary {
+    background: transparent;
+    color: var(--lcars-purple-light);
+    border: 1px solid var(--lcars-purple);
+}
+
+.lcars-btn--secondary:hover:not(:disabled) {
+    background: var(--lcars-purple-subtle);
+    box-shadow: 0 0 12px var(--lcars-purple-glow);
+    border-color: var(--lcars-purple-light);
+}
+
+.lcars-btn--secondary:active:not(:disabled) {
+    transform: scale(0.97);
+    background: rgba(155, 89, 182, 0.15);
+}
+
+/* Danger — Red */
+.lcars-btn--danger {
+    background: var(--lcars-danger);
+    color: #fff;
+}
+
+.lcars-btn--danger:hover:not(:disabled) {
+    background: #ec7063;
+    box-shadow: 0 0 16px var(--lcars-danger-glow), 0 0 4px var(--lcars-danger-glow);
+}
+
+.lcars-btn--danger:active:not(:disabled) {
+    transform: scale(0.97);
+    background: #c0392b;
+}
+
+/* Disabled */
+.lcars-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    filter: saturate(0.3);
+}

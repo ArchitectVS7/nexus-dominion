@@ -1,0 +1,199 @@
+/* ── Nexus Dominion — App Shell ── */
+
+@import './styles/design-tokens.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+:root {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text-primary);
+  background-color: var(--surface-deep);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Main Shell ── */
+
+.shell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    radial-gradient(ellipse at 20% 50%, var(--lcars-purple-subtle) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 30%, var(--lcars-blue-subtle) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 80%, var(--lcars-orange-subtle) 0%, transparent 50%),
+    var(--surface-deep);
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Starfield dots */
+.shell::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.3) 50%, transparent 50%),
+    radial-gradient(1px 1px at 30% 70%, rgba(255, 255, 255, 0.2) 50%, transparent 50%),
+    radial-gradient(1px 1px at 50% 10%, rgba(255, 255, 255, 0.25) 50%, transparent 50%),
+    radial-gradient(1px 1px at 65% 45%, rgba(255, 255, 255, 0.15) 50%, transparent 50%),
+    radial-gradient(1px 1px at 80% 80%, rgba(255, 255, 255, 0.3) 50%, transparent 50%),
+    radial-gradient(1px 1px at 15% 55%, rgba(255, 255, 255, 0.1) 50%, transparent 50%),
+    radial-gradient(1px 1px at 90% 15%, rgba(255, 255, 255, 0.2) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 45% 60%, rgba(244, 166, 41, 0.3) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 72% 25%, rgba(52, 152, 219, 0.3) 50%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.shell>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── LCARS Accent Bars ── */
+
+.lcars-bar {
+  position: fixed;
+  border-radius: var(--radius-pill);
+  opacity: 0.6;
+  z-index: 2;
+}
+
+.lcars-bar.top {
+  top: 24px;
+  left: 24px;
+  width: 120px;
+  height: 6px;
+  background: var(--lcars-orange);
+}
+
+.lcars-bar.bottom {
+  bottom: 24px;
+  right: 24px;
+  width: 80px;
+  height: 6px;
+  background: var(--lcars-purple);
+}
+
+.lcars-bar.side {
+  top: 24px;
+  right: 24px;
+  width: 6px;
+  height: 60px;
+  background: var(--lcars-blue);
+}
+
+/* ══════════════════════════════════════════
+   Demo Page Layout (Milestone 0.2)
+   ══════════════════════════════════════════ */
+
+.demo-container {
+  width: 100%;
+  max-width: 960px;
+  padding: var(--space-12) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.demo-header {
+  text-align: center;
+  padding-bottom: var(--space-6);
+  border-bottom: var(--border-subtle);
+}
+
+.demo-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-2xl);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--lcars-orange) 0%, var(--lcars-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.demo-subtitle {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--text-sm);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: var(--space-2);
+}
+
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.demo-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-dim);
+}
+
+.demo-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.demo-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.demo-readouts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.demo-phase-row {
+  padding: var(--space-4) var(--space-8);
+}
+
+.demo-phase-controls {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.demo-reset {
+  display: flex;
+  justify-content: center;
+}

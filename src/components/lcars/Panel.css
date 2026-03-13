@@ -1,0 +1,104 @@
+/* ── Panel ── */
+
+.lcars-panel {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    animation: panel-slide-in var(--duration-slide) var(--ease-out) both;
+}
+
+@keyframes panel-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.lcars-panel:hover {
+    box-shadow: var(--glass-shadow-lg);
+}
+
+/* Accent bar */
+.lcars-panel__accent {
+    height: 4px;
+    background: var(--lcars-orange);
+    transition: background var(--duration-normal) var(--ease-out);
+}
+
+.lcars-panel--alert .lcars-panel__accent {
+    background: var(--lcars-danger);
+}
+
+.lcars-panel--info .lcars-panel__accent {
+    background: var(--lcars-blue);
+}
+
+/* Header */
+.lcars-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    border-bottom: var(--border-dim);
+}
+
+.lcars-panel__title {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.lcars-panel--default .lcars-panel__title {
+    color: var(--lcars-orange-light);
+}
+
+.lcars-panel--alert .lcars-panel__title {
+    color: var(--lcars-danger);
+}
+
+.lcars-panel--info .lcars-panel__title {
+    color: var(--lcars-blue-light);
+}
+
+/* Close button */
+.lcars-panel__close {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    font-size: var(--text-lg);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    line-height: 1;
+    padding: 0;
+}
+
+.lcars-panel__close:hover {
+    color: var(--lcars-danger);
+    border-color: var(--lcars-danger-glow);
+    background: rgba(231, 76, 60, 0.08);
+}
+
+/* Body */
+.lcars-panel__body {
+    padding: var(--space-5);
+}

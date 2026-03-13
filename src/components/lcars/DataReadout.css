@@ -1,0 +1,71 @@
+/* ── DataReadout ── */
+
+.lcars-readout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 120px;
+}
+
+.lcars-readout__label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-label);
+}
+
+.lcars-readout__value-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+}
+
+.lcars-readout__value {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
+}
+
+.lcars-readout__unit {
+    font-size: var(--text-sm);
+    color: var(--text-dim);
+    margin-left: var(--space-1);
+}
+
+.lcars-readout__delta {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+.lcars-readout__delta--positive {
+    color: var(--lcars-success);
+    text-shadow: 0 0 8px var(--lcars-success-glow);
+}
+
+.lcars-readout__delta--negative {
+    color: var(--lcars-danger);
+    text-shadow: 0 0 8px var(--lcars-danger-glow);
+}
+
+/* Progress bar */
+.lcars-readout__bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    margin-top: var(--space-1);
+}
+
+.lcars-readout__bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--lcars-orange-dark), var(--lcars-orange));
+    border-radius: var(--radius-pill);
+    transition: width var(--duration-slow) var(--ease-out);
+    box-shadow: 0 0 6px var(--lcars-orange-glow);
+}
