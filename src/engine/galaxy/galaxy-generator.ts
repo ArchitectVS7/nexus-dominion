@@ -123,8 +123,9 @@ export class GalaxyGenerator implements IGalaxyGenerator {
             galaxy.sectors.set(sectorId, sector);
         }
 
-        // 3. Build adjacency via k-nearest (k=4) within sector + closest cross-sector  
+        // 3. Build adjacency via k-nearest (k=4) within sector + closest cross-sector
         this.buildAdjacency(allSystems, 4);
+        this.addCrossSectorLinks(allSystems, galaxy);
 
         // 4. Assign empires (player + bots) to home systems
         this.assignHomeworlds(allSystems, config.empireCount, rng);
@@ -202,6 +203,41 @@ export class GalaxyGenerator implements IGalaxyGenerator {
                 const other = systems.find((s) => s.id === id)!;
                 if (!other.adjacentSystemIds.includes(sys.id)) {
                     other.adjacentSystemIds.push(sys.id);
+                }
+            }
+        }
+    }
+
+    /**
+     * For each pair of sectors, connect the closest system in each
+     * so that border-system adjacency exists across sectors.
+     */
+    private addCrossSectorLinks(systems: StarSystem[], galaxy: Galaxy): void {
+        const sectorIds = [...galaxy.sectors.keys()];
+        for (let i = 0; i < sectorIds.length; i++) {
+            for (let j = i + 1; j < sectorIds.length; j++) {
+                const sysA = systems.filter((s) => s.sectorId === sectorIds[i]);
+                const sysB = systems.filter((s) => s.sectorId === sectorIds[j]);
+                let bestDist = Infinity;
+                let bestA: StarSystem | null = null;
+                let bestB: StarSystem | null = null;
+                for (const a of sysA) {
+                    for (const b of sysB) {
+                        const d = Math.hypot(a.position.x - b.position.x, a.position.y - b.position.y);
+                        if (d < bestDist) {
+                            bestDist = d;
+                            bestA = a;
+                            bestB = b;
+                        }
+                    }
+                }
+                if (bestA && bestB) {
+                    if (!bestA.adjacentSystemIds.includes(bestB.id)) {
+                        bestA.adjacentSystemIds.push(bestB.id);
+                    }
+                    if (!bestB.adjacentSystemIds.includes(bestA.id)) {
+                        bestB.adjacentSystemIds.push(bestA.id);
+                    }
                 }
             }
         }
