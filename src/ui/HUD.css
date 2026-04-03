@@ -1,0 +1,165 @@
+/* ── Nexus Dominion — HUD Styles ── */
+
+.hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hud > * {
+  pointer-events: auto;
+}
+
+/* ── Top Bar ── */
+
+.hud__top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  background: linear-gradient(180deg, rgba(5, 5, 16, 0.9) 0%, transparent 100%);
+}
+
+.hud__cycle-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.hud__cycle-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 64px;
+}
+
+.hud__cycle-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.hud__cycle-number {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--lcars-orange);
+  text-shadow: 0 0 12px var(--lcars-orange-glow);
+}
+
+/* Confluence progress */
+.hud__confluence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hud__conf-label {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+}
+
+.hud__conf-bar {
+  display: flex;
+  gap: 3px;
+}
+
+.hud__conf-pip {
+  width: 10px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.hud__conf-pip--filled {
+  background: var(--lcars-purple);
+  box-shadow: 0 0 6px var(--lcars-purple-glow);
+}
+
+/* Tier badge */
+.hud__tier-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+}
+
+.hud__tier-label {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+}
+
+.hud__tier-value {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--lcars-blue-light);
+  text-transform: capitalize;
+}
+
+/* ── Bottom Bar ── */
+
+.hud__bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  background: linear-gradient(0deg, rgba(5, 5, 16, 0.9) 0%, transparent 100%);
+  gap: var(--space-4);
+}
+
+.hud__resources {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.hud__res-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.hud__res-icon {
+  font-size: 14px;
+  color: var(--lcars-orange);
+}
+
+.hud__res-icon--food { color: var(--lcars-success); }
+.hud__res-icon--ore { color: var(--lcars-blue-light); }
+.hud__res-icon--fuel { color: var(--lcars-purple-light); }
+.hud__res-icon--rp { color: var(--lcars-warning); }
+
+.hud__res-val {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.hud__res-name {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hud__nav-buttons {
+  display: flex;
+  gap: var(--space-2);
+}

@@ -1,0 +1,163 @@
+/* ── Military Panel ── */
+
+.military-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  animation: overlay-fade-in 200ms ease-out both;
+}
+
+.military-panel-slide {
+  width: 480px;
+  max-width: 90vw;
+  height: 100%;
+  overflow-y: auto;
+  animation: slide-in-right var(--duration-slide) var(--ease-out) both;
+}
+
+.military-panel-slide .lcars-panel {
+  height: 100%;
+  border-radius: 0;
+}
+
+.military-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.military-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.military-panel__section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--lcars-danger);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+  border-bottom: var(--border-dim);
+  padding-bottom: var(--space-1);
+}
+
+/* Fleet Overview */
+.military-panel__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: rgba(231, 76, 60, 0.05); /* Slight red tint for military */
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+/* Production Queue */
+.military-panel__queue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.military-panel__queue-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--lcars-danger-light);
+}
+
+.military-panel__queue-name {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.military-panel__queue-time {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--lcars-warning);
+}
+
+.military-panel__empty {
+  text-align: center;
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: var(--text-sm);
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+}
+
+.military-panel__production-note {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-align: right;
+  margin-top: -var(--space-2);
+}
+
+/* Production Options */
+.military-panel__build-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.military-panel__build-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  transition: background var(--duration-fast);
+}
+
+.military-panel__build-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.military-panel__build-item.locked {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.military-panel__build-item.locked:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.military-panel__build-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.military-panel__build-name {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--lcars-blue-light);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.military-panel__build-stats {
+  display: flex;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.military-panel__build-stats span {
+  display: inline-block;
+}

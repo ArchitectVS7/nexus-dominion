@@ -4,6 +4,8 @@ import {
   getResolutionOrder,
   rollingAveragePowerScores,
   advanceCycle,
+  calculateWeightOfDominion,
+  checkConvergenceAlerts,
 } from "./nexus-engine";
 import type { Empire } from "../types/empire";
 import type { TimeState } from "../types/time";
@@ -185,6 +187,52 @@ describe("Nexus Engine", () => {
 
       const result = advanceCycle(time, empires as any, powerHistory as any);
       expect(result.reckoningEvent).toBeNull();
+    });
+  });
+
+  describe("Weight of Dominion", () => {
+    it("Sovereign pays 1.15x maintenance multiplier", () => {
+      expect(calculateWeightOfDominion("sovereign")).toBe(1.15);
+    });
+
+    it("Stricken gets 0.85x maintenance discount", () => {
+      expect(calculateWeightOfDominion("stricken")).toBe(0.85);
+    });
+
+    it("Ascendant has no modifier", () => {
+      expect(calculateWeightOfDominion("ascendant")).toBe(1.0);
+    });
+  });
+
+  describe("Convergence Alerts", () => {
+    it("fires when empire reaches 80% of conquest threshold (75 systems → 60)", () => {
+      const empires = makeEmpires(5);
+      const bigEmpire = empires.get("empire-0" as any)!;
+      bigEmpire.systemIds = Array.from({ length: 62 }, (_, i) => `sys-${i}` as any);
+
+      const alerts = checkConvergenceAlerts(empires as any, 250);
+      expect(alerts.length).toBeGreaterThan(0);
+      expect(alerts[0].type).toBe("convergence-alert");
+      expect(alerts[0].empireId).toBe(EmpireId("empire-0"));
+    });
+
+    it("does not fire below 80% threshold", () => {
+      const empires = makeEmpires(5);
+      const empireSmall = empires.get("empire-0" as any)!;
+      empireSmall.systemIds = Array.from({ length: 20 }, (_, i) => `sys-${i}` as any);
+
+      const alerts = checkConvergenceAlerts(empires as any, 250);
+      expect(alerts.length).toBe(0);
+    });
+
+    it("fires for research singularity at tier 7 (80% of 8)", () => {
+      const empires = makeEmpires(5);
+      const techEmpire = empires.get("empire-0" as any)!;
+      techEmpire.researchTier = 7;
+
+      const alerts = checkConvergenceAlerts(empires as any, 250);
+      const researchAlert = alerts.find(a => a.achievementId === "singularity");
+      expect(researchAlert).toBeDefined();
     });
   });
 });

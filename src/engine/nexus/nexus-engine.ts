@@ -1,7 +1,7 @@
 import type { EmpireId } from "../types/ids";
 import type { Empire } from "../types/empire";
 import type { CosmicOrder, CosmicTier, TimeState } from "../types/time";
-import type { ReckoningEvent } from "../types/events";
+import type { ReckoningEvent, ConvergenceAlertEvent } from "../types/events";
 import { CYCLES_PER_CONFLUENCE } from "../types/time";
 
 /**
@@ -115,4 +115,65 @@ export function advanceCycle(
   };
 
   return { time: newTime, reckoningEvent };
+}
+
+/* ── Weight of Dominion ── */
+
+/**
+ * Calculate maintenance cost multiplier based on cosmic tier.
+ * Sovereign pays more, Stricken pays less.
+ */
+export function calculateWeightOfDominion(tier: CosmicTier): number {
+  switch (tier) {
+    case "sovereign": return 1.15;
+    case "stricken": return 0.85;
+    case "ascendant": return 1.0;
+  }
+}
+
+/* ── Convergence Alerts ── */
+
+const SINGULARITY_TIER = 8;
+const CONVERGENCE_RATIO = 0.80;
+
+/**
+ * Check if any empire is approaching an achievement threshold (80%+).
+ * Returns convergence alert events for empires that qualify.
+ */
+export function checkConvergenceAlerts(
+  empires: Map<EmpireId, Empire>,
+  totalSystems: number = 250,
+): ConvergenceAlertEvent[] {
+  const alerts: ConvergenceAlertEvent[] = [];
+  const conquestTarget = Math.floor(totalSystems * 0.30);
+  const conquestAlert = Math.floor(conquestTarget * CONVERGENCE_RATIO);
+  const singularityAlert = Math.floor(SINGULARITY_TIER * CONVERGENCE_RATIO);
+
+  for (const [empireId, empire] of empires) {
+    // Conquest check
+    if (empire.systemIds.length >= conquestAlert) {
+      const progress = empire.systemIds.length / conquestTarget;
+      alerts.push({
+        type: "convergence-alert",
+        empireId,
+        cycle: 0, // caller should set
+        achievementId: "conquest",
+        progress: Math.min(1.0, progress),
+      });
+    }
+
+    // Singularity check
+    if (empire.researchTier >= singularityAlert) {
+      const progress = empire.researchTier / SINGULARITY_TIER;
+      alerts.push({
+        type: "convergence-alert",
+        empireId,
+        cycle: 0,
+        achievementId: "singularity",
+        progress: Math.min(1.0, progress),
+      });
+    }
+  }
+
+  return alerts;
 }

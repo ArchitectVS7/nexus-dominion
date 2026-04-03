@@ -99,6 +99,12 @@ export interface SectorDominance {
 export interface Galaxy {
     systems: Map<SystemId, StarSystem>;
     sectors: Map<SectorId, Sector>;
+    wormholes?: Array<{
+        id: string;
+        systemA: SystemId;
+        systemB: SystemId;
+        owner: EmpireId;
+    }>;
 }
 
 /* ── Galaxy Generation Config ── */

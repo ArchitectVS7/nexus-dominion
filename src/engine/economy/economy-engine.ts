@@ -1,4 +1,4 @@
-import type { Empire, Resources, ResourceLedger } from "../types/empire";
+import type { Empire, Resources, ResourceLedger, StabilityLevel } from "../types/empire";
 import type { StarSystem } from "../types/galaxy";
 import type { Unit, UnitType } from "../types/military";
 
@@ -112,6 +112,138 @@ export function applyResourceCycle(
 
   return { newReserves, deficits };
 }
+
+/* ── Population Growth ── */
+
+/**
+ * Calculate population change for one cycle.
+ * +2% if food surplus, -5% if food deficit, 0 if balanced.
+ * Capped at population capacity.
+ */
+export function calculatePopulationGrowth(
+  population: number,
+  capacity: number,
+  foodSurplus: number,
+): number {
+  if (foodSurplus > 0) {
+    const growth = Math.floor(population * 0.02);
+    return Math.min(growth, capacity - population);
+  }
+  if (foodSurplus < 0) {
+    return -Math.floor(population * 0.05);
+  }
+  return 0;
+}
+
+/* ── Overcrowding ── */
+
+/**
+ * Calculate stability penalty from overcrowding.
+ * Penalty applies when population exceeds 90% of capacity.
+ */
+export function calculateOvercrowdingPenalty(
+  population: number,
+  capacity: number,
+): number {
+  const ratio = population / capacity;
+  if (ratio <= 0.9) return 0;
+  // Linear penalty scaling from 0 at 90% to 20 at 100%+
+  return Math.min(20, Math.floor((ratio - 0.9) * 200));
+}
+
+/* ── Stability ── */
+
+/**
+ * Map a stability score (0–100) to a StabilityLevel.
+ */
+export function recalculateStability(score: number): StabilityLevel {
+  if (score >= 90) return "ecstatic";
+  if (score >= 65) return "happy";
+  if (score >= 40) return "content";
+  if (score >= 25) return "unhappy";
+  if (score >= 10) return "angry";
+  return "rioting";
+}
+
+export interface StabilityFactors {
+  foodDeficit?: boolean;
+  foodSurplus?: boolean;
+  overcrowded?: boolean;
+  atWar?: boolean;
+}
+
+/**
+ * Adjust stability score based on current factors.
+ * Returns new score clamped to 0–100.
+ */
+export function updateStabilityScore(
+  current: number,
+  factors: StabilityFactors,
+): number {
+  let delta = 0;
+  if (factors.foodDeficit) delta -= 10;
+  if (factors.foodSurplus) delta += 3;
+  if (factors.overcrowded) delta -= 5;
+  if (factors.atWar) delta -= 5;
+  return Math.max(0, Math.min(100, current + delta));
+}
+
+/* ── Installation Production ── */
+
+const INSTALLATION_PRODUCTION: Record<string, Partial<Resources>> = {
+  "trade-hub":            { credits: 20 },
+  "agricultural-station": { food: 15 },
+  "mining-complex":       { ore: 15 },
+  "fuel-extraction":      { fuelCells: 10 },
+  "research-station":     { researchPoints: 12 },
+  "intelligence-nexus":   { intelligencePoints: 10 },
+  "population-centre":    { credits: 8 },
+  "cultural-institute":   {}, // stability bonus only; not resource-based
+};
+
+/**
+ * Biome affinity bonuses for installation types.
+ * Installations built on a matching biome get a production multiplier.
+ * Absent entries default to 1.0x (no bonus).
+ */
+export const BIOME_INSTALLATION_BONUS: Record<string, Record<string, number>> = {
+  "core-world":            { "trade-hub": 1.5, "population-centre": 1.5 },
+  "mineral-world":         { "mining-complex": 1.5, "fuel-extraction": 1.5 },
+  "verdant-world":         { "agricultural-station": 1.5, "population-centre": 1.5 },
+  "barren-world":          { "mining-complex": 1.25, "fuel-extraction": 1.25 },
+  "void-station":          { "research-station": 1.5, "intelligence-nexus": 1.5 },
+  "contested-ruin":        { "intelligence-nexus": 1.25, "cultural-institute": 1.25 },
+  "frontier-world":        {}, // generalist — no bonuses
+  "nexus-adjacent":        { "research-station": 1.5 },
+  "resource-rich-anomaly": { "mining-complex": 1.5, "fuel-extraction": 1.5 },
+};
+
+/**
+ * Calculate bonus production from installations on a star system.
+ * Applies biome affinity bonuses and installation condition scaling.
+ */
+export function calculateInstallationProduction(
+  system: StarSystem,
+): Partial<Resources> {
+  const bonus: Partial<Resources> = {};
+  const biomeBonuses = BIOME_INSTALLATION_BONUS[system.biome] ?? {};
+
+  for (const slot of system.slots) {
+    const installation = slot.installation;
+    if (!installation || installation.completionCycle !== null) continue;
+    const prod = INSTALLATION_PRODUCTION[installation.type];
+    if (!prod) continue;
+    const conditionMultiplier = installation.condition;
+    const biomeMultiplier = biomeBonuses[installation.type] ?? 1.0;
+    for (const [key, val] of Object.entries(prod)) {
+      const scaled = Math.floor((val as number) * conditionMultiplier * biomeMultiplier);
+      (bonus as Record<string, number>)[key] = ((bonus as Record<string, number>)[key] ?? 0) + scaled;
+    }
+  }
+  return bonus;
+}
+
+/* ── Unit Degradation ���─ */
 
 /**
  * Degrade units when maintenance cannot be paid (ore or fuelCells deficit).

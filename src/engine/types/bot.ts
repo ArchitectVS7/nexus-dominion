@@ -26,6 +26,10 @@ export interface BotAgent {
     persona: PersonaProfile;
     /** Current emotional state affects decision-making */
     emotionalState: EmotionalState;
+    /** Intelligence tier (1=Apex, 2=Tactical, 3=Reactive, 4=Entropic) */
+    intelligenceTier?: 1 | 2 | 3 | 4;
+    /** Schemer betrayal clock — increments each cycle in pact */
+    betrayalClock?: number;
 }
 
 export interface PersonaProfile {
@@ -50,6 +54,8 @@ export interface EmotionalState {
     trigger: string;
     /** Cycle when state was last updated */
     lastUpdatedCycle: number;
+    /** Emotional intensity (0.0–1.0). At 0.0, emotion has no mechanical effect. Decays each cycle. */
+    resonance: number;
 }
 
 /* ── Bot Actions ── */
@@ -61,7 +67,9 @@ export type BotActionType =
     | "attack"
     | "propose-pact"
     | "break-pact"
-    | "trade";
+    | "trade"
+    | "research"
+    | "fortify";
 
 export interface BotAction {
     type: BotActionType;

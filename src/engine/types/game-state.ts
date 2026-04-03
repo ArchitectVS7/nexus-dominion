@@ -10,6 +10,24 @@ import type { DiplomacyState } from "./diplomacy";
 import type { BotAgent } from "./bot";
 import type { TimeState } from "./time";
 import type { GameEvent } from "./events";
+import type { SyndicateState } from "./syndicate";
+import type { CovertState } from "./covert";
+
+/* ── Market State ── */
+
+export interface MarketPrices {
+    food: number;
+    ore: number;
+    fuelCells: number;
+}
+
+export interface MarketState {
+    prices: MarketPrices;
+    basePrices: MarketPrices;
+    priceHistory: MarketPrices[];
+    /** Net trade volume this cycle: positive = net bought (demand), negative = net sold (supply) */
+    cycleVolume?: { food: number; ore: number; fuelCells: number };
+}
 
 /* ── Game State ── */
 
@@ -36,6 +54,22 @@ export interface GameState {
     currentCycleEvents: GameEvent[];
     /** Campaign metadata */
     campaign: CampaignMeta;
+    /** Market state for resource trading */
+    market?: MarketState;
+    /** Rolling power history for cosmic order (last 5 cycles per empire) */
+    powerHistory?: Map<EmpireId, number[]>;
+    /** Earned achievements per empire */
+    earnedAchievements?: Map<EmpireId, Set<string>>;
+    /** Bot action accumulation for fractional momentum */
+    botAccumulated?: Map<EmpireId, number>;
+    /** Galactic Syndicate state — absent until first empire discovers the Syndicate */
+    syndicate?: SyndicateState;
+    /** Covert operations state — absent until any empire has a covert program */
+    covert?: CovertState;
+    /** Owned black register items per empire */
+    ownedBlackRegisterItems?: Map<EmpireId, Set<string>>;
+    /** Convergence alerts already sent (empire::achievement keys) to prevent duplicates */
+    convergenceAlertsSent?: Set<string>;
 }
 
 export interface CampaignMeta {

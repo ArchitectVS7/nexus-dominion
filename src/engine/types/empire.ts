@@ -3,6 +3,7 @@
    ══════════════════════════════════════════════════════════════ */
 
 import type { EmpireId, SystemId, FleetId } from "./ids";
+import type { InstallationQueueEntry } from "../installation/installation-registry";
 
 /* ── Resources ── */
 
@@ -70,6 +71,25 @@ export interface Empire {
     researchTier: number;
     /** Power score for Cosmic Order ranking */
     powerScore: number;
+    /** Selected research doctrine path (null = not yet chosen) */
+    researchPath?: string | null;
+    /** Selected specialization within doctrine (null = not yet chosen) */
+    specialization?: string | null;
+    /** Build queue for units under construction */
+    buildQueue?: BuildQueueEntry[];
+    /** Build queue for installations under construction */
+    installationQueue?: InstallationQueueEntry[];
+    /** Global reputation score (0–100, starts at 50) */
+    globalReputation?: number;
+}
+
+/* ── Build Queue ── */
+
+export interface BuildQueueEntry {
+    unitTypeId: string;
+    systemId: SystemId;
+    startCycle: number;
+    completionCycle: number;
 }
 
 /** Initial empire configuration for campaign setup */

@@ -28,7 +28,8 @@ export interface RelationshipState {
 
 export type PactType =
     | "stillness-accord"   // Non-Aggression Pact
-    | "star-covenant";     // Full Alliance
+    | "star-covenant"      // Full Alliance
+    | "nexus-compact";     // Coalition against a target
 
 export interface Pact {
     id: PactId;

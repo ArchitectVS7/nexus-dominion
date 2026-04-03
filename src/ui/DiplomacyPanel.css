@@ -1,0 +1,215 @@
+/* ── Diplomacy Panel ── */
+
+.diplomacy-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  animation: overlay-fade-in 200ms ease-out both;
+}
+
+.diplomacy-panel-slide {
+  width: 500px;
+  max-width: 90vw;
+  height: 100%;
+  overflow-y: auto;
+  animation: slide-in-right var(--duration-slide) var(--ease-out) both;
+}
+
+.diplomacy-panel-slide .lcars-panel {
+  height: 100%;
+  border-radius: 0;
+}
+
+.diplomacy-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.diplomacy-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.diplomacy-panel__section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--lcars-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+  border-bottom: var(--border-dim);
+  padding-bottom: var(--space-1);
+}
+
+/* Global Standing */
+.diplomacy-panel__standing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.diplomacy-panel__rep-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.02);
+  border: var(--border-dim);
+  border-radius: var(--radius-md);
+}
+
+.diplomacy-panel__rep-val {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--lcars-blue-light);
+}
+
+.diplomacy-panel__rep-lbl {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* Alerts */
+.diplomacy-panel__alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--lcars-danger);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+.diplomacy-panel__alert-icon {
+  font-size: var(--text-lg);
+}
+
+/* Active Pacts */
+.diplomacy-panel__pacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.diplomacy-panel__pact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  background: rgba(52, 152, 219, 0.05);
+  border: 1px solid rgba(52, 152, 219, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.diplomacy-panel__pact-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.diplomacy-panel__pact-type {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--lcars-blue-light);
+  text-transform: capitalize;
+}
+
+.diplomacy-panel__pact-target {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+.diplomacy-panel__empty {
+  text-align: center;
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: var(--text-sm);
+  padding: var(--space-4);
+}
+
+/* Emissary List */
+.diplomacy-panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.diplomacy-panel__list-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.02);
+  border: var(--border-dim);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.diplomacy-panel__list-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.diplomacy-panel__list-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.diplomacy-panel__list-name {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.diplomacy-panel__list-tier {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--lcars-orange);
+  text-transform: capitalize;
+}
+
+.diplomacy-panel__status-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.diplomacy-panel__status-badge.friendly {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--lcars-success);
+}
+
+.diplomacy-panel__status-badge.hostile {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--lcars-danger);
+}
+
+.diplomacy-panel__status-badge.neutral {
+  color: var(--text-secondary);
+}
+
+.diplomacy-panel__list-actions button {
+  width: 100%;
+}

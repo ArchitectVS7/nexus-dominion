@@ -197,3 +197,105 @@ body,
   display: flex;
   justify-content: center;
 }
+
+/* ══════════════════════════════════════════
+   Title Screen
+   ══════════════════════════════════════════ */
+
+.title-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--space-10);
+  animation: title-fade-in 800ms var(--ease-out) both;
+}
+
+@keyframes title-fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title-screen__logo {
+  text-align: center;
+}
+
+.title-screen__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2rem, 6vw, 4rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--lcars-orange) 0%, var(--lcars-purple) 50%, var(--lcars-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  animation: title-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes title-glow {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.15); }
+}
+
+.title-screen__subtitle {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: var(--text-sm);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: var(--space-3);
+}
+
+.title-screen__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 260px;
+}
+
+.title-btn {
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  text-align: center;
+}
+
+.title-btn--primary {
+  background: linear-gradient(135deg, var(--lcars-orange) 0%, var(--lcars-orange-dark) 100%);
+  border: none;
+  color: var(--surface-deep);
+  box-shadow: 0 4px 24px rgba(244, 166, 41, 0.3);
+}
+
+.title-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(244, 166, 41, 0.45);
+}
+
+.title-btn--secondary {
+  background: transparent;
+  border: 1px solid rgba(244, 166, 41, 0.2);
+  color: var(--text-secondary);
+}
+
+.title-btn--secondary:hover {
+  border-color: var(--lcars-orange);
+  color: var(--lcars-orange);
+  background: rgba(244, 166, 41, 0.05);
+}
+
+.title-screen__ver {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}

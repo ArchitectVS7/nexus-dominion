@@ -185,6 +185,28 @@ export function StarMap({ galaxy, playerEmpireId, onSelectSystem }: StarMapProps
                 }
             }
 
+            // ── Wormhole edges ──
+            if (galaxy.wormholes) {
+                for (const wh of galaxy.wormholes) {
+                    const sysA = galaxy.systems.get(wh.systemA);
+                    const sysB = galaxy.systems.get(wh.systemB);
+                    if (!sysA || !sysB) continue;
+
+                    const a = worldToScreen(sysA.position.x, sysA.position.y);
+                    const b = worldToScreen(sysB.position.x, sysB.position.y);
+
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.strokeStyle = "rgba(155, 89, 182, 0.6)"; // LCARS purple-light
+                    ctx.lineWidth = 2 * Math.max(0.6, Math.min(1.5, camera.zoom));
+                    ctx.shadowColor = "rgba(155, 89, 182, 0.8)";
+                    ctx.shadowBlur = 4;
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
             // ── System nodes ──
             for (const sys of systems) {
                 const screen = worldToScreen(sys.position.x, sys.position.y);

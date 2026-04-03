@@ -8,6 +8,21 @@ import type { EmpireId, FleetId, SystemId, UnitId } from "./ids";
 
 export type UnitCategory = "fleet" | "ground";
 
+export interface D20StatBlock {
+    /** Firepower (STR) — weapon output */
+    str: number;
+    /** Maneuverability (DEX) — evasion */
+    dex: number;
+    /** Hull Integrity (CON) — structural toughness */
+    con: number;
+    /** Deflector Rating (AC) — derived from dex + armour */
+    ac: number;
+    /** Targeting Lock (BAB) — attack modifier */
+    bab: number;
+    /** Combat Readiness — initiative bonus */
+    initiative: number;
+}
+
 export interface UnitType {
     id: string;
     name: string;
@@ -26,6 +41,8 @@ export interface UnitType {
     defence: number;
     /** Hit points */
     hp: number;
+    /** D20 stat block for enhanced combat resolution */
+    statBlock?: D20StatBlock;
 }
 
 /* ── Units ── */
@@ -69,4 +86,10 @@ export interface CombatResult {
     victor: EmpireId;
     /** Whether the system changed ownership */
     systemCaptured: boolean;
+    /** Whether a force retreated due to morale break */
+    retreated?: boolean;
+    /** Whether a morale break occurred */
+    moraleBreak?: boolean;
+    /** Damage to system infrastructure (0–100%) from orbital bombardment */
+    infrastructureDamage?: number;
 }

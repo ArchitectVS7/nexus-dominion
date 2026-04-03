@@ -1,0 +1,2 @@
+## Qwen Added Memories
+- The Nexus Dominion game is a complex galactic strategy simulation with core mechanics implemented including economy, diplomacy, military, research, and more. The codebase shows 934 tests passing and has a strong TypeScript foundation. The main missing features from the 50-feature list are advanced coalition mechanics, nexus anomalies, advanced empire AI, dynamic events, fleet movement systems, enhanced trade systems, improved UI/UX, expanded empire traits, advanced combat mechanics, and a complete achievement catalog.

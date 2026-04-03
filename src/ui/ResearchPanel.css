@@ -1,0 +1,194 @@
+/* ── Research Panel ── */
+
+.research-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  animation: overlay-fade-in 200ms ease-out both;
+}
+
+.research-panel-slide {
+  width: 480px;
+  max-width: 90vw;
+  height: 100%;
+  overflow-y: auto;
+  animation: slide-in-right var(--duration-slide) var(--ease-out) both;
+}
+
+.research-panel-slide .lcars-panel {
+  height: 100%;
+  border-radius: 0;
+}
+
+.research-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.research-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border-dim);
+}
+
+.research-panel__tier-badge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.research-panel__tier-lbl {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.research-panel__tier-val {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--lcars-blue-light);
+}
+
+.research-panel__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-end;
+}
+
+.research-panel__action {
+  text-align: center;
+}
+
+.research-panel__action button {
+  width: 100%;
+}
+
+.research-panel__draft-alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(231, 76, 60, 0.12);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--lcars-danger);
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+.research-panel__draft-icon {
+  font-size: var(--text-sm);
+}
+
+/* Tech Tree */
+.research-panel__tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.research-panel__path {
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.02);
+  border: var(--border-dim);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.research-panel__path.selected {
+  background: rgba(52, 152, 219, 0.08);
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+.research-panel__path.locked {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.research-panel__path-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.research-panel__path-name {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.research-panel__path.selected .research-panel__path-name {
+  color: var(--lcars-blue-light);
+}
+
+.research-panel__specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.research-panel__spec {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.research-panel__spec.selected {
+  border-color: rgba(52, 152, 219, 0.3);
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.research-panel__spec.locked {
+  opacity: 0.3;
+}
+
+.research-panel__spec-name {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.research-panel__capstone {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--border-dim);
+}
+
+.research-panel__capstone-lbl {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.research-panel__capstone-name {
+  font-size: var(--text-sm);
+  color: var(--lcars-orange);
+  font-style: italic;
+}
