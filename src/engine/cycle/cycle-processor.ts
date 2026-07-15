@@ -23,6 +23,8 @@ import { relationshipKey, type PactType } from "../types/diplomacy";
 import { declareWar, getTradeDiscount, pruneOldRelationships, proposePact, acceptPact, breakPact } from "../diplomacy/diplomacy-engine";
 import type { CovertOperationType } from "../types/covert";
 import { processSlotUnlocks, processAnomalyDiscovery } from "../galaxy/slot-unlocker";
+import { resolveFullCombat, applyInfrastructureDamage } from "../combat/combat-resolver";
+import type { UnitId } from "../types/ids";
 
 export interface PlayerActions {
   /** Actions queued by the player for this cycle */
@@ -822,9 +824,121 @@ function resolvePlayerActions(
         }
         break;
       }
+
+      case "attack": {
+        const targetSystemId = action.details?.targetSystemId as SystemId | undefined;
+        const rawUnitIds = action.details?.unitIds;
+
+        // ── Validity checks (must break before any mutation) ──
+        if (!targetSystemId || !Array.isArray(rawUnitIds) || rawUnitIds.length === 0) break;
+
+        const targetSystem = state.galaxy.systems.get(targetSystemId);
+        if (!targetSystem) break;
+        // Reject unclaimed or own systems
+        if (targetSystem.owner === null || targetSystem.owner === empire.id) break;
+
+        const defenderId = targetSystem.owner;
+
+        // Build attacker force from the supplied unit ids (drop nonexistent)
+        const attackerUnits = (rawUnitIds as UnitId[])
+          .map((id) => state.units.get(id))
+          .filter((u): u is NonNullable<typeof u> => u !== undefined)
+          .map((u) => ({ id: u.id, typeId: u.typeId, currentHp: u.currentHp }));
+
+        // Empty/nonexistent force → no-op
+        if (attackerUnits.length === 0) break;
+
+        // Build defender force from fleets stationed at the target system.
+        // An empty defender force is allowed (attacker walks in).
+        const defenderUnitIds = [...state.fleets.values()]
+          .filter((f) => f.ownerId === defenderId && f.locationSystemId === targetSystemId)
+          .flatMap((f) => f.unitIds);
+        const defenderUnits = defenderUnitIds
+          .map((id) => state.units.get(id))
+          .filter((u): u is NonNullable<typeof u> => u !== undefined)
+          .map((u) => ({ id: u.id, typeId: u.typeId, currentHp: u.currentHp }));
+
+        // State-derived randomness — no Math.random()
+        const combatRng = new SeededRNG(
+          state.campaign.seed + state.time.currentCycle + simpleHash(targetSystemId),
+        );
+
+        const attackerForce = { empireId: empire.id, units: attackerUnits, isDefender: false };
+        const defenderForce = { empireId: defenderId, units: defenderUnits, isDefender: true };
+
+        const results = resolveFullCombat(
+          attackerForce,
+          defenderForce,
+          targetSystemId,
+          state.unitTypes,
+          combatRng,
+        );
+
+        // No combat phases triggered → nothing to resolve
+        if (results.length === 0) break;
+
+        // Apply infrastructure damage from orbital bombardment phases
+        for (const result of results) {
+          if ((result.infrastructureDamage ?? 0) > 0) {
+            applyInfrastructureDamage(targetSystem, result.infrastructureDamage!, combatRng);
+          }
+        }
+
+        // Aggregate casualties across all phases (deduped)
+        const attackerDead = new Set<UnitId>();
+        const defenderDead = new Set<UnitId>();
+        for (const result of results) {
+          for (const id of result.attackerLosses) attackerDead.add(id);
+          for (const id of result.defenderLosses) defenderDead.add(id);
+        }
+
+        // Apply casualties to both empires' rosters: remove from unit map and any fleet
+        const allDead = new Set<UnitId>([...attackerDead, ...defenderDead]);
+        if (allDead.size > 0) {
+          for (const id of allDead) state.units.delete(id);
+          for (const fleet of state.fleets.values()) {
+            fleet.unitIds = fleet.unitIds.filter((id) => !allDead.has(id));
+          }
+        }
+
+        // Ownership transfer on ground-assault victory by attacker
+        const groundResult = results.find((r) => r.phase === "ground-assault");
+        let ownershipChanged = false;
+        if (groundResult?.systemCaptured && groundResult.victor === empire.id) {
+          const defenderEmpire = state.empires.get(defenderId);
+          if (defenderEmpire) {
+            defenderEmpire.systemIds = defenderEmpire.systemIds.filter(
+              (id) => id !== targetSystemId,
+            );
+          }
+          empire.systemIds.push(targetSystemId);
+          targetSystem.owner = empire.id;
+          targetSystem.claimedCycle = state.time.currentCycle;
+          ownershipChanged = true;
+        }
+
+        const decisiveResult = groundResult ?? results[results.length - 1];
+        const victor =
+          ownershipChanged || decisiveResult.victor === empire.id ? empire.id : defenderId;
+
+        events.push({
+          type: "combat",
+          cycle: state.time.currentCycle,
+          result: decisiveResult,
+          results,
+          attackerId: empire.id,
+          defenderId,
+          victor,
+          phasesFought: results.map((r) => r.phase),
+          ownershipChanged,
+          attackerCasualties: [...attackerDead],
+          defenderCasualties: [...defenderDead],
+        });
+        break;
+      }
     }
   }
-  
+
   // Process fleet arrivals for this cycle
   if (state.fleets.size > 0) {
     const updatedFleets = resolveFleetArrivals(state.fleets, state.time.currentCycle);

@@ -5,9 +5,9 @@
    by the UI (Cycle Report, notifications, combat modals).
    ══════════════════════════════════════════════════════════════ */
 
-import type { EmpireId, SystemId } from "./ids";
+import type { EmpireId, SystemId, UnitId } from "./ids";
 import type { Resources } from "./empire";
-import type { CombatResult } from "./military";
+import type { CombatResult, CombatPhase } from "./military";
 import type { CosmicOrder } from "./time";
 import type { PactType } from "./diplomacy";
 import type { SyndicateRank } from "./syndicate";
@@ -53,7 +53,21 @@ export interface ColonisationEvent {
 export interface CombatEvent {
     type: "combat";
     cycle: number;
+    /** Decisive/representative phase result — kept for UI + bot back-compat */
     result: CombatResult;
+    /** Every phase fought, in order (aggregated player-attack events) */
+    results?: CombatResult[];
+    attackerId?: EmpireId;
+    defenderId?: EmpireId;
+    /** Overall victor of the engagement */
+    victor?: EmpireId;
+    phasesFought?: CombatPhase[];
+    /** True iff the target system changed ownership */
+    ownershipChanged?: boolean;
+    /** Aggregated attacker casualties across all phases */
+    attackerCasualties?: UnitId[];
+    /** Aggregated defender casualties across all phases */
+    defenderCasualties?: UnitId[];
 }
 
 export interface DiplomacyEvent {

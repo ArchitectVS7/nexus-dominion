@@ -5,7 +5,9 @@ import type { Empire } from "../types/empire";
 import type { StarSystem, Sector } from "../types/galaxy";
 import type { TimeState } from "../types/time";
 import type { BotAgent } from "../types/bot";
-import { EmpireId, SystemId, SectorId } from "../types/ids";
+import { EmpireId, SystemId, SectorId, UnitId, FleetId } from "../types/ids";
+import type { Unit, Fleet } from "../types/military";
+import type { CombatEvent } from "../types/events";
 import { computeCosmicOrder } from "../nexus/nexus-engine";
 import { createUnitTypeRegistry } from "../military/unit-registry";
 import { relationshipKey } from "../types/diplomacy";
@@ -971,5 +973,270 @@ describe("Cycle Processor", () => {
       // High prices should yield MORE surplus correction events than low prices
       expect(surplusEventsHigh).toBeGreaterThan(surplusEventsLow);
     });
+  });
+});
+
+/* ── T-101: attack player action ── */
+
+describe("T-101: attack player action", () => {
+  /**
+   * Augment a minimal game state with a unit-type registry, units, and fleets.
+   * Attacker units belong to player empire-0; defender units to empire-1,
+   * both stationed at the target system.
+   */
+  function setupCombat(
+    state: GameState,
+    opts: {
+      targetSystemId: string;
+      attackerTypeIds: string[];
+      defenderTypeIds: string[];
+    },
+  ): { attackerUnitIds: UnitId[]; defenderUnitIds: UnitId[] } {
+    state.unitTypes = createUnitTypeRegistry();
+
+    const makeUnits = (typeIds: string[], prefix: string): UnitId[] => {
+      const ids: UnitId[] = [];
+      typeIds.forEach((typeId, i) => {
+        const utype = state.unitTypes.get(typeId)!;
+        const id = UnitId(`${prefix}-${i}`);
+        const unit: Unit = { id, typeId, currentHp: utype.hp, completionCycle: null };
+        state.units.set(id, unit);
+        ids.push(id);
+      });
+      return ids;
+    };
+
+    const attackerUnitIds = makeUnits(opts.attackerTypeIds, "atk");
+    const defenderUnitIds = makeUnits(opts.defenderTypeIds, "def");
+
+    const attackerFleet: Fleet = {
+      id: FleetId("fleet-atk"),
+      ownerId: EmpireId("empire-0"),
+      name: "Attack Fleet",
+      locationSystemId: opts.targetSystemId as any,
+      unitIds: attackerUnitIds,
+      targetSystemId: null,
+      arrivalCycle: null,
+    };
+    state.fleets.set(attackerFleet.id, attackerFleet);
+
+    if (defenderUnitIds.length > 0) {
+      const defenderFleet: Fleet = {
+        id: FleetId("fleet-def"),
+        ownerId: EmpireId("empire-1"),
+        name: "Defence Fleet",
+        locationSystemId: opts.targetSystemId as any,
+        unitIds: defenderUnitIds,
+        targetSystemId: null,
+        arrivalCycle: null,
+      };
+      state.fleets.set(defenderFleet.id, defenderFleet);
+    }
+
+    return { attackerUnitIds, defenderUnitIds };
+  }
+
+  const combatEvents = (result: ReturnType<typeof processCycle>): CombatEvent[] =>
+    result.report.events.filter((e): e is CombatEvent => e.type === "combat");
+
+  it("attacker victory transfers ownership", () => {
+    const state = makeMinimalGameState();
+    // Overwhelming attacker (dreadnought fleet + heavy armour ground) vs empty defender.
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-1",
+      attackerTypeIds: ["dreadnought", "heavy-armor", "heavy-armor"],
+      defenderTypeIds: [],
+    });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-1", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    expect(result.committed).toBe(true);
+    const sys1 = result.state.galaxy.systems.get(SystemId("sys-1"))!;
+    expect(sys1.owner).toBe("empire-0");
+    expect(result.state.empires.get(EmpireId("empire-0"))!.systemIds).toContain(SystemId("sys-1"));
+    expect(result.state.empires.get(EmpireId("empire-1"))!.systemIds).not.toContain(SystemId("sys-1"));
+  });
+
+  it("attacker defeat leaves ownership unchanged", () => {
+    const state = makeMinimalGameState();
+    // Lone attacker infantry vs overwhelming defender infantry.
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-1",
+      attackerTypeIds: ["infantry"],
+      defenderTypeIds: ["infantry", "infantry", "infantry", "infantry", "infantry"],
+    });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-1", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    const sys1 = result.state.galaxy.systems.get(SystemId("sys-1"))!;
+    expect(sys1.owner).toBe("empire-1");
+    expect(result.state.empires.get(EmpireId("empire-1"))!.systemIds).toContain(SystemId("sys-1"));
+    expect(result.state.empires.get(EmpireId("empire-0"))!.systemIds).not.toContain(SystemId("sys-1"));
+
+    // A combat event is still recorded, with the defender as victor.
+    const evts = combatEvents(result);
+    expect(evts.length).toBe(1);
+    expect(evts[0].victor).toBe("empire-1");
+    expect(evts[0].ownershipChanged).toBe(false);
+  });
+
+  it("deducts casualties from both empires' rosters", () => {
+    const state = makeMinimalGameState();
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-1",
+      attackerTypeIds: ["infantry", "infantry", "infantry"],
+      defenderTypeIds: ["infantry", "infantry", "infantry"],
+    });
+
+    const unitsBefore = state.units.size;
+    const atkFleetBefore = state.fleets.get(FleetId("fleet-atk"))!.unitIds.length;
+    const defFleetBefore = state.fleets.get(FleetId("fleet-def"))!.unitIds.length;
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-1", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    // Both rosters shrank (selectCasualties floors to at least 1 per side).
+    expect(result.state.units.size).toBeLessThan(unitsBefore);
+    expect(result.state.fleets.get(FleetId("fleet-atk"))!.unitIds.length).toBeLessThan(atkFleetBefore);
+    expect(result.state.fleets.get(FleetId("fleet-def"))!.unitIds.length).toBeLessThan(defFleetBefore);
+
+    const evts = combatEvents(result);
+    expect(evts[0].attackerCasualties!.length).toBeGreaterThan(0);
+    expect(evts[0].defenderCasualties!.length).toBeGreaterThan(0);
+  });
+
+  it("attacking with 0 units is a no-op", () => {
+    const state = makeMinimalGameState();
+    setupCombat(state, { targetSystemId: "sys-1", attackerTypeIds: ["infantry"], defenderTypeIds: ["infantry"] });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-1", unitIds: [] } }] },
+      new Map(),
+      new Map(),
+    );
+
+    expect(result.state.galaxy.systems.get(SystemId("sys-1"))!.owner).toBe("empire-1");
+    expect(combatEvents(result).length).toBe(0);
+  });
+
+  it("attacking own system is a no-op", () => {
+    const state = makeMinimalGameState();
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-1",
+      attackerTypeIds: ["dreadnought"],
+      defenderTypeIds: [],
+    });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-0", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    expect(result.state.galaxy.systems.get(SystemId("sys-0"))!.owner).toBe("empire-0");
+    expect(combatEvents(result).length).toBe(0);
+  });
+
+  it("attacking an unclaimed system is a no-op", () => {
+    const state = makeMinimalGameState(5); // sys-5..sys-9 are unowned
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-9",
+      attackerTypeIds: ["dreadnought", "heavy-armor"],
+      defenderTypeIds: [],
+    });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-9", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    expect(result.state.galaxy.systems.get(SystemId("sys-9"))!.owner).toBe(null);
+    expect(combatEvents(result).length).toBe(0);
+  });
+
+  it("attacking a nonexistent system is a no-op", () => {
+    const state = makeMinimalGameState();
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-1",
+      attackerTypeIds: ["dreadnought"],
+      defenderTypeIds: [],
+    });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-999", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    expect(combatEvents(result).length).toBe(0);
+    // sys-1 untouched
+    expect(result.state.galaxy.systems.get(SystemId("sys-1"))!.owner).toBe("empire-1");
+  });
+
+  it("attacking with a nonexistent force is a no-op", () => {
+    const state = makeMinimalGameState();
+    setupCombat(state, { targetSystemId: "sys-1", attackerTypeIds: ["infantry"], defenderTypeIds: ["infantry"] });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-1", unitIds: ["ghost-unit"] } }] },
+      new Map(),
+      new Map(),
+    );
+
+    expect(result.state.galaxy.systems.get(SystemId("sys-1"))!.owner).toBe("empire-1");
+    expect(combatEvents(result).length).toBe(0);
+  });
+
+  it("pushes a combat event carrying phase-by-phase results", () => {
+    const state = makeMinimalGameState();
+    const { attackerUnitIds } = setupCombat(state, {
+      targetSystemId: "sys-1",
+      attackerTypeIds: ["dreadnought", "heavy-armor", "heavy-armor"],
+      defenderTypeIds: [],
+    });
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: "sys-1", unitIds: attackerUnitIds } }] },
+      new Map(),
+      new Map(),
+    );
+
+    const evts = combatEvents(result);
+    expect(evts.length).toBe(1);
+    const evt = evts[0];
+    expect(evt.results).toBeDefined();
+    expect(evt.results!.length).toBe(evt.phasesFought!.length);
+    expect(evt.results!.length).toBeGreaterThan(0);
+    for (const phaseResult of evt.results!) {
+      expect(phaseResult.phase).toBeDefined();
+      expect(phaseResult.victor).toBeDefined();
+      expect(Array.isArray(phaseResult.attackerLosses)).toBe(true);
+      expect(Array.isArray(phaseResult.defenderLosses)).toBe(true);
+    }
+    expect(evt.ownershipChanged).toBe(true);
+    expect(evt.victor).toBe("empire-0");
+    // Includes the decisive ground-assault phase.
+    expect(evt.phasesFought).toContain("ground-assault");
   });
 });
