@@ -140,6 +140,37 @@ function App() {
     }
   }, [state, dispatch]);
 
+  /* ── Attack Action ── */
+
+  const handleAttack = useCallback((systemId: SystemId, unitIds: string[]) => {
+    if (!state) return;
+
+    const playerEmpire = state.empires.get(state.playerEmpireId);
+    if (playerEmpire) {
+      setPrevResources({ ...playerEmpire.resources });
+    }
+
+    const result = processCycle(
+      state,
+      { actions: [{ type: "attack", details: { targetSystemId: systemId, unitIds } }] },
+      powerHistoryRef.current as any,
+      botAccumRef.current as any,
+    );
+
+    if (result.committed) {
+      if (result.state.powerHistory) {
+        powerHistoryRef.current = result.state.powerHistory as any;
+      }
+      if (result.state.botAccumulated) {
+        botAccumRef.current = result.state.botAccumulated as any;
+      }
+
+      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
+      setCycleReport(result.report);
+      setSelectedSystemId(null);
+    }
+  }, [state, dispatch]);
+
   /* ── Build Installation Action ── */
 
   const handleBuildInstallation = useCallback((systemId: SystemId, installationType: InstallationType) => {
@@ -507,6 +538,7 @@ function App() {
           onColonise={handleColonise}
           onBuild={handleBuildInstallation}
           onBuildWormhole={handleBuildWormhole as any}
+          onAttack={handleAttack as any}
         />
       )}
 

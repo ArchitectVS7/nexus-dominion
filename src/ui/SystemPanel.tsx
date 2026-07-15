@@ -1,7 +1,8 @@
 /* ── Nexus Dominion — System Panel ── */
 
+import { useState } from "react";
 import { Panel, Button, DataReadout } from "../components/lcars";
-import type { GameState, SystemId, InstallationType } from "../engine/types";
+import type { GameState, SystemId, UnitId, InstallationType } from "../engine/types";
 import { BIOME_ALLOWED_INSTALLATIONS, INSTALLATION_COSTS, canBuildInstallation } from "../engine/installation/installation-registry";
 import "./SystemPanel.css";
 
@@ -12,15 +13,51 @@ interface SystemPanelProps {
   onColonise?: (systemId: SystemId) => void;
   onBuild?: (systemId: SystemId, type: InstallationType) => void;
   onBuildWormhole?: (targetSystemId: SystemId) => void;
+  onAttack?: (systemId: SystemId, unitIds: UnitId[]) => void;
 }
 
-export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onBuildWormhole }: SystemPanelProps) {
+export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onBuildWormhole, onAttack }: SystemPanelProps) {
+  const [selectedUnitIds, setSelectedUnitIds] = useState<UnitId[]>([]);
+
   const system = state.galaxy.systems.get(systemId);
   if (!system) return null;
 
   const playerEmpireId = state.playerEmpireId;
   const isOwned = system.owner === playerEmpireId;
   const isUnclaimed = !system.owner;
+  const isEnemy = !!system.owner && system.owner !== playerEmpireId;
+
+  // Player's built (active) military units, gathered across their fleets.
+  const availableUnits: { id: UnitId; name: string; category: string }[] = [];
+  if (isEnemy && onAttack) {
+    const playerEmpire = state.empires.get(playerEmpireId);
+    for (const fleetId of playerEmpire?.fleetIds ?? []) {
+      const fleet = state.fleets.get(fleetId);
+      if (!fleet) continue;
+      for (const uid of fleet.unitIds) {
+        const unit = state.units.get(uid);
+        if (!unit || unit.completionCycle !== null) continue;
+        const typeInfo = state.unitTypes.get(unit.typeId);
+        availableUnits.push({
+          id: unit.id,
+          name: typeInfo?.name ?? unit.typeId,
+          category: typeInfo?.category ?? "unit",
+        });
+      }
+    }
+  }
+
+  const toggleUnit = (id: UnitId) => {
+    setSelectedUnitIds((prev) =>
+      prev.includes(id) ? prev.filter((u) => u !== id) : [...prev, id],
+    );
+  };
+
+  const allSelected =
+    availableUnits.length > 0 && selectedUnitIds.length === availableUnits.length;
+  const toggleSelectAll = () => {
+    setSelectedUnitIds(allSelected ? [] : availableUnits.map((u) => u.id));
+  };
 
   // Check if player can colonise (adjacent to a system they own)
   const canColonise = isUnclaimed && system.adjacentSystemIds.some((adjId) => {
@@ -158,6 +195,58 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Military Assault (enemy-owned systems only) */}
+            {isEnemy && onAttack && (
+              <div className="system-panel__section">
+                <h4 className="system-panel__section-title">Military Assault</h4>
+                {availableUnits.length === 0 ? (
+                  <>
+                    <p className="system-panel__desc" role="note">
+                      No military units available to deploy.
+                    </p>
+                    <div className="system-panel__actions">
+                      <Button label="⚔ LAUNCH ATTACK" variant="danger" disabled />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="system-panel__attack-list">
+                      <label className="system-panel__attack-unit">
+                        <input
+                          type="checkbox"
+                          checked={allSelected}
+                          onChange={toggleSelectAll}
+                          aria-label="Select all units"
+                        />
+                        <span>Select all</span>
+                      </label>
+                      {availableUnits.map((unit) => (
+                        <label key={unit.id} className="system-panel__attack-unit">
+                          <input
+                            type="checkbox"
+                            checked={selectedUnitIds.includes(unit.id)}
+                            onChange={() => toggleUnit(unit.id)}
+                            aria-label={`${unit.name} (${unit.category})`}
+                          />
+                          <span>
+                            {unit.name} <em>({unit.category})</em>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="system-panel__actions">
+                      <Button
+                        label="⚔ LAUNCH ATTACK"
+                        variant="danger"
+                        onClick={() => onAttack(systemId, selectedUnitIds)}
+                        disabled={selectedUnitIds.length === 0}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             )}
 

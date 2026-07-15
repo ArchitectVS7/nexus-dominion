@@ -11,7 +11,7 @@ export default defineConfig(async () => ({
   test: {
     globals: true,
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
   },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
