@@ -14,6 +14,7 @@ interface SaveEntry {
   id: string;
   name: string;
   savedAt: string;
+  cycle: number;
   json: string;
 }
 
@@ -35,6 +36,7 @@ export class InMemoryStatePersistence implements IStatePersistence {
       id: state.campaign.id,
       name: state.campaign.name,
       savedAt: now,
+      cycle: state.time.currentCycle,
       json,
     });
   }
@@ -45,11 +47,12 @@ export class InMemoryStatePersistence implements IStatePersistence {
     return deserializeGameState(entry.json);
   }
 
-  async listSaves(): Promise<Array<{ id: string; name: string; savedAt: string }>> {
-    return Array.from(this.store.values()).map(({ id, name, savedAt }) => ({
+  async listSaves(): Promise<Array<{ id: string; name: string; savedAt: string; cycle: number }>> {
+    return Array.from(this.store.values()).map(({ id, name, savedAt, cycle }) => ({
       id,
       name,
       savedAt,
+      cycle,
     }));
   }
 

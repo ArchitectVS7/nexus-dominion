@@ -1,0 +1,87 @@
+/* ── Save Slot Manager ── */
+
+.save-slot-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlay-fade-in 200ms ease-out both;
+}
+
+.save-slot-slide {
+  width: 560px;
+  max-width: 92vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slide-in-right var(--duration-slide) var(--ease-out) both;
+}
+
+.save-slot__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.save-slot__empty {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  color: var(--lcars-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-align: center;
+  padding: var(--space-6) 0;
+  margin: 0;
+}
+
+.save-slot__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.save-slot__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid var(--lcars-orange);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.save-slot__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.save-slot__name {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  color: var(--lcars-text, #fff);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.save-slot__detail {
+  font-size: var(--text-sm);
+  color: var(--lcars-text-dim, #9aa);
+}
+
+.save-slot__timestamp {
+  font-variant-numeric: tabular-nums;
+}
+
+.save-slot__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}

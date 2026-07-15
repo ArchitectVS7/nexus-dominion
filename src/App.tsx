@@ -25,6 +25,8 @@ import { ConvergenceAlert } from "./ui/ConvergenceAlert";
 import { SystemPanel } from "./ui/SystemPanel";
 import { SectorPanel } from "./ui/SectorPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
+import { SaveSlotManager } from "./ui/SaveSlotManager";
+import type { SaveSlotSummary } from "./ui/SaveSlotManager";
 import { ACHIEVEMENT_DEFINITIONS } from "./engine/achievement/achievement-checker";
 import type { CycleReport, CombatEvent, ConvergenceAlertEvent, SystemId, SectorId, Resources, InstallationType } from "./engine/types";
 import "./App.css";
@@ -43,6 +45,8 @@ function App() {
   const [selectedSystemId, setSelectedSystemId] = useState<SystemId | null>(null);
   const [selectedSectorId, setSelectedSectorId] = useState<SectorId | null>(null);
   const [prevResources, setPrevResources] = useState<Resources | null>(null);
+  const [showSaveList, setShowSaveList] = useState(false);
+  const [saveList, setSaveList] = useState<SaveSlotSummary[]>([]);
 
   // Persistent history refs (not part of React renders)
   const powerHistoryRef = useRef(new Map<string, number[]>());
@@ -64,19 +68,30 @@ function App() {
     dispatch({ type: "SET_STATE", state: newState });
   }, [dispatch]);
 
-  const handleLoadGame = useCallback(async () => {
+  const handleOpenSaveList = useCallback(async () => {
     const saves = await persistence.listSaves();
-    if (saves.length > 0) {
-      // Load the most recent save
-      const latest = saves.sort((a, b) => b.savedAt.localeCompare(a.savedAt))[0];
-      const loaded = await persistence.load(latest.id);
+    setSaveList(saves);
+    setShowSaveList(true);
+  }, []);
+
+  const handleLoadSave = useCallback(
+    async (id: string) => {
+      const loaded = await persistence.load(id);
       if (loaded) {
         powerHistoryRef.current = loaded.powerHistory ?? new Map();
         botAccumRef.current = loaded.botAccumulated ?? new Map();
         dispatch({ type: "SET_STATE", state: loaded });
+        setShowSaveList(false);
       }
-    }
-  }, [dispatch]);
+    },
+    [dispatch],
+  );
+
+  const handleDeleteSave = useCallback(async (id: string) => {
+    await persistence.deleteSave(id);
+    // Refresh from the persisted index so the manager reflects reality.
+    setSaveList(await persistence.listSaves());
+  }, []);
 
   const handleSaveGame = useCallback(async () => {
     if (!state) return;
@@ -446,12 +461,20 @@ function App() {
             <button className="title-btn title-btn--primary" onClick={handleNewCampaign}>
               NEW CAMPAIGN
             </button>
-            <button className="title-btn title-btn--secondary" onClick={handleLoadGame}>
+            <button className="title-btn title-btn--secondary" onClick={handleOpenSaveList}>
               CONTINUE
             </button>
           </div>
           <p className="title-screen__ver">Engine v0.9 — 934 Tests Passing</p>
         </div>
+        {showSaveList && (
+          <SaveSlotManager
+            saves={saveList}
+            onLoad={handleLoadSave}
+            onDelete={handleDeleteSave}
+            onClose={() => setShowSaveList(false)}
+          />
+        )}
       </div>
     );
   }

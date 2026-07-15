@@ -48,7 +48,7 @@ export interface IStatePersistence {
     /** Load a saved game state */
     load(campaignId: string): Promise<GameState | null>;
     /** List available save files */
-    listSaves(): Promise<Array<{ id: string; name: string; savedAt: string }>>;
+    listSaves(): Promise<Array<{ id: string; name: string; savedAt: string; cycle: number }>>;
     /** Delete a save file */
     deleteSave(campaignId: string): Promise<void>;
 }

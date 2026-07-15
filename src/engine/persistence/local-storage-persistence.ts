@@ -16,6 +16,7 @@ interface SaveIndexEntry {
   id: string;
   name: string;
   savedAt: string;
+  cycle: number;
 }
 
 export class LocalStoragePersistence implements IStatePersistence {
@@ -74,6 +75,7 @@ export class LocalStoragePersistence implements IStatePersistence {
         id: state.campaign.id,
         name: state.campaign.name,
         savedAt: now,
+        cycle: state.time.currentCycle,
       };
 
       if (existing >= 0) {
@@ -100,7 +102,7 @@ export class LocalStoragePersistence implements IStatePersistence {
     }
   }
 
-  async listSaves(): Promise<Array<{ id: string; name: string; savedAt: string }>> {
+  async listSaves(): Promise<Array<{ id: string; name: string; savedAt: string; cycle: number }>> {
     return this.getIndex();
   }
 

@@ -233,4 +233,58 @@ describe("InMemoryStatePersistence", () => {
       expect(loaded!.time.cosmicOrder.tiers).toBeInstanceOf(Map);
     });
   });
+
+  describe("save-slot metadata (cycle) — list/load/delete round-trip", () => {
+    it("listSaves entries include the campaign's current cycle", async () => {
+      const persistence = new InMemoryStatePersistence();
+      await persistence.save(createTestState("c1", "My Game"));
+      const saves = await persistence.listSaves();
+      expect(saves[0].cycle).toBe(3); // createTestState sets time.currentCycle = 3
+    });
+
+    it("records distinct cycle values per campaign", async () => {
+      const persistence = new InMemoryStatePersistence();
+      const s1 = createTestState("c1", "Early");
+      s1.time.currentCycle = 5;
+      const s2 = createTestState("c2", "Late");
+      s2.time.currentCycle = 88;
+      await persistence.save(s1);
+      await persistence.save(s2);
+
+      const byId = new Map((await persistence.listSaves()).map((s) => [s.id, s]));
+      expect(byId.get("c1")!.cycle).toBe(5);
+      expect(byId.get("c2")!.cycle).toBe(88);
+    });
+
+    it("full round-trip: save two → list with cycle → load each → delete one", async () => {
+      const persistence = new InMemoryStatePersistence();
+      const s1 = createTestState("c1", "Alpha");
+      s1.time.currentCycle = 10;
+      const s2 = createTestState("c2", "Beta");
+      s2.time.currentCycle = 20;
+      await persistence.save(s1);
+      await persistence.save(s2);
+
+      // list returns both with correct cycle metadata
+      const listed = await persistence.listSaves();
+      expect(listed).toHaveLength(2);
+      const listedById = new Map(listed.map((s) => [s.id, s]));
+      expect(listedById.get("c1")!.cycle).toBe(10);
+      expect(listedById.get("c2")!.cycle).toBe(20);
+
+      // load each restores the correct state
+      const loaded1 = await persistence.load("c1");
+      const loaded2 = await persistence.load("c2");
+      expect(loaded1!.time.currentCycle).toBe(10);
+      expect(loaded2!.time.currentCycle).toBe(20);
+
+      // delete one; list reflects the removal, survivor keeps its cycle
+      await persistence.deleteSave("c1");
+      const afterDelete = await persistence.listSaves();
+      expect(afterDelete).toHaveLength(1);
+      expect(afterDelete[0].id).toBe("c2");
+      expect(afterDelete[0].cycle).toBe(20);
+      expect(await persistence.load("c1")).toBeNull();
+    });
+  });
 });
