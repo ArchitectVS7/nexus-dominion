@@ -1,7 +1,7 @@
 # Nexus Dominion — Phased Coding Plan
 
-> **Version:** 1.1
-> **Last Updated:** 2026-03-27
+> **Version:** 1.2
+> **Last Updated:** 2026-07-15 (full status re-audit against the codebase; 934/934 tests passing)
 > **Author:** VS7
 > **Architecture:** Tauri + React/TypeScript (see `docs/architecture.md`)
 > **PRD:** `docs/prd.md` v3.0
@@ -70,9 +70,9 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 - ~~Pan, zoom, click-to-select on nodes~~
 - **UAT:** ✅ Star Map renders. Pan, zoom, and click-to-select all work. Sector hulls visible.
 
-### Milestone 1.2 — Star System & Sector Panels `Engine N/A | UI ❌`
-- Click a star system → slide-in panel shows: name, sector, owner, resources, development level
-- Click a sector region → slide-in panel shows: 25 systems, ownership breakdown, dominance status
+### Milestone 1.2 — Star System & Sector Panels `Engine N/A | UI ~50%`
+- ~~Click a star system → slide-in panel shows: name, sector, owner, resources, development level~~ (`SystemPanel.tsx`)
+- Click a sector region → slide-in panel shows: 25 systems, ownership breakdown, dominance status — **no Sector panel yet**
 - Panels dismiss via `X`, backdrop click, or `Escape`
 - **UAT:** You click stars, you read data, you close panels. "This is the information model."
 
@@ -82,18 +82,19 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Goal:** You have an empire that produces and consumes resources each turn. You can see your ledger and understand your position.
 
-### Milestone 1.3 — Game State & Empire Model `Engine ✅ | UI ❌`
+### Milestone 1.3 — Game State & Empire Model ✅
 - ~~Core data model: `GameState`, `Empire`, `StarSystem`, `Sector` (TypeScript types)~~
 - ~~Galaxy generator: procedurally place 100 empires, 150 unclaimed systems across 10 sectors~~
 - ~~Player starts with 1 home system; 99 bots each have 1 home system~~
-- Save/load round-trip to local storage (State Chronicle foundation) — **engine missing; ~150 LOC**
-- Wire `GameStateProvider` into `main.tsx` so state is available app-wide — **not connected**
+- ~~Save/load round-trip to local storage (`state-serializer`, `LocalStoragePersistence`)~~
+- ~~Wire `GameStateProvider` into `main.tsx`~~ (title screen: New Campaign / Continue; Save button in HUD)
+- Known limitation: Continue loads the most recent save only — no save-slot picker UI
 - **UAT:** You start a new campaign. The galaxy is populated. You can save the game and reload to the same state.
 
-### Milestone 1.4 — Resource Production & Empire Panel `Engine ✅ | UI ❌`
+### Milestone 1.4 — Resource Production & Empire Panel ✅
 - ~~Five resources (Credits, Food, Ore, Fuel Cells, Research Points) produce each Cycle based on owned systems~~
-- Empire Panel slide-in: resource ledger with production, consumption, net income, and reserves
-- `DataReadout` components show deltas in green/red
+- ~~Empire Panel slide-in: resource ledger with production, consumption, net income, and reserves~~ (`EmpirePanel.tsx`)
+- ~~Deltas shown against previous-cycle resources~~
 - **UAT:** You open the Empire Panel. You see your income. "I understand my economy."
 
 ---
@@ -102,19 +103,20 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Goal:** You can commit a turn and the world advances. This is the core loop.
 
-### Milestone 1.5 — Cycle Commit & Cycle Report `Engine ✅ | UI ❌`
+### Milestone 1.5 — Cycle Commit & Cycle Report ✅
 - ~~Cycle Processor runs: 17-phase pipeline, Tier 1 atomicity, Tier 2 graceful failure~~
 - ~~Cosmic Order resolution order enforced~~
-- "Commit Cycle" button in the HUD
-- Cycle Report modal appears after commit: resource changes summarised
-- Cycle counter increments; Confluence counter tracks progress toward Reckoning
+- ~~"Commit Cycle" button in the HUD~~
+- ~~Cycle Report modal appears after commit~~ (`CycleReport.tsx`)
+- ~~Cycle counter increments; Confluence pips in HUD track progress toward Reckoning~~
+- ⚠ Tech debt: the Tier-1 atomicity `catch` in `processCycle` swallows errors silently (a ReferenceError here blocked every cycle until 2026-07-15); add error surfacing to `CycleResult`
 - **UAT:** You press "Commit Cycle." Resources change. You read the report. "This is the heartbeat."
 
-### Milestone 1.6 — Colonisation `Engine ✅ | UI ❌`
+### Milestone 1.6 — Colonisation ✅ *(deviation: instant claim)*
 - ~~Unclaimed star systems can be claimed by bots and player (engine logic complete)~~
-- Colonisation UI: select unclaimed system → colonise action in system panel
-- Colonisation costs resources, takes N Cycles, then system begins producing
-- **UAT:** You colonise a neighbouring star. You wait. It completes. Your income goes up. "This is expansion."
+- ~~Colonisation UI: select unclaimed system → colonise action in system panel~~ (`SystemPanel.tsx` → `claim-system`)
+- Deviation: colonisation resolves within the committed cycle rather than taking N Cycles — decide whether multi-cycle colonisation is still wanted
+- **UAT:** You colonise a neighbouring star. Your income goes up. "This is expansion."
 
 ---
 
@@ -122,18 +124,18 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Goal:** Bots take actions each Cycle. The galaxy moves without you.
 
-### Milestone 1.7 — Bot Momentum & Colonisation AI `Engine ✅ | UI ❌`
+### Milestone 1.7 — Bot Momentum & Colonisation AI ✅
 - ~~99 bots assigned archetypes and Momentum Ratings at campaign start~~
 - ~~Bots colonise unclaimed systems each Cycle according to their Momentum Rating~~
 - ~~8 archetypes with weighted action selection and emotional state modifiers~~
-- Galaxy state updates visibly on the star map after Cycle commit (nodes change colour as bots claim territory)
+- ~~Star map re-renders from state after Cycle commit (nodes coloured by ownership)~~
 - **UAT:** You commit 10 Cycles. You see bots spreading across the map. "The galaxy is alive."
 
-### Milestone 1.8 — Cosmic Order & Nexus Reckoning `Engine ✅ | UI ❌`
+### Milestone 1.8 — Cosmic Order & Nexus Reckoning ✅
 - ~~Power score calculated for every empire (resources + territory + military)~~
 - ~~Every 10 Cycles: Nexus Reckoning fires, empires sorted into Sovereign / Ascendant / Stricken tiers~~
 - ~~Rolling 5-cycle average power scores; resolution order correctly shuffled~~
-- Cosmic Order displayed in the Cycle Report and HUD
+- ~~Tier badge and Confluence pips in the HUD; Reckoning surfaced in the Cycle Report~~
 - **UAT:** You play 10 Cycles. The Reckoning fires. You see your tier. "The cosmos is watching."
 
 ---
@@ -142,25 +144,26 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Goal:** Military units exist. You can build fleets and attack.
 
-### Milestone 1.9 — Military Build Queue `Engine ✅ | UI ❌`
-- ~~6 unit types defined with D20 stat blocks (Soldiers, Fighters, Bombers, Stations, Light/Heavy Cruisers)~~
+### Milestone 1.9 — Military Build Queue ✅
+- ~~7 unit types defined with D20 stat blocks (6 base + Dreadnought capstone)~~
 - ~~Build queue mechanics with cycle advancement and completion~~
 - ~~Maintenance cost calculation per unit type~~
-- Military Panel slide-in: unit types, build queue, fleet overview
+- ~~Military Panel slide-in: unit types, build queue, fleet overview~~ (`MilitaryPanel.tsx` → `build-unit`)
 - **UAT:** You build ships. You see your fleet. Maintenance costs show in the ledger. "I have an army."
 
-### Milestone 1.10 — Fleet Engagement Combat `Engine ✅ | UI ❌`
+### Milestone 1.10 — Fleet Engagement Combat `Engine ✅ | UI ❌` ← **NEXT UP: biggest remaining Phase 1 gap**
 - ~~Combat resolution: d20-style stat comparisons, defender 25% bonus, morale checks~~
 - ~~Bots attack each other and the player via bot engine action selection~~
-- Attack action UI: select a target star system, assign a fleet
-- Combat result modal: casualties, victor, system ownership change
+- Attack action UI: select a target star system, assign a fleet — **missing; no player-initiated attack exists in the UI**
+- Combat result modal: casualties, victor, system ownership change — **missing**
+- Fleet movement UI: engine supports `move-fleet` actions (repaired 2026-07-15) but nothing in the UI dispatches them
 - **UAT:** You attack a bot's system. Combat resolves. You see the outcome. "War works."
 
 ### Milestone 1.11 — Ground Invasion `Engine ✅ | UI ❌`
 - ~~Sequential phase resolution: Fleet Engagement → Orbital Bombardment → Ground Assault~~
 - ~~Morale checks at 50% fleet / 75% ground casualties~~
-- Infrastructure damage from bombardment — **stubbed; ~100 LOC to complete**
-- Invasion UI: phase-by-phase combat modal with phase indicator
+- ~~Infrastructure damage from bombardment~~ (`calculateInfrastructureDamage` / `applyInfrastructureDamage`)
+- Invasion UI: phase-by-phase combat modal with phase indicator — **missing (part of the 1.10 combat UI work)**
 - **UAT:** You conquer a system through the full combat sequence. "Conquest is satisfying."
 
 ---
@@ -169,28 +172,29 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Goal:** You can trade, negotiate, and form alliances.
 
-### Milestone 1.12 — Market System `Engine ~75% | UI ❌`
+### Milestone 1.12 — Market System ✅
 - ~~Base prices, buy/sell transactions, transaction fees, price decay toward base~~
 - ~~Price clamping (50%–200% of base)~~
-- Supply/demand coupling: prices respond to actual trade volumes — **missing; ~150 LOC**
-- Market Panel: buy/sell five resources at dynamic prices
+- ~~Supply/demand coupling: prices respond to trade volumes~~ (`updatePricesFromVolume`)
+- ~~Market Panel: buy/sell resources at dynamic prices~~ (`MarketPanel.tsx` → `trade`)
 - **UAT:** You buy Ore. You sell Credits. Prices change next turn. "The economy is dynamic."
 
-### Milestone 1.13 — Basic Diplomacy (Stillness Accord & Star Covenant) `Engine ~70% | UI ❌`
+### Milestone 1.13 — Basic Diplomacy (Stillness Accord & Star Covenant) `Engine ✅ | UI ~80%`
 - ~~Pact creation/acceptance/violation mechanics~~
 - ~~Relationship memory and reputation tracking~~
 - ~~Treaty violation penalties (reputation hit, combat bonus for injured party)~~
-- Covenant defence obligations enforcement — **not wired; ~100 LOC**
-- Diplomacy Panel: propose/accept/reject NAPs and Alliances
-- Covenant Lines visible on the star map
+- ~~Covenant defence obligations in diplomacy engine~~
+- ~~Diplomacy Panel: propose/break pacts~~ (`DiplomacyPanel.tsx` → `propose-pact` / `break-pact`)
+- ~~Star Covenant trade discount applied to market prices~~
+- Covenant Lines visible on the star map — **not rendered**
 - **UAT:** You make a peace deal. You ally with a bot. You see the alliance on the map. "Diplomacy has weight."
 
-### Milestone 1.14 — Nexus Compact (Coalition) `Engine ~60% | UI ❌`
-- ~~Convergence alert checking when empire approaches achievement threshold~~
+### Milestone 1.14 — Nexus Compact (Coalition) `Engine ~85% | UI ❌`
+- ~~Convergence alert checking when empire approaches achievement threshold~~ (wired into cycle processor)
 - ~~Coalition pact type defined in diplomacy engine~~
-- Bot coalition formation logic — **partially implemented**
-- Shared War Chest and combat bonus vs. target — **not implemented**
-- Coalition UI: convergence alert modal, coalition membership display
+- ~~Bot coalition formation logic~~
+- ~~Shared War Chest~~ (`contributeToWarChest`)
+- Coalition UI: convergence alert modal, coalition membership display — **missing**
 - **UAT:** A bot becomes dominant. A coalition forms. You see it unfold. "The galaxy polices itself."
 
 ---
@@ -199,20 +203,19 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Goal:** Tech tree is functional. Achievements are trackable and earnable.
 
-### Milestone 1.15 — Research System (Linear) `Engine ✅ | UI ❌`
+### Milestone 1.15 — Research System (Linear) ✅
 - ~~3 doctrine paths defined (War Machine, Fortress, Commerce)~~
 - ~~6 specialisations with rock-paper-scissors counter-play matrix~~
 - ~~Doctrine/specialisation bonuses applied in combat and economy~~
-- Research Panel: 8 tech levels, linear progression (draft deferred to Phase 2)
+- ~~Research Panel with research / doctrine / specialisation actions~~ (`ResearchPanel.tsx`)
 - **UAT:** You research. You level up. Something changes. "Progress feels real."
 
-### Milestone 1.16 — Achievement Tracking & First Three Achievements `Engine ~85% | UI ❌`
+### Milestone 1.16 — Achievement Tracking & First Three Achievements `Engine ✅ | UI ✅` *(verify galaxy responses in UAT)*
 - ~~All 9 achievement definitions with trigger thresholds~~
 - ~~Achievement progress percentage calculation~~
-- Achievement context population (eliminated count, coalitions survived) — **incomplete**
-- Achievement Panel visible in the Empire Panel
-- Three achievements earnable in alpha: **Conquest**, **Trade Prince**, **Warlord**
-- Galaxy-wide event and title badge on earn
+- ~~Achievement context population (eliminated count, coalitions survived)~~
+- ~~Achievement Panel~~ (`AchievementPanel.tsx`, opened from Empire Panel)
+- Verify in UAT: galaxy-wide event and title badge on earn
 - **UAT:** You earn an achievement. The galaxy names you. Rivals respond. "This is the endgame."
 
 ---
@@ -221,7 +224,9 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 
 > **Checkpoint:** The full core loop is playable. You can start a campaign, expand, build, fight, trade, negotiate, research, and earn achievements across a persistent galaxy of 100 rival empires. Save/load works. The LCARS interface is functional.
 >
-> **Current Reality (2026-03-27):** Engine is ~75% complete overall. UI is ~5% complete — only Star Map is functional. All 13 game panels (Empire, Cycle Report, System, Sector, Military, Combat, Market, Diplomacy, Research, Achievement, Colonisation, Build Queue, Save/Load) remain to be built. Phase 1 UAT is **not yet passable**.
+> **Current Reality (2026-07-15, re-audited):** Engine is ~90% complete (934/934 tests passing, `tsc` clean, production build succeeds). UI is ~75% complete — 11 panels are built and wired into `App.tsx` (Empire, System, Military, Market, Diplomacy, Research, Achievement, Syndicate, Covert Ops, HUD, Cycle Report), plus title screen with New Campaign / Continue and save-to-localStorage. The previous "UI ~5%" note was stale.
+>
+> **Remaining for Phase 1 UAT:** (1) **Combat UI** — attack action + combat/invasion result modal (milestones 1.10/1.11); this is the only core-loop verb the player still cannot perform. (2) Sector panel (1.2). (3) Coalition convergence-alert UI (1.14). (4) Covenant lines on the star map (1.13). After the combat UI lands, run the full Phase 1 UAT walk-through end to end — most engine work has never been played by hand.
 
 ---
 
@@ -230,46 +235,44 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 > **Goal:** All nine achievements reachable. Deeper combat, covert ops, the Syndicate, and tech drafting.
 >
 > **Priority order revised 2026-03-27:** Syndicate and Covert Ops block 2 of 9 achievements (Shadow Throne, Cartel Boss / Stealth Sovereign) and require the most implementation LOC. They are elevated to the top of Phase 2.
+>
+> **Status 2026-07-15:** Milestones 2.1–2.3 (Installations, Syndicate, Covert Ops) are implemented — engine and UI — but have never been UAT'd. 2.9 (wormholes) is mostly done. The heavy remaining Phase 2 items are 2.4 (blockades), 2.6 (remaining achievements + galaxy responses), 2.7 (reputation memory), and the draft modal (2.5).
 
-### Milestone 2.1 — Installation System `Engine ❌ | UI ❌` *(New — was missing from plan)*
-- Installation type definitions (Trade Hub, Mining Complex, Orbital Defense Platform, etc.)
-- Building queue separate from unit queue; slot limits enforced per biome
-- Biome production bonuses applied (Core World, Mineral World, Frontier World, etc.)
-- Development cost scaling; sector dominance mechanics
-- Installation management UI in Star System panel
-- **Estimated:** ~300 LOC engine, ~150 LOC UI
-- **UAT:** You build a Trade Hub on your home world. Your income increases. Slot limits prevent overbuild. "Development matters."
+### Milestone 2.1 — Installation System `Engine ✅ | UI ✅` *(needs UAT)*
+- ~~Installation type definitions~~ (`installation-registry.ts`)
+- ~~Slot limits with anomaly-driven slot unlocks~~ (`slot-unlocker.ts`)
+- ~~Installation condition scales production output (better than spec — see `docs/AUDIT.md`)~~
+- ~~Installation build UI in Star System panel~~ (`SystemPanel.tsx` → `build-installation`)
+- **UAT:** You build an installation on your home world. Your income increases. Slot limits prevent overbuild. "Development matters."
 
-### Milestone 2.2 — Syndicate Discovery & Engagement `Engine ❌ | UI ❌` *(elevated from 2.3)*
-- 8-rank Syndicate system: discovery through anomalies, rank progression
-- Contracts, control mechanics, exposure mechanics
-- Black Market access (items, intelligence, covert capabilities)
-- Syndicate UI panel: rank status, active contracts, exposure risk
-- **Estimated:** ~500 LOC engine, ~200 LOC UI
+### Milestone 2.2 — Syndicate Discovery & Engagement `Engine ✅ | UI ✅` *(needs UAT)*
+- ~~Rank system with influence-based progression~~ (`computeRankFromInfluence`)
+- ~~Contracts, control (`computeController`), exposure (`checkExposure`), counter-intel decay~~
+- ~~Black Register access with rank-gated items~~ (`purchaseBlackRegisterItem`)
+- ~~Syndicate UI panel with funding and Black Register purchases~~ (`SyndicatePanel.tsx`)
 - **Blocks:** Shadow Throne achievement, Cartel Boss achievement
-- **UAT:** You stumble onto the Syndicate organically. You access the Black Market. "There's a shadow economy."
+- **UAT:** You stumble onto the Syndicate organically. You access the Black Register. "There's a shadow economy."
 
-### Milestone 2.3 — Covert Operations `Engine ❌ | UI ❌` *(elevated from 2.2)*
-- 10 operation types, agent economy, success/detection rolls
-- Diplomatic consequences on exposure; war declaration trigger
-- Intelligence Points generation and expenditure
-- Covert Ops UI: assign agent, select operation, risk display
-- **Estimated:** ~400 LOC engine, ~150 LOC UI
+### Milestone 2.3 — Covert Operations `Engine ✅ | UI ✅` *(needs UAT)*
+- ~~Operation types with defined effects~~ (`COVERT_OPERATION_DEFS`, `COVERT_OP_EFFECTS`)
+- ~~Agent economy (`accrueAgents`), success/detection rolls, op queue and resolution~~
+- ~~Stealth Sovereign check~~ (`checkStealthSovereign`)
+- ~~Covert Ops UI: select target and operation, launch~~ (`CovertOpsPanel.tsx`)
 - **Blocks:** Stealth Sovereign achievement
 - **UAT:** You assign an agent. They sabotage a rival. You get caught. War is declared. "The shadows have claws."
 
-### Milestone 2.4 — Blockade Combat Mode `Engine ❌ | UI ❌`
-- Blockade action: cut off system resource income over multiple Cycles
-- Starvation mechanics (food deficit escalation under blockade)
-- Blockade-break combat; UI indicator on blockaded systems
+### Milestone 2.4 — Blockade Combat Mode `Engine ~60% | UI ❌`
+- ~~Blockade effect calculation~~ (`calculateBlockadeEffect` in combat resolver)
+- Blockade action wiring in cycle processor + starvation escalation — **verify/complete**
+- Blockade-break combat; UI indicator on blockaded systems — **missing**
 - **UAT:** You blockade a bot's system. It starves over multiple Cycles.
 
-### Milestone 2.5 — Research Draft Mechanic (Doctrines & Capstones) `Engine ~40% | UI ❌`
-- Draft event fires at Nexus Reckoning when tier thresholds are reached
-- Doctrine choice becomes public; specialisation remains hidden
-- Capstone unlock events (Dreadnought, Impregnable Bastion, Trade Hegemony)
-- Dreadnought unit creation and special abilities
-- Draft UI: card selection modal during Reckoning
+### Milestone 2.5 — Research Draft Mechanic (Doctrines & Capstones) `Engine ~60% | UI ~50%`
+- ~~Draft trigger detection on tier transitions~~ (`checkResearchDraftTrigger`)
+- ~~Doctrine/specialisation selection actions wired through Research Panel~~
+- ~~Dreadnought defined as 7th (capstone) unit type~~
+- Capstone unlock events (Impregnable Bastion, Trade Hegemony) — **verify/complete**
+- Draft UI: card selection modal during Reckoning (currently selected from Research Panel instead) — **missing**
 - **UAT:** You draft a Doctrine during a Nexus Reckoning. A bot takes the one you wanted.
 
 ### Milestone 2.6 — Remaining 6 Achievements + Galaxy Responses
@@ -284,16 +287,17 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 - Full reputation score surfaced in Diplomacy Panel
 - **UAT:** A bot remembers your betrayal 30 Cycles later. No one will ally with you.
 
-### Milestone 2.8 — Market Events
-- Bumper Harvest, Famine, Mining Boom, Fuel Shortage event types
-- Merchant archetype Market Insight (price forecasting, whale tracking)
-- Leader Tax (20% premium on purchases for highest-power empire)
+### Milestone 2.8 — Market Events `Engine ~70% | UI ❌`
+- ~~Market event types implemented in market engine (famine etc.)~~
+- Merchant archetype Market Insight (price forecasting, whale tracking) — **verify/complete**
+- Leader Tax (20% premium on purchases for highest-power empire) — **verify/complete**
+- Event notifications surfaced to the player — **missing**
 - **UAT:** A Famine event fires. Food prices spike. You profit by selling your reserves.
 
-### Milestone 2.9 — Wormhole Construction
-- Wormhole building cost and construction queue
-- Jump mechanics: fleet transit across non-adjacent systems
-- Map overlay showing wormhole connections
+### Milestone 2.9 — Wormhole Construction `Engine ✅ | UI ~80%`
+- ~~Wormhole build action~~ (`build-wormhole`, wired via System Panel)
+- ~~Map overlay showing wormhole edges~~ (`StarMap.tsx`)
+- Jump mechanics: fleet transit across non-adjacent systems — **depends on fleet-movement UI (1.10); engine `move-fleet` path repaired 2026-07-15 but `calculateTransitTime` ignores distance/wormholes**
 - **UAT:** You build a wormhole. Your fleet jumps across the galaxy.
 
 ### Milestone 2.10 — LCARS UI Polish Pass
@@ -320,8 +324,9 @@ Before coding each milestone, we will create a **detailed implementation plan** 
 ### Milestone 3.2 — Shadow Throne Achievement
 - **UAT:** You hold Syndicate control + another achievement without being exposed.
 
-### Milestone 3.3 — LLM Nemesis Bots (with Graceful Degradation)
-- Apex tier bot decisions routed to LLM with weighted-random fallback
+### Milestone 3.3 — LLM Nemesis Bots (with Graceful Degradation) `Engine ~30% | UI ❌`
+- ~~LLM connector scaffold with sync fallback~~ (`bot/llm-connector.ts`, `fetchApexBotActionsSync`)
+- Apex tier bot decisions actually routed through LLM — **not wired to a live model**
 - Bot emotional amplitude/resonance system (replace boolean flags with designed system)
 - Tell system: archetype telegraph rates surface in Diplomacy Panel
 - **UAT:** A Nemesis bot sends you a threatening message that feels written by a person.
