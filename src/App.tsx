@@ -20,9 +20,10 @@ import { CovertOpsPanel } from "./ui/CovertOpsPanel";
 import { MarketPanel } from "./ui/MarketPanel";
 import { ResearchPanel } from "./ui/ResearchPanel";
 import { CycleReportModal } from "./ui/CycleReport";
+import { CombatReportModal } from "./ui/CombatReport";
 import { SystemPanel } from "./ui/SystemPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
-import type { CycleReport, SystemId, Resources, InstallationType } from "./engine/types";
+import type { CycleReport, CombatEvent, SystemId, Resources, InstallationType } from "./engine/types";
 import "./App.css";
 
 const SEED = 42;
@@ -34,6 +35,7 @@ function App() {
   const { state, dispatch, isLoaded } = useGameState();
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [cycleReport, setCycleReport] = useState<CycleReport | null>(null);
+  const [dismissedCombatReport, setDismissedCombatReport] = useState<CycleReport | null>(null);
   const [selectedSystemId, setSelectedSystemId] = useState<SystemId | null>(null);
   const [prevResources, setPrevResources] = useState<Resources | null>(null);
 
@@ -435,6 +437,13 @@ function App() {
 
   /* ── Render: Game ── */
 
+  // Surface a combat event involving the player from the committed report.
+  const playerCombatEvent = cycleReport?.events.find(
+    (e): e is CombatEvent =>
+      e.type === "combat" &&
+      (e.attackerId === state?.playerEmpireId || e.defenderId === state?.playerEmpireId),
+  );
+
   return (
     <div className="shell">
       <div className="lcars-bar top" />
@@ -547,6 +556,18 @@ function App() {
         <CycleReportModal
           report={cycleReport}
           onClose={() => setCycleReport(null)}
+        />
+      )}
+
+      {/* Combat report modal — stacked above the cycle report when the
+          committed report contains a combat event involving the player.
+          Dismissal is keyed off the report identity so a new report
+          (a new object reference) re-shows the modal automatically. */}
+      {playerCombatEvent && dismissedCombatReport !== cycleReport && (
+        <CombatReportModal
+          event={playerCombatEvent}
+          playerEmpireId={state!.playerEmpireId}
+          onClose={() => setDismissedCombatReport(cycleReport)}
         />
       )}
     </div>
