@@ -239,7 +239,7 @@ export function calculateFleetMovementEfficiency(unitTypeIds: string[], unitType
  * Calculate fleet combat bonuses based on composition
  * This provides bonuses to attack, defense, and movement based on unit mix
  */
-export function calculateFleetCombatBonus(unitTypeIds: string[], unitTypes: Map<string, UnitType>): {
+export function calculateFleetCombatBonus(unitTypeIds: string[], _unitTypes: Map<string, UnitType>): {
   attackBonus: number;
   defenceBonus: number;
   movementSpeedBonus: number;
@@ -313,8 +313,8 @@ export function canAffordUnit(
  */
 export function calculateTransitTime(
   fleet: Fleet,
-  targetSystemId: SystemId,
-  currentCycle: number,
+  _targetSystemId: SystemId,
+  _currentCycle: number,
   unitTypes: Map<string, UnitType>,
 ): number {
   // Base transit time in cycles
@@ -438,7 +438,7 @@ export function calculateMaintenanceCost(
  */
 export function isFleetInCombat(
   fleet: Fleet,
-  fleets: Map<string, Fleet>,
+  _fleets: Map<string, Fleet>,
   systems: Map<string, any>,
 ): boolean {
   // Check if this fleet is currently engaged in combat at its location
@@ -447,5 +447,5 @@ export function isFleetInCombat(
   
   // Simple combat check - in reality, this would be more complex
   const combat = system.combat;
-  return combat.fleets.some(fleetId => fleetId === fleet.id);
+  return combat.fleets.some((fleetId: string) => fleetId === fleet.id);
 }

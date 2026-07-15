@@ -8,6 +8,7 @@ import {
   createUnitFromCompleted,
   calculateFleetCompositionBonus,
   canAffordUnit,
+  calculateTransitTime,
   moveFleet,
   resolveFleetArrivals,
   assignUnitToFleet,
@@ -216,9 +217,11 @@ describe("Military System", () => {
         targetSystemId: null,
         arrivalCycle: null,
       };
-      const result = moveFleet(fleet, SystemId("sys-2"), 5, 2);
+      const registry = createUnitTypeRegistry();
+      const transitTime = calculateTransitTime(fleet, SystemId("sys-2"), 5, registry);
+      const result = moveFleet(fleet, SystemId("sys-2"), 5, registry);
       expect(result.targetSystemId).toBe(SystemId("sys-2"));
-      expect(result.arrivalCycle).toBe(5 + 2);
+      expect(result.arrivalCycle).toBe(5 + transitTime);
       // Original fleet not mutated
       expect(fleet.targetSystemId).toBeNull();
     });
@@ -233,7 +236,7 @@ describe("Military System", () => {
         targetSystemId: SystemId("sys-3"),
         arrivalCycle: 10,
       };
-      const result = moveFleet(fleet, SystemId("sys-2"), 5, 2);
+      const result = moveFleet(fleet, SystemId("sys-2"), 5, createUnitTypeRegistry());
       // Should return fleet unchanged — already in transit
       expect(result.targetSystemId).toBe(SystemId("sys-3"));
       expect(result.arrivalCycle).toBe(10);
@@ -249,7 +252,7 @@ describe("Military System", () => {
         targetSystemId: null,
         arrivalCycle: null,
       };
-      const result = moveFleet(fleet, SystemId("sys-1"), 5, 2);
+      const result = moveFleet(fleet, SystemId("sys-1"), 5, createUnitTypeRegistry());
       expect(result.targetSystemId).toBeNull();
     });
   });
@@ -695,7 +698,7 @@ describe("Military System", () => {
         unitIds: [UnitId("u1"), UnitId("u2")],
         targetSystemId: null, arrivalCycle: null,
       };
-      const result = moveFleet(fleet, SystemId("sys-2"), 5, 3);
+      const result = moveFleet(fleet, SystemId("sys-2"), 5, createUnitTypeRegistry());
       result.unitIds.push(UnitId("u3"));
       // Original should be unaffected
       expect(fleet.unitIds).toHaveLength(2);

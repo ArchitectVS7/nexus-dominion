@@ -12,6 +12,7 @@ import { checkAchievements, checkConvergenceAlerts, type AchievementContext } fr
 import { advanceResearch, checkResearchDraftTrigger, selectDoctrine, selectSpecialization } from "../research/research-engine";
 import { calculateInstallationProduction } from "../economy/economy-engine";
 import { advanceBuildQueue, createUnitFromCompleted, resolveFleetArrivals, moveFleet } from "../military/unit-registry";
+import type { Fleet } from "../types/military";
 import { advanceInstallationQueue, createInstallationFromCompleted, addToInstallationQueue, INSTALLATION_COSTS } from "../installation/installation-registry";
 import type { InstallationType } from "../types/galaxy";
 import { sellResource, buyResource, decayPrices, clampPrices, updatePricesFromVolume, applyMarketEvent, MARKET_EVENT_PROBABILITY, marketEventAffectedResource, marketEventPriceChange, selectWeightedMarketEvent } from "../market/market-engine";
@@ -831,11 +832,11 @@ function resolvePlayerActions(
   }
 
   // Process fleet movements from player actions (if any)
-  if (playerActions.actions.length > 0) {
+  if (actions.actions.length > 0) {
     const fleetsToMove = new Map<string, Fleet>();
-    
-    for (const action of playerActions.actions) {
-      if (action.type === "moveFleet") {
+
+    for (const action of actions.actions) {
+      if (action.type === "move-fleet") {
         const { fleetId, targetSystemId } = action.details as { fleetId: string; targetSystemId: string };
         const fleet = state.fleets.get(fleetId);
         
