@@ -353,6 +353,22 @@ function App() {
     }
   }, [state, dispatch]);
 
+  const handleMoveFleet = useCallback((fleetId: string, targetSystemId: string) => {
+    if (!state) return;
+    const result = processCycle(
+      state,
+      { actions: [{ type: "move-fleet", details: { fleetId, targetSystemId } }] },
+      powerHistoryRef.current as any,
+      botAccumRef.current as any,
+    );
+    if (result.committed) {
+      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
+      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
+      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
+      setCycleReport(result.report);
+    }
+  }, [state, dispatch]);
+
   /* ── Syndicate Actions ── */
 
   const handleFundSyndicate = useCallback((amount: number) => {
@@ -492,6 +508,7 @@ function App() {
           state={state!}
           onClose={() => setActivePanel(null)}
           onBuildUnit={handleBuildUnit}
+          onMoveFleet={handleMoveFleet}
         />
       )}
 

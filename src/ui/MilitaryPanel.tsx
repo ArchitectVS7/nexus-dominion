@@ -1,5 +1,6 @@
 /* ── Nexus Dominion — Military Panel ── */
 
+import { useState } from "react";
 import { Panel, Button, DataReadout } from "../components/lcars";
 import type { GameState } from "../engine/types";
 import { UNIT_TYPES } from "../engine/military/unit-registry";
@@ -9,9 +10,12 @@ interface MilitaryPanelProps {
   state: GameState;
   onClose: () => void;
   onBuildUnit: (unitTypeId: string) => void;
+  onMoveFleet: (fleetId: string, targetSystemId: string) => void;
 }
 
-export function MilitaryPanel({ state, onClose, onBuildUnit }: MilitaryPanelProps) {
+export function MilitaryPanel({ state, onClose, onBuildUnit, onMoveFleet }: MilitaryPanelProps) {
+  // Per-fleet selected destination (keyed by fleet id).
+  const [dest, setDest] = useState<Record<string, string>>({});
   const empireId = state.playerEmpireId;
   const empire = state.empires.get(empireId);
   const homeSystem = empire?.homeSystemId ? state.galaxy.systems.get(empire?.homeSystemId) : null;
@@ -64,6 +68,76 @@ export function MilitaryPanel({ state, onClose, onBuildUnit }: MilitaryPanelProp
                 <DataReadout label="Active Units" value={activeUnits} />
                 <DataReadout label="Fleet Divs" value={fleetUnits} />
                 <DataReadout label="Ground Divs" value={groundUnits} />
+              </div>
+            </div>
+
+            {/* Fleet Deployment */}
+            <div className="military-panel__section">
+              <h4 className="military-panel__section-title">Fleet Deployment</h4>
+              <div className="military-panel__fleet-list">
+                {empire.fleetIds.length > 0 ? (
+                  empire.fleetIds.map((fleetId) => {
+                    const fleet = state.fleets.get(fleetId);
+                    if (!fleet) return null;
+
+                    const locationName =
+                      state.galaxy.systems.get(fleet.locationSystemId)?.name ??
+                      fleet.locationSystemId;
+                    const inTransit = fleet.targetSystemId !== null;
+
+                    return (
+                      <div key={fleet.id} className="military-panel__fleet-item">
+                        <div className="military-panel__fleet-info">
+                          <span className="military-panel__fleet-name">{fleet.name}</span>
+                          <span
+                            className="military-panel__fleet-location"
+                            data-fleet-id={fleet.id}
+                          >
+                            Location: {locationName}
+                          </span>
+                        </div>
+
+                        {inTransit ? (
+                          <div className="military-panel__transit-badge">
+                            In Transit &rarr;{" "}
+                            {state.galaxy.systems.get(fleet.targetSystemId!)?.name ??
+                              fleet.targetSystemId}{" "}
+                            &middot; Arrival Cyc {fleet.arrivalCycle}
+                          </div>
+                        ) : (
+                          <div className="military-panel__fleet-move">
+                            <select
+                              className="military-panel__fleet-select"
+                              aria-label={`Destination for ${fleet.name}`}
+                              value={dest[fleet.id] ?? ""}
+                              onChange={(e) =>
+                                setDest((prev) => ({ ...prev, [fleet.id]: e.target.value }))
+                              }
+                            >
+                              <option value="">Select destination…</option>
+                              {[...state.galaxy.systems.values()]
+                                .filter((sys) => sys.id !== fleet.locationSystemId)
+                                .map((sys) => (
+                                  <option key={sys.id} value={sys.id}>
+                                    {sys.name}
+                                  </option>
+                                ))}
+                            </select>
+                            <Button
+                              label="MOVE"
+                              variant="secondary"
+                              size="sm"
+                              disabled={!dest[fleet.id]}
+                              onClick={() => onMoveFleet(fleet.id, dest[fleet.id])}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="military-panel__empty">No fleets deployed.</div>
+                )}
               </div>
             </div>
 
