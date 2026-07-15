@@ -20,6 +20,8 @@ interface StarMapProps {
     playerEmpireId?: string;
     /** Callback when a system is selected */
     onSelectSystem?: (systemId: SystemId | null) => void;
+    /** Callback when a sector region is clicked (null when the click hits no sector) */
+    onSelectSector?: (sectorId: SectorId | null) => void;
 }
 
 /* ── Node sizing constants ── */
@@ -40,7 +42,7 @@ const SECTOR_HUES = [
     210, 280, 45, 160, 330, 120, 20, 190, 60, 300,
 ];
 
-export function StarMap({ galaxy, playerEmpireId, onSelectSystem }: StarMapProps) {
+export function StarMap({ galaxy, playerEmpireId, onSelectSystem, onSelectSector }: StarMapProps) {
     const [selectedId, setSelectedId] = useState<SystemId | null>(null);
 
     // Precompute arrays for rendering
@@ -79,12 +81,24 @@ export function StarMap({ galaxy, playerEmpireId, onSelectSystem }: StarMapProps
                 const newId = nearest.id === selectedId ? null : nearest.id;
                 setSelectedId(newId);
                 onSelectSystem?.(newId);
-            } else {
-                setSelectedId(null);
-                onSelectSystem?.(null);
+                return;
             }
+
+            // Miss on systems: deselect, then test sector region hulls so a
+            // click on empty space inside a sector opens the Sector panel.
+            setSelectedId(null);
+            onSelectSystem?.(null);
+
+            let hitSector: SectorId | null = null;
+            for (const [sectorId, hull] of sectorHulls) {
+                if (pointInPolygon({ x: worldX, y: worldY }, hull)) {
+                    hitSector = sectorId as SectorId;
+                    break;
+                }
+            }
+            onSelectSector?.(hitSector);
         },
-        [systems, selectedId, onSelectSystem],
+        [systems, selectedId, onSelectSystem, onSelectSector, sectorHulls],
     );
 
     const { canvasRef, camera, worldToScreen } = useCanvasInteraction(handleClick);
@@ -318,6 +332,32 @@ export function StarMap({ galaxy, playerEmpireId, onSelectSystem }: StarMapProps
             )}
         </div>
     );
+}
+
+/* ── Point-in-Polygon (ray casting) ── */
+
+/**
+ * Returns true when `pt` lies inside `polygon` (an ordered ring of points).
+ * Uses the standard ray-casting / even-odd rule. Exported so the geometry can
+ * be unit-tested in isolation (see starmap-hit.test.ts); the end-to-end
+ * click→onSelectSector wiring is covered by StarMap.test.tsx.
+ */
+export function pointInPolygon(
+    pt: { x: number; y: number },
+    polygon: { x: number; y: number }[],
+): boolean {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].x;
+        const yi = polygon[i].y;
+        const xj = polygon[j].x;
+        const yj = polygon[j].y;
+        const intersect =
+            yi > pt.y !== yj > pt.y &&
+            pt.x < ((xj - xi) * (pt.y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+    }
+    return inside;
 }
 
 /* ── Convex Hull (Andrew's Monotone Chain) ── */

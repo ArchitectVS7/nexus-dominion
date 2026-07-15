@@ -1,0 +1,137 @@
+/* ── Sector Panel ── */
+
+.sector-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  animation: overlay-fade-in 200ms ease-out both;
+}
+
+.sector-panel-slide {
+  width: 380px;
+  max-width: 90vw;
+  height: 100%;
+  overflow-y: auto;
+  animation: slide-in-right var(--duration-slide) var(--ease-out) both;
+}
+
+.sector-panel-slide .lcars-panel {
+  height: 100%;
+  border-radius: 0;
+}
+
+.sector-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Dominance line */
+.sector-panel__dominance {
+  margin: 0;
+  text-align: center;
+  padding: var(--space-2) 0;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--lcars-warning);
+}
+
+/* Sections */
+.sector-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sector-panel__section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-label);
+  margin: 0;
+  padding-bottom: var(--space-1);
+  border-bottom: var(--border-dim);
+}
+
+/* Ownership breakdown */
+.sector-panel__ownership-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sector-panel__ownership-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sector-panel__swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.sector-panel__swatch--unclaimed {
+  background: var(--text-dim);
+  opacity: 0.4;
+}
+
+.sector-panel__ownership-name {
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.sector-panel__ownership-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary, var(--text-secondary));
+}
+
+/* Systems list */
+.sector-panel__systems-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sector-panel__system-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sector-panel__system-name {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.sector-panel__system-owner {
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+}
+
+.sector-panel__system-owner.you {
+  color: var(--lcars-blue-light);
+}
+.sector-panel__system-owner.other {
+  color: var(--lcars-danger);
+}
+.sector-panel__system-owner.unclaimed {
+  color: var(--text-dim);
+}

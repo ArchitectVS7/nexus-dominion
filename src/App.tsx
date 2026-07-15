@@ -22,8 +22,9 @@ import { ResearchPanel } from "./ui/ResearchPanel";
 import { CycleReportModal } from "./ui/CycleReport";
 import { CombatReportModal } from "./ui/CombatReport";
 import { SystemPanel } from "./ui/SystemPanel";
+import { SectorPanel } from "./ui/SectorPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
-import type { CycleReport, CombatEvent, SystemId, Resources, InstallationType } from "./engine/types";
+import type { CycleReport, CombatEvent, SystemId, SectorId, Resources, InstallationType } from "./engine/types";
 import "./App.css";
 
 const SEED = 42;
@@ -37,6 +38,7 @@ function App() {
   const [cycleReport, setCycleReport] = useState<CycleReport | null>(null);
   const [dismissedCombatReport, setDismissedCombatReport] = useState<CycleReport | null>(null);
   const [selectedSystemId, setSelectedSystemId] = useState<SystemId | null>(null);
+  const [selectedSectorId, setSelectedSectorId] = useState<SectorId | null>(null);
   const [prevResources, setPrevResources] = useState<Resources | null>(null);
 
   // Persistent history refs (not part of React renders)
@@ -469,7 +471,14 @@ function App() {
       <StarMap
         galaxy={state!.galaxy}
         playerEmpireId={state!.playerEmpireId}
-        onSelectSystem={(id) => setSelectedSystemId(id)}
+        onSelectSystem={(id) => {
+          setSelectedSystemId(id);
+          if (id) setSelectedSectorId(null);
+        }}
+        onSelectSector={(id) => {
+          setSelectedSectorId(id);
+          if (id) setSelectedSystemId(null);
+        }}
       />
 
       <HUD
@@ -565,6 +574,15 @@ function App() {
           onBuild={handleBuildInstallation}
           onBuildWormhole={handleBuildWormhole as any}
           onAttack={handleAttack as any}
+        />
+      )}
+
+      {/* Sector panel on sector-region click */}
+      {selectedSectorId && (
+        <SectorPanel
+          sectorId={selectedSectorId}
+          state={state!}
+          onClose={() => setSelectedSectorId(null)}
         />
       )}
 
