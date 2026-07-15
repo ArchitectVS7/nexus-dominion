@@ -1149,3 +1149,125 @@ describe("T-101: attack player action", () => {
     expect(evt.phasesFought).toContain("ground-assault");
   });
 });
+
+describe("T-205: deterministic cycle randomness", () => {
+  // Give the player (empire-0) a covert reserve so `launch-covert-op` resolves.
+  function withPlayerCovert(state: GameState, agentPool = 1000): GameState {
+    state.covert = { empireStates: new Map() };
+    state.covert.empireStates.set(EmpireId("empire-0"), {
+      empireId: EmpireId("empire-0"),
+      agentPool,
+      intelLevel: 0,
+      queuedOps: [],
+      totalOpsCompleted: 0,
+      timesDetectedAsAttacker: 0,
+    });
+    return state;
+  }
+
+  // Extract the launch-covert-op outcome event emitted for the player this cycle.
+  function covertOpOutcome(
+    result: ReturnType<typeof processCycle>,
+  ): "op-succeeded" | "op-detected" | "op-failed" | undefined {
+    const evt = result.report.events.find(
+      (e: any) =>
+        e.type === "covert" &&
+        e.attackerId === EmpireId("empire-0") &&
+        (e.kind === "op-succeeded" || e.kind === "op-detected" || e.kind === "op-failed"),
+    ) as any;
+    return evt?.kind;
+  }
+
+  const covertAction: PlayerActions = {
+    actions: [
+      {
+        type: "launch-covert-op",
+        details: { targetId: EmpireId("empire-1"), opType: "sabotage-production" },
+      },
+    ],
+  };
+
+  it("covert op: two identical states produce identical outcomes", () => {
+    const a = withPlayerCovert(makeMinimalGameState(1));
+    const b = withPlayerCovert(makeMinimalGameState(1));
+
+    const ra = processCycle(a, covertAction, new Map(), new Map());
+    const rb = processCycle(b, covertAction, new Map(), new Map());
+
+    const outcomeA = covertOpOutcome(ra);
+    const outcomeB = covertOpOutcome(rb);
+
+    expect(outcomeA).toBeDefined();
+    expect(outcomeA).toBe(outcomeB);
+
+    // Full covert-event arrays for the player match exactly.
+    const covertA = ra.report.events.filter(
+      (e: any) => e.type === "covert" && e.attackerId === EmpireId("empire-0"),
+    );
+    const covertB = rb.report.events.filter(
+      (e: any) => e.type === "covert" && e.attackerId === EmpireId("empire-0"),
+    );
+    expect(covertA).toEqual(covertB);
+  });
+
+  it("wormhole: two identical states produce identical wormhole ids", () => {
+    function withWormholeState(): GameState {
+      const state = makeMinimalGameState(1);
+      const empire = state.empires.get(EmpireId("empire-0"))!;
+      empire.resources.credits = 30000;
+      empire.resources.ore = 10000;
+      return state;
+    }
+    const wormholeAction: PlayerActions = {
+      actions: [{ type: "build-wormhole", details: { targetSystemId: SystemId("sys-1") } }],
+    };
+
+    const ra = processCycle(withWormholeState(), wormholeAction, new Map(), new Map());
+    const rb = processCycle(withWormholeState(), wormholeAction, new Map(), new Map());
+
+    const idA = ra.state.galaxy.wormholes?.[0]?.id;
+    const idB = rb.state.galaxy.wormholes?.[0]?.id;
+
+    expect(idA).toBeDefined();
+    expect(idA).toBe(idB);
+    // No unseeded base36 fragment — id is fully state-derived.
+    expect(idA).toMatch(/^wh-empire-0-\d+-[0-9a-z]+$/);
+  });
+
+  it("covert op: ~100 varied seeds land within ±10 points of the 70% success rate", () => {
+    let successes = 0;
+    let detected = 0;
+    let failed = 0;
+    const N = 120;
+
+    for (let i = 0; i < N; i++) {
+      // Vary targetId so each op derives a distinct seed while staying deterministic.
+      const action: PlayerActions = {
+        actions: [
+          {
+            type: "launch-covert-op",
+            details: { targetId: EmpireId(`target-${i}`), opType: "sabotage-production" },
+          },
+        ],
+      };
+      const state = withPlayerCovert(makeMinimalGameState(1));
+      const result = processCycle(state, action, new Map(), new Map());
+      const outcome = covertOpOutcome(result);
+      expect(outcome).toBeDefined();
+      if (outcome === "op-succeeded") successes++;
+      else if (outcome === "op-detected") detected++;
+      else failed++;
+    }
+
+    const successRate = (successes / N) * 100;
+    // 70% ± 10 points.
+    expect(successRate).toBeGreaterThanOrEqual(60);
+    expect(successRate).toBeLessThanOrEqual(80);
+
+    // Among failures, detected-vs-failed should be roughly balanced (loose bound).
+    const failures = detected + failed;
+    expect(failures).toBeGreaterThan(0);
+    expect(detected / failures).toBeGreaterThan(0.25);
+    expect(detected / failures).toBeLessThan(0.75);
+  });
+});

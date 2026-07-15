@@ -633,8 +633,10 @@ function resolvePlayerActions(
 
         empire.resources.credits -= 20000;
         empire.resources.ore -= 5000;
+        // State-derived id — deterministic, no unseeded randomness
+        const whHash = simpleHash(`${empire.id}-${state.time.currentCycle}-${targetSystemId}`);
         state.galaxy.wormholes.push({
-           id: `wh-${empire.id}-${state.time.currentCycle}-${Math.random().toString(36).substr(2, 6)}`,
+           id: `wh-${empire.id}-${state.time.currentCycle}-${whHash.toString(36)}`,
            systemA: empire.homeSystemId,
            systemB: targetSystemId,
            owner: empire.id
@@ -797,13 +799,15 @@ function resolvePlayerActions(
         if (!covertState || covertState.agentPool < cost) break;
 
         covertState.agentPool -= cost;
-        // In a full run, we would trigger `resolveCovertOperation` but that requires the RNG
-        // For simplicity and immediate effect without RNG inside `resolvePlayerActions`:
-        // We push a pending operation event to be evaluated in `processCovertCycle`.
-        // However `processCovertCycle` just ticks reserves.
-        // For our UAT Phase 2, we will resolve it deterministically here.
-        
-        const success = Math.random() > 0.3; // 70% chance
+        // Resolve deterministically here using state-derived randomness (seeded PRNG).
+        // A single seed (campaign seed + cycle + hash of empire/target/op) governs both the
+        // success roll and the detection-kind roll, drawn as two independent PRNG outputs.
+        const covertRng = new SeededRNG(
+          state.campaign.seed +
+            state.time.currentCycle +
+            simpleHash(`${empire.id}-${targetId}-${opType}`),
+        );
+        const success = covertRng.next() < 0.7; // 70% chance
 
         if (success) {
            events.push({
@@ -822,7 +826,7 @@ function resolvePlayerActions(
              cycle: state.time.currentCycle,
              opType: opType,
              targetId: targetId,
-             kind: Math.random() > 0.5 ? "op-detected" : "op-failed"
+             kind: covertRng.next() < 0.5 ? "op-detected" : "op-failed"
            } as any);
         }
         break;
@@ -861,7 +865,7 @@ function resolvePlayerActions(
           .filter((u): u is NonNullable<typeof u> => u !== undefined)
           .map((u) => ({ id: u.id, typeId: u.typeId, currentHp: u.currentHp }));
 
-        // State-derived randomness — no Math.random()
+        // State-derived randomness — deterministic, no unseeded randomness
         const combatRng = new SeededRNG(
           state.campaign.seed + state.time.currentCycle + simpleHash(targetSystemId),
         );
