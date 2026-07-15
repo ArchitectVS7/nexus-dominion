@@ -38,6 +38,8 @@ export interface CycleResult {
   report: CycleReport;
   /** Whether the cycle was successfully committed (atomicity) */
   committed: boolean;
+  /** On atomic (Tier-1) failure, the thrown error's message. Absent on success. */
+  error?: string;
 }
 
 /**
@@ -491,7 +493,7 @@ export function processCycle(
     state.currentCycleEvents = events;
 
     return { state, report, committed: true };
-  } catch {
+  } catch (err) {
     // Atomic: return original state unchanged
     return {
       state: currentState,
@@ -502,6 +504,7 @@ export function processCycle(
         reckoningOccurred: false,
       },
       committed: false,
+      error: err instanceof Error ? err.message : String(err),
     };
   }
 }

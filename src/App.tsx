@@ -22,6 +22,7 @@ import { ResearchPanel } from "./ui/ResearchPanel";
 import { CycleReportModal } from "./ui/CycleReport";
 import { CombatReportModal } from "./ui/CombatReport";
 import { ConvergenceAlert } from "./ui/ConvergenceAlert";
+import { CommitErrorBanner } from "./ui/CommitErrorBanner";
 import { SystemPanel } from "./ui/SystemPanel";
 import { SectorPanel } from "./ui/SectorPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
@@ -45,6 +46,7 @@ function App() {
   const [selectedSystemId, setSelectedSystemId] = useState<SystemId | null>(null);
   const [selectedSectorId, setSelectedSectorId] = useState<SectorId | null>(null);
   const [prevResources, setPrevResources] = useState<Resources | null>(null);
+  const [commitError, setCommitError] = useState<string | null>(null);
   const [showSaveList, setShowSaveList] = useState(false);
   const [saveList, setSaveList] = useState<SaveSlotSummary[]>([]);
 
@@ -98,348 +100,138 @@ function App() {
     await persistence.save(state);
   }, [state]);
 
-  /* ── Cycle Commit ── */
+  /* ── Cycle Commit ──
+     Single shared commit path for every player action. Snapshots resources for
+     delta display, runs the atomic cycle, and on success advances state + shows
+     the report; on failure surfaces the engine's error message to the player
+     (replacing the previous silent-failure behaviour). onCommit carries any
+     per-handler success side-effect (e.g. closing a panel). */
+
+  const commitActions = useCallback(
+    (
+      actions: { type: string; details?: Record<string, unknown> }[],
+      onCommit?: () => void,
+    ) => {
+      if (!state) return;
+
+      // Snapshot previous resources for delta display
+      const playerEmpire = state.empires.get(state.playerEmpireId);
+      if (playerEmpire) {
+        setPrevResources({ ...playerEmpire.resources });
+      }
+
+      const result = processCycle(
+        state,
+        { actions },
+        powerHistoryRef.current as any,
+        botAccumRef.current as any,
+      );
+
+      if (result.committed) {
+        // Update persistent refs
+        if (result.state.powerHistory) {
+          powerHistoryRef.current = result.state.powerHistory as any;
+        }
+        if (result.state.botAccumulated) {
+          botAccumRef.current = result.state.botAccumulated as any;
+        }
+
+        dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
+        setCycleReport(result.report);
+        setCommitError(null);
+        onCommit?.();
+      } else {
+        setCommitError(result.error ?? "Cycle failed to commit.");
+      }
+    },
+    [state, dispatch],
+  );
 
   const handleCommitCycle = useCallback(() => {
-    if (!state) return;
-
-    // Snapshot previous resources for delta display
-    const playerEmpire = state.empires.get(state.playerEmpireId);
-    if (playerEmpire) {
-      setPrevResources({ ...playerEmpire.resources });
-    }
-
-    const result = processCycle(
-      state,
-      { actions: [] }, // Player actions will be collected from UI in future
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-
-    if (result.committed) {
-      // Update persistent refs
-      if (result.state.powerHistory) {
-        powerHistoryRef.current = result.state.powerHistory as any;
-      }
-      if (result.state.botAccumulated) {
-        botAccumRef.current = result.state.botAccumulated as any;
-      }
-
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([]);
+  }, [commitActions]);
 
   /* ── Colonise Action ── */
 
   const handleColonise = useCallback((systemId: SystemId) => {
-    if (!state) return;
-
-    // Commit a cycle with a colonise action
-    const playerEmpire = state.empires.get(state.playerEmpireId);
-    if (playerEmpire) {
-      setPrevResources({ ...playerEmpire.resources });
-    }
-
-    const result = processCycle(
-      state,
-      { actions: [{ type: "claim-system", details: { systemId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-
-    if (result.committed) {
-      if (result.state.powerHistory) {
-        powerHistoryRef.current = result.state.powerHistory as any;
-      }
-      if (result.state.botAccumulated) {
-        botAccumRef.current = result.state.botAccumulated as any;
-      }
-
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-      setSelectedSystemId(null);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "claim-system", details: { systemId } }], () => setSelectedSystemId(null));
+  }, [commitActions]);
 
   /* ── Attack Action ── */
 
   const handleAttack = useCallback((systemId: SystemId, unitIds: string[]) => {
-    if (!state) return;
-
-    const playerEmpire = state.empires.get(state.playerEmpireId);
-    if (playerEmpire) {
-      setPrevResources({ ...playerEmpire.resources });
-    }
-
-    const result = processCycle(
-      state,
-      { actions: [{ type: "attack", details: { targetSystemId: systemId, unitIds } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
+    commitActions(
+      [{ type: "attack", details: { targetSystemId: systemId, unitIds } }],
+      () => setSelectedSystemId(null),
     );
-
-    if (result.committed) {
-      if (result.state.powerHistory) {
-        powerHistoryRef.current = result.state.powerHistory as any;
-      }
-      if (result.state.botAccumulated) {
-        botAccumRef.current = result.state.botAccumulated as any;
-      }
-
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-      setSelectedSystemId(null);
-    }
-  }, [state, dispatch]);
+  }, [commitActions]);
 
   /* ── Build Installation Action ── */
 
   const handleBuildInstallation = useCallback((systemId: SystemId, installationType: InstallationType) => {
-    if (!state) return;
-
-    const playerEmpire = state.empires.get(state.playerEmpireId);
-    if (playerEmpire) {
-      setPrevResources({ ...playerEmpire.resources });
-    }
-
-    const result = processCycle(
-      state,
-      { actions: [{ type: "build-installation", details: { systemId, installationType } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-
-    if (result.committed) {
-      if (result.state.powerHistory) {
-        powerHistoryRef.current = result.state.powerHistory as any;
-      }
-      if (result.state.botAccumulated) {
-        botAccumRef.current = result.state.botAccumulated as any;
-      }
-
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-      // Keep system panel open so player sees new condition
-    }
-  }, [state, dispatch]);
+    // Keep system panel open so player sees new condition
+    commitActions([{ type: "build-installation", details: { systemId, installationType } }]);
+  }, [commitActions]);
 
   /* ── Trade Action ── */
 
   const handleTrade = useCallback((resource: "food" | "ore" | "fuelCells", quantity: number, direction: "buy" | "sell") => {
-    if (!state) return;
-
-    const playerEmpire = state.empires.get(state.playerEmpireId);
-    if (playerEmpire) {
-      setPrevResources({ ...playerEmpire.resources });
-    }
-
-    const result = processCycle(
-      state,
-      { actions: [{ type: "trade", details: { resource, quantity, direction } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-
-    if (result.committed) {
-      if (result.state.powerHistory) {
-        powerHistoryRef.current = result.state.powerHistory as any;
-      }
-      if (result.state.botAccumulated) {
-        botAccumRef.current = result.state.botAccumulated as any;
-      }
-
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "trade", details: { resource, quantity, direction } }]);
+  }, [commitActions]);
 
   const handleBuildWormhole = useCallback((targetSystemId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "build-wormhole", details: { targetSystemId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-      setSelectedSystemId(null); // close panel
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "build-wormhole", details: { targetSystemId } }], () => setSelectedSystemId(null));
+  }, [commitActions]);
 
   /* ── Research Actions ── */
 
   const handleResearch = useCallback(() => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "research", details: {} }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "research", details: {} }]);
+  }, [commitActions]);
 
   const handleSelectDoctrine = useCallback((pathId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "select-doctrine", details: { pathId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "select-doctrine", details: { pathId } }]);
+  }, [commitActions]);
 
   const handleSelectSpecialization = useCallback((specId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "select-specialization", details: { specId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "select-specialization", details: { specId } }]);
+  }, [commitActions]);
 
   /* ── Diplomacy Actions ── */
 
   const handleProposePact = useCallback((targetId: string, type: "stillness-accord" | "star-covenant") => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "propose-pact", details: { targetId, type } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "propose-pact", details: { targetId, type } }]);
+  }, [commitActions]);
 
   const handleBreakPact = useCallback((pactId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "break-pact", details: { pactId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "break-pact", details: { pactId } }]);
+  }, [commitActions]);
 
   /* ── Military Actions ── */
 
   const handleBuildUnit = useCallback((unitTypeId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "build-unit", details: { unitTypeId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "build-unit", details: { unitTypeId } }]);
+  }, [commitActions]);
 
   const handleMoveFleet = useCallback((fleetId: string, targetSystemId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "move-fleet", details: { fleetId, targetSystemId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "move-fleet", details: { fleetId, targetSystemId } }]);
+  }, [commitActions]);
 
   /* ── Syndicate Actions ── */
 
   const handleFundSyndicate = useCallback((amount: number) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "fund-syndicate", details: { amount } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "fund-syndicate", details: { amount } }]);
+  }, [commitActions]);
 
   const handlePurchaseBlackRegister = useCallback((itemId: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "purchase-black-register", details: { itemId } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "purchase-black-register", details: { itemId } }]);
+  }, [commitActions]);
 
   /* ── Covert Actions ── */
 
   const handleLaunchOperation = useCallback((targetId: string, opType: string) => {
-    if (!state) return;
-    const result = processCycle(
-      state,
-      { actions: [{ type: "launch-covert-op", details: { targetId, opType } }] },
-      powerHistoryRef.current as any,
-      botAccumRef.current as any,
-    );
-    if (result.committed) {
-      if (result.state.powerHistory) powerHistoryRef.current = result.state.powerHistory as any;
-      if (result.state.botAccumulated) botAccumRef.current = result.state.botAccumulated as any;
-      dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
-      setCycleReport(result.report);
-    }
-  }, [state, dispatch]);
+    commitActions([{ type: "launch-covert-op", details: { targetId, opType } }]);
+  }, [commitActions]);
 
   /* ── Panel Navigation ── */
 
@@ -543,6 +335,12 @@ function App() {
           achievementName={convergenceAchievementName}
           onDismiss={() => setDismissedConvergence(cycleReport)}
         />
+      )}
+
+      {/* Commit error HUD banner — surfaces a failed (Tier-1 atomic) cycle
+          commit so the failure is no longer silent. */}
+      {commitError && (
+        <CommitErrorBanner message={commitError} onDismiss={() => setCommitError(null)} />
       )}
 
       {/* Slide-in panels */}
