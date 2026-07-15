@@ -53,6 +53,11 @@ export function DiplomacyPanel({ state, onClose, onProposePact, onBreakPact }: D
     (c) => c.active && c.targetId === playerEmpire.id
   );
 
+  // Coalitions the player is a member of
+  const myCoalitions = Array.from(state.diplomacy.coalitions.values()).filter(
+    (c) => c.active && c.memberIds.includes(playerEmpire.id)
+  );
+
   return (
     <div className="diplomacy-panel-overlay" onClick={onClose}>
       <div className="diplomacy-panel-slide" onClick={(e) => e.stopPropagation()}>
@@ -101,6 +106,30 @@ export function DiplomacyPanel({ state, onClose, onProposePact, onBreakPact }: D
                   })
                 ) : (
                   <div className="diplomacy-panel__empty">No active treaties.</div>
+                )}
+              </div>
+            </div>
+
+            {/* Coalition Memberships */}
+            <div className="diplomacy-panel__section">
+              <h4 className="diplomacy-panel__section-title">Coalition Memberships</h4>
+              <div className="diplomacy-panel__pacts">
+                {myCoalitions.length > 0 ? (
+                  myCoalitions.map((coalition) => {
+                    const targetName = state.empires.get(coalition.targetId)?.name ?? coalition.targetId;
+                    return (
+                      <div key={coalition.id} className="diplomacy-panel__pact-item">
+                        <div className="diplomacy-panel__pact-info">
+                          <span className="diplomacy-panel__pact-type">Coalition against {targetName}</span>
+                          <span className="diplomacy-panel__pact-target">
+                            {coalition.memberIds.length} member(s) · +{coalition.combatBonus}% combat
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="diplomacy-panel__empty">Not part of any coalition.</div>
                 )}
               </div>
             </div>

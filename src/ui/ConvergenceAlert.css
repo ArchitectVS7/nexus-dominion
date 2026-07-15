@@ -1,0 +1,37 @@
+/* ── Nexus Dominion — Convergence Alert Banner ── */
+
+.convergence-alert {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: min(90vw, 720px);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(231, 76, 60, 0.16);
+  border: 1px solid rgba(231, 76, 60, 0.45);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 24px rgba(231, 76, 60, 0.35);
+  color: var(--lcars-danger);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+.convergence-alert__icon {
+  font-size: var(--text-xl);
+}
+
+.convergence-alert__text {
+  flex: 1;
+}
+
+.convergence-alert__text strong {
+  color: var(--lcars-accent, #f4a629);
+}

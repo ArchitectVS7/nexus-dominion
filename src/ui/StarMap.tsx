@@ -9,7 +9,7 @@
    ══════════════════════════════════════════════════════════════ */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Galaxy, StarSystem, SystemId, SectorId } from "../engine/types";
+import type { Galaxy, StarSystem, SystemId, SectorId, EmpireId, Empire, DiplomacyState } from "../engine/types";
 import { useCanvasInteraction } from "../hooks/useCanvasInteraction";
 import { getEmpireColour } from "../engine/galaxy/galaxy-generator";
 import "./StarMap.css";
@@ -18,10 +18,60 @@ interface StarMapProps {
     galaxy: Galaxy;
     /** ID of the player empire (coloured distinctly) */
     playerEmpireId?: string;
+    /** Empires keyed by id — required to resolve home systems for covenant lines */
+    empires?: Map<EmpireId, Empire>;
+    /** Diplomacy state — required to derive active star-covenant edges */
+    diplomacy?: DiplomacyState;
     /** Callback when a system is selected */
     onSelectSystem?: (systemId: SystemId | null) => void;
     /** Callback when a sector region is clicked (null when the click hits no sector) */
     onSelectSector?: (sectorId: SectorId | null) => void;
+}
+
+/** A Covenant Line — an edge between the home systems of two empires bound by
+ *  an active star-covenant with the player. */
+export interface CovenantEdge {
+    a: { x: number; y: number };
+    b: { x: number; y: number };
+}
+
+/**
+ * Computes the Covenant Lines to draw: one edge from the player's home system
+ * to the home system of every empire holding an *active* star-covenant pact
+ * with the player. Pure and exported so the geometry can be unit-tested in
+ * isolation (see starmap-covenant.test.ts) — jsdom cannot render the canvas.
+ *
+ * Missing lookups (unknown empire, missing home system) are skipped so a
+ * partially-populated state never throws.
+ */
+export function computeCovenantEdges(
+    galaxy: Galaxy,
+    empires: Map<EmpireId, Empire>,
+    diplomacy: DiplomacyState,
+    playerEmpireId: string | undefined,
+): CovenantEdge[] {
+    if (!playerEmpireId) return [];
+    const player = empires.get(playerEmpireId as EmpireId);
+    if (!player) return [];
+    const playerHome = galaxy.systems.get(player.homeSystemId);
+    if (!playerHome) return [];
+
+    const edges: CovenantEdge[] = [];
+    for (const pact of diplomacy.pacts.values()) {
+        if (!pact.active) continue;
+        if (pact.type !== "star-covenant") continue;
+        if (!pact.memberIds.includes(playerEmpireId as EmpireId)) continue;
+
+        const otherId = pact.memberIds.find((id) => id !== playerEmpireId);
+        if (!otherId) continue;
+        const other = empires.get(otherId);
+        if (!other) continue;
+        const otherHome = galaxy.systems.get(other.homeSystemId);
+        if (!otherHome) continue;
+
+        edges.push({ a: playerHome.position, b: otherHome.position });
+    }
+    return edges;
 }
 
 /* ── Node sizing constants ── */
@@ -35,6 +85,7 @@ const COLOUR_UNCLAIMED = "#4A5568";
 const COLOUR_PLAYER = "#3498DB";
 const COLOUR_EDGE = "rgba(255, 255, 255, 0.06)";
 const COLOUR_SELECTED_RING = "#F4A629";
+const COLOUR_COVENANT = "#F4A629"; // LCARS amber — dashed, distinct from purple wormholes
 const SECTOR_FILL_ALPHA = 0.04;
 const SECTOR_STROKE_ALPHA = 0.08;
 
@@ -42,12 +93,18 @@ const SECTOR_HUES = [
     210, 280, 45, 160, 330, 120, 20, 190, 60, 300,
 ];
 
-export function StarMap({ galaxy, playerEmpireId, onSelectSystem, onSelectSector }: StarMapProps) {
+export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSystem, onSelectSector }: StarMapProps) {
     const [selectedId, setSelectedId] = useState<SystemId | null>(null);
 
     // Precompute arrays for rendering
     const systems = useMemo(() => Array.from(galaxy.systems.values()), [galaxy]);
     const sectors = useMemo(() => Array.from(galaxy.sectors.values()), [galaxy]);
+
+    // Covenant Lines — active star-covenants between the player and allies.
+    const covenantEdges = useMemo(
+        () => (empires && diplomacy ? computeCovenantEdges(galaxy, empires, diplomacy, playerEmpireId) : []),
+        [galaxy, empires, diplomacy, playerEmpireId],
+    );
 
     // Compute convex hulls for sectors
     const sectorHulls = useMemo(() => {
@@ -221,6 +278,28 @@ export function StarMap({ galaxy, playerEmpireId, onSelectSystem, onSelectSector
                 }
             }
 
+            // ── Covenant Lines ──
+            // Amber dashed edges tying the player's home to covenant allies'
+            // homes. Drawn under the nodes and visually distinct from the solid
+            // purple wormhole edges above.
+            if (covenantEdges.length > 0) {
+                ctx.save();
+                ctx.setLineDash([6, 4]);
+                ctx.strokeStyle = COLOUR_COVENANT;
+                ctx.lineWidth = 2 * Math.max(0.6, Math.min(1.5, camera.zoom));
+                ctx.shadowColor = COLOUR_COVENANT;
+                ctx.shadowBlur = 3;
+                for (const edge of covenantEdges) {
+                    const a = worldToScreen(edge.a.x, edge.a.y);
+                    const b = worldToScreen(edge.b.x, edge.b.y);
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
             // ── System nodes ──
             for (const sys of systems) {
                 const screen = worldToScreen(sys.position.x, sys.position.y);
@@ -306,7 +385,7 @@ export function StarMap({ galaxy, playerEmpireId, onSelectSystem, onSelectSector
 
         animId = requestAnimationFrame(render);
         return () => cancelAnimationFrame(animId);
-    }, [canvasRef, camera, systems, sectors, sectorHulls, selectedId, playerEmpireId, galaxy, worldToScreen]);
+    }, [canvasRef, camera, systems, sectors, sectorHulls, covenantEdges, selectedId, playerEmpireId, galaxy, worldToScreen]);
 
     // Selected system info bar
     const selectedSystem = selectedId ? galaxy.systems.get(selectedId) : null;

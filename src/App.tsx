@@ -21,10 +21,12 @@ import { MarketPanel } from "./ui/MarketPanel";
 import { ResearchPanel } from "./ui/ResearchPanel";
 import { CycleReportModal } from "./ui/CycleReport";
 import { CombatReportModal } from "./ui/CombatReport";
+import { ConvergenceAlert } from "./ui/ConvergenceAlert";
 import { SystemPanel } from "./ui/SystemPanel";
 import { SectorPanel } from "./ui/SectorPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
-import type { CycleReport, CombatEvent, SystemId, SectorId, Resources, InstallationType } from "./engine/types";
+import { ACHIEVEMENT_DEFINITIONS } from "./engine/achievement/achievement-checker";
+import type { CycleReport, CombatEvent, ConvergenceAlertEvent, SystemId, SectorId, Resources, InstallationType } from "./engine/types";
 import "./App.css";
 
 const SEED = 42;
@@ -37,6 +39,7 @@ function App() {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [cycleReport, setCycleReport] = useState<CycleReport | null>(null);
   const [dismissedCombatReport, setDismissedCombatReport] = useState<CycleReport | null>(null);
+  const [dismissedConvergence, setDismissedConvergence] = useState<CycleReport | null>(null);
   const [selectedSystemId, setSelectedSystemId] = useState<SystemId | null>(null);
   const [selectedSectorId, setSelectedSectorId] = useState<SectorId | null>(null);
   const [prevResources, setPrevResources] = useState<Resources | null>(null);
@@ -462,6 +465,18 @@ function App() {
       (e.attackerId === state?.playerEmpireId || e.defenderId === state?.playerEmpireId),
   );
 
+  // Surface a convergence alert (a rival nearing victory) as a HUD banner.
+  const convergenceEvent = cycleReport?.events.find(
+    (e): e is ConvergenceAlertEvent => e.type === "convergence-alert",
+  );
+  const convergenceEmpireName = convergenceEvent
+    ? state?.empires.get(convergenceEvent.empireId)?.name ?? convergenceEvent.empireId
+    : "";
+  const convergenceAchievementName = convergenceEvent
+    ? ACHIEVEMENT_DEFINITIONS.find((d) => d.id === convergenceEvent.achievementId)?.name ??
+      convergenceEvent.achievementId
+    : "";
+
   return (
     <div className="shell">
       <div className="lcars-bar top" />
@@ -471,6 +486,8 @@ function App() {
       <StarMap
         galaxy={state!.galaxy}
         playerEmpireId={state!.playerEmpireId}
+        empires={state!.empires}
+        diplomacy={state!.diplomacy}
         onSelectSystem={(id) => {
           setSelectedSystemId(id);
           if (id) setSelectedSectorId(null);
@@ -493,6 +510,17 @@ function App() {
         onOpenCovert={() => setActivePanel("covert")}
         onSaveGame={handleSaveGame}
       />
+
+      {/* Convergence alert HUD banner — a rival nearing a victory achievement.
+          Dismissal is keyed off the report identity so a new report re-shows it. */}
+      {convergenceEvent && dismissedConvergence !== cycleReport && (
+        <ConvergenceAlert
+          event={convergenceEvent}
+          empireName={convergenceEmpireName}
+          achievementName={convergenceAchievementName}
+          onDismiss={() => setDismissedConvergence(cycleReport)}
+        />
+      )}
 
       {/* Slide-in panels */}
       {activePanel === "empire" && (
