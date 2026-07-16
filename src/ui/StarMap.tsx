@@ -8,7 +8,7 @@
    - Selected system highlight ring + glow
    ══════════════════════════════════════════════════════════════ */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Galaxy, StarSystem, SystemId, SectorId, EmpireId, Empire, DiplomacyState } from "../engine/types";
 import { useCanvasInteraction } from "../hooks/useCanvasInteraction";
 import { getEmpireColour } from "../engine/galaxy/galaxy-generator";
@@ -74,10 +74,30 @@ export function computeCovenantEdges(
     return edges;
 }
 
+/**
+ * Screen-space radius for a node given its base world radius and camera zoom.
+ * The zoom multiplier is clamped to [0.35, 1.5] so nodes shrink when zooming
+ * out (never overlapping at min zoom given T-111 spacing) and stop growing at
+ * high zoom. Pure/exported for unit testing (jsdom cannot render the canvas).
+ */
+export function nodeScreenRadius(baseRadius: number, zoom: number): number {
+    const mult = Math.max(0.35, Math.min(1.5, zoom));
+    return baseRadius * mult;
+}
+
+/**
+ * Click hit radius in WORLD units for a given camera zoom. Returns
+ * max(14, 8 / zoom) so clicks stay usable when zoomed out (the world-space
+ * tolerance grows as zoom shrinks) while never dropping below 14 world units.
+ * Nearest-wins resolution in the click handler is unchanged.
+ */
+export function hitRadiusWorld(zoom: number): number {
+    return Math.max(14, 8 / zoom);
+}
+
 /* ── Node sizing constants ── */
 const NODE_RADIUS = 5;
 const NODE_RADIUS_HOME = 7;
-const HIT_RADIUS = 14;
 const SELECTED_RING = 12;
 
 /* ── Colours ── */
@@ -95,6 +115,7 @@ const SECTOR_HUES = [
 
 export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSystem, onSelectSector }: StarMapProps) {
     const [selectedId, setSelectedId] = useState<SystemId | null>(null);
+    const cameraZoomRef = useRef(0.8); // mirrors camera.zoom for the click handler
 
     // Precompute arrays for rendering
     const systems = useMemo(() => Array.from(galaxy.systems.values()), [galaxy]);
@@ -134,7 +155,7 @@ export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSy
                 }
             }
 
-            if (nearest && nearestDist < HIT_RADIUS) {
+            if (nearest && nearestDist < hitRadiusWorld(cameraZoomRef.current)) {
                 const newId = nearest.id === selectedId ? null : nearest.id;
                 setSelectedId(newId);
                 onSelectSystem?.(newId);
@@ -159,6 +180,7 @@ export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSy
     );
 
     const { canvasRef, camera, worldToScreen } = useCanvasInteraction(handleClick);
+    cameraZoomRef.current = camera.zoom;
 
     // Render loop
     useEffect(() => {
@@ -305,7 +327,7 @@ export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSy
                 const screen = worldToScreen(sys.position.x, sys.position.y);
                 const isSelected = sys.id === selectedId;
                 const radius = sys.isHomeSystem ? NODE_RADIUS_HOME : NODE_RADIUS;
-                const screenRadius = radius * Math.max(0.6, Math.min(1.5, camera.zoom));
+                const screenRadius = nodeScreenRadius(radius, camera.zoom);
 
                 // Colour
                 let colour: string;
@@ -320,7 +342,7 @@ export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSy
                 // Selected glow
                 if (isSelected) {
                     ctx.beginPath();
-                    ctx.arc(screen.x, screen.y, SELECTED_RING * camera.zoom, 0, Math.PI * 2);
+                    ctx.arc(screen.x, screen.y, nodeScreenRadius(SELECTED_RING, camera.zoom), 0, Math.PI * 2);
                     ctx.strokeStyle = COLOUR_SELECTED_RING;
                     ctx.lineWidth = 2;
                     ctx.shadowColor = COLOUR_SELECTED_RING;
@@ -362,7 +384,7 @@ export function StarMap({ galaxy, playerEmpireId, empires, diplomacy, onSelectSy
                 }
 
                 // System name (only at high zoom)
-                if (camera.zoom > 1.2) {
+                if (camera.zoom > 1.0) {
                     ctx.font = `${Math.max(8, 9 * camera.zoom)}px 'Exo 2', sans-serif`;
                     ctx.fillStyle = "rgba(208, 216, 232, 0.7)";
                     ctx.textAlign = "center";
