@@ -3,7 +3,32 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { SystemPanel } from "./SystemPanel";
+import type { OrdersSummary } from "./orders";
 import type { GameState } from "../engine/types";
+
+/** An OrdersSummary with nothing queued — satisfies the required prop. */
+function emptySummary(): OrdersSummary {
+  return {
+    systemIntents: new Map(),
+    buildUnitCounts: new Map(),
+    trades: [],
+    researchQueued: false,
+    doctrineQueued: null,
+    specializationQueued: null,
+    totalOrders: 0,
+  };
+}
+
+/** An OrdersSummary carrying a single queued intent against a system. */
+function summaryWithIntent(
+  systemId: string,
+  intent: "colonise" | "attack" | "wormhole",
+): OrdersSummary {
+  const s = emptySummary();
+  s.systemIntents.set(systemId, intent);
+  s.totalOrders = 1;
+  return s;
+}
 
 const PLAYER = "empire-player";
 const ENEMY = "empire-enemy";
@@ -93,6 +118,7 @@ describe("SystemPanel — attack control", () => {
       <SystemPanel
         systemId={TARGET_SYS as any}
         state={makeState(ENEMY)}
+        summary={emptySummary()}
         onClose={() => {}}
         onAttack={onAttack}
       />,
@@ -117,6 +143,7 @@ describe("SystemPanel — attack control", () => {
       <SystemPanel
         systemId={TARGET_SYS as any}
         state={makeState(ENEMY)}
+        summary={emptySummary()}
         onClose={() => {}}
         onAttack={onAttack}
       />,
@@ -132,6 +159,7 @@ describe("SystemPanel — attack control", () => {
       <SystemPanel
         systemId={TARGET_SYS as any}
         state={makeState(PLAYER)}
+        summary={emptySummary()}
         onClose={() => {}}
         onAttack={vi.fn()}
       />,
@@ -144,6 +172,7 @@ describe("SystemPanel — attack control", () => {
       <SystemPanel
         systemId={TARGET_SYS as any}
         state={makeState(null)}
+        summary={emptySummary()}
         onClose={() => {}}
         onAttack={vi.fn()}
       />,
@@ -156,11 +185,123 @@ describe("SystemPanel — attack control", () => {
       <SystemPanel
         systemId={TARGET_SYS as any}
         state={makeState(ENEMY, false)}
+        summary={emptySummary()}
         onClose={() => {}}
         onAttack={vi.fn()}
       />,
     );
     expect(screen.getByText(/no military units available/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /launch attack/i })).toBeDisabled();
+  });
+});
+
+/** State with an unclaimed target adjacent to a player-owned system. */
+function makeColonisableState(): GameState {
+  const OWNED = "sys-owned";
+  const systems = new Map<any, any>([
+    [
+      TARGET_SYS,
+      {
+        id: TARGET_SYS,
+        name: "Target Prime",
+        sectorId: "sector-0",
+        biome: "core-world",
+        owner: null,
+        slots: [],
+        adjacentSystemIds: [OWNED],
+        claimedCycle: null,
+      },
+    ],
+    [
+      OWNED,
+      {
+        id: OWNED,
+        name: "Home Base",
+        sectorId: "sector-0",
+        biome: "core-world",
+        owner: PLAYER,
+        slots: [],
+        adjacentSystemIds: [TARGET_SYS],
+        claimedCycle: 0,
+      },
+    ],
+  ]);
+
+  const sectors = new Map<any, any>([
+    ["sector-0", { id: "sector-0", name: "Sector Zero", systemIds: [TARGET_SYS], centre: { x: 0, y: 0 } }],
+  ]);
+
+  const empires = new Map<any, any>([
+    [
+      PLAYER,
+      {
+        id: PLAYER,
+        name: "Player",
+        homeSystemId: OWNED,
+        fleetIds: [],
+        resources: { credits: 500, ore: 100 },
+      },
+    ],
+  ]);
+
+  return {
+    galaxy: { systems, sectors },
+    empires,
+    playerEmpireId: PLAYER,
+    unitTypes: new Map(),
+    units: new Map(),
+    fleets: new Map(),
+  } as unknown as GameState;
+}
+
+describe("SystemPanel — queued-intent banner + disabled action", () => {
+  it("shows COLONISATION QUEUED and disables the colonise button when a colonise order is queued", () => {
+    render(
+      <SystemPanel
+        systemId={TARGET_SYS as any}
+        state={makeColonisableState()}
+        summary={summaryWithIntent(TARGET_SYS, "colonise")}
+        onClose={() => {}}
+        onColonise={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/COLONISATION QUEUED/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /colonise/i })).toBeDisabled();
+  });
+
+  it("colonise button is enabled when no colonise order is queued", () => {
+    render(
+      <SystemPanel
+        systemId={TARGET_SYS as any}
+        state={makeColonisableState()}
+        summary={emptySummary()}
+        onClose={() => {}}
+        onColonise={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText(/COLONISATION QUEUED/i)).toBeNull();
+    expect(screen.getByRole("button", { name: /colonise/i })).toBeEnabled();
+  });
+
+  it("shows ATTACK QUEUED and keeps LAUNCH ATTACK disabled even after selecting a unit", () => {
+    render(
+      <SystemPanel
+        systemId={TARGET_SYS as any}
+        state={makeState(ENEMY)}
+        summary={summaryWithIntent(TARGET_SYS, "attack")}
+        onClose={() => {}}
+        onAttack={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/ATTACK QUEUED/i)).toBeInTheDocument();
+    const launch = screen.getByRole("button", { name: /launch attack/i });
+    expect(launch).toBeDisabled();
+
+    // Selecting a unit must NOT re-enable the button while an attack is queued.
+    fireEvent.click(screen.getByLabelText(/Frigate \(fleet\)/i));
+    expect(launch).toBeDisabled();
   });
 });

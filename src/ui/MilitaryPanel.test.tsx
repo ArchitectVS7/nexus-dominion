@@ -3,7 +3,21 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { MilitaryPanel } from "./MilitaryPanel";
+import type { OrdersSummary } from "./orders";
 import type { GameState } from "../engine/types";
+
+/** An OrdersSummary with nothing queued — used to satisfy the required prop. */
+function emptySummary(): OrdersSummary {
+  return {
+    systemIntents: new Map(),
+    buildUnitCounts: new Map(),
+    trades: [],
+    researchQueued: false,
+    doctrineQueued: null,
+    specializationQueued: null,
+    totalOrders: 0,
+  };
+}
 
 const PLAYER = "empire-player";
 const SYS_HOME = "sys-home";
@@ -82,6 +96,7 @@ describe("MilitaryPanel — fleet movement orders", () => {
         state={makeState([
           makeFleet({ id: "fleet-1", name: "First Fleet", locationSystemId: SYS_HOME }),
         ])}
+        summary={emptySummary()}
         onClose={() => {}}
         onBuildUnit={vi.fn()}
         onMoveFleet={vi.fn()}
@@ -99,6 +114,7 @@ describe("MilitaryPanel — fleet movement orders", () => {
         state={makeState([
           makeFleet({ id: "fleet-1", name: "First Fleet", locationSystemId: SYS_HOME }),
         ])}
+        summary={emptySummary()}
         onClose={() => {}}
         onBuildUnit={vi.fn()}
         onMoveFleet={onMoveFleet}
@@ -129,6 +145,7 @@ describe("MilitaryPanel — fleet movement orders", () => {
             arrivalCycle: 7,
           }),
         ])}
+        summary={emptySummary()}
         onClose={() => {}}
         onBuildUnit={vi.fn()}
         onMoveFleet={vi.fn()}
@@ -139,5 +156,38 @@ describe("MilitaryPanel — fleet movement orders", () => {
     expect(screen.getByText(/Rigel/i)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /move/i })).toBeNull();
     expect(screen.queryByRole("combobox")).toBeNull();
+  });
+});
+
+describe("MilitaryPanel — queued build chips", () => {
+  it("renders a QUEUED ×N chip on a unit with queued build orders", () => {
+    const summary = emptySummary();
+    summary.buildUnitCounts.set("fighter", 3);
+
+    render(
+      <MilitaryPanel
+        state={makeState([])}
+        summary={summary}
+        onClose={() => {}}
+        onBuildUnit={vi.fn()}
+        onMoveFleet={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/QUEUED ×3/i)).toBeInTheDocument();
+  });
+
+  it("renders no chip when nothing is queued for that unit", () => {
+    render(
+      <MilitaryPanel
+        state={makeState([])}
+        summary={emptySummary()}
+        onClose={() => {}}
+        onBuildUnit={vi.fn()}
+        onMoveFleet={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText(/QUEUED ×/i)).toBeNull();
   });
 });

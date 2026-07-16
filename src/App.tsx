@@ -5,7 +5,7 @@
    Coordinates all UI panels and the cycle commit flow.
    ══════════════════════════════════════════════════════════════ */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useGameState } from "./hooks/useGameState";
 import { createNewCampaign } from "./engine/campaign/campaign-factory";
 import { processCycle } from "./engine/cycle/cycle-processor";
@@ -24,7 +24,7 @@ import { CombatReportModal } from "./ui/CombatReport";
 import { ConvergenceAlert } from "./ui/ConvergenceAlert";
 import { CommitErrorBanner } from "./ui/CommitErrorBanner";
 import { OrdersQueue } from "./ui/OrdersQueue";
-import { enqueueOrder, removeOrder, toEngineActions, type QueuedOrder } from "./ui/orders";
+import { enqueueOrder, removeOrder, toEngineActions, summarizeOrders, type QueuedOrder } from "./ui/orders";
 import { SystemPanel } from "./ui/SystemPanel";
 import { SectorPanel } from "./ui/SectorPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
@@ -58,6 +58,12 @@ function App() {
      never persisted/saved (see src/ui/orders.ts). */
   const [orders, setOrders] = useState<QueuedOrder[]>([]);
   const orderSeqRef = useRef(0);
+
+  /* Queued-state summary (T-114) — computed once per orders change and passed
+     to panels so they can render pending badges/banners/chips. Shows only WHAT
+     is queued; displayed resources stay real reserves (engine validates
+     affordability at commit — see summarizeOrders). */
+  const ordersSummary = useMemo(() => summarizeOrders(orders), [orders]);
   const [pendingPass, setPendingPass] = useState(false);
   const passTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -461,6 +467,7 @@ function App() {
       {activePanel === "market" && (
         <MarketPanel
           state={state!}
+          summary={ordersSummary}
           onClose={() => setActivePanel(null)}
           onTrade={handleTrade}
         />
@@ -469,6 +476,7 @@ function App() {
       {activePanel === "military" && (
         <MilitaryPanel
           state={state!}
+          summary={ordersSummary}
           onClose={() => setActivePanel(null)}
           onBuildUnit={handleBuildUnit}
           onMoveFleet={handleMoveFleet}
@@ -487,6 +495,7 @@ function App() {
       {activePanel === "research" && (
         <ResearchPanel
           state={state!}
+          summary={ordersSummary}
           onClose={() => setActivePanel(null)}
           onResearch={handleResearch}
           onSelectDoctrine={handleSelectDoctrine}
@@ -523,6 +532,7 @@ function App() {
         <SystemPanel
           systemId={selectedSystemId}
           state={state!}
+          summary={ordersSummary}
           onClose={() => setSelectedSystemId(null)}
           onColonise={handleColonise}
           onBuild={handleBuildInstallation}

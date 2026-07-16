@@ -5,15 +5,17 @@ import { Panel, Button } from "../components/lcars";
 import type { GameState, MarketEvent } from "../engine/types";
 import { getTradeDiscount } from "../engine/diplomacy/diplomacy-engine";
 import { buyResource, sellResource } from "../engine/market/market-engine";
+import type { OrdersSummary } from "./orders";
 import "./MarketPanel.css";
 
 interface MarketPanelProps {
   state: GameState;
+  summary: OrdersSummary;
   onClose: () => void;
   onTrade: (resource: "food" | "ore" | "fuelCells", quantity: number, direction: "buy" | "sell") => void;
 }
 
-export function MarketPanel({ state, onClose, onTrade }: MarketPanelProps) {
+export function MarketPanel({ state, summary, onClose, onTrade }: MarketPanelProps) {
   const [selectedResource, setSelectedResource] = useState<"food" | "ore" | "fuelCells">("ore");
   const [tradeAmount, setTradeAmount] = useState<number>(100);
 
@@ -78,7 +80,23 @@ export function MarketPanel({ state, onClose, onTrade }: MarketPanelProps) {
             {/* Trade Interface */}
             <div className="market-panel__trade-interface">
               <h4 className="market-panel__section-title">Trade {selectedResource}</h4>
-              
+
+              {/* Pending (queued) trades — shows WHAT is queued, not its cost.
+                  Displayed reserves stay real; the engine validates
+                  affordability at commit (see summarizeOrders). */}
+              {summary.trades.length > 0 && (
+                <div className="market-panel__pending">
+                  {summary.trades.map((t) => (
+                    <div
+                      key={`${t.resource}-${t.direction}`}
+                      className="market-panel__pending-row"
+                    >
+                      PENDING: {t.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="market-panel__amount-selector">
                 <button onClick={() => setTradeAmount(10)}>10</button>
                 <button onClick={() => setTradeAmount(100)}>100</button>

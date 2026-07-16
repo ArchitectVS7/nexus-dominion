@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Panel, Button, DataReadout } from "../components/lcars";
 import type { GameState, SystemId, UnitId, InstallationType } from "../engine/types";
 import { BIOME_ALLOWED_INSTALLATIONS, INSTALLATION_COSTS, canBuildInstallation } from "../engine/installation/installation-registry";
+import type { OrdersSummary } from "./orders";
 import "./SystemPanel.css";
 
 interface SystemPanelProps {
   systemId: SystemId;
   state: GameState;
+  summary: OrdersSummary;
   onClose: () => void;
   onColonise?: (systemId: SystemId) => void;
   onBuild?: (systemId: SystemId, type: InstallationType) => void;
@@ -16,7 +18,7 @@ interface SystemPanelProps {
   onAttack?: (systemId: SystemId, unitIds: UnitId[]) => void;
 }
 
-export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onBuildWormhole, onAttack }: SystemPanelProps) {
+export function SystemPanel({ systemId, state, summary, onClose, onColonise, onBuild, onBuildWormhole, onAttack }: SystemPanelProps) {
   const [selectedUnitIds, setSelectedUnitIds] = useState<UnitId[]>([]);
 
   const system = state.galaxy.systems.get(systemId);
@@ -26,6 +28,11 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
   const isOwned = system.owner === playerEmpireId;
   const isUnclaimed = !system.owner;
   const isEnemy = !!system.owner && system.owner !== playerEmpireId;
+
+  // Queued intent against THIS system (colonise/attack/wormhole), if any.
+  // Used to show a banner and disable the matching action button so the
+  // player cannot re-queue an intent that is already pending this cycle.
+  const intent = summary.systemIntents.get(systemId);
 
   // Player's built (active) military units, gathered across their fleets.
   const availableUnits: { id: UnitId; name: string; category: string }[] = [];
@@ -100,6 +107,19 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
                 <span className="system-panel__owner-unclaimed">Unclaimed</span>
               )}
             </div>
+
+            {/* Queued-intent banner — an order against this system is pending
+                this cycle. The matching action button below is disabled to
+                prevent re-queuing. */}
+            {intent && (
+              <div className={`system-panel__queued-banner system-panel__queued-banner--${intent}`}>
+                {intent === "colonise"
+                  ? "COLONISATION QUEUED"
+                  : intent === "attack"
+                  ? "ATTACK QUEUED"
+                  : "WORMHOLE QUEUED"}
+              </div>
+            )}
 
             {/* Development slots */}
             <div className="system-panel__section">
@@ -208,7 +228,11 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
                       No military units available to deploy.
                     </p>
                     <div className="system-panel__actions">
-                      <Button label="⚔ LAUNCH ATTACK" variant="danger" disabled />
+                      <Button
+                        label="⚔ LAUNCH ATTACK"
+                        variant="danger"
+                        disabled
+                      />
                     </div>
                   </>
                 ) : (
@@ -242,7 +266,7 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
                         label="⚔ LAUNCH ATTACK"
                         variant="danger"
                         onClick={() => onAttack(systemId, selectedUnitIds)}
-                        disabled={selectedUnitIds.length === 0}
+                        disabled={selectedUnitIds.length === 0 || intent === "attack"}
                       />
                     </div>
                   </>
@@ -257,7 +281,7 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
                   label="⟫ COLONISE (50 Credits)"
                   variant="primary"
                   onClick={() => onColonise?.(systemId)}
-                  disabled={(state.empires.get(playerEmpireId)?.resources.credits ?? 0) < 50}
+                  disabled={(state.empires.get(playerEmpireId)?.resources.credits ?? 0) < 50 || intent === "colonise"}
                 />
               </div>
             )}
@@ -270,11 +294,11 @@ export function SystemPanel({ systemId, state, onClose, onColonise, onBuild, onB
                   Costs 20,000 CT and 5,000 Ore. Enables instant fleet transit.
                 </p>
                 <div className="system-panel__actions">
-                  <Button 
-                    label="BUILD WORMHOLE" 
-                    variant="primary" 
-                    onClick={() => onBuildWormhole(systemId)} 
-                    disabled={(state.empires.get(playerEmpireId)?.resources.credits ?? 0) < 20000 || (state.empires.get(playerEmpireId)?.resources.ore ?? 0) < 5000}
+                  <Button
+                    label="BUILD WORMHOLE"
+                    variant="primary"
+                    onClick={() => onBuildWormhole(systemId)}
+                    disabled={(state.empires.get(playerEmpireId)?.resources.credits ?? 0) < 20000 || (state.empires.get(playerEmpireId)?.resources.ore ?? 0) < 5000 || intent === "wormhole"}
                   />
                 </div>
               </div>

@@ -4,16 +4,18 @@ import { useState } from "react";
 import { Panel, Button, DataReadout } from "../components/lcars";
 import type { GameState } from "../engine/types";
 import { UNIT_TYPES } from "../engine/military/unit-registry";
+import type { OrdersSummary } from "./orders";
 import "./MilitaryPanel.css";
 
 interface MilitaryPanelProps {
   state: GameState;
+  summary: OrdersSummary;
   onClose: () => void;
   onBuildUnit: (unitTypeId: string) => void;
   onMoveFleet: (fleetId: string, targetSystemId: string) => void;
 }
 
-export function MilitaryPanel({ state, onClose, onBuildUnit, onMoveFleet }: MilitaryPanelProps) {
+export function MilitaryPanel({ state, summary, onClose, onBuildUnit, onMoveFleet }: MilitaryPanelProps) {
   // Per-fleet selected destination (keyed by fleet id).
   const [dest, setDest] = useState<Record<string, string>>({});
   const empireId = state.playerEmpireId;
@@ -175,6 +177,7 @@ export function MilitaryPanel({ state, onClose, onBuildUnit, onMoveFleet }: Mili
 
                   const canAfford = currentGen.credits >= unitType.buildCost;
                   const isLocked = unitType.id === "dreadnought" && !canBuildDreadnought;
+                  const queued = summary.buildUnitCounts.get(unitType.id) ?? 0;
 
                   return (
                     <div key={unitType.id} className={`military-panel__build-item ${isLocked ? "locked" : ""}`}>
@@ -182,6 +185,9 @@ export function MilitaryPanel({ state, onClose, onBuildUnit, onMoveFleet }: Mili
                         <span className="military-panel__build-name">
                           {unitType.name}
                           {isLocked && " [LOCKED]"}
+                          {queued > 0 && (
+                            <span className="military-panel__queued-chip">QUEUED ×{queued}</span>
+                          )}
                         </span>
                         <div className="military-panel__build-stats">
                           <span>{unitType.buildCost} CT</span>

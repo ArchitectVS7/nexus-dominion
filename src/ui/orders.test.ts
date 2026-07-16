@@ -4,6 +4,7 @@ import {
   enqueueOrder,
   removeOrder,
   toEngineActions,
+  summarizeOrders,
   type QueuedOrder,
   type OrderInput,
 } from "./orders";
@@ -258,6 +259,91 @@ describe("removeOrder", () => {
   it("is a no-op for an unknown id", () => {
     const orders = chain(input("research", {}));
     expect(removeOrder(orders, "nope")).toHaveLength(1);
+  });
+});
+
+describe("summarizeOrders", () => {
+  it("empty queue → empty maps/arrays and all-false/null flags", () => {
+    const s = summarizeOrders([]);
+    expect(s.systemIntents.size).toBe(0);
+    expect(s.buildUnitCounts.size).toBe(0);
+    expect(s.trades).toEqual([]);
+    expect(s.researchQueued).toBe(false);
+    expect(s.doctrineQueued).toBeNull();
+    expect(s.specializationQueued).toBeNull();
+    expect(s.totalOrders).toBe(0);
+  });
+
+  it("groups build-unit orders into per-type counts", () => {
+    const orders = chain(
+      input("build-unit", { unitTypeId: "fighter" }),
+      input("build-unit", { unitTypeId: "fighter" }),
+      input("build-unit", { unitTypeId: "cruiser" }),
+    );
+    const s = summarizeOrders(orders);
+    expect(s.buildUnitCounts.get("fighter")).toBe(2);
+    expect(s.buildUnitCounts.get("cruiser")).toBe(1);
+    expect(s.totalOrders).toBe(3);
+  });
+
+  it("projects merged trades with resource/direction/quantity and label passthrough, buy vs sell separate", () => {
+    const orders = chain(
+      input("trade", { resource: "ore", quantity: 10, direction: "buy" }),
+      input("trade", { resource: "ore", quantity: 20, direction: "buy" }),
+      input("trade", { resource: "ore", quantity: 5, direction: "sell" }),
+    );
+    const s = summarizeOrders(orders);
+    expect(s.trades).toHaveLength(2);
+    const buy = s.trades.find((t) => t.direction === "buy")!;
+    expect(buy.resource).toBe("ore");
+    expect(buy.quantity).toBe(30);
+    expect(buy.label).toBe("BUY 30 ORE");
+    const sell = s.trades.find((t) => t.direction === "sell")!;
+    expect(sell.quantity).toBe(5);
+  });
+
+  it("tracks family intents per system (colonise/attack/wormhole) independently", () => {
+    const orders = chain(
+      input("claim-system", { systemId: "sys-a" }),
+      input("attack", { targetSystemId: "sys-b", unitIds: ["u1"] }),
+      input("build-wormhole", { targetSystemId: "sys-c" }),
+    );
+    const s = summarizeOrders(orders);
+    expect(s.systemIntents.get("sys-a")).toBe("colonise");
+    expect(s.systemIntents.get("sys-b")).toBe("attack");
+    expect(s.systemIntents.get("sys-c")).toBe("wormhole");
+    expect(s.systemIntents.size).toBe(3);
+  });
+
+  it("reflects a claim→attack overwrite on the same system as a single 'attack' intent", () => {
+    const orders = chain(
+      input("claim-system", { systemId: "sys-x" }),
+      input("attack", { targetSystemId: "sys-x", unitIds: ["u1"] }),
+    );
+    const s = summarizeOrders(orders);
+    expect(s.systemIntents.get("sys-x")).toBe("attack");
+    expect(s.systemIntents.size).toBe(1);
+  });
+
+  it("sets research/doctrine/specialization flags to their queued values", () => {
+    const orders = chain(
+      input("research", {}),
+      input("select-doctrine", { pathId: "war-machine" }),
+      input("select-specialization", { specId: "shock-troops" }),
+    );
+    const s = summarizeOrders(orders);
+    expect(s.researchQueued).toBe(true);
+    expect(s.doctrineQueued).toBe("war-machine");
+    expect(s.specializationQueued).toBe("shock-troops");
+  });
+
+  it("totalOrders equals the input length", () => {
+    const orders = chain(
+      input("research", {}),
+      input("build-unit", { unitTypeId: "fighter" }),
+      input("trade", { resource: "food", quantity: 50, direction: "buy" }),
+    );
+    expect(summarizeOrders(orders).totalOrders).toBe(orders.length);
   });
 });
 

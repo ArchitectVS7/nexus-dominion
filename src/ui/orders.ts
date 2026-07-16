@@ -230,3 +230,111 @@ export function toEngineActions(
 ): { type: string; details: Record<string, unknown> }[] {
   return orders.map((o) => ({ type: o.type, details: o.details }));
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Orders summary (T-114) — queued-state badges for the panels.
+   ══════════════════════════════════════════════════════════════ */
+
+/** A queued market trade, ready to render as a "PENDING: …" row. */
+export interface PendingTrade {
+  resource: string;
+  direction: "buy" | "sell";
+  quantity: number;
+  /** Prebuilt display label matching the queue label (e.g. "BUY 50 FOOD"). */
+  label: string;
+}
+
+/**
+ * A read-only projection of the queue that the panels consume to render
+ * queued-state affordances (pending trade rows, "QUEUED ×N" chips, banners).
+ */
+export interface OrdersSummary {
+  /** system id → the queued intent against that system. */
+  systemIntents: Map<string, "colonise" | "attack" | "wormhole">;
+  /** unit type id → number of queued build-unit orders. */
+  buildUnitCounts: Map<string, number>;
+  /** queued market trades (already merged by resource+direction upstream). */
+  trades: PendingTrade[];
+  /** a tier-advance research order is queued. */
+  researchQueued: boolean;
+  /** queued doctrine path id, or null (truthy-usable as a boolean too). */
+  doctrineQueued: string | null;
+  /** queued specialization id, or null. Named beyond the task's field list so
+      ResearchPanel can mark the queued specialisation as the accept line asks. */
+  specializationQueued: string | null;
+  totalOrders: number;
+}
+
+/**
+ * Summarise the queued orders into an {@link OrdersSummary} for the panels.
+ * Pure: no DOM, no state, no random — a deterministic projection of `orders`.
+ *
+ * LIMITATION — NO RESOURCE PRE-SIMULATION: this reports only WHAT is queued,
+ * never its resource cost. Panels keep showing the empire's REAL current
+ * reserves; the engine validates affordability atomically at COMMIT CYCLE, so
+ * a queued order shown here may still fail there. Intentionally no cost
+ * pre-simulation — the summary must never claim an order will succeed.
+ *
+ * systemIntents is last-write-wins per system: claim-system/attack are mutually
+ * exclusive via the shared `system-intent:` dedupe family, but build-wormhole
+ * uses an independent key, so if a wormhole and an attack/colonise both target
+ * the same system the later order in queue order wins the map slot. Acceptable
+ * for the single banner the panel renders.
+ */
+export function summarizeOrders(orders: QueuedOrder[]): OrdersSummary {
+  const systemIntents = new Map<string, "colonise" | "attack" | "wormhole">();
+  const buildUnitCounts = new Map<string, number>();
+  const trades: PendingTrade[] = [];
+  let researchQueued = false;
+  let doctrineQueued: string | null = null;
+  let specializationQueued: string | null = null;
+
+  for (const order of orders) {
+    const d = order.details;
+    switch (order.type) {
+      case "claim-system":
+        systemIntents.set(d.systemId as string, "colonise");
+        break;
+      case "attack":
+        systemIntents.set(d.targetSystemId as string, "attack");
+        break;
+      case "build-wormhole":
+        systemIntents.set(d.targetSystemId as string, "wormhole");
+        break;
+      case "build-unit": {
+        const unitTypeId = d.unitTypeId as string;
+        buildUnitCounts.set(unitTypeId, (buildUnitCounts.get(unitTypeId) ?? 0) + 1);
+        break;
+      }
+      case "trade":
+        trades.push({
+          resource: d.resource as string,
+          direction: d.direction as "buy" | "sell",
+          quantity: d.quantity as number,
+          label: order.label,
+        });
+        break;
+      case "research":
+        researchQueued = true;
+        break;
+      case "select-doctrine":
+        doctrineQueued = d.pathId as string;
+        break;
+      case "select-specialization":
+        specializationQueued = d.specId as string;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return {
+    systemIntents,
+    buildUnitCounts,
+    trades,
+    researchQueued,
+    doctrineQueued,
+    specializationQueued,
+    totalOrders: orders.length,
+  };
+}
