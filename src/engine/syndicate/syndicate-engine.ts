@@ -210,6 +210,10 @@ export function canPurchaseBlackRegisterItem(
 ): boolean {
   if (member.exposed) return false;
   const def = BLACK_REGISTER_ITEMS[itemId];
+  // An unknown itemId is simply not purchasable — the lookup used to throw on
+  // `def.minRank` and, over the wire, abort the whole cycle commit (UGT
+  // trial, ND-8). A validation predicate must never crash on bad input.
+  if (!def) return false;
   return member.rank >= def.minRank;
 }
 

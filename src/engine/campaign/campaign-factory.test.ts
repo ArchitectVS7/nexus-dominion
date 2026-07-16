@@ -258,13 +258,37 @@ describe("research gates are enforced (ND-6)", () => {
   });
 });
 
-describe("move-fleet refusal contract (ND-1)", () => {
-  it("a malformed move-fleet order is SKIPPED, not a whole-cycle abort", () => {
+describe("malformed orders are SKIPPED, never a whole-cycle abort (ND-1/ND-8)", () => {
+  const badOrders = [
+    { type: "move-fleet" },                                             // ND-1
+    { type: "purchase-black-register", details: { itemId: "nope" } },   // ND-8
+    { type: "launch-covert-op",
+      details: { targetId: "empire-1", opType: "mind-control" } },      // ND-8
+    { type: "build-unit", details: { unitTypeId: "death-star" } },
+    { type: "totally-unknown-order", details: {} },
+  ];
+
+  for (const order of badOrders) {
+    it(`skips a malformed ${order.type} and still commits`, () => {
+      const state = createNewCampaign(SMALL);
+      const { powerHistory, botAccumulated } = freshAccumulators();
+      const result = processCycle(
+        state,
+        { actions: [order] },
+        powerHistory,
+        botAccumulated,
+      );
+      expect(result.committed).toBe(true);
+      expect(result.error).toBeUndefined();
+    });
+  }
+
+  it("a single cycle carrying ALL of them at once commits cleanly", () => {
     const state = createNewCampaign(SMALL);
     const { powerHistory, botAccumulated } = freshAccumulators();
     const result = processCycle(
       state,
-      { actions: [{ type: "move-fleet" }] },
+      { actions: badOrders },
       powerHistory,
       botAccumulated,
     );

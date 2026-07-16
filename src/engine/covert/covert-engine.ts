@@ -88,6 +88,10 @@ export function queueCovertOp(
   op: QueuedCovertOp,
 ): EmpireCovertState | null {
   const def = COVERT_OPERATION_DEFS[op.operationType];
+  // An unknown operationType is not queueable — the lookup used to throw on
+  // `def.agentCost` and, over the wire, abort the whole cycle commit (UGT
+  // trial, ND-8).
+  if (!def) return null;
   if (state.agentPool < def.agentCost) return null;
 
   return {
