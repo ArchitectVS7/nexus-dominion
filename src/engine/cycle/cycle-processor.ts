@@ -1076,11 +1076,27 @@ function deepCloneState(state: GameState): GameState {
   return {
     galaxy: {
       systems: new Map(
-        [...state.galaxy.systems.entries()].map(([k, v]) => [k, { ...v, adjacentSystemIds: [...v.adjacentSystemIds], slots: [...v.slots] }]),
+        // Slots must be cloned per-OBJECT: a shared slot object let a later
+        // cycle's installation-complete mutate an earlier snapshot (and
+        // break Tier-1 atomicity's "original untouched" guarantee).
+        [...state.galaxy.systems.entries()].map(([k, v]) => [k, {
+          ...v,
+          adjacentSystemIds: [...v.adjacentSystemIds],
+          slots: v.slots.map((s) => ({
+            ...s,
+            installation: s.installation ? { ...s.installation } : null,
+          })),
+        }]),
       ),
       sectors: new Map(
         [...state.galaxy.sectors.entries()].map(([k, v]) => [k, { ...v, systemIds: [...v.systemIds] }]),
       ),
+      // Wormholes were DROPPED by this clone — a built wormhole vanished on
+      // the next cycle, leaving its adjacency edges behind as permanent
+      // free links and allowing infinite re-purchases (UGT trial, ND-5).
+      ...(state.galaxy.wormholes
+        ? { wormholes: state.galaxy.wormholes.map((w) => ({ ...w })) }
+        : {}),
     },
     empires: new Map(
       [...state.empires.entries()].map(([k, v]) => [k, {
@@ -1125,6 +1141,11 @@ function deepCloneState(state: GameState): GameState {
       ])),
     } : undefined,
     convergenceAlertsSent: state.convergenceAlertsSent ? new Set(state.convergenceAlertsSent) : undefined,
+    // Also previously dropped by the clone (UGT trial, ND-5) — purchases
+    // evaporated one cycle after they were made.
+    ownedBlackRegisterItems: state.ownedBlackRegisterItems
+      ? new Map([...state.ownedBlackRegisterItems.entries()].map(([k, v]) => [k, new Set(v)]))
+      : undefined,
     tutorial: state.tutorial
       ? {
           ...state.tutorial,

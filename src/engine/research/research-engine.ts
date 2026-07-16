@@ -128,6 +128,9 @@ export function hasCapstone(tier: number): boolean {
  */
 export function selectDoctrine(empire: Empire, pathId: string): boolean {
   if (empire.researchPath) return false;
+  // DOCTRINE_TIER was declared but never enforced — same missing gate as
+  // selectSpecialization's (UGT trial, ND-6).
+  if (empire.researchTier < DOCTRINE_TIER) return false;
   const valid = RESEARCH_PATHS.find((p) => p.id === pathId);
   if (!valid) return false;
   empire.researchPath = pathId;
@@ -148,6 +151,10 @@ export function canSelectSpecialization(tier: number): boolean {
 export function selectSpecialization(empire: Empire, specId: string): boolean {
   if (!empire.researchPath) return false;
   if (empire.specialization) return false;
+  // The docstring always required tier >= SPECIALIZATION_TIER but the check
+  // was never enforced — a tier-0 empire with a doctrine could specialize
+  // (confirmed live at tier 2 through the wire; UGT trial, ND-6).
+  if (empire.researchTier < SPECIALIZATION_TIER) return false;
 
   const path = RESEARCH_PATHS.find((p) => p.id === empire.researchPath);
   if (!path || !path.specializations) return false;

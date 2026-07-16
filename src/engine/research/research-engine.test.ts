@@ -110,11 +110,18 @@ describe("Research System", () => {
       }
     });
 
-    it("selectDoctrine assigns a research path to an empire", () => {
-      const empire = makeEmpire();
+    it("selectDoctrine assigns a research path at tier >= DOCTRINE_TIER", () => {
+      const empire = makeEmpire({ researchTier: 1 });
       const result = selectDoctrine(empire, "war-machine");
       expect(result).toBe(true);
       expect(empire.researchPath).toBe("war-machine");
+    });
+
+    it("selectDoctrine is refused below DOCTRINE_TIER (ND-6)", () => {
+      const empire = makeEmpire({ researchTier: 0 });
+      const result = selectDoctrine(empire, "war-machine");
+      expect(result).toBe(false);
+      expect(empire.researchPath).toBeNull();
     });
 
     it("cannot change doctrine once selected", () => {

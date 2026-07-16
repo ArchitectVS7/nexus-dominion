@@ -128,6 +128,136 @@ describe("build queue -> fleet attachment (ND-2 / ND-2b)", () => {
   });
 });
 
+describe("syndicate + covert exist from creation (ND-P2)", () => {
+  it("the Syndicate exists as a background institution with no members; every "
+     + "empire has a covert state", () => {
+    const state = createNewCampaign(SMALL);
+    expect(state.syndicate).toBeDefined();
+    expect(state.syndicate!.members.size).toBe(0);
+    expect(state.syndicate!.controllerId).toBeNull();
+    expect(state.covert).toBeDefined();
+    expect(state.covert!.empireStates.size).toBe(SMALL.empireCount);
+    for (const cs of state.covert!.empireStates.values()) {
+      expect(cs.agentPool).toBe(0);
+      expect(cs.queuedOps).toEqual([]);
+    }
+  });
+
+  it("fund-syndicate WORKS at cycle 1 (member created, influence granted, "
+     + "credits paid)", () => {
+    const state = createNewCampaign(SMALL);
+    const { powerHistory, botAccumulated } = freshAccumulators();
+    const result = processCycle(
+      state,
+      { actions: [{ type: "fund-syndicate", details: { amount: 100 } }] },
+      powerHistory,
+      botAccumulated,
+    );
+    expect(result.committed).toBe(true);
+    const player = result.state.empires.get(result.state.playerEmpireId)!;
+    const member = result.state.syndicate!.members.get(player.id);
+    expect(member).toBeDefined();
+    expect(member!.influence).toBe(20);
+    // 100 credits paid (income also lands this cycle; assert via the member
+    // record + the syndicate event rather than recomputing the delta).
+    const events = result.report.events.filter((e) => e.type === "syndicate");
+    expect(events.length).toBe(1);
+  });
+});
+
+describe("state cloning preserves the WHOLE state (ND-5)", () => {
+  it("wormholes and black-register purchases survive the next cycle", () => {
+    const state = createNewCampaign(SMALL);
+    const home = state.empires.get(state.playerEmpireId)!.homeSystemId!;
+    state.galaxy.wormholes = [
+      { id: "wh-test", systemA: home, systemB: home, owner: state.playerEmpireId },
+    ] as never;
+    state.ownedBlackRegisterItems = new Map([
+      [state.playerEmpireId, new Set(["empire-dossier"])],
+    ]);
+    const { powerHistory, botAccumulated } = freshAccumulators();
+    const result = processCycle(state, { actions: [] }, powerHistory, botAccumulated);
+    expect(result.committed).toBe(true);
+    expect(result.state.galaxy.wormholes?.length).toBe(1);
+    expect(
+      result.state.ownedBlackRegisterItems?.get(state.playerEmpireId)?.has(
+        "empire-dossier",
+      ),
+    ).toBe(true);
+  });
+
+  it("an installation completing in cycle N does not mutate the cycle N-1 "
+     + "snapshot (slot objects are not shared)", () => {
+    let state = createNewCampaign(SMALL);
+    const home = state.empires.get(state.playerEmpireId)!.homeSystemId!;
+    const { powerHistory, botAccumulated } = freshAccumulators();
+    let result = processCycle(
+      state,
+      { actions: [{ type: "build-installation",
+                    details: { installationType: "trade-hub", systemId: home } }] },
+      powerHistory,
+      botAccumulated,
+    );
+    state = result.state;
+    const snapshot = state; // the pre-completion snapshot
+    for (let i = 0; i < 5; i++) {
+      result = processCycle(state, { actions: [] }, powerHistory, botAccumulated);
+      state = result.state;
+      const done = state.galaxy.systems.get(home)!.slots
+        .some((s) => s.installation?.type === "trade-hub");
+      if (done) break;
+    }
+    expect(
+      state.galaxy.systems.get(home)!.slots
+        .some((s) => s.installation?.type === "trade-hub"),
+    ).toBe(true);
+    // the snapshot taken BEFORE completion must still be untouched
+    expect(
+      snapshot.galaxy.systems.get(home)!.slots
+        .every((s) => s.installation === null),
+    ).toBe(true);
+  });
+});
+
+describe("research gates are enforced (ND-6)", () => {
+  it("doctrine below tier 1 and specialization below tier 3 are refused", () => {
+    const state = createNewCampaign(SMALL);
+    const { powerHistory, botAccumulated } = freshAccumulators();
+    const result = processCycle(
+      state,
+      { actions: [
+        { type: "select-doctrine", details: { pathId: "war-machine" } },
+        { type: "select-specialization", details: { specId: "shock-troops" } },
+      ] },
+      powerHistory,
+      botAccumulated,
+    );
+    expect(result.committed).toBe(true);
+    const player = result.state.empires.get(result.state.playerEmpireId)!;
+    expect(player.researchPath).toBeNull();
+    expect(player.specialization).toBeNull();
+  });
+
+  it("specialization at tier >= 3 with a doctrine succeeds", () => {
+    const state = createNewCampaign(SMALL);
+    const player = state.empires.get(state.playerEmpireId)!;
+    player.researchTier = 3;
+    const { powerHistory, botAccumulated } = freshAccumulators();
+    const result = processCycle(
+      state,
+      { actions: [
+        { type: "select-doctrine", details: { pathId: "war-machine" } },
+        { type: "select-specialization", details: { specId: "shock-troops" } },
+      ] },
+      powerHistory,
+      botAccumulated,
+    );
+    const after = result.state.empires.get(result.state.playerEmpireId)!;
+    expect(after.researchPath).toBe("war-machine");
+    expect(after.specialization).toBe("shock-troops");
+  });
+});
+
 describe("move-fleet refusal contract (ND-1)", () => {
   it("a malformed move-fleet order is SKIPPED, not a whole-cycle abort", () => {
     const state = createNewCampaign(SMALL);

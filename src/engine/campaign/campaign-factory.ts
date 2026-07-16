@@ -6,6 +6,8 @@
    ══════════════════════════════════════════════════════════════ */
 
 import type { GameState, CampaignMeta, MarketState } from "../types/game-state";
+import type { SyndicateState } from "../types/syndicate";
+import type { CovertState, EmpireCovertState } from "../types/covert";
 import type { Empire, Resources } from "../types/empire";
 import type { BotAgent, Archetype, Emotion } from "../types/bot";
 import { EmpireId, SystemId, FleetId } from "../types/ids";
@@ -168,6 +170,33 @@ export function createNewCampaign(
     cycleVolume: { food: 0, ore: 0, fuelCells: 0 },
   };
 
+  // 5b. Syndicate + covert states. Design (SYNDICATE-SYSTEM §2): the
+  // Syndicate "exists at game start as a background institution" with NO
+  // members; COVERT-OPS: every empire tracks an agent pool that accrues from
+  // intelligence production. Previously NOTHING ever constructed either
+  // state — every reader is guarded by `if (state.syndicate)` /
+  // `if (state.covert)` — so all three syndicate/covert orders and both
+  // cycle phases were permanently dead in real campaigns, and the
+  // shadow-throne/stealth-sovereign achievements were unreachable
+  // (UGT trial, ND-P2).
+  const syndicate: SyndicateState = {
+    members: new Map(),
+    controllerId: null,
+    exposedEmpires: new Set(),
+  };
+  const covert: CovertState = { empireStates: new Map() };
+  for (const empireId of empires.keys()) {
+    const covertState: EmpireCovertState = {
+      empireId,
+      agentPool: 0,
+      intelLevel: 0,
+      queuedOps: [],
+      totalOpsCompleted: 0,
+      timesDetectedAsAttacker: 0,
+    };
+    covert.empireStates.set(empireId, covertState);
+  }
+
   // 6. Create campaign metadata
   const campaign: CampaignMeta = {
     id: `campaign-${Date.now()}-${rng.int(0, 9999)}`,
@@ -194,6 +223,8 @@ export function createNewCampaign(
     powerHistory: new Map(),
     earnedAchievements: new Map(),
     botAccumulated: new Map(),
+    syndicate,
+    covert,
   };
 
   // 8. Opt-in tutorial (plain-JSON state; left undefined unless requested)
