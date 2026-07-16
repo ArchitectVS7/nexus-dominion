@@ -419,6 +419,7 @@ function App() {
         onCommitCycle={handleCommitCycle}
         orderCount={orders.length}
         pendingPass={pendingPass}
+        reportOpen={cycleReport !== null}
         onOpenEmpire={() => setActivePanel("empire")}
         onOpenMilitary={() => setActivePanel("military")}
         onOpenMarket={() => setActivePanel("market")}

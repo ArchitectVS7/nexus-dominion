@@ -2,6 +2,7 @@
 
 import { Button } from "../components/lcars";
 import type { GameState } from "../engine/types";
+import { TurnStatus } from "./TurnStatus";
 import "./HUD.css";
 
 interface HUDProps {
@@ -11,6 +12,8 @@ interface HUDProps {
   orderCount?: number;
   /** When true, an empty-queue commit is awaiting a confirming second click. */
   pendingPass?: boolean;
+  /** When true the CycleReport modal is open — highlights the REPORT beat. */
+  reportOpen?: boolean;
   onOpenEmpire: () => void;
   onOpenMilitary: () => void;
   onOpenDiplomacy: () => void;
@@ -26,6 +29,7 @@ export function HUD({
   onCommitCycle,
   orderCount = 0,
   pendingPass = false,
+  reportOpen = false,
   onOpenEmpire,
   onOpenMilitary,
   onOpenDiplomacy,
@@ -38,49 +42,16 @@ export function HUD({
   const empire = state.empires.get(state.playerEmpireId);
   if (!empire) return null;
 
-  const cycle = state.time.currentCycle;
-  const confluenceCycle = cycle % 10;
-  const tier = state.time.cosmicOrder?.tiers?.get?.(state.playerEmpireId) ?? "—";
-
-  // Commit button label: a pending empty-queue pass needs a confirming second
-  // click; a non-empty queue shows the order count; else it is a bare pass.
-  const commitLabel = pendingPass
-    ? "CONFIRM: PASS CYCLE"
-    : orderCount > 0
-      ? `⟫ COMMIT CYCLE (${orderCount})`
-      : "⟫ PASS CYCLE";
-
   return (
     <div className="hud">
-      {/* Top bar — cycle info + commit */}
+      {/* Top bar — cycle/Reckoning readout, phase beats, and commit */}
       <div className="hud__top-bar">
-        <div className="hud__cycle-info">
-          <div className="hud__cycle-badge">
-            <span className="hud__cycle-label">CYCLE</span>
-            <span className="hud__cycle-number">{cycle}</span>
-          </div>
-          <div className="hud__confluence">
-            <span className="hud__conf-label">CONFLUENCE</span>
-            <div className="hud__conf-bar">
-              {Array.from({ length: 10 }, (_, i) => (
-                <div
-                  key={i}
-                  className={`hud__conf-pip ${i < confluenceCycle ? "hud__conf-pip--filled" : ""}`}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="hud__tier-badge">
-            <span className="hud__tier-label">TIER</span>
-            <span className="hud__tier-value">{typeof tier === "string" ? tier : tier}</span>
-          </div>
-        </div>
-
-        <Button
-          label={commitLabel}
-          variant={pendingPass ? "danger" : "primary"}
-          size="lg"
-          onClick={onCommitCycle}
+        <TurnStatus
+          state={state}
+          orderCount={orderCount}
+          pendingPass={pendingPass}
+          reportOpen={reportOpen}
+          onCommitCycle={onCommitCycle}
         />
       </div>
 

@@ -121,7 +121,11 @@ function commitButton(): HTMLButtonElement {
 }
 
 function cycleNumber(container: HTMLElement): string {
-  return container.querySelector(".hud__cycle-number")?.textContent ?? "";
+  // The TurnStatus readout renders "CYCLE {n} · CONFLUENCE …"; pull the cycle.
+  const readout =
+    container.querySelector('[data-testid="turn-status-readout"]')
+      ?.textContent ?? "";
+  return readout.match(/CYCLE (\d+)/)?.[1] ?? "";
 }
 
 function creditsValue(container: HTMLElement): string {

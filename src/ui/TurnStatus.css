@@ -1,0 +1,120 @@
+/* ── Nexus Dominion — Turn Status HUD Styles ── */
+
+.turn-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  flex: 1;
+}
+
+.turn-status__info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+/* Readout line — CYCLE · CONFLUENCE · RECKONING IN · TIER */
+.turn-status__readout {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--lcars-orange);
+  text-shadow: 0 0 10px var(--lcars-orange-glow);
+  white-space: nowrap;
+}
+
+/* Labeled confluence pip strip */
+.turn-status__pips {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.turn-status__pips-label {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+}
+
+.turn-status__pips-bar {
+  display: flex;
+  gap: 3px;
+}
+
+.turn-status__pip {
+  width: 10px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.turn-status__pip--filled {
+  background: var(--lcars-purple);
+  box-shadow: 0 0 6px var(--lcars-purple-glow);
+}
+
+/* Commit cluster — button + chevron + dropdown */
+.turn-status__commit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.turn-status__chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--lcars-orange);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--lcars-orange);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.turn-status__chevron:hover {
+  background: var(--lcars-orange-glow);
+}
+
+.turn-status__actions {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  min-width: 220px;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+  background: rgba(5, 5, 16, 0.96);
+  border: 1px solid var(--lcars-orange);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 20;
+}
+
+.turn-status__action {
+  display: flex;
+  align-items: baseline;
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+.turn-status__action-name {
+  font-weight: 700;
+  color: var(--lcars-blue-light);
+}
+
+.turn-status__action-panel {
+  color: var(--text-dim);
+}
