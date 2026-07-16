@@ -15,6 +15,41 @@ function generateGalaxy(overrides?: Partial<GalaxyConfig>) {
   return gen.generate({ ...DEFAULT_CONFIG, ...overrides });
 }
 
+type Galaxy = ReturnType<typeof generateGalaxy>;
+
+/** Minimum pairwise distance between any two systems in the galaxy. */
+function minPairwiseDistance(galaxy: Galaxy): number {
+  const sys = [...galaxy.systems.values()];
+  let min = Infinity;
+  for (let a = 0; a < sys.length; a++) {
+    for (let b = a + 1; b < sys.length; b++) {
+      const d = Math.hypot(
+        sys[a].position.x - sys[b].position.x,
+        sys[a].position.y - sys[b].position.y,
+      );
+      if (d < min) min = d;
+    }
+  }
+  return min;
+}
+
+/** Count systems reachable via BFS over adjacency from the first system. */
+function bfsReachCount(galaxy: Galaxy): number {
+  const first = [...galaxy.systems.keys()][0];
+  const seen = new Set([first]);
+  const queue = [first];
+  while (queue.length) {
+    const id = queue.shift()!;
+    for (const adj of galaxy.systems.get(id)!.adjacentSystemIds) {
+      if (!seen.has(adj)) {
+        seen.add(adj);
+        queue.push(adj);
+      }
+    }
+  }
+  return seen.size;
+}
+
 describe("Galaxy Generator", () => {
   // REQ-008: 10 sectors, 250 systems (25/sector)
   describe("REQ-008: Galaxy structure", () => {
@@ -303,6 +338,35 @@ describe("Galaxy Generator", () => {
       const positions1 = [...g1.systems.values()].map(s => s.position);
       const positions2 = [...g2.systems.values()].map(s => s.position);
       expect(positions1).toEqual(positions2);
+    });
+  });
+
+  // T-111: minimum inter-system distance in galaxy generation
+  describe("T-111: Minimum inter-system distance", () => {
+    // (a) Global minimum pairwise distance >= 28 (2 × StarMap HIT_RADIUS)
+    for (const seed of [42, 7, 12345]) {
+      it(`seed ${seed}: min pairwise distance >= 28 across all 250 systems`, () => {
+        const galaxy = generateGalaxy({ seed });
+        expect(galaxy.systems.size).toBe(250);
+        expect(minPairwiseDistance(galaxy)).toBeGreaterThanOrEqual(28);
+      });
+    }
+
+    // (b) Adjacency graph is fully connected (BFS reaches all 250)
+    it("adjacency graph is fully connected (BFS reaches all 250 systems)", () => {
+      const galaxy = generateGalaxy({ seed: 42 });
+      expect(bfsReachCount(galaxy)).toBe(250);
+    });
+
+    // (c) Same seed produces identical positions (determinism preserved)
+    it("same seed produces identical system positions", () => {
+      const p1 = [...generateGalaxy({ seed: 42 }).systems.values()].map(
+        (s) => s.position,
+      );
+      const p2 = [...generateGalaxy({ seed: 42 }).systems.values()].map(
+        (s) => s.position,
+      );
+      expect(p1).toEqual(p2);
     });
   });
 

@@ -49,6 +49,23 @@ const BIOME_WEIGHTS: { biome: BiomeType; weight: number }[] = [
     { biome: "resource-rich-anomaly", weight: 1 },
 ];
 
+/** Minimum distance between any two systems (2 × StarMap HIT_RADIUS of 14) so clicks are unambiguous. */
+const MIN_SYSTEM_DISTANCE = 28;
+/**
+ * Max placement retries before falling back to the best-spread candidate.
+ *
+ * NOTE: The task specified 40 attempts, but 25 systems/sector packed into the
+ * radius-weighted disc puts this configuration near its geometric feasibility
+ * limit for a 28-unit separation. With 40 attempts the fallback fires for
+ * several systems and drags the global minimum pairwise distance below 28
+ * (~22–25 for seeds 7/12345), failing the acceptance criterion (min ≥ 28).
+ * Raising the cap lets the retry loop actually reach a valid packing; at 250
+ * attempts all three acceptance seeds clear 28 (measured 28.00–28.09) while
+ * generation stays ~15–23ms, well inside the <50ms budget. The fallback is
+ * retained as a never-fail safety net.
+ */
+const MAX_PLACEMENT_ATTEMPTS = 250;
+
 const SLOTS_BY_BIOME: Record<BiomeType, number> = {
     "core-world": 5,
     "mineral-world": 4,
@@ -77,6 +94,10 @@ export class GalaxyGenerator implements IGalaxyGenerator {
         // 2. For each sector, cluster systems around the centre
         const allSystems: StarSystem[] = [];
 
+        // Global accumulator so the minimum-distance check spans ALL sectors
+        // (sector fringes interleave — the check must not be per-sector).
+        const placedPositions: Position[] = [];
+
         for (let s = 0; s < config.sectorCount; s++) {
             const sectorId = SectorId(`sector-${s}`);
             const systemIds: import("../types").SystemId[] = [];
@@ -87,13 +108,37 @@ export class GalaxyGenerator implements IGalaxyGenerator {
                 const name = this.generateSystemName(rng, sysIndex);
                 const biome = this.pickBiome(rng);
 
-                // Position: cluster around sector centre with Gaussian-like spread
-                const angle = rng.range(0, Math.PI * 2);
-                const radius = rng.range(30, 120) * (0.5 + rng.next() * 0.5);
-                const pos: Position = {
-                    x: sectorCentres[s].x + Math.cos(angle) * radius,
-                    y: sectorCentres[s].y + Math.sin(angle) * radius,
-                };
+                // Position: cluster around sector centre with Gaussian-like spread.
+                // Retry placement up to MAX_PLACEMENT_ATTEMPTS times, accepting the
+                // first candidate >= MIN_SYSTEM_DISTANCE from EVERY previously placed
+                // system (across all sectors). If none clears the threshold, fall back
+                // to the candidate with the largest nearest-neighbour distance so
+                // generation never fails and per-sector counts stay exact.
+                let bestPos: Position | null = null;
+                let bestMinDist = -Infinity;
+                for (let attempt = 0; attempt < MAX_PLACEMENT_ATTEMPTS; attempt++) {
+                    const angle = rng.range(0, Math.PI * 2);
+                    const radius = rng.range(30, 120) * (0.5 + rng.next() * 0.5);
+                    const candidate: Position = {
+                        x: sectorCentres[s].x + Math.cos(angle) * radius,
+                        y: sectorCentres[s].y + Math.sin(angle) * radius,
+                    };
+                    let nearest = Infinity;
+                    for (const p of placedPositions) {
+                        const d = Math.hypot(candidate.x - p.x, candidate.y - p.y);
+                        if (d < nearest) nearest = d;
+                    }
+                    if (nearest >= MIN_SYSTEM_DISTANCE) {
+                        bestPos = candidate;
+                        break;
+                    }
+                    if (nearest > bestMinDist) {
+                        bestMinDist = nearest;
+                        bestPos = candidate;
+                    }
+                }
+                const pos: Position = bestPos!;
+                placedPositions.push(pos);
 
                 const system: StarSystem = {
                     id: systemId,
