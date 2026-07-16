@@ -174,10 +174,53 @@ export function processCycle(
         const { completed, remaining } = advanceBuildQueue(empire.buildQueue, state.time.currentCycle, state.unitTypes);
         empire.buildQueue = remaining;
 
-        for (const entry of completed) {
-          const unitId = `unit-${empireId}-${state.time.currentCycle}-${entry.unitTypeId}` as any;
+        for (let ci = 0; ci < completed.length; ci++) {
+          const entry = completed[ci];
+          // The `-${ci}` suffix keeps same-type units completing on the same
+          // cycle from colliding in the unit map (they used to silently
+          // overwrite each other — UGT trial, ND-2b).
+          const unitId = `unit-${empireId}-${state.time.currentCycle}-${entry.unitTypeId}-${ci}` as any;
           const unit = createUnitFromCompleted(entry, state.unitTypes, unitId);
           state.units.set(unitId, unit);
+
+          // A unit must live in a fleet: maintenance, combat and movement all
+          // resolve unit ownership THROUGH fleets, so an unattached unit is
+          // invisible to every downstream system (UGT trial, ND-2). Prefer a
+          // fleet already stationed at the build system, else any fleet of
+          // this empire, else raise a garrison fleet at the build system.
+          let fleet: Fleet | undefined;
+          for (const f of state.fleets.values()) {
+            if (f.ownerId === empireId && f.locationSystemId === entry.systemId) {
+              fleet = f;
+              break;
+            }
+          }
+          if (!fleet) {
+            for (const f of state.fleets.values()) {
+              if (f.ownerId === empireId) {
+                fleet = f;
+                break;
+              }
+            }
+          }
+          if (!fleet) {
+            const fleetId = `fleet-${empireId}-garrison-${entry.systemId}` as any;
+            fleet = state.fleets.get(fleetId);
+            if (!fleet) {
+              fleet = {
+                id: fleetId,
+                ownerId: empireId,
+                name: "Garrison",
+                locationSystemId: entry.systemId,
+                unitIds: [],
+                targetSystemId: null,
+                arrivalCycle: null,
+              };
+              state.fleets.set(fleetId, fleet);
+              empire.fleetIds.push(fleetId);
+            }
+          }
+          fleet.unitIds.push(unitId);
 
           events.push({
             type: "build-complete",
@@ -967,7 +1010,12 @@ function resolvePlayerActions(
 
     for (const action of actions.actions) {
       if (action.type === "move-fleet") {
-        const { fleetId, targetSystemId } = action.details as { fleetId: string; targetSystemId: string };
+        // Malformed details are skipped like every other handler's — this
+        // destructure used to throw and abort the ENTIRE cycle commit while
+        // all other malformed orders were silently ignored (UGT trial, ND-1).
+        const { fleetId, targetSystemId } =
+          (action.details ?? {}) as { fleetId?: string; targetSystemId?: string };
+        if (!fleetId || !targetSystemId) continue;
         const fleet = state.fleets.get(fleetId);
         
         if (fleet) {

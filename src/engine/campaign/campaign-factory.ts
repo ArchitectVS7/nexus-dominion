@@ -17,6 +17,7 @@ import type { Fleet } from "../types/military";
 import type { DiplomacyState } from "../types/diplomacy";
 import type { TimeState } from "../types/time";
 import { createTutorialState } from "../tutorial/tutorial-engine";
+import { computeCosmicOrder } from "../nexus/nexus-engine";
 
 /* ── Archetypes ── */
 
@@ -147,15 +148,16 @@ export function createNewCampaign(
     relationships: new Map(),
   };
 
-  // 4. Create time state
+  // 4. Create time state. The Cosmic Order MUST be seeded at creation:
+  // getResolutionOrder iterates tier members, so empty tiers mean NO empire
+  // resolves anything (no player orders, no bot actions, no economy) until
+  // the first Reckoning at cycle 10 fills them — the game was inert for its
+  // first 10 cycles (found by the UGT trial, ND-3).
   const time: TimeState = {
     currentCycle: 0,
     currentConfluence: 0,
     cyclesUntilReckoning: 10,
-    cosmicOrder: {
-      tiers: new Map(),
-      rankings: [],
-    },
+    cosmicOrder: computeCosmicOrder(empires),
   };
 
   // 5. Create market state
