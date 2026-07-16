@@ -7,6 +7,10 @@ import "./HUD.css";
 interface HUDProps {
   state: GameState;
   onCommitCycle: () => void;
+  /** Number of orders queued this cycle — drives the commit button label. */
+  orderCount?: number;
+  /** When true, an empty-queue commit is awaiting a confirming second click. */
+  pendingPass?: boolean;
   onOpenEmpire: () => void;
   onOpenMilitary: () => void;
   onOpenDiplomacy: () => void;
@@ -20,6 +24,8 @@ interface HUDProps {
 export function HUD({
   state,
   onCommitCycle,
+  orderCount = 0,
+  pendingPass = false,
   onOpenEmpire,
   onOpenMilitary,
   onOpenDiplomacy,
@@ -35,6 +41,14 @@ export function HUD({
   const cycle = state.time.currentCycle;
   const confluenceCycle = cycle % 10;
   const tier = state.time.cosmicOrder?.tiers?.get?.(state.playerEmpireId) ?? "—";
+
+  // Commit button label: a pending empty-queue pass needs a confirming second
+  // click; a non-empty queue shows the order count; else it is a bare pass.
+  const commitLabel = pendingPass
+    ? "CONFIRM: PASS CYCLE"
+    : orderCount > 0
+      ? `⟫ COMMIT CYCLE (${orderCount})`
+      : "⟫ PASS CYCLE";
 
   return (
     <div className="hud">
@@ -63,8 +77,8 @@ export function HUD({
         </div>
 
         <Button
-          label="⟫ COMMIT CYCLE"
-          variant="primary"
+          label={commitLabel}
+          variant={pendingPass ? "danger" : "primary"}
           size="lg"
           onClick={onCommitCycle}
         />

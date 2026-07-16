@@ -23,13 +23,15 @@ import { CycleReportModal } from "./ui/CycleReport";
 import { CombatReportModal } from "./ui/CombatReport";
 import { ConvergenceAlert } from "./ui/ConvergenceAlert";
 import { CommitErrorBanner } from "./ui/CommitErrorBanner";
+import { OrdersQueue } from "./ui/OrdersQueue";
+import { enqueueOrder, removeOrder, toEngineActions, type QueuedOrder } from "./ui/orders";
 import { SystemPanel } from "./ui/SystemPanel";
 import { SectorPanel } from "./ui/SectorPanel";
 import { AchievementPanel } from "./ui/AchievementPanel";
 import { SaveSlotManager } from "./ui/SaveSlotManager";
 import type { SaveSlotSummary } from "./ui/SaveSlotManager";
 import { ACHIEVEMENT_DEFINITIONS } from "./engine/achievement/achievement-checker";
-import type { CycleReport, CombatEvent, ConvergenceAlertEvent, SystemId, SectorId, Resources, InstallationType } from "./engine/types";
+import type { CycleReport, CombatEvent, ConvergenceAlertEvent, SystemId, SectorId, Resources, InstallationType, EmpireId } from "./engine/types";
 import "./App.css";
 
 const SEED = 42;
@@ -50,6 +52,15 @@ function App() {
   const [showSaveList, setShowSaveList] = useState(false);
   const [saveList, setSaveList] = useState<SaveSlotSummary[]>([]);
 
+  /* ── Orders Queue (the turn-model refactor, PRD:158) ──
+     Player actions are queued locally and flushed to the engine once on
+     COMMIT CYCLE. Orders live in React state ONLY — never in GameState,
+     never persisted/saved (see src/ui/orders.ts). */
+  const [orders, setOrders] = useState<QueuedOrder[]>([]);
+  const orderSeqRef = useRef(0);
+  const [pendingPass, setPendingPass] = useState(false);
+  const passTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Persistent history refs (not part of React renders)
   const powerHistoryRef = useRef(new Map<string, number[]>());
   const botAccumRef = useRef(new Map<string, number>());
@@ -67,6 +78,8 @@ function App() {
 
     powerHistoryRef.current = new Map();
     botAccumRef.current = new Map();
+    setOrders([]);
+    setPendingPass(false);
     dispatch({ type: "SET_STATE", state: newState });
   }, [dispatch]);
 
@@ -82,6 +95,8 @@ function App() {
       if (loaded) {
         powerHistoryRef.current = loaded.powerHistory ?? new Map();
         botAccumRef.current = loaded.botAccumulated ?? new Map();
+        setOrders([]);
+        setPendingPass(false);
         dispatch({ type: "SET_STATE", state: loaded });
         setShowSaveList(false);
       }
@@ -147,91 +162,171 @@ function App() {
     [state, dispatch],
   );
 
+  /* ── Enqueue helper ──
+     Every player action now queues instead of committing. Labels are built
+     from `state` at enqueue time; per-handler side-effects (e.g. closing a
+     panel) run via the `after` callback. Ids come from a ref counter so the
+     pure orders module stays deterministic. */
+  const enqueue = useCallback(
+    (
+      type: string,
+      details: Record<string, unknown>,
+      label: string,
+      after?: () => void,
+    ) => {
+      const id = `ord-${orderSeqRef.current++}`;
+      setOrders((prev) => enqueueOrder(prev, { id, type, details, label }));
+      after?.();
+    },
+    [],
+  );
+
+  const handleRemoveOrder = useCallback((id: string) => {
+    setOrders((prev) => removeOrder(prev, id));
+  }, []);
+
+  const handleClearOrders = useCallback(() => {
+    setOrders([]);
+  }, []);
+
+  /* ── Commit Cycle ──
+     Flushes the queued orders through the shared commit path. On success
+     `commitActions` advances the cycle once, shows one report, and the
+     onCommit callback clears the queue; on failure the banner shows and the
+     queue is preserved. Committing an empty queue is a legal "pass" but
+     requires a confirming second click (auto-reverting after 3s). */
   const handleCommitCycle = useCallback(() => {
-    commitActions([]);
-  }, [commitActions]);
+    if (orders.length > 0) {
+      if (passTimerRef.current) clearTimeout(passTimerRef.current);
+      setPendingPass(false);
+      commitActions(toEngineActions(orders), () => setOrders([]));
+      return;
+    }
+
+    // Empty queue → two-click confirm for a bare pass.
+    if (!pendingPass) {
+      setPendingPass(true);
+      passTimerRef.current = setTimeout(() => setPendingPass(false), 3000);
+      return;
+    }
+    if (passTimerRef.current) clearTimeout(passTimerRef.current);
+    setPendingPass(false);
+    commitActions([], () => setOrders([]));
+  }, [orders, pendingPass, commitActions]);
+
+  const systemName = useCallback(
+    (systemId: string) => state?.galaxy.systems.get(systemId as SystemId)?.name ?? systemId,
+    [state],
+  );
+  const empireName = useCallback(
+    (empireId: string) => state?.empires.get(empireId as EmpireId)?.name ?? empireId,
+    [state],
+  );
 
   /* ── Colonise Action ── */
 
   const handleColonise = useCallback((systemId: SystemId) => {
-    commitActions([{ type: "claim-system", details: { systemId } }], () => setSelectedSystemId(null));
-  }, [commitActions]);
+    enqueue("claim-system", { systemId }, `COLONISE ${systemName(systemId)}`, () => setSelectedSystemId(null));
+  }, [enqueue, systemName]);
 
   /* ── Attack Action ── */
 
   const handleAttack = useCallback((systemId: SystemId, unitIds: string[]) => {
-    commitActions(
-      [{ type: "attack", details: { targetSystemId: systemId, unitIds } }],
+    enqueue(
+      "attack",
+      { targetSystemId: systemId, unitIds },
+      `ATTACK ${systemName(systemId)} ×${unitIds.length}`,
       () => setSelectedSystemId(null),
     );
-  }, [commitActions]);
+  }, [enqueue, systemName]);
 
   /* ── Build Installation Action ── */
 
   const handleBuildInstallation = useCallback((systemId: SystemId, installationType: InstallationType) => {
-    // Keep system panel open so player sees new condition
-    commitActions([{ type: "build-installation", details: { systemId, installationType } }]);
-  }, [commitActions]);
+    // Keep system panel open so player sees new condition (no side-effect).
+    enqueue(
+      "build-installation",
+      { systemId, installationType },
+      `BUILD ${installationType} @ ${systemName(systemId)}`,
+    );
+  }, [enqueue, systemName]);
 
   /* ── Trade Action ── */
 
   const handleTrade = useCallback((resource: "food" | "ore" | "fuelCells", quantity: number, direction: "buy" | "sell") => {
-    commitActions([{ type: "trade", details: { resource, quantity, direction } }]);
-  }, [commitActions]);
+    // Label MUST match orders.ts mergeLabel so merges stay consistent.
+    enqueue(
+      "trade",
+      { resource, quantity, direction },
+      `${direction === "buy" ? "BUY" : "SELL"} ${quantity} ${resource.toUpperCase()}`,
+    );
+  }, [enqueue]);
 
   const handleBuildWormhole = useCallback((targetSystemId: string) => {
-    commitActions([{ type: "build-wormhole", details: { targetSystemId } }], () => setSelectedSystemId(null));
-  }, [commitActions]);
+    enqueue(
+      "build-wormhole",
+      { targetSystemId },
+      `WORMHOLE → ${systemName(targetSystemId)}`,
+      () => setSelectedSystemId(null),
+    );
+  }, [enqueue, systemName]);
 
   /* ── Research Actions ── */
 
   const handleResearch = useCallback(() => {
-    commitActions([{ type: "research", details: {} }]);
-  }, [commitActions]);
+    enqueue("research", {}, "RESEARCH");
+  }, [enqueue]);
 
   const handleSelectDoctrine = useCallback((pathId: string) => {
-    commitActions([{ type: "select-doctrine", details: { pathId } }]);
-  }, [commitActions]);
+    enqueue("select-doctrine", { pathId }, `DOCTRINE: ${pathId}`);
+  }, [enqueue]);
 
   const handleSelectSpecialization = useCallback((specId: string) => {
-    commitActions([{ type: "select-specialization", details: { specId } }]);
-  }, [commitActions]);
+    enqueue("select-specialization", { specId }, `SPECIALIZATION: ${specId}`);
+  }, [enqueue]);
 
   /* ── Diplomacy Actions ── */
 
   const handleProposePact = useCallback((targetId: string, type: "stillness-accord" | "star-covenant") => {
-    commitActions([{ type: "propose-pact", details: { targetId, type } }]);
-  }, [commitActions]);
+    enqueue("propose-pact", { targetId, type }, `PACT (${type}) → ${empireName(targetId)}`);
+  }, [enqueue, empireName]);
 
   const handleBreakPact = useCallback((pactId: string) => {
-    commitActions([{ type: "break-pact", details: { pactId } }]);
-  }, [commitActions]);
+    enqueue("break-pact", { pactId }, `BREAK PACT ${pactId}`);
+  }, [enqueue]);
 
   /* ── Military Actions ── */
 
   const handleBuildUnit = useCallback((unitTypeId: string) => {
-    commitActions([{ type: "build-unit", details: { unitTypeId } }]);
-  }, [commitActions]);
+    const unitTypeName = state?.unitTypes.get(unitTypeId)?.name ?? unitTypeId;
+    enqueue("build-unit", { unitTypeId }, `BUILD ${unitTypeName}`);
+  }, [enqueue, state]);
 
   const handleMoveFleet = useCallback((fleetId: string, targetSystemId: string) => {
-    commitActions([{ type: "move-fleet", details: { fleetId, targetSystemId } }]);
-  }, [commitActions]);
+    const fleetName = state?.fleets.get(fleetId)?.name ?? fleetId;
+    enqueue(
+      "move-fleet",
+      { fleetId, targetSystemId },
+      `MOVE ${fleetName} → ${systemName(targetSystemId)}`,
+    );
+  }, [enqueue, state, systemName]);
 
   /* ── Syndicate Actions ── */
 
   const handleFundSyndicate = useCallback((amount: number) => {
-    commitActions([{ type: "fund-syndicate", details: { amount } }]);
-  }, [commitActions]);
+    // Label MUST match orders.ts mergeLabel so merges stay consistent.
+    enqueue("fund-syndicate", { amount }, `FUND SYNDICATE — ${amount} CT`);
+  }, [enqueue]);
 
   const handlePurchaseBlackRegister = useCallback((itemId: string) => {
-    commitActions([{ type: "purchase-black-register", details: { itemId } }]);
-  }, [commitActions]);
+    enqueue("purchase-black-register", { itemId }, `BLACK REGISTER: ${itemId}`);
+  }, [enqueue]);
 
   /* ── Covert Actions ── */
 
   const handleLaunchOperation = useCallback((targetId: string, opType: string) => {
-    commitActions([{ type: "launch-covert-op", details: { targetId, opType } }]);
-  }, [commitActions]);
+    enqueue("launch-covert-op", { targetId, opType }, `COVERT ${opType} → ${empireName(targetId)}`);
+  }, [enqueue, empireName]);
 
   /* ── Panel Navigation ── */
 
@@ -316,6 +411,8 @@ function App() {
       <HUD
         state={state!}
         onCommitCycle={handleCommitCycle}
+        orderCount={orders.length}
+        pendingPass={pendingPass}
         onOpenEmpire={() => setActivePanel("empire")}
         onOpenMilitary={() => setActivePanel("military")}
         onOpenMarket={() => setActivePanel("market")}
@@ -324,6 +421,14 @@ function App() {
         onOpenSyndicate={() => setActivePanel("syndicate")}
         onOpenCovert={() => setActivePanel("covert")}
         onSaveGame={handleSaveGame}
+      />
+
+      {/* Orders queue tray — docked below the HUD top bar. Shows the actions
+          queued this cycle; flushed to the engine on COMMIT CYCLE. */}
+      <OrdersQueue
+        orders={orders}
+        onRemove={handleRemoveOrder}
+        onClearAll={handleClearOrders}
       />
 
       {/* Convergence alert HUD banner — a rival nearing a victory achievement.
