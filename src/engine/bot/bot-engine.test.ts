@@ -15,7 +15,7 @@ import {
 import type { BotAgent, BotAction } from "../types/bot";
 import type { DiplomacyState } from "../types/diplomacy";
 import type { GameState } from "../types/game-state";
-import { EmpireId, SystemId, PactId } from "../types/ids";
+import { EmpireId, SystemId, PactId, UnitId } from "../types/ids";
 import { SeededRNG } from "../utils/rng";
 import { relationshipKey } from "../types/diplomacy";
 import { createUnitTypeRegistry } from "../military/unit-registry";
@@ -327,6 +327,93 @@ describe("Bot AI System", () => {
       const rel = state.diplomacy.relationships.get(key);
       expect(rel).toBeDefined();
       expect(rel!.status).toBe("at-war");
+    });
+  });
+
+  // T-116: bot passivity under tutorial protection
+  describe("Tutorial protection in executeAttack", () => {
+    // Build a state where empire-1 (bot) attacks `defenderId` at sys-0.
+    function makeAttackState(defenderId: string): GameState {
+      const attackerId = EmpireId("empire-1");
+      const sys0 = SystemId("sys-0");
+      const playerEmpireId = EmpireId("empire-0");
+      const mkEmpire = (id: string, isPlayer: boolean) => ({
+        id: EmpireId(id), name: id, colour: "#000", isPlayer,
+        systemIds: [sys0], homeSystemId: sys0,
+        resources: { credits: 500, food: 100, ore: 50, fuelCells: 50, researchPoints: 0, intelligencePoints: 0 },
+        stabilityScore: 50, stabilityLevel: "content" as any,
+        population: 1000, populationCapacity: 5000, fleetIds: [],
+        researchTier: 0, powerScore: 10, buildQueue: [],
+      });
+      const state: GameState = {
+        galaxy: {
+          systems: new Map([
+            [sys0, { id: sys0, name: "Contested", sectorId: "s0" as any, position: { x: 0, y: 0 }, biome: "core-world" as any, owner: EmpireId(defenderId), slots: [], baseProduction: {}, adjacentSystemIds: [], claimedCycle: 0, isHomeSystem: false }],
+          ]),
+          sectors: new Map(),
+        },
+        empires: new Map([
+          [playerEmpireId, mkEmpire("empire-0", true)],
+          [attackerId, mkEmpire("empire-1", false)],
+          [EmpireId("empire-2"), mkEmpire("empire-2", false)],
+        ]),
+        playerEmpireId,
+        unitTypes: createUnitTypeRegistry(),
+        units: new Map(),
+        fleets: new Map(),
+        bots: new Map([[attackerId, makeBot("warlord", 1.0)]]),
+        diplomacy: { pacts: new Map(), coalitions: new Map(), relationships: new Map() },
+        time: { currentCycle: 3, currentConfluence: 1, cyclesUntilReckoning: 5, cosmicOrder: { tiers: new Map(), rankings: [] } },
+        currentCycleEvents: [],
+        campaign: { id: "test", name: "Test", createdAt: "", lastSavedAt: "", seed: 42 },
+      };
+      state.empires.get(EmpireId(defenderId))!.systemIds = [sys0];
+      // Attacker fleet at sys-0 (12 fighters) — strong enough to win.
+      const aUnits = Array.from({ length: 12 }, (_, i) => UnitId(`a-${i}`));
+      state.fleets.set("fleet-att" as any, { id: "fleet-att" as any, ownerId: attackerId, name: "Att", locationSystemId: sys0, unitIds: aUnits, targetSystemId: null, arrivalCycle: null });
+      for (const id of aUnits) state.units.set(id, { id, typeId: "fighter", currentHp: 10, completionCycle: null } as any);
+      // Defender fleet at sys-0 (6 fighters).
+      const dUnits = Array.from({ length: 6 }, (_, i) => UnitId(`d-${i}`));
+      state.fleets.set("fleet-def" as any, { id: "fleet-def" as any, ownerId: EmpireId(defenderId), name: "Def", locationSystemId: sys0, unitIds: dUnits, targetSystemId: null, arrivalCycle: null });
+      for (const id of dUnits) state.units.set(id, { id, typeId: "fighter", currentHp: 10, completionCycle: null } as any);
+      return state;
+    }
+
+    function runAttack(state: GameState) {
+      const rng = new SeededRNG(99);
+      const action: BotAction = { type: "attack", empireId: EmpireId("empire-1"), targetSystemId: SystemId("sys-0") };
+      const events = executeBotAction(action, state, state.unitTypes, rng).filter(e => e.type === "combat");
+      let defenderLosses = 0;
+      let attackerLosses = 0;
+      for (const e of events) {
+        const r = (e as any).result;
+        defenderLosses += r.defenderLosses.length;
+        attackerLosses += r.attackerLosses.length;
+      }
+      return { defenderLosses, attackerLosses };
+    }
+
+    it("player defender takes fewer casualties when protection is active; attacker unchanged", () => {
+      const unprotected = runAttack(makeAttackState("empire-0"));
+
+      const protectedState = makeAttackState("empire-0");
+      protectedState.tutorial = { active: true, objectiveIndex: 0, completed: [], signals: [], baselineUnitCount: 0, skipped: false };
+      const protectedRun = runAttack(protectedState);
+
+      expect(unprotected.defenderLosses).toBeGreaterThanOrEqual(2);
+      expect(protectedRun.defenderLosses).toBeLessThan(unprotected.defenderLosses);
+      expect(protectedRun.attackerLosses).toBe(unprotected.attackerLosses);
+    });
+
+    it("bot-vs-bot combat is unaffected even when a tutorial is active (defender not the player)", () => {
+      const noTutorial = runAttack(makeAttackState("empire-2"));
+
+      const withTutorial = makeAttackState("empire-2");
+      withTutorial.tutorial = { active: true, objectiveIndex: 0, completed: [], signals: [], baselineUnitCount: 0, skipped: false };
+      const tutorialRun = runAttack(withTutorial);
+
+      expect(tutorialRun.defenderLosses).toBe(noTutorial.defenderLosses);
+      expect(tutorialRun.attackerLosses).toBe(noTutorial.attackerLosses);
     });
   });
 

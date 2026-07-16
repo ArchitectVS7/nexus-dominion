@@ -25,6 +25,7 @@ import type { CovertOperationType } from "../types/covert";
 import { processSlotUnlocks, processAnomalyDiscovery } from "../galaxy/slot-unlocker";
 import { resolveFullCombat, applyInfrastructureDamage } from "../combat/combat-resolver";
 import type { UnitId } from "../types/ids";
+import { advanceTutorial, markTutorialAction } from "../tutorial/tutorial-engine";
 
 export interface PlayerActions {
   /** Actions queued by the player for this cycle */
@@ -217,6 +218,11 @@ export function processCycle(
         empire.resources.credits * 0.1 +
         empire.researchTier * 20;
     }
+
+    // Tutorial objective evaluation (opt-in; no-op when state.tutorial absent).
+    // Runs late in Tier-1 after all empires resolved, so this cycle's player
+    // expansion / unit builds / action marks are reflected before evaluation.
+    advanceTutorial(state);
 
     // ═══ TIER 2: Living Galaxy (Graceful failure) ═══
 
@@ -677,6 +683,7 @@ function resolvePlayerActions(
             if (resource in state.market.cycleVolume) {
               (state.market.cycleVolume as Record<string, number>)[resource] -= result.quantitySold;
             }
+            if (empire.isPlayer) markTutorialAction(state, "market");
           }
         } else {
           const result = buyResource(resource as any, quantity, state.market.prices as any, empire.resources.credits, { feePercent: -tradeDiscount });
@@ -686,6 +693,7 @@ function resolvePlayerActions(
             if (resource in state.market.cycleVolume) {
               (state.market.cycleVolume as Record<string, number>)[resource] += result.quantityBought;
             }
+            if (empire.isPlayer) markTutorialAction(state, "market");
           }
         }
         break;
@@ -941,6 +949,7 @@ function resolvePlayerActions(
           attackerCasualties: [...attackerDead],
           defenderCasualties: [...defenderDead],
         });
+        if (empire.isPlayer) markTutorialAction(state, "attack");
         break;
       }
     }
@@ -971,6 +980,9 @@ function resolvePlayerActions(
           );
           
           fleetsToMove.set(fleetId, movedFleet);
+          if (fleet.ownerId === state.playerEmpireId) {
+            markTutorialAction(state, "move-fleet");
+          }
         }
       }
     }
@@ -1065,5 +1077,12 @@ function deepCloneState(state: GameState): GameState {
       ])),
     } : undefined,
     convergenceAlertsSent: state.convergenceAlertsSent ? new Set(state.convergenceAlertsSent) : undefined,
+    tutorial: state.tutorial
+      ? {
+          ...state.tutorial,
+          completed: [...state.tutorial.completed],
+          signals: [...state.tutorial.signals],
+        }
+      : undefined,
   };
 }

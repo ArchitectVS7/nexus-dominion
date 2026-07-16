@@ -16,6 +16,7 @@ import type { GalaxyConfig } from "../types/galaxy";
 import type { Fleet } from "../types/military";
 import type { DiplomacyState } from "../types/diplomacy";
 import type { TimeState } from "../types/time";
+import { createTutorialState } from "../tutorial/tutorial-engine";
 
 /* ── Archetypes ── */
 
@@ -47,6 +48,7 @@ const BASE_MARKET_PRICES = { food: 10, ore: 15, fuelCells: 20 };
 export function createNewCampaign(
   config: GalaxyConfig,
   campaignName: string = "New Campaign",
+  options?: { tutorial?: boolean },
 ): GameState {
   const rng = new SeededRNG(config.seed);
 
@@ -191,6 +193,11 @@ export function createNewCampaign(
     earnedAchievements: new Map(),
     botAccumulated: new Map(),
   };
+
+  // 8. Opt-in tutorial (plain-JSON state; left undefined unless requested)
+  if (options?.tutorial) {
+    state.tutorial = createTutorialState(state);
+  }
 
   return state;
 }

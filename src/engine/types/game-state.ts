@@ -29,6 +29,28 @@ export interface MarketState {
     cycleVolume?: { food: number; ore: number; fuelCells: number };
 }
 
+/* ── Tutorial State ── */
+
+/**
+ * Opt-in directed-start tutorial state. Plain arrays/objects only so the
+ * generic Map/Set state serializer round-trips it without changes; old saves
+ * (no `tutorial` key) deserialize with `tutorial === undefined`.
+ */
+export interface TutorialState {
+    /** Whether the tutorial is currently guiding the player */
+    active: boolean;
+    /** Index into the ordered objective list of the current objective */
+    objectiveIndex: number;
+    /** Objective ids completed so far, in order */
+    completed: string[];
+    /** UI/action-reported signals recorded toward objectives */
+    signals: string[];
+    /** Player unit count (incl. build queue) captured at tutorial start */
+    baselineUnitCount: number;
+    /** Whether the player explicitly skipped the tutorial */
+    skipped: boolean;
+}
+
 /* ── Game State ── */
 
 export interface GameState {
@@ -70,6 +92,8 @@ export interface GameState {
     ownedBlackRegisterItems?: Map<EmpireId, Set<string>>;
     /** Convergence alerts already sent (empire::achievement keys) to prevent duplicates */
     convergenceAlertsSent?: Set<string>;
+    /** Opt-in directed-start tutorial; absent unless the campaign enabled it */
+    tutorial?: TutorialState;
 }
 
 export interface CampaignMeta {

@@ -9,6 +9,8 @@ import { relationshipKey } from "../types/diplomacy";
 import { checkMutualDefense, getTradeDiscount, getCoalitionCombatBonus, declareWar } from "../diplomacy/diplomacy-engine";
 import { sellResource } from "../market/market-engine";
 import { resolveFullCombat, applyInfrastructureDamage } from "../combat/combat-resolver";
+import type { CombatOptions } from "../combat/combat-resolver";
+import { isTutorialProtectionActive } from "../tutorial/tutorial-engine";
 import { addToInstallationQueue, INSTALLATION_COSTS } from "../installation/installation-registry";
 import type { InstallationType } from "../types/galaxy";
 import { advanceResearch, checkResearchDraftTrigger, autoselectDoctrine, autoselectSpecialization, selectDoctrine, selectSpecialization } from "../research/research-engine";
@@ -388,12 +390,18 @@ function executeAttack(
 
   // Compute coalition combat bonus for attacker
   const coalitionBonus = getCoalitionCombatBonus(action.empireId, defenderId, state.diplomacy);
-  const combatOptions = coalitionBonus > 0 ? { coalitionBonus } : undefined;
+  const combatOptions: CombatOptions = {};
+  if (coalitionBonus > 0) combatOptions.coalitionBonus = coalitionBonus;
+  // Tutorial protection: soften bot attacks against the player only.
+  if (isTutorialProtectionActive(state) && defenderId === state.playerEmpireId) {
+    combatOptions.defenderCasualtyMultiplier = 0.5;
+  }
+  const opts = Object.keys(combatOptions).length > 0 ? combatOptions : undefined;
 
   const attackerForce = { empireId: action.empireId, units: attackerUnits, isDefender: false };
   const defenderForce = { empireId: defenderId, units: defenderUnits, isDefender: true };
 
-  const results = resolveFullCombat(attackerForce, defenderForce, targetSystemId, unitTypes, rng, combatOptions);
+  const results = resolveFullCombat(attackerForce, defenderForce, targetSystemId, unitTypes, rng, opts);
 
   // Apply infrastructure damage from orbital bombardment phase
   for (const result of results) {

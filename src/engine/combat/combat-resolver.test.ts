@@ -776,4 +776,91 @@ describe("Combat System", () => {
       expect(system.slots[0].installation!.condition).toBe(1.0);
     });
   });
+
+  // T-116: bot-passivity / tutorial protection multiplier
+  describe("defenderCasualtyMultiplier (tutorial protection)", () => {
+    const SEED = 123;
+
+    it("lowers defender casualties, leaves attacker losses unchanged (identical seed/forces)", () => {
+      // Attacker much stronger → attacker wins, defender takes 'loser' casualties.
+      const makeAttacker = () => makeFleetForce("att", false, 12);
+      const makeDefender = () => makeFleetForce("def", true, 6);
+
+      const base = resolveCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), "fleet-engagement",
+        unitTypes, new SeededRNG(SEED),
+      );
+      const protectedResult = resolveCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), "fleet-engagement",
+        unitTypes, new SeededRNG(SEED), { defenderCasualtyMultiplier: 0.5 },
+      );
+
+      // Base must have >= 2 defender casualties for the reduction to be strict.
+      expect(base.defenderLosses.length).toBeGreaterThanOrEqual(2);
+      expect(protectedResult.defenderLosses.length).toBe(
+        Math.floor(base.defenderLosses.length * 0.5),
+      );
+      expect(protectedResult.defenderLosses.length).toBeLessThan(base.defenderLosses.length);
+      // Attacker losses are untouched by the multiplier.
+      expect(protectedResult.attackerLosses).toEqual(base.attackerLosses);
+    });
+
+    it("reduces infrastructure damage from orbital bombardment", () => {
+      // Attacker with bombardment-ship wins fleet phase then bombards.
+      const makeAttacker = (): CombatForce => ({
+        empireId: EmpireId("att"),
+        isDefender: false,
+        units: [
+          ...Array.from({ length: 8 }, (_, i) => ({ id: UnitId(`att-c${i}`), typeId: "cruiser", currentHp: 25 })),
+          { id: UnitId("att-bomb"), typeId: "bombardment-ship", currentHp: 40 },
+        ],
+      });
+      const makeDefender = (): CombatForce => makeFleetForce("def", true, 2);
+
+      const base = resolveFullCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), unitTypes, new SeededRNG(SEED),
+      );
+      const prot = resolveFullCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), unitTypes, new SeededRNG(SEED),
+        { defenderCasualtyMultiplier: 0.5 },
+      );
+
+      const baseInfra = base.reduce((sum, r) => sum + (r.infrastructureDamage ?? 0), 0);
+      const protInfra = prot.reduce((sum, r) => sum + (r.infrastructureDamage ?? 0), 0);
+      expect(baseInfra).toBeGreaterThan(0);
+      expect(protInfra).toBeLessThan(baseInfra);
+    });
+
+    it("floor case: a single-casualty defender drops to zero under protection", () => {
+      // 2-unit defender → base loser casualties === 1 → protected floor(1*0.5) === 0.
+      const makeAttacker = () => makeFleetForce("att", false, 12);
+      const makeDefender = () => makeFleetForce("def", true, 2);
+
+      const base = resolveCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), "fleet-engagement",
+        unitTypes, new SeededRNG(SEED),
+      );
+      const prot = resolveCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), "fleet-engagement",
+        unitTypes, new SeededRNG(SEED), { defenderCasualtyMultiplier: 0.5 },
+      );
+
+      expect(base.defenderLosses.length).toBe(1);
+      expect(prot.defenderLosses.length).toBe(0);
+    });
+
+    it("multiplier >= 1 (or absent) leaves results identical", () => {
+      const makeAttacker = () => makeFleetForce("att", false, 12);
+      const makeDefender = () => makeFleetForce("def", true, 6);
+      const base = resolveCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), "fleet-engagement",
+        unitTypes, new SeededRNG(SEED),
+      );
+      const noReduction = resolveCombat(
+        makeAttacker(), makeDefender(), SystemId("sys-1"), "fleet-engagement",
+        unitTypes, new SeededRNG(SEED), { defenderCasualtyMultiplier: 1 },
+      );
+      expect(noReduction.defenderLosses).toEqual(base.defenderLosses);
+    });
+  });
 });

@@ -18,6 +18,14 @@ export interface CombatOptions {
   coalitionBonus?: number;
   /** Fleet composition bonus as fraction (e.g. 0.15) */
   fleetCompositionBonus?: number;
+  /**
+   * Multiplier (<1) applied to DEFENDER casualties and infrastructure damage
+   * only. Used for bot passivity / tutorial protection (e.g. 0.5 halves
+   * defender losses). Trims the already-selected casualty list rather than
+   * scaling the ratio, so small forces bypass the `Math.max(1, …)` casualty
+   * floor and actually see a reduction (1 casualty → 0).
+   */
+  defenderCasualtyMultiplier?: number;
 }
 
 const DEFENDER_BONUS = 1.25; // 25% bonus for defenders
@@ -92,19 +100,29 @@ export function resolveCombat(
   const winnerCasualties = selectCasualties(winner.units, unitTypes, phase, 0.1 + rng.next() * 0.2, rng);
 
   const attackerLosses = attackerWins ? winnerCasualties : loserCasualties;
-  const defenderLosses = attackerWins ? loserCasualties : winnerCasualties;
+  let defenderLosses = attackerWins ? loserCasualties : winnerCasualties;
 
   // System capture only happens on ground assault victory by attacker
   const systemCaptured = phase === "ground-assault" && attackerWins;
 
-  // Check morale
-  const attackerMorale = checkMorale(attacker, attackerLosses.map(u => u.id), phase);
-  const defenderMorale = checkMorale(defender, defenderLosses.map(u => u.id), phase);
-
   // Infrastructure damage for orbital bombardment
-  const infrastructureDamage = phase === "orbital-bombardment" && attackerWins
+  let infrastructureDamage = phase === "orbital-bombardment" && attackerWins
     ? calculateInfrastructureDamage(attackStrength, rng)
     : 0;
+
+  // Bot passivity / tutorial protection: trim the already-selected defender
+  // casualty list (not the ratio) so small forces bypass the Math.max(1, …)
+  // floor. Deterministic — no new RNG draws, we simply keep fewer of the
+  // same selected units. Applies to defender casualties AND infra damage only.
+  const dm = options?.defenderCasualtyMultiplier;
+  if (dm !== undefined && dm < 1) {
+    defenderLosses = defenderLosses.slice(0, Math.floor(defenderLosses.length * dm));
+    infrastructureDamage = Math.floor(infrastructureDamage * dm);
+  }
+
+  // Check morale (uses the final, protection-adjusted defender losses)
+  const attackerMorale = checkMorale(attacker, attackerLosses.map(u => u.id), phase);
+  const defenderMorale = checkMorale(defender, defenderLosses.map(u => u.id), phase);
 
   return {
     phase,

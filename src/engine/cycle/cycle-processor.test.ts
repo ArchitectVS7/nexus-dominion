@@ -10,6 +10,8 @@ import { relationshipKey } from "../types/diplomacy";
 import { selectWeightedMarketEvent } from "../market/market-engine";
 import { SeededRNG } from "../utils/rng";
 import { makeMinimalGameState } from "./cycle-test-fixtures";
+import { serializeGameState, deserializeGameState } from "../persistence/state-serializer";
+import type { TutorialState } from "../types/game-state";
 
 describe("Cycle Processor", () => {
   // REQ-001: Player submits Cycle, engine resolves, returns updated state
@@ -1269,5 +1271,87 @@ describe("T-205: deterministic cycle randomness", () => {
     expect(failures).toBeGreaterThan(0);
     expect(detected / failures).toBeGreaterThan(0.25);
     expect(detected / failures).toBeLessThan(0.75);
+  });
+
+  // T-116: tutorial state through the cycle
+  describe("Tutorial state (T-116)", () => {
+    const activeTutorial = (objectiveIndex: number): TutorialState => ({
+      active: true,
+      objectiveIndex,
+      completed: [],
+      signals: [],
+      baselineUnitCount: 0,
+      skipped: false,
+    });
+
+    it("a pre-change serialized state (no tutorial key) deserializes and processes one cycle cleanly", () => {
+      const original = makeMinimalGameState(3);
+      // Serialize/deserialize simulates loading an old save with no `tutorial` key.
+      const json = serializeGameState(original);
+      expect(json).not.toContain("tutorial");
+      const revived = deserializeGameState(json);
+      expect(revived.tutorial).toBeUndefined();
+
+      const result = processCycle(revived, { actions: [] }, new Map(), new Map());
+      expect(result.committed).toBe(true);
+      expect(result.state.tutorial).toBeUndefined();
+    });
+
+    it("market action mark completes the market objective through processCycle", () => {
+      const state = makeMinimalGameState(3);
+      state.market = {
+        prices: { food: 5, ore: 8, fuelCells: 12 },
+        basePrices: { food: 5, ore: 8, fuelCells: 12 },
+        priceHistory: [],
+      };
+      state.tutorial = activeTutorial(3); // "market" objective
+
+      const result = processCycle(
+        state,
+        { actions: [{ type: "trade", details: { resource: "ore", quantity: 10, direction: "sell" } }] },
+        new Map(), new Map(),
+      );
+
+      expect(result.committed).toBe(true);
+      expect(result.state.tutorial).toBeDefined();
+      expect(result.state.tutorial!.signals).toContain("market");
+      expect(result.state.tutorial!.objectiveIndex).toBe(4);
+    });
+
+    it("move-fleet action mark completes the combat-prep objective through processCycle", () => {
+      const state = makeMinimalGameState(3);
+      const fleetId = FleetId("player-fleet");
+      state.fleets.set(fleetId, {
+        id: fleetId,
+        ownerId: EmpireId("empire-0"),
+        name: "Home Fleet",
+        locationSystemId: SystemId("sys-0"),
+        unitIds: [],
+        targetSystemId: null,
+        arrivalCycle: null,
+      });
+      state.empires.get(EmpireId("empire-0"))!.fleetIds = [fleetId];
+      state.tutorial = activeTutorial(4); // "combat-prep" objective
+
+      const result = processCycle(
+        state,
+        { actions: [{ type: "move-fleet", details: { fleetId, targetSystemId: SystemId("sys-1") } }] },
+        new Map(), new Map(),
+      );
+
+      expect(result.committed).toBe(true);
+      expect(result.state.tutorial!.signals).toContain("move-fleet");
+      expect(result.state.tutorial!.objectiveIndex).toBe(5);
+    });
+
+    it("preserves tutorial across the deep clone even with no matching action", () => {
+      const state = makeMinimalGameState(3);
+      state.tutorial = activeTutorial(0);
+      const result = processCycle(state, { actions: [] }, new Map(), new Map());
+      expect(result.state.tutorial).toBeDefined();
+      expect(result.state.tutorial!.active).toBe(true);
+      // Original state's tutorial object is not mutated by the clone-based processing.
+      expect(state.tutorial.objectiveIndex).toBe(0);
+    });
   });
 });
