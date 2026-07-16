@@ -24,6 +24,9 @@ import { CombatReportModal } from "./ui/CombatReport";
 import { ConvergenceAlert } from "./ui/ConvergenceAlert";
 import { CommitErrorBanner } from "./ui/CommitErrorBanner";
 import { OrdersQueue } from "./ui/OrdersQueue";
+import { TutorialOverlay } from "./ui/TutorialOverlay";
+import { isFirstPlay, markFirstPlayDone } from "./ui/firstPlay";
+import { skipTutorial, markTutorialSignal } from "./engine/tutorial/tutorial-engine";
 import { enqueueOrder, removeOrder, toEngineActions, summarizeOrders, type QueuedOrder } from "./ui/orders";
 import { SystemPanel } from "./ui/SystemPanel";
 import { SectorPanel } from "./ui/SectorPanel";
@@ -74,13 +77,18 @@ function App() {
   /* ── Life Cycle ── */
 
   const handleNewCampaign = useCallback(() => {
+    // First-ever campaign gets the opt-in directed-start tutorial. The flag is
+    // set immediately so abandoning this campaign does not re-trigger it; the
+    // in-progress tutorial itself rides along in GameState through saves.
+    const tutorial = isFirstPlay();
     const newState = createNewCampaign({
       totalSystems: 250,
       sectorCount: 10,
       systemsPerSector: 25,
       empireCount: 100,
       seed: SEED,
-    }, "Campaign Alpha");
+    }, "Campaign Alpha", { tutorial });
+    markFirstPlayDone();
 
     powerHistoryRef.current = new Map();
     botAccumRef.current = new Map();
@@ -407,6 +415,17 @@ function App() {
         onSelectSystem={(id) => {
           setSelectedSystemId(id);
           if (id) setSelectedSectorId(null);
+
+          // Tutorial objective 1 ("explore"): selecting a system records the
+          // "explored" signal so the checklist shows the pending tick at once
+          // (the engine confirms/advances it on the next commit). Clone first —
+          // markTutorialSignal mutates in place; never mutate live React state.
+          const t = state?.tutorial;
+          if (id && t && t.active && t.objectiveIndex === 0 && !t.signals.includes("explored")) {
+            const nextState = { ...state!, tutorial: { ...t, signals: [...t.signals] } };
+            markTutorialSignal(nextState, "explored");
+            dispatch({ type: "SET_STATE", state: nextState });
+          }
         }}
         onSelectSector={(id) => {
           setSelectedSectorId(id);
@@ -437,6 +456,16 @@ function App() {
         onRemove={handleRemoveOrder}
         onClearAll={handleClearOrders}
       />
+
+      {/* Directed-start tutorial overlay — left column, above the tray, never
+          over the map centre. Absent for old saves (tutorial undefined) and
+          once the tutorial is skipped/deactivated (active === false). */}
+      {state!.tutorial?.active && (
+        <TutorialOverlay
+          tutorial={state!.tutorial}
+          onSkip={() => dispatch({ type: "SET_STATE", state: skipTutorial(state!) })}
+        />
+      )}
 
       {/* Convergence alert HUD banner — a rival nearing a victory achievement.
           Dismissal is keyed off the report identity so a new report re-shows it. */}

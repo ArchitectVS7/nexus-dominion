@@ -82,5 +82,5 @@ export { COVERT_OPERATION_DEFS } from "./covert";
 // Game State
 export type {
     GameState, CampaignMeta, SaveFile,
-    MarketPrices, MarketState,
+    MarketPrices, MarketState, TutorialState,
 } from "./game-state";
