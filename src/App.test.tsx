@@ -221,6 +221,26 @@ describe("App — orders queue (queue-then-commit)", () => {
     ]);
   });
 
+  it("powerHistory accrues one score per empire per committed cycle (ND-P1)", () => {
+    renderApp();
+    startCampaign();
+
+    // Two committed cycles (each via an order so no double-click confirm).
+    buyOre();
+    fireEvent.click(commitButton());
+    buyOre();
+    fireEvent.click(commitButton());
+    buyOre();
+    fireEvent.click(commitButton());
+
+    // The App hands processCycle a LIVE Map it maintains; after 3 committed
+    // cycles it must hold 3 pushed scores per empire — the caller-maintained
+    // contract (integration.test.ts). Before the fix it was permanently empty.
+    const third = mockedProcessCycle.mock.calls[2];
+    const history = third[2] as Map<string, number[]>;
+    expect(history.get("empire-player")?.length).toBe(3);
+  });
+
   it("a failed commit preserves the queue and shows the error banner", () => {
     const { container } = renderApp();
     startCampaign();

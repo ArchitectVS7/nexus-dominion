@@ -17,7 +17,7 @@ import { advanceInstallationQueue, createInstallationFromCompleted, addToInstall
 import type { InstallationType } from "../types/galaxy";
 import { sellResource, buyResource, decayPrices, clampPrices, updatePricesFromVolume, applyMarketEvent, MARKET_EVENT_PROBABILITY, marketEventAffectedResource, marketEventPriceChange, selectWeightedMarketEvent } from "../market/market-engine";
 import { processSyndicateCycle, computeFuelCellsProductionShare, addMember, purchaseBlackRegisterItem, getBlackRegisterItemCost } from "../syndicate/syndicate-engine";
-import { processCovertCycle, accrueAgents, getCovertOpEffect } from "../covert/covert-engine";
+import { processCovertCycle, accrueAgents, getCovertOpEffect, queueCovertOp } from "../covert/covert-engine";
 import type { CovertModifiers } from "../covert/covert-engine";
 import { relationshipKey, type PactType } from "../types/diplomacy";
 import { declareWar, getTradeDiscount, pruneOldRelationships, proposePact, acceptPact, breakPact } from "../diplomacy/diplomacy-engine";
@@ -845,41 +845,25 @@ function resolvePlayerActions(
         const opType = action.details?.opType as any;
         if (!state.covert || !targetId || !opType) break;
 
-        const cost = 200; // Flat intel reserve cost
         const covertState = state.covert.empireStates.get(empire.id);
-        if (!covertState || covertState.agentPool < cost) break;
+        if (!covertState) break;
 
-        covertState.agentPool -= cost;
-        // Resolve deterministically here using state-derived randomness (seeded PRNG).
-        // A single seed (campaign seed + cycle + hash of empire/target/op) governs both the
-        // success roll and the detection-kind roll, drawn as two independent PRNG outputs.
-        const covertRng = new SeededRNG(
-          state.campaign.seed +
-            state.time.currentCycle +
-            simpleHash(`${empire.id}-${targetId}-${opType}`),
-        );
-        const success = covertRng.next() < 0.7; // 70% chance
-
-        if (success) {
-           events.push({
-             type: "covert",
-             attackerId: empire.id,
-             cycle: state.time.currentCycle,
-             opType: opType,
-             targetId: targetId,
-             kind: "op-succeeded"
-           } as any);
-           // apply effects logic...
-        } else {
-           events.push({
-             type: "covert",
-             attackerId: empire.id,
-             cycle: state.time.currentCycle,
-             opType: opType,
-             targetId: targetId,
-             kind: covertRng.next() < 0.5 ? "op-detected" : "op-failed"
-           } as any);
-        }
+        // Route the player's op through the SAME queue the bot ops use —
+        // processCovertCycle (phase 10b, this same commit) resolves it with
+        // the real detection modifiers and APPLIES the op's effects. The
+        // previous inline path was a second, divergent implementation: a
+        // flat 200-agent cost, a private 70% dice roll, and a success that
+        // applied NO effect at all — `// apply effects logic...` was a
+        // comment (UGT trial, ND-7).
+        const queued = queueCovertOp(covertState, {
+          id: `${empire.id}-${state.time.currentCycle}-${opType}`,
+          operationType: opType,
+          attackerId: empire.id,
+          targetId: targetId,
+          queuedCycle: state.time.currentCycle,
+        });
+        if (!queued) break; // insufficient agents — same silent contract
+        state.covert.empireStates.set(empire.id, queued);
         break;
       }
 

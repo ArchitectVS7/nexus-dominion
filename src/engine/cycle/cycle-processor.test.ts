@@ -1236,41 +1236,75 @@ describe("T-205: deterministic cycle randomness", () => {
     expect(idA).toMatch(/^wh-empire-0-\d+-[0-9a-z]+$/);
   });
 
-  it("covert op: ~100 varied seeds land within ±10 points of the 70% success rate", () => {
-    let successes = 0;
-    let detected = 0;
-    let failed = 0;
+  it("covert op: ~120 varied campaign seeds sample the engine's dual-roll "
+     + "distribution (queued pipeline)", () => {
+    // ND-7 moved the player op onto the SAME queued pipeline the bots use:
+    // resolution draws from the per-cycle covert RNG (seed+cycle+31337), so
+    // the distribution is sampled by varying the CAMPAIGN SEED (varying the
+    // target no longer varies the rolls). With zero modifiers the engine's
+    // published rates are success 0.60 and detection 0.35
+    // (sabotage-production), and the emitted kind is op-detected whenever
+    // the detection roll hits, op-succeeded only on success AND stealth
+    // (expected ~0.60*0.65 = 39%).
+    let succeeded = 0;
+    let detectedCount = 0;
     const N = 120;
 
     for (let i = 0; i < N; i++) {
-      // Vary targetId so each op derives a distinct seed while staying deterministic.
       const action: PlayerActions = {
         actions: [
           {
             type: "launch-covert-op",
-            details: { targetId: EmpireId(`target-${i}`), opType: "sabotage-production" },
+            details: { targetId: EmpireId("target-x"), opType: "sabotage-production" },
           },
         ],
       };
       const state = withPlayerCovert(makeMinimalGameState(1));
+      state.campaign.seed = 9000 + i * 17;
       const result = processCycle(state, action, new Map(), new Map());
       const outcome = covertOpOutcome(result);
       expect(outcome).toBeDefined();
-      if (outcome === "op-succeeded") successes++;
-      else if (outcome === "op-detected") detected++;
-      else failed++;
+      if (outcome === "op-succeeded") succeeded++;
+      else if (outcome === "op-detected") detectedCount++;
     }
 
-    const successRate = (successes / N) * 100;
-    // 70% ± 10 points.
-    expect(successRate).toBeGreaterThanOrEqual(60);
-    expect(successRate).toBeLessThanOrEqual(80);
+    const successPct = (succeeded / N) * 100;
+    const detectedPct = (detectedCount / N) * 100;
+    // op-succeeded (success AND undetected) expected ~39%; ±14 points ≈ 3σ.
+    expect(successPct).toBeGreaterThanOrEqual(25);
+    expect(successPct).toBeLessThanOrEqual(53);
+    // op-detected expected ~35%; ±14 points.
+    expect(detectedPct).toBeGreaterThanOrEqual(21);
+    expect(detectedPct).toBeLessThanOrEqual(49);
+  });
 
-    // Among failures, detected-vs-failed should be roughly balanced (loose bound).
-    const failures = detected + failed;
-    expect(failures).toBeGreaterThan(0);
-    expect(detected / failures).toBeGreaterThan(0.25);
-    expect(detected / failures).toBeLessThan(0.75);
+  it("a successful steal-credits op ACTUALLY moves credits (ND-7)", () => {
+    // Differential vs a same-seed pass baseline: the only difference between
+    // the two arms is the op, so a success must show exactly the published
+    // 100-credit transfer. Scan seeds for the first undetected success.
+    for (let i = 0; i < 60; i++) {
+      const seed = 4000 + i * 13;
+      const mk = () => {
+        const s = withPlayerCovert(makeMinimalGameState(2));
+        s.campaign.seed = seed;
+        return s;
+      };
+      const withOp = processCycle(
+        mk(),
+        { actions: [{ type: "launch-covert-op",
+                      details: { targetId: EmpireId("empire-1"),
+                                 opType: "steal-credits" } }] },
+        new Map(), new Map(),
+      );
+      if (covertOpOutcome(withOp) !== "op-succeeded") continue;
+      const baseline = processCycle(mk(), { actions: [] }, new Map(), new Map());
+      const credits = (r: ReturnType<typeof processCycle>, id: string) =>
+        r.state.empires.get(EmpireId(id))!.resources.credits;
+      expect(credits(withOp, "empire-0") - credits(baseline, "empire-0")).toBe(100);
+      expect(credits(withOp, "empire-1") - credits(baseline, "empire-1")).toBe(-100);
+      return;
+    }
+    throw new Error("no succeeding seed in 60 tries — success rate collapsed?");
   });
 
   // T-116: tutorial state through the cycle

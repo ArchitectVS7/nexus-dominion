@@ -126,7 +126,14 @@ function App() {
 
   const handleSaveGame = useCallback(async () => {
     if (!state) return;
-    await persistence.save(state);
+    // Carry the caller-owned accumulators inside the saved state so a load
+    // resumes with the same Reckoning window and bot action budgets (ND-P1;
+    // handleLoadSave already reads them back).
+    await persistence.save({
+      ...state,
+      powerHistory: new Map(powerHistoryRef.current) as never,
+      botAccumulated: new Map(botAccumRef.current) as never,
+    });
   }, [state]);
 
   /* ── Cycle Commit ──
@@ -157,12 +164,17 @@ function App() {
       );
 
       if (result.committed) {
-        // Update persistent refs
-        if (result.state.powerHistory) {
-          powerHistoryRef.current = result.state.powerHistory as any;
-        }
-        if (result.state.botAccumulated) {
-          botAccumRef.current = result.state.botAccumulated as any;
+        // ND-P1: the ENGINE only reads powerHistory — the caller maintains it
+        // (see integration.test.ts / rollingAveragePowerScores). The previous
+        // code re-pointed the ref at result.state.powerHistory, which nothing
+        // ever fills, so every Reckoning ranked on an EMPTY rolling window.
+        // Push each empire's score after every committed cycle instead.
+        // (botAccumRef needs no handling: processCycle mutates that map
+        // in place.)
+        for (const [id, empire] of result.state.empires) {
+          const hist = powerHistoryRef.current.get(id) ?? [];
+          hist.push(empire.powerScore);
+          powerHistoryRef.current.set(id, hist);
         }
 
         dispatch({ type: "ADVANCE_CYCLE", nextState: result.state });
